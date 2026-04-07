@@ -5,9 +5,9 @@ apis:
   - aid: eden-ai:eden-ai
     name: Eden AI API
     tags:
-      - Emotion Detection
       - Artificial Intelligence
       - Emotion
+      - Emotion Detection
     humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
     properties:
       - url: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
@@ -19,9 +19,9 @@ apis:
       to automate tasks, analyze data, and generate valuable insights in real-time.
 name: Eden AI
 tags:
-  - Emotion Detection
   - Artificial Intelligence
   - Emotion
+  - Emotion Detection
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
