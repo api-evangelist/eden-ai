@@ -34,6 +34,26 @@ description: >-
   efficiency. Using cutting-edge machine learning algorithms and data analytics tools,
   Eden AI helps companies automate tedious tasks, streamline processes, and extract
   valuable insights from their data.
+integrations:
+  - name: OpenClaw
+  - name: Cline
+  - name: n8n
+  - name: Open WebUI
+  - name: LibreChat
+  - name: OpenCode
+  - name: Continue.dev
+  - name: Claude Code
+  - name: OpenAI TypeScript / JS SDK
+  - name: OpenAI Python SDK
+  - name: viaSocket
+  - name: Lindy
+  - name: Power Platform
+  - name: Albato
+  - name: Bubble
+  - name: LangChain
+  - name: qibb
+  - name: Activepieces
+  - name: Zapier
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
