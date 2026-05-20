@@ -59,6 +59,10 @@ maintainers:
     email: kin@apievangelist.com
 specificationVersion: '0.19'
 common:
+  - type: GitHubOrganization
+    url: https://github.com/edenai
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/edenai
   - name: Pricing | Eden AI
     description: 'null'
     url: https://www.edenai.co/pricing
