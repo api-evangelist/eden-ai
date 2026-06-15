@@ -1,0 +1,237 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Eden AI API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Text",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sentiment analysis",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/sentiment_analysis",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Run sentiment analysis on input text across selected providers."
+        },
+        {
+          "info": {
+            "name": "Keyword extraction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/keyword_extraction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Keyword extraction"
+        },
+        {
+          "info": {
+            "name": "Named entity recognition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/named_entity_recognition",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Named entity recognition"
+        },
+        {
+          "info": {
+            "name": "Emotion detection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/emotion_detection",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Detect emotions present in input text."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Translation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Automatic translation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/translation/automatic_translation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Automatic translation"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Image",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Object detection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/image/object_detection",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "providers",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Object detection"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "OCR",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OCR",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/ocr/ocr",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "providers",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "language",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Extract text from an image or PDF using selected OCR providers."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Audio",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit async speech-to-text job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/audio/speech_to_text_async",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "providers",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "language",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Submit async speech-to-text job"
+        },
+        {
+          "info": {
+            "name": "Get async speech-to-text job result",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.edenai.run/v2/audio/speech_to_text_async/:public_id",
+            "params": [
+              {
+                "name": "public_id",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Get async speech-to-text job result"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
