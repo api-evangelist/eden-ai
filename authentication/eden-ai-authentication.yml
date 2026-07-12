@@ -1,0 +1,13 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/eden-ai-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: API key
+  sources:
+  - openapi/eden-ai-openapi.yml

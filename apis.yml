@@ -59,6 +59,12 @@ maintainers:
     email: kin@apievangelist.com
 specificationVersion: '0.19'
 common:
+  - type: TrustCenter
+    url: security/eden-ai-trust-center.yml
+  - type: DomainSecurity
+    url: security/eden-ai-domain-security.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
   - type: GitHubOrganization
     url: https://github.com/edenai
   - type: LinkedIn
