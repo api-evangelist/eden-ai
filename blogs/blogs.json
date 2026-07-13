@@ -3,13 +3,13 @@
   "feeds": [
     {
       "source": "https://www.edenai.co/blog",
-      "feed_url": "",
+      "feed_url": "https://www.edenai.co/blog",
       "title": "",
-      "saved": 5,
-      "method": "agent-scrape"
+      "saved": 0,
+      "method": "none"
     }
   ],
-  "post_count": 13,
-  "fetched": "2026-06-27T12:38:51Z",
-  "agent_pulled": "2026-06-27"
+  "post_count": 23,
+  "fetched": "2026-07-11T11:50:51Z",
+  "agent_pulled": "2026-07-04"
 }
