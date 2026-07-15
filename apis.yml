@@ -59,6 +59,8 @@ maintainers:
     email: kin@apievangelist.com
 specificationVersion: '0.19'
 common:
+  - type: AgenticAccess
+    url: agentic-access/eden-ai-agentic-access.yml
   - type: TrustCenter
     url: security/eden-ai-trust-center.yml
   - type: DomainSecurity
