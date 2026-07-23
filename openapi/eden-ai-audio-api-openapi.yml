@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: Eden AI Audio API
+  version: '2.0'
+  description: Eden AI is a unified AI gateway providing access to 500+ AI models from 50+ providers through a single API. Exposes LLM (chat completions, embeddings), Universal AI (OCR, image, video, audio, text analysis), file management, and async jobs with webhooks.
+  contact:
+    name: Eden AI
+    url: https://www.edenai.co
+servers:
+- url: https://api.edenai.run/v2
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Audio
+paths:
+  /audio/speech_to_text_async:
+    post:
+      summary: Submit async speech-to-text job
+      operationId: audioSpeechToTextAsyncCreate
+      tags:
+      - Audio
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - providers
+              - file
+              properties:
+                providers:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+                language:
+                  type: string
+      responses:
+        '200':
+          description: Job submitted
+  /audio/speech_to_text_async/{public_id}:
+    get:
+      summary: Get async speech-to-text job result
+      operationId: audioSpeechToTextAsyncGet
+      tags:
+      - Audio
+      parameters:
+      - in: path
+        name: public_id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Job status / result
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

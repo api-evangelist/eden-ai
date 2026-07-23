@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: Eden AI Audio Image API
+  version: '2.0'
+  description: Eden AI is a unified AI gateway providing access to 500+ AI models from 50+ providers through a single API. Exposes LLM (chat completions, embeddings), Universal AI (OCR, image, video, audio, text analysis), file management, and async jobs with webhooks.
+  contact:
+    name: Eden AI
+    url: https://www.edenai.co
+servers:
+- url: https://api.edenai.run/v2
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Image
+paths:
+  /image/object_detection:
+    post:
+      summary: Object detection
+      operationId: imageObjectDetection
+      tags:
+      - Image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - providers
+              - file
+              properties:
+                providers:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Detection results
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key

@@ -1,0 +1,115 @@
+openapi: 3.1.0
+info:
+  title: Eden AI Audio Text API
+  version: '2.0'
+  description: Eden AI is a unified AI gateway providing access to 500+ AI models from 50+ providers through a single API. Exposes LLM (chat completions, embeddings), Universal AI (OCR, image, video, audio, text analysis), file management, and async jobs with webhooks.
+  contact:
+    name: Eden AI
+    url: https://www.edenai.co
+servers:
+- url: https://api.edenai.run/v2
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Text
+paths:
+  /text/sentiment_analysis:
+    post:
+      summary: Sentiment analysis
+      description: Run sentiment analysis on input text across selected providers.
+      operationId: textSentimentAnalysis
+      tags:
+      - Text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextRequest'
+      responses:
+        '200':
+          description: Aggregated provider results
+          content:
+            application/json:
+              schema:
+                type: object
+  /text/keyword_extraction:
+    post:
+      summary: Keyword extraction
+      operationId: textKeywordExtraction
+      tags:
+      - Text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextRequest'
+      responses:
+        '200':
+          description: Aggregated provider results
+          content:
+            application/json:
+              schema:
+                type: object
+  /text/named_entity_recognition:
+    post:
+      summary: Named entity recognition
+      operationId: textNamedEntityRecognition
+      tags:
+      - Text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextRequest'
+      responses:
+        '200':
+          description: Aggregated provider results
+          content:
+            application/json:
+              schema:
+                type: object
+  /text/emotion_detection:
+    post:
+      summary: Emotion detection
+      description: Detect emotions present in input text.
+      operationId: textEmotionDetection
+      tags:
+      - Text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextRequest'
+      responses:
+        '200':
+          description: Aggregated provider results
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    TextRequest:
+      type: object
+      required:
+      - providers
+      - text
+      - language
+      properties:
+        providers:
+          type: string
+          description: Comma-separated provider list (e.g. "openai,google").
+        text:
+          type: string
+        language:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API key
