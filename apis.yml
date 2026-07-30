@@ -2,28 +2,86 @@ aid: eden-ai
 url: >-
   https://raw.githubusercontent.com/api-evangelist/eden-ai/refs/heads/main/apis.yml
 apis:
-  - aid: eden-ai:eden-ai
-    name: Eden AI API
-    tags:
-      - Artificial Intelligence
-      - Emotion
-      - Emotion Detection
-    humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
-    properties:
-      - url: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
-        type: Documentation
-    description: >-
-      Eden AI API is a versatile tool that leverages artificial intelligence to enhance
-      and streamline various business processes. By providing access to advanced machine
-      learning and natural language processing capabilities, this API enables businesses
-      to automate tasks, analyze data, and generate valuable insights in real-time.
+- aid: eden-ai:eden-ai
+  name: Eden AI API
+  tags:
+  - Artificial Intelligence
+  - Emotion
+  - Emotion Detection
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  properties:
+  - url: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+    type: Documentation
+  description: >-
+    Eden AI API is a versatile tool that leverages artificial intelligence to enhance and streamline various
+    business processes. By providing access to advanced machine learning and natural language processing
+    capabilities, this API enables businesses to automate tasks, analyze data, and generate valuable insights
+    in real-time.
+- aid: eden-ai:eden-ai-audio-api
+  name: Eden AI Audio API
+  description: The Audio API from Eden AI — 2 operation(s) for audio.
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  tags:
+  - Audio
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-audio-api-openapi.yml
+- aid: eden-ai:eden-ai-image-api
+  name: Eden AI Image API
+  description: The Image API from Eden AI — 1 operation(s) for image.
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  tags:
+  - Image
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-image-api-openapi.yml
+- aid: eden-ai:eden-ai-ocr-api
+  name: Eden AI OCR API
+  description: The OCR API from Eden AI — 1 operation(s) for ocr.
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  tags:
+  - OCR
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-ocr-api-openapi.yml
+- aid: eden-ai:eden-ai-text-api
+  name: Eden AI Text API
+  description: The Text API from Eden AI — 4 operation(s) for text.
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  tags:
+  - Text
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-text-api-openapi.yml
+- aid: eden-ai:eden-ai-translation-api
+  name: Eden AI Translation API
+  description: The Translation API from Eden AI — 1 operation(s) for translation.
+  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  tags:
+  - Translation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-translation-api-openapi.yml
 name: Eden AI
 tags:
   - Artificial Intelligence
   - Emotion
   - Emotion Detection
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/eden-ai.png
 access: 3rd-Party
 created: '2025-02-09'
 modified: '2026-04-28'
