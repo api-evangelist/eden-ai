@@ -1,0 +1,22 @@
+{
+  "provider": "eden-ai",
+  "sources": [
+    "eden-ai-audio-api-openapi.yml",
+    "eden-ai-image-api-openapi.yml",
+    "eden-ai-ocr-api-openapi.yml",
+    "eden-ai-text-api-openapi.yml",
+    "eden-ai-translation-api-openapi.yml"
+  ],
+  "outputs": [
+    "eden-ai-audio-api-openapi.yml",
+    "eden-ai-image-api-openapi.yml",
+    "eden-ai-ocr-api-openapi.yml",
+    "eden-ai-text-api-openapi.yml",
+    "eden-ai-translation-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
