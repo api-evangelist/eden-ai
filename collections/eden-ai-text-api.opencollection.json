@@ -1,0 +1,84 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Eden AI Audio Text API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Text",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sentiment analysis",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/sentiment_analysis",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Run sentiment analysis on input text across selected providers."
+        },
+        {
+          "info": {
+            "name": "Keyword extraction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/keyword_extraction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Keyword extraction"
+        },
+        {
+          "info": {
+            "name": "Named entity recognition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/named_entity_recognition",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Named entity recognition"
+        },
+        {
+          "info": {
+            "name": "Emotion detection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/text/emotion_detection",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Detect emotions present in input text."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

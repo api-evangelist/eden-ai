@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Eden AI Audio Translation API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Translation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Automatic translation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/translation/automatic_translation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Automatic translation"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

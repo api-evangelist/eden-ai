@@ -1,0 +1,50 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Eden AI Audio Image API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Image",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Object detection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/image/object_detection",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "providers",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Object detection"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

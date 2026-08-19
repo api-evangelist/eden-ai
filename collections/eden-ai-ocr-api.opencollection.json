@@ -1,0 +1,55 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Eden AI Audio OCR API",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "OCR",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OCR",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.edenai.run/v2/ocr/ocr",
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "providers",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "language",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Extract text from an image or PDF using selected OCR providers."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
