@@ -1,13 +1,93 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/eden-ai-openapi.yml
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/v3/organization/management-api
+docs:
+  - https://www.edenai.co/docs/v3/organization/management-api
+  - https://www.edenai.co/docs/v3/general/custom-api-keys
+  - https://www.edenai.co/docs/v3/general/sandbox
+  - https://www.edenai.co/docs/v3/quickstart/first-llm-call
+specs:
+  - openapi/_original/eden-ai-v3-openapi.json
+  - openapi/_original/eden-ai-text-features-openapi.json
+  - openapi/_original/eden-ai-user-management-openapi.json
 summary:
   types:
-  - http
+    - http
+  model: bearer-api-key
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  note: >-
+    Eden AI is a pure bearer-key API. There is no OAuth 2.0 or OIDC surface anywhere in the twelve
+    first-party specs, and no /.well-known/openid-configuration or
+    /.well-known/oauth-authorization-server is served on any host (all 404, see
+    well-known/eden-ai-well-known.yml). Authorization is nevertheless SCOPED — see
+    scopes/eden-ai-scopes.yml — because management keys carry explicit manage:* scopes.
 schemes:
-- name: bearerAuth
-  type: http
-  scheme: bearer
-  bearerFormat: API key
-  sources:
-  - openapi/eden-ai-openapi.yml
+  - name: AuthBearer
+    type: http
+    scheme: bearer
+    sources:
+      - openapi/_original/eden-ai-v3-openapi.json
+    note: The v3 gateway scheme. Authorization; Bearer <key>.
+  - name: FeatureApiAuth
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    sources:
+      - openapi/_original/eden-ai-text-features-openapi.json
+      - openapi/_original/eden-ai-image-features-openapi.json
+      - openapi/_original/eden-ai-ocr-features-openapi.json
+      - openapi/_original/eden-ai-audio-features-openapi.json
+      - openapi/_original/eden-ai-video-features-openapi.json
+      - openapi/_original/eden-ai-translation-features-openapi.json
+      - openapi/_original/eden-ai-multimodal-features-openapi.json
+      - openapi/_original/eden-ai-llm-features-openapi.json
+      - openapi/_original/eden-ai-user-management-openapi.json
+    note: >-
+      The legacy v2 feature scheme. bearerFormat is declared as JWT, which matches Eden AI's own
+      description of the legacy primary/sandbox key as "a JWT stored in a User column, not a Token row".
+credential_tiers:
+  - tier: issuer key
+    prefix: mgmt-eden-
+    can: [mint auth keys]
+    cannot: [read, write, call inference]
+    issued_by: Dashboard, Account -> Management Keys (shown once)
+    docs: https://www.edenai.co/docs/v3/organization/management-api
+    note: Store like a root secret — it can mint its way down to inference.
+  - tier: auth key (worker)
+    prefix: mgmt-eden-
+    scopes: [manage:read, manage:write]
+    can: [manage the org, mint inference keys]
+    issued_by: POST /v3/manage/auth-keys with an issuer key (manage:mint), or the dashboard
+  - tier: inference key
+    prefix: sk-eden-
+    can: [call the inference API, bills the org]
+    issued_by: POST /v3/manage/keys with an auth key (manage:write), or the dashboard
+    attributes: [name, balance, balance_reset_period, balance_reset_amount, expire_time, guardrail]
+  - tier: legacy account token
+    prefix: null
+    format: JWT stored on the User row
+    can: [call the inference API]
+    note: >-
+      Superseded. POST /v2/user/custom_token/legacy/{legacy_type}/regenerate/ converts one into a real
+      hashed sk-eden custom key.
+token_types:
+  - {type: api_token, real_provider_calls: true, cost: pay-per-use}
+  - {type: sandbox_api_token, real_provider_calls: false, cost: free,
+     docs: https://www.edenai.co/docs/v3/general/sandbox}
+transport:
+  header: Authorization
+  format: 'Bearer <key>'
+  hosts:
+    - https://api.edenai.run
+    - https://api.eu.edenai.run
+    - https://mcp.edenai.run/mcp
+  note: The same key works on the global and EU endpoints; there is no separate EU key to issue.
+expiry_and_rotation:
+  default: >-
+    Management and inference keys do not expire unless expire_time is set explicitly.
+  rotate_inference_key: POST /v3/manage/keys/{key_id}/rotate (manage:write) — same identity, new secret, returned once
+  rotate_legacy_token: POST /v2/user/custom_token/{name}/rotate/
+  revoke: DELETE /v3/manage/keys/{key_id} (irreversible — destroys the secret, keeps the row marked revoked)
+  introspection: GET /v3/manage/whoami (own org, scopes, expiry) and GET /v2/user/custom_token/me/ (own label, masking, budget, balance)

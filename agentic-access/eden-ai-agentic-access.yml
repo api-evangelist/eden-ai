@@ -1,150 +1,33 @@
-generated: '2026-07-15'
+generated: '2026-09-06'
 method: generated
-source: openapi/eden-ai-openapi.yml
-description: Recommended x-agentic-access execution contracts, classified heuristically from
-  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
-  audience per deployment. See research/curity/agentic-governance/.
+source: openapi/_original/eden-ai-v3-openapi.json + openapi/_original/eden-ai-organization-management-openapi.json
+description: Recommended x-agentic-access execution contracts, classified from the FIRST-PARTY Eden AI contracts
+  harvested from api.edenai.run on 2026-09-06. A governance starting point for exposing this API to AI agents —
+  review and bind audience per deployment. REPLACES a 2026-07-15 version built from openapi/_original/eden-ai-openapi.yml,
+  whose nine camelCase operationIds do not appear in anything Eden AI publishes (see provenance.yml).
+risk_notes:
+- Inference operations SPEND MONEY on completion and there is no Idempotency-Key header anywhere in the contract,
+  so a retried call is a second charge. Bound spend per key (balance, balance_reset_period) and with guardrails
+  rather than relying on request-level replay protection.
+- Errors can arrive inside a 2xx when every fallback is exhausted; an agent that treats HTTP 200 as success will
+  bill for and act on failures.
+- A sandbox_api_token gives a true rehearsal mode on the same endpoints at no cost — prefer it for any unattended
+  dry run.
+- DELETE /v3/manage/keys/{key_id} is documented as irreversible.
 summary:
-  operations: 9
+  operations: 53
   by_action_class:
-    acting: 8
-    connected: 1
+    connected: 25
+    acting: 28
   by_consequence:
-    write: 8
-    read: 1
-  human_in_the_loop_required: 0
+    read: 25
+    write: 21
+    destructive: 7
+  human_in_the_loop_required: 6
 operations:
-- path: /text/sentiment_analysis
-  method: post
-  operationId: textSentimentAnalysis
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /text/keyword_extraction
-  method: post
-  operationId: textKeywordExtraction
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /text/named_entity_recognition
-  method: post
-  operationId: textNamedEntityRecognition
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /text/emotion_detection
-  method: post
-  operationId: textEmotionDetection
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /translation/automatic_translation
-  method: post
-  operationId: automaticTranslation
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /image/object_detection
-  method: post
-  operationId: imageObjectDetection
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /ocr/ocr
-  method: post
-  operationId: ocr
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /audio/speech_to_text_async
-  method: post
-  operationId: audioSpeechToTextAsyncCreate
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /audio/speech_to_text_async/{public_id}
+- path: /v3/info
   method: get
-  operationId: audioSpeechToTextAsyncGet
+  operationId: list_features_v3_info_get
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -152,3 +35,902 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/info/{feature}
+  method: get
+  operationId: list_subfeatures_v3_info__feature__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/info/{feature}/{subfeature}
+  method: get
+  operationId: get_feature_info_v3_info__feature___subfeature__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/chat/completions
+  method: post
+  operationId: chat_completions_v3_chat_completions_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/responses
+  method: post
+  operationId: create_response_v3_responses_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/responses/{response_id}
+  method: get
+  operationId: retrieve_response_v3_responses__response_id__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/responses/{response_id}
+  method: delete
+  operationId: delete_response_v3_responses__response_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - bulk-delete
+      - abnormal
+    reversibility: none
+- path: /v3/moderations
+  method: post
+  operationId: create_moderation_v3_moderations_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/moderations/models
+  method: get
+  operationId: list_moderation_models_v3_moderations_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/embeddings
+  method: post
+  operationId: create_embeddings_v3_embeddings_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/embeddings/models
+  method: get
+  operationId: list_embeddings_models_v3_embeddings_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/v1/messages
+  method: post
+  operationId: create_anthropic_message_v3_v1_messages_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/v1/messages/count_tokens
+  method: post
+  operationId: count_anthropic_tokens_v3_v1_messages_count_tokens_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/images/generations
+  method: post
+  operationId: image_generations_v3_images_generations_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/images/edits
+  method: post
+  operationId: image_edits_v3_images_edits_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/images/models
+  method: get
+  operationId: list_image_models_v3_images_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/audio/transcriptions
+  method: post
+  operationId: audio_transcriptions_v3_audio_transcriptions_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/audio/transcriptions/models
+  method: get
+  operationId: list_transcription_models_v3_audio_transcriptions_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/audio/speech
+  method: post
+  operationId: audio_speech_v3_audio_speech_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/audio/speech/models
+  method: get
+  operationId: list_speech_models_v3_audio_speech_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/models
+  method: get
+  operationId: list_models_v3_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai
+  method: post
+  operationId: universal_ai_v3_universal_ai_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/universal-ai/async
+  method: post
+  operationId: create_async_job_v3_universal_ai_async_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/universal-ai/async
+  method: get
+  operationId: list_async_jobs_v3_universal_ai_async_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai/async/{job_id}
+  method: get
+  operationId: get_async_job_v3_universal_ai_async__job_id__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai/async/{job_id}
+  method: delete
+  operationId: delete_async_job_v3_universal_ai_async__job_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - bulk-delete
+      - abnormal
+    reversibility: none
+- path: /v3/universal-ai/collections
+  method: post
+  operationId: create_collection_v3_universal_ai_collections_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/universal-ai/collections
+  method: get
+  operationId: list_collections_v3_universal_ai_collections_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai/collections/{collection_id}
+  method: get
+  operationId: get_collection_v3_universal_ai_collections__collection_id__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai/collections/{collection_id}
+  method: delete
+  operationId: delete_collection_v3_universal_ai_collections__collection_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - bulk-delete
+      - abnormal
+    reversibility: none
+- path: /v3/universal-ai/collections/{collection_id}/items
+  method: post
+  operationId: add_item_v3_universal_ai_collections__collection_id__items_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    spend:
+      billed: true
+      currency: USD
+      cost-field: cost
+      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
+    reversibility: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+      - budget-threshold
+- path: /v3/universal-ai/collections/{collection_id}/items
+  method: get
+  operationId: list_items_v3_universal_ai_collections__collection_id__items_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/universal-ai/collections/{collection_id}/items/{item_id}
+  method: delete
+  operationId: delete_item_v3_universal_ai_collections__collection_id__items__item_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - bulk-delete
+      - abnormal
+    reversibility: none
+- path: /v3/upload
+  method: post
+  operationId: upload_file_v3_upload_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/upload
+  method: get
+  operationId: list_files_v3_upload_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/upload
+  method: delete
+  operationId: delete_all_files_v3_upload_delete
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - bulk-delete
+      - abnormal
+    reversibility: none
+- path: /v3/upload/delete
+  method: post
+  operationId: delete_files_by_ids_v3_upload_delete_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/auth-keys/
+  method: get
+  operationId: manage_auth_keys_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/auth-keys/
+  method: post
+  operationId: manage_auth_keys_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:mint
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: rotatable
+- path: /v3/manage/auth-keys/{key_id}/
+  method: delete
+  operationId: manage_auth_keys_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:mint
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: irreversible
+- path: /v3/manage/groups/
+  method: get
+  operationId: manage_groups_list
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/groups/{external_group_id}/
+  method: get
+  operationId: manage_groups_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/keys/
+  method: get
+  operationId: manage_keys_list
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/keys/
+  method: post
+  operationId: manage_keys_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:write
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: rotatable
+- path: /v3/manage/keys/{key_id}/
+  method: get
+  operationId: manage_keys_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/keys/{key_id}/
+  method: patch
+  operationId: manage_keys_partial_update
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:write
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: rotatable
+- path: /v3/manage/keys/{key_id}/
+  method: delete
+  operationId: manage_keys_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: destructive
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:write
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: irreversible
+- path: /v3/manage/keys/{key_id}/rotate/
+  method: post
+  operationId: manage_keys_rotate_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    scope:
+    - manage:write
+    escalation:
+      human-in-the-loop: required
+      triggers:
+      - credential-issuance
+      - credential-revocation
+    reversibility: rotatable
+- path: /v3/manage/keys/{key_id}/usage/
+  method: get
+  operationId: manage_keys_usage_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/members/
+  method: get
+  operationId: manage_members_list
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/members/{email}/role/
+  method: patch
+  operationId: manage_members_role_partial_update
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    token:
+      max-ttl: 900
+    audit: required
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/usage/
+  method: get
+  operationId: manage_usage_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented
+- path: /v3/manage/whoami/
+  method: get
+  operationId: manage_whoami_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+    reversibility: documented

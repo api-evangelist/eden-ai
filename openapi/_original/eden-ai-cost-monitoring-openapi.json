@@ -1,0 +1,470 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Cost Monitoring",
+        "version": "2.0",
+        "description": "Your project description"
+    },
+    "paths": {
+        "/cost_management/": {
+            "get": {
+                "operationId": "cost_management_root_retrieve",
+                "description": "Returns aggregated consumption over time.\n\nOnly `feature`, `subfeature`, `provider`, and `phase` are accepted as row filters; any other unknown query parameter returns 400.\n\nResults are scoped by the caller's role: an organization owner or a member with members:manage sees the whole organization and may narrow with `user`, `token` or `group_by=user`; a regular member always sees only their own consumption and receives 403 if it sends `user` or `group_by=user`.\n\n`token` matches by key NAME, not by key identity. Names are unique per user and only among non-revoked keys, so a name shared by several members of the organization aggregates all of them, and a name reused after a rotation also includes the rotated-out key's history. Use `base_token` to select consumption not attributed to any key.",
+                "summary": "Monitor Consumptions",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "begin",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "end",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "group_by",
+                        "schema": {
+                            "enum": [
+                                "user"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `user` - user"
+                    },
+                    {
+                        "in": "query",
+                        "name": "provider",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "rag_project_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "step",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 4,
+                            "minimum": 1
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "subfeature",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "token",
+                        "schema": {
+                            "type": "string",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "schema": {
+                            "type": "string",
+                            "format": "email",
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "workflow_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "tags": [
+                    "Cost Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CostMonitoringResponse"
+                                },
+                                "examples": {
+                                    "CostMonitoringResponseExample": {
+                                        "value": {
+                                            "response": [
+                                                {
+                                                    "token": "base_token",
+                                                    "data": {
+                                                        "2024-01-01": {
+                                                            "image__explicit_content": {
+                                                                "total_cost": 0.03000000000000001,
+                                                                "details": 20,
+                                                                "cost_per_provider": {
+                                                                    "google": 0.03000000000000001
+                                                                }
+                                                            },
+                                                            "text__generation": {
+                                                                "total_cost": 0.065878,
+                                                                "details": 54,
+                                                                "cost_per_provider": {
+                                                                    "openai": 0.065878
+                                                                }
+                                                            }
+                                                        },
+                                                        "2024-02-01": {
+                                                            "audio__text_to_speech": {
+                                                                "total_cost": 0.47940000000000005,
+                                                                "details": 2,
+                                                                "cost_per_provider": {
+                                                                    "elevenlabs": 0.47940000000000005
+                                                                }
+                                                            },
+                                                            "image__explicit_content": {
+                                                                "total_cost": 0.023999999999999997,
+                                                                "details": 16,
+                                                                "cost_per_provider": {
+                                                                    "google": 0.023999999999999997
+                                                                }
+                                                            },
+                                                            "ocr__ocr": {
+                                                                "total_cost": 0.006,
+                                                                "details": 4,
+                                                                "cost_per_provider": {
+                                                                    "google": 0.006
+                                                                }
+                                                            }
+                                                        },
+                                                        "2024-03-01": {
+                                                            "image__explicit_content": {
+                                                                "total_cost": 0.15150000000000005,
+                                                                "details": 101,
+                                                                "cost_per_provider": {
+                                                                    "google": 0.15150000000000005
+                                                                }
+                                                            },
+                                                            "image__question_answer": {
+                                                                "total_cost": 1.3700000000000003,
+                                                                "details": 69,
+                                                                "cost_per_provider": {
+                                                                    "alephalpha": 0.02,
+                                                                    "google": 0.01,
+                                                                    "openai": 1.3400000000000003
+                                                                }
+                                                            },
+                                                            "text__chat": {
+                                                                "total_cost": 11.303349220000005,
+                                                                "details": 381,
+                                                                "cost_per_provider": {
+                                                                    "anthropic": 0.00786,
+                                                                    "cohere": 0.002,
+                                                                    "google": 0.002,
+                                                                    "meta": 0.00182784,
+                                                                    "mistral": 0.00047418,
+                                                                    "openai": 11.285760000000003,
+                                                                    "perplexityai": 0.0034272,
+                                                                    "replicate": 0.0
+                                                                }
+                                                            },
+                                                            "text__generation": {
+                                                                "total_cost": 1.093838,
+                                                                "details": 1019,
+                                                                "cost_per_provider": {
+                                                                    "openai": 1.093838
+                                                                }
+                                                            }
+                                                        },
+                                                        "2024-04-01": {
+                                                            "audio__text_to_speech": {
+                                                                "total_cost": 0.273,
+                                                                "details": 5,
+                                                                "cost_per_provider": {
+                                                                    "elevenlabs": 0.273
+                                                                }
+                                                            }
+                                                        },
+                                                        "2024-05-01": {
+                                                            "text__chat": {
+                                                                "total_cost": 25.151578000000015,
+                                                                "details": 2041,
+                                                                "cost_per_provider": {
+                                                                    "google": 0.006500000000000001,
+                                                                    "meta": 2.9662771199999995,
+                                                                    "mistral": 0.027624000000000003,
+                                                                    "openai": 21.665000000000017,
+                                                                    "perplexityai": 0.4861768799999998
+                                                                }
+                                                            },
+                                                            "text__embeddings": {
+                                                                "total_cost": 0.08262119999999998,
+                                                                "details": 1671,
+                                                                "cost_per_provider": {
+                                                                    "cohere": 0.08262119999999998
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "summary": "Cost Monitoring Response Example"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequest"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/cost_management/credits/": {
+            "get": {
+                "operationId": "cost_management_<Display Name of your Subfeature>",
+                "description": "Get you current credits",
+                "summary": "My Credits",
+                "tags": [
+                    "Cost Monitoring"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/credits_serializer"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BadRequest": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedBadRequest"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "CostMonitoringResponse": {
+                "properties": {
+                    "response": {
+                        "items": {
+                            "$ref": "#/components/schemas/TokenData"
+                        },
+                        "title": "Response",
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "response"
+                ],
+                "title": "CostMonitoringResponse",
+                "type": "object"
+            },
+            "Details": {
+                "properties": {
+                    "total_cost": {
+                        "title": "Total Cost",
+                        "type": "integer"
+                    },
+                    "details": {
+                        "title": "Details",
+                        "type": "integer"
+                    },
+                    "cost_per_provider": {
+                        "additionalProperties": {
+                            "type": "integer"
+                        },
+                        "title": "Cost Per Provider",
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "total_cost",
+                    "details",
+                    "cost_per_provider"
+                ],
+                "title": "Details",
+                "type": "object"
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedError"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "FieldError": {
+                "type": "object",
+                "properties": {
+                    "<parameter_name>": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "<parameter_name>"
+                ]
+            },
+            "NestedBadRequest": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/FieldError"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NestedError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "details": {
+                        "type": "string",
+                        "default": "Not Found"
+                    }
+                }
+            },
+            "TokenData": {
+                "properties": {
+                    "token": {
+                        "title": "Token",
+                        "type": "string"
+                    },
+                    "data": {
+                        "additionalProperties": {
+                            "additionalProperties": {
+                                "$ref": "#/components/schemas/Details"
+                            },
+                            "type": "object"
+                        },
+                        "title": "Data",
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "token",
+                    "data"
+                ],
+                "title": "TokenData",
+                "type": "object"
+            },
+            "credits_serializer": {
+                "type": "object",
+                "properties": {
+                    "credits": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "credits"
+                ]
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.edenai.run/v2"
+        }
+    ]
+}

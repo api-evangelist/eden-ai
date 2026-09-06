@@ -1,6 +1,5 @@
 aid: eden-ai
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/eden-ai/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/eden-ai/refs/heads/main/apis.yml
 apis:
 - aid: eden-ai:eden-ai
   name: Eden AI API
@@ -8,65 +7,186 @@ apis:
   - Artificial Intelligence
   - Emotion
   - Emotion Detection
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  humanURL: https://www.edenai.co/docs
   properties:
-  - url: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
-    type: Documentation
-  description: >-
-    Eden AI API is a versatile tool that leverages artificial intelligence to enhance and streamline various
-    business processes. By providing access to advanced machine learning and natural language processing
-    capabilities, this API enables businesses to automate tasks, analyze data, and generate valuable insights
-    in real-time.
+  - type: Documentation
+    url: https://www.edenai.co/docs
+  description: Eden AI API is a versatile tool that leverages artificial intelligence to enhance and streamline
+    various business processes. By providing access to advanced machine learning and natural language processing
+    capabilities, this API enables businesses to automate tasks, analyze data, and generate valuable insights in
+    real-time.
+  baseURL: https://api.edenai.run
 - aid: eden-ai:eden-ai-audio-api
   name: Eden AI Audio API
-  description: The Audio API from Eden AI — 2 operation(s) for audio.
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  description: The Audio API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 9 operation(s).
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/audio/tts
   tags:
   - Audio
   properties:
   - type: OpenAPI
-    url: openapi/eden-ai-audio-api-openapi.yml
+    url: openapi/_original/eden-ai-audio-features-openapi.json
+  baseURL: https://api.edenai.run/v2
 - aid: eden-ai:eden-ai-image-api
   name: Eden AI Image API
-  description: The Image API from Eden AI — 1 operation(s) for image.
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  description: The Image API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 34 operation(s).
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/image/generation
   tags:
   - Image
   properties:
   - type: OpenAPI
-    url: openapi/eden-ai-image-api-openapi.yml
+    url: openapi/_original/eden-ai-image-features-openapi.json
+  baseURL: https://api.edenai.run/v2
 - aid: eden-ai:eden-ai-ocr-api
   name: Eden AI OCR API
-  description: The OCR API from Eden AI — 1 operation(s) for ocr.
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  description: The OCR API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 22 operation(s).
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/ocr/ocr
   tags:
   - OCR
   properties:
   - type: OpenAPI
-    url: openapi/eden-ai-ocr-api-openapi.yml
+    url: openapi/_original/eden-ai-ocr-features-openapi.json
+  baseURL: https://api.edenai.run/v2
 - aid: eden-ai:eden-ai-text-api
   name: Eden AI Text API
-  description: The Text API from Eden AI — 4 operation(s) for text.
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  description: The Text API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 17 operation(s).
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/text/moderation
   tags:
   - Text
   properties:
   - type: OpenAPI
-    url: openapi/eden-ai-text-api-openapi.yml
+    url: openapi/_original/eden-ai-text-features-openapi.json
+  baseURL: https://api.edenai.run/v2
 - aid: eden-ai:eden-ai-translation-api
   name: Eden AI Translation API
-  description: The Translation API from Eden AI — 1 operation(s) for translation.
-  humanURL: ' https://www.edenai.co/post/new-emotion-detection-available-on-eden-ai'
+  description: The Translation API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares
+    3 operation(s).
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/translation/automatic-translation
   tags:
   - Translation
   properties:
   - type: OpenAPI
-    url: openapi/eden-ai-translation-api-openapi.yml
+    url: openapi/_original/eden-ai-translation-features-openapi.json
+  baseURL: https://api.edenai.run/v2
+- aid: eden-ai:eden-ai-v3-api
+  name: Eden AI API V3
+  description: 'The current Eden AI gateway: OpenAI-compatible chat completions, responses, embeddings, moderations,
+    images and audio, an Anthropic Messages pass-through, the model-routed Universal AI expert-model endpoint (sync
+    and async), collections and persistent file storage. 37 operations in the first-party OpenAPI 3.1.0 served at
+    https://api.edenai.run/v3/docs/openapi.json.'
+  humanURL: https://www.edenai.co/docs/v3/overview/ai-gateway
+  baseURL: https://api.edenai.run
+  tags:
+  - Artificial Intelligence
+  - AI Gateway
+  - LLM
+  - Chat Completions
+  - Embeddings
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-v3-openapi.json
+  - type: Overlay
+    url: overlays/eden-ai-v3-overlay.yaml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: MCPServer
+    url: mcp/eden-ai-mcp.yml
+- aid: eden-ai:eden-ai-video-api
+  name: Eden AI Video API
+  description: Asynchronous video features on the legacy v2 surface — generation, deepfake detection, explicit-content,
+    face/label/logo/object/person/shot-change/text detection and question answering. 45 operations in the first-party
+    OpenAPI harvested from api.edenai.run.
+  humanURL: https://www.edenai.co/docs/v3/expert-models/features/video/generation-async
+  baseURL: https://api.edenai.run/v2
+  tags:
+  - Video
+  - Artificial Intelligence
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-video-features-openapi.json
+- aid: eden-ai:eden-ai-llm-api
+  name: Eden AI LLM API (v2)
+  description: The legacy v2 LLM chat endpoint. Superseded by the OpenAI-compatible /v3/chat/completions on the
+    v3 gateway.
+  humanURL: https://www.edenai.co/docs/v3/llms/chat-completions
+  baseURL: https://api.edenai.run/v2
+  tags:
+  - LLM
+  - Artificial Intelligence
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-llm-features-openapi.json
+- aid: eden-ai:eden-ai-multimodal-api
+  name: Eden AI Multimodal API
+  description: The legacy v2 multimodal chat endpoint, accepting mixed text and image input across providers.
+  humanURL: https://www.edenai.co/docs/v3/llms/chat-completions
+  baseURL: https://api.edenai.run/v2
+  tags:
+  - Multimodal
+  - Artificial Intelligence
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-multimodal-features-openapi.json
+- aid: eden-ai:eden-ai-user-management-api
+  name: Eden AI User Management API
+  description: Create, list, update, rotate and delete custom API tokens, including sandbox tokens, and introspect
+    the calling key. 8 operations. Eden AI documents v2 as supported for token management through end of 2026.
+  humanURL: https://www.edenai.co/docs/v3/general/custom-api-keys
+  baseURL: https://api.edenai.run/v2
+  tags:
+  - API Keys
+  - Account Management
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-user-management-openapi.json
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+- aid: eden-ai:eden-ai-cost-monitoring-api
+  name: Eden AI Cost Monitoring API
+  description: Aggregated consumption over time and current credit balance, for FinOps reporting against a multi-provider
+    AI spend.
+  humanURL: https://www.edenai.co/docs/v3/general/monitoring
+  baseURL: https://api.edenai.run/v2
+  tags:
+  - Cost Management
+  - FinOps
+  - Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-cost-monitoring-openapi.json
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+- aid: eden-ai:eden-ai-organization-management-api
+  name: Eden AI Organization Management API
+  description: 'The management plane: an issuer key mints scoped worker keys, worker keys mint, rotate and revoke
+    inference keys, and manage-scoped reads cover members, IdP-synced groups and organization usage. 16 operations,
+    scoped by manage:read / manage:write / manage:mint.'
+  humanURL: https://www.edenai.co/docs/v3/organization/management-api
+  baseURL: https://api.edenai.run/v3
+  tags:
+  - Organization Management
+  - API Keys
+  - RBAC
+  properties:
+  - type: OpenAPI
+    url: openapi/_original/eden-ai-organization-management-openapi.json
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
 name: Eden AI
 tags:
-  - Artificial Intelligence
-  - Emotion
-  - Emotion Detection
+- Artificial Intelligence
+- AI Gateway
+- LLM
+- Machine Learning
+- OCR
+- Translation
+- Speech
+- Computer Vision
+- Model Context Protocol
+- Emotion Detection
 type: Index
 deliveryModel:
   model: saas
@@ -97,76 +217,133 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/eden-ai.png
 access: 3rd-Party
 created: '2025-02-09'
-modified: '2026-04-28'
+modified: '2026-09-06'
 position: Consuming
-description: >-
-  Eden AI is an innovative artificial intelligence platform that specializes in providing
-  advanced solutions for businesses looking to optimize their operations and improve
-  efficiency. Using cutting-edge machine learning algorithms and data analytics tools,
-  Eden AI helps companies automate tedious tasks, streamline processes, and extract
-  valuable insights from their data.
+description: 'Eden AI is a French AI gateway that puts one API, one key and one invoice in front of 500+ AI models
+  from 50+ providers. Its v3 surface is deliberately OpenAI-wire-compatible — chat completions, responses, embeddings,
+  moderations, images and audio — with an Anthropic Messages pass-through alongside it, so existing SDK code moves
+  over by swapping a base URL. A single model-routed Universal AI endpoint covers the expert models that are not
+  LLMs: OCR and document parsing, image and video analysis, speech, translation, text analysis and web research,
+  synchronously or as async jobs with signed webhooks. Routing, provider fallback, response caching, per-key budgets,
+  guardrails and per-request cost reporting are built into the gateway, and an EU endpoint restricts processing
+  to providers cleared for European data residency.'
 integrations:
-  - name: OpenClaw
-  - name: Cline
-  - name: n8n
-  - name: Open WebUI
-  - name: LibreChat
-  - name: OpenCode
-  - name: Continue.dev
-  - name: Claude Code
-  - name: OpenAI TypeScript / JS SDK
-  - name: OpenAI Python SDK
-  - name: viaSocket
-  - name: Lindy
-  - name: Power Platform
-  - name: Albato
-  - name: Bubble
-  - name: LangChain
-  - name: qibb
-  - name: Activepieces
-  - name: Zapier
+- name: OpenClaw
+- name: Cline
+- name: n8n
+- name: Open WebUI
+- name: LibreChat
+- name: OpenCode
+- name: Continue.dev
+- name: Claude Code
+- name: OpenAI TypeScript / JS SDK
+- name: OpenAI Python SDK
+- name: viaSocket
+- name: Lindy
+- name: Power Platform
+- name: Albato
+- name: Bubble
+- name: LangChain
+- name: qibb
+- name: Activepieces
+- name: Zapier
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
 specificationVersion: '0.23'
 common:
-  - type: AgenticAccess
-    url: agentic-access/eden-ai-agentic-access.yml
-  - type: TrustCenter
-    url: security/eden-ai-trust-center.yml
-  - type: DomainSecurity
-    url: security/eden-ai-domain-security.yml
-  - type: Authentication
-    url: authentication/eden-ai-authentication.yml
-  - type: GitHubOrganization
-    url: https://github.com/edenai
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/edenai
-  - name: Pricing | Eden AI
-    description: 'null'
-    url: https://www.edenai.co/pricing
-    type: Pricing
-  - name: Quickstart - AI APIs
-    description: 'null'
-    url: https://docs.edenai.co/docs/quickstart-ai-apis
-    type: Documentation
-  - name: Rate Limiting
-    description: 'null'
-    url: https://docs.edenai.co/docs/rate-limiting
-    type: RateLimits
-  - name: Blog | Eden AI
-    description: 'null'
-    url: https://www.edenai.co/blog
-    type: Blog
-  - name: Intergrations | Eden AI
-    description: 'null'
-    url: https://www.edenai.co/integrations
-    type: Integrations
-  - name: Terms & Conditions | Eden AI
-    description: 'null'
-    url: https://www.edenai.co/terms-conditions
-    type: TermsOfService
-  - name: Privacy Policy | Eden AI
-    description: 'null'
-    url: https://www.edenai.co/privacy-policy
-    type: PrivacyPolicy
+- type: Website
+  url: https://www.edenai.co/
+- type: AgenticAccess
+  url: agentic-access/eden-ai-agentic-access.yml
+- type: TrustCenter
+  url: security/eden-ai-trust-center.yml
+- type: DomainSecurity
+  url: security/eden-ai-domain-security.yml
+- type: Authentication
+  url: authentication/eden-ai-authentication.yml
+- type: GitHubOrganization
+  url: https://github.com/edenai
+- type: LinkedIn
+  url: https://www.linkedin.com/company/edenai
+- name: Pricing | Eden AI
+  url: https://www.edenai.co/pricing
+  type: Pricing
+- name: Eden AI Documentation
+  url: https://www.edenai.co/docs
+  type: Documentation
+- name: Rate Limits
+  url: https://www.edenai.co/docs/v3/overview/rate-limits
+  type: RateLimits
+- name: Blog | Eden AI
+  url: https://www.edenai.co/blog
+  type: Blog
+- name: Intergrations | Eden AI
+  url: https://www.edenai.co/integrations
+  type: Integrations
+- name: Terms & Conditions | Eden AI
+  url: https://www.edenai.co/terms-conditions
+  type: TermsOfService
+- name: Privacy Policy | Eden AI
+  url: https://www.edenai.co/privacy-policy
+  type: PrivacyPolicy
+- type: DeveloperPortal
+  url: https://www.edenai.co/docs
+  name: Eden AI Developer Docs
+- type: APIReference
+  url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  name: Eden AI API Reference
+- type: GettingStarted
+  url: https://www.edenai.co/docs/v3/quickstart/first-llm-call
+  name: First LLM Call
+- type: Support
+  url: https://help.edenai.co/en/
+  name: Eden AI Help Center
+- type: SignUp
+  url: https://app.edenai.run/register
+  name: Create an Eden AI account
+- type: StatusPage
+  url: https://app-edenai.instatus.com/
+  name: Eden AI Status
+- type: TrustCenter
+  url: https://trust.edenai.co/
+  name: Eden AI Trust Center
+- type: MCPServer
+  url: mcp/eden-ai-mcp.yml
+- type: LLMsTxt
+  url: llms/eden-ai-llms.txt
+- type: Packages
+  url: packages/eden-ai-packages.yml
+- type: SDKs
+  url: packages/eden-ai-packages.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Conventions
+  url: conventions/eden-ai-conventions.yml
+- type: ErrorCatalog
+  url: errors/eden-ai-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/eden-ai-lifecycle.yml
+- type: OAuthScopes
+  url: scopes/eden-ai-scopes.yml
+- type: Conformance
+  url: conformance/eden-ai-conformance.yml
+- type: Compliance
+  url: security/eden-ai-trust-center.yml
+- type: Webhooks
+  url: asyncapi/eden-ai-webhooks.yml
+- type: Sandbox
+  url: sandbox/eden-ai-sandbox.yml
+- type: DataModel
+  url: data-model/eden-ai-data-model.yml
+- type: RateLimits
+  url: rate-limits/eden-ai-rate-limits.yml
+- type: Plans
+  url: plans/eden-ai-plans-pricing.yml
+- type: FinOps
+  url: finops/eden-ai-finops.yml
+x-enrichment:
+  date: '2026-09-06'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v3

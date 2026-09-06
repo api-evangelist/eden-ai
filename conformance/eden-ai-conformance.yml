@@ -1,0 +1,139 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  openapi/_original/*.json, mcp/eden-ai-mcp-tools.json, https://trust.edenai.co/,
+  https://www.edenai.co/security and the Eden AI v3 documentation
+description: >-
+  Cross-cutting and domain-standard conformance for Eden AI. Every `conforms: true` below points at
+  a specific location in a first-party contract or a live probe; nothing is asserted from marketing
+  copy alone.
+conformance:
+  - id: openapi
+    name: OpenAPI Specification
+    conforms: true
+    versions: ['3.1.0', '3.0.3']
+    evidence: >-
+      Twelve first-party definitions served from api.edenai.run and indexed in Eden AI's own
+      llms.txt under "## OpenAPI Specs": the v3 gateway spec (3.1.0, 37 operations) at
+      https://api.edenai.run/v3/docs/openapi.json and eleven 3.0.3 slices under
+      https://api.edenai.run/v2/info/splitted-schema/<slice>/openapi.json.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    version: streamable-http
+    evidence: >-
+      https://mcp.edenai.run/mcp answered a JSON-RPC tools/list with 39 tools and per-tool
+      inputSchema, HTTP 200, content-type text/event-stream, on 2026-09-06. Verbatim in
+      mcp/eden-ai-mcp-tools.json.
+  - id: openai-compatible-api
+    name: OpenAI API wire compatibility
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      The v3 contract implements the OpenAI surface path-for-path — POST /v3/chat/completions,
+      /v3/responses (+ retrieve/delete by response_id), /v3/embeddings, /v3/moderations,
+      /v3/images/generations, /v3/images/edits, /v3/audio/transcriptions, /v3/audio/speech, and
+      GET /v3/models — in openapi/_original/eden-ai-v3-openapi.json. Eden AI documents the official
+      OpenAI SDKs as its supported clients by swapping base_url to https://api.edenai.run/v3.
+    note: >-
+      This is the de-facto interoperability standard of the LLM-gateway market and the reason a
+      buyer can move to Eden AI without a bespoke connector. It is the closest thing this market has
+      to a domain standard, and it is declared by the CONTRACT, not merely claimed in prose.
+    docs: https://www.edenai.co/docs/v3/integrations/openai-sdk-python
+  - id: anthropic-messages-compatible
+    name: Anthropic Messages API compatibility
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      POST /v3/v1/messages (create_anthropic_message_v3_v1_messages_post) and POST
+      /v3/v1/messages/count_tokens (count_anthropic_tokens_v3_v1_messages_count_tokens_post) in
+      openapi/_original/eden-ai-v3-openapi.json accept native Anthropic request bodies and return
+      Anthropic-shaped responses.
+  - id: sse-streaming
+    name: Server-Sent Events streaming
+    conforms: true
+    evidence: >-
+      Documented for the v3 LLM endpoint (https://www.edenai.co/docs/v3/llms/streaming); the MCP
+      server itself answers with content-type text/event-stream.
+  - id: json-schema
+    name: JSON Schema
+    conforms: true
+    evidence: >-
+      Structured Output constrains LLM responses to a caller-supplied JSON Schema
+      (https://www.edenai.co/docs/v3/llms/structured-output); every MCP tool carries a JSON Schema
+      inputSchema in mcp/eden-ai-mcp-tools.json.
+  - id: gdpr
+    name: GDPR
+    conforms: true
+    evidence: >-
+      https://trust.edenai.co/ lists GDPR under Compliance and documents rights of access, deletion
+      and portability; a DPA is published at https://www.edenai.co/dpa (HTTP 200). Infrastructure is
+      AWS eu-west-3 (Paris) and a dedicated EU endpoint (https://api.eu.edenai.run) routes only
+      through EU-eligible providers.
+  - id: iso-27001
+    name: ISO/IEC 27001:2022
+    conforms: partial
+    evidence: >-
+      Listed under Compliance on https://trust.edenai.co/ and claimed as "ISO 27001 certified" on
+      https://www.edenai.co/security — but the trust center's own summary says "GDPR, SOC 2, and ISO
+      27001 audits are in progress" as of 2026-09-06. The two Eden AI surfaces disagree; recorded as
+      partial rather than resolved in the provider's favour.
+  - id: soc-2
+    name: SOC 2 Type 2
+    conforms: partial
+    evidence: >-
+      https://trust.edenai.co/ shows "SOC2 type 2 report (In progress)"; https://www.edenai.co/security
+      markets "SOC 2 certified". Same conflict as ISO 27001.
+  - id: rfc9457
+    name: RFC 9457 Problem Details
+    conforms: false
+    evidence: >-
+      No application/problem+json media type appears in any of the twelve first-party specs. v2 uses
+      a nested {"error":{"type","message"}} envelope, v3 uses FastAPI's {"detail":[...]}. See
+      errors/eden-ai-problem-types.yml.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: >-
+      No oauth2 securityScheme in any spec; /.well-known/oauth-authorization-server 404s on all six
+      hosts (well-known/eden-ai-well-known.yml).
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: /.well-known/openid-configuration 404s on all six hosts.
+  - id: idempotency
+    name: Idempotency-Key (draft-ietf-httpapi-idempotency-key-header)
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header is documented or declared. See conventions/eden-ai-conventions.yml,
+      idempotency.coverage = none.
+  - id: rfc8594
+    name: RFC 8594 Sunset header
+    conforms: false
+    evidence: No Sunset or Deprecation header is documented or present in any spec.
+  - id: rfc9116
+    name: RFC 9116 security.txt
+    conforms: false
+    evidence: /.well-known/security.txt 404s on all six hosts.
+  - id: asyncapi
+    name: AsyncAPI
+    conforms: false
+    evidence: >-
+      A real signed webhook surface exists (asyncapi/eden-ai-webhooks.yml) but no AsyncAPI document
+      is published.
+  - id: pagination
+    name: Documented pagination
+    conforms: false
+    evidence: >-
+      No page/cursor/limit parameter is declared on any list operation in the v3 spec and none is
+      documented.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and /.well-known/agent.json 404 on all six hosts.
+compliance_published: true
+certifications:
+  - {name: GDPR, status: supported, source: 'https://trust.edenai.co/'}
+  - {name: 'ISO/IEC 27001:2022', status: in-progress-or-certified-conflicting, source: 'https://trust.edenai.co/'}
+  - {name: SOC 2 Type 2, status: in-progress-or-certified-conflicting, source: 'https://trust.edenai.co/'}

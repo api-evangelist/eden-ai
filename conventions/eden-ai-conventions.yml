@@ -1,0 +1,199 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/llms.txt
+docs:
+  - https://www.edenai.co/docs/v3/overview/llms-vs-expert-models
+  - https://www.edenai.co/docs/v3/general/fallback
+  - https://www.edenai.co/docs/v3/general/caching
+  - https://www.edenai.co/docs/v3/llms/request-metadata
+  - https://www.edenai.co/docs/v3/expert-models/webhooks
+derived_from:
+  - openapi/_original/eden-ai-v3-openapi.json
+  - openapi/_original/eden-ai-organization-management-openapi.json
+description: >-
+  Cross-cutting runtime semantics for the Eden AI gateway: how an agent authenticates, selects a
+  model, pages, traces, handles errors, and — critically — what it can and cannot take back.
+auth:
+  style: bearer-api-key
+  header: 'Authorization: Bearer <key>'
+  scoped: management plane only (manage:read / manage:write / manage:mint)
+  detail: authentication/eden-ai-authentication.yml
+  scopes: scopes/eden-ai-scopes.yml
+routing:
+  model_parameter: >-
+    `model` is the routing primitive on every surface. On LLM endpoints it is "provider/model-id"
+    (e.g. "anthropic/claude-sonnet-4-6"); on /v3/universal-ai it is
+    "feature/subfeature/provider" (e.g. "ocr/financial_parser/mindee"). Naming a model without a
+    provider lets Eden AI choose by price, speed or latency with health-aware failover.
+  fallbacks: >-
+    A `fallbacks` list of alternate providers is applied on both LLM and Universal AI requests.
+    Eden AI's own Agent Skill recommends 1-3 fallbacks for production.
+  docs: https://www.edenai.co/docs/v3/llms/provider-routing
+compatibility:
+  openai: >-
+    /v3/chat/completions, /v3/responses, /v3/embeddings, /v3/moderations, /v3/images/*,
+    /v3/audio/* are OpenAI-wire-compatible; the official OpenAI SDKs work by swapping base_url.
+  anthropic: >-
+    /v3/v1/messages and /v3/v1/messages/count_tokens accept native Anthropic Messages request bodies
+    and return Anthropic-shaped responses.
+  note: This is the provider's principal interoperability claim and is treated as a domain standard in conformance/eden-ai-conformance.yml.
+versioning:
+  style: uri-path
+  current: v3
+  legacy: v2
+  policy: >-
+    "v2 is legacy. Only cost monitoring and user-token management remain on /v2/* — supported
+    through end of 2026." Stated in Eden AI's own published Agent Skill; there is no dated
+    deprecation policy page and no Sunset/Deprecation header is documented.
+  detail: lifecycle/eden-ai-lifecycle.yml
+pagination:
+  documented: false
+  note: >-
+    No pagination style, cursor or page parameter is documented for the v3 list endpoints
+    (/v3/models, /v3/upload, /v3/universal-ai/async, /v3/universal-ai/collections) and none appears
+    in the v3 OpenAPI. The management-plane list endpoints describe "a stable page" ordered by name
+    or email, but publish no page/cursor parameter either. Recorded as an honest gap.
+field_selection:
+  expansion: not supported
+  sparse_fields: not supported
+  provider_passthrough:
+    field: provider_params
+    description: Pass provider-specific parameters that are not part of Eden AI's unified schema.
+    docs: https://www.edenai.co/docs/v3/expert-models/provider-parameters
+  raw_response:
+    field: show_original_response
+    description: When true, the raw provider response is returned alongside the normalized output.
+metadata:
+  request_metadata: >-
+    Opt in to a per-request report of what Eden AI decided — which provider served the request, what
+    was tried before it, which region, and whether the caller's own key (BYOK) was used.
+  docs: https://www.edenai.co/docs/v3/llms/request-metadata
+  cost_field: Every response carries a `cost` field in USD for that request.
+tracing:
+  request_id_header: not documented
+  note: >-
+    No X-Request-Id / correlation header is documented or present in the specs. The nearest
+    equivalents are the async `job_id` and the `user_webhook_parameters` echo on webhook callbacks,
+    both of which correlate a job rather than a request.
+error_envelope:
+  v2:
+    shape: '{"error": {"type": "<string>", "message": "<string>"}}'
+    schemas: [BadRequest, Error, NestedBadRequest, NestedError, FieldError, NotFoundResponse]
+    source: openapi/_original/eden-ai-translation-features-openapi.json
+  v3:
+    shape: '{"detail": [{"loc": [...], "msg": "<string>", "type": "<string>"}]}'
+    schema: HTTPValidationError
+    source: openapi/_original/eden-ai-v3-openapi.json
+  rfc9457: false
+  note: >-
+    Neither surface uses application/problem+json. Errors can also arrive INSIDE a 2xx body when all
+    fallbacks are exhausted — Eden AI's own Agent Skill instructs clients to "inspect the response
+    body for an `error` field even on a 2xx". That is a significant agent hazard and is the single
+    most important convention on this page.
+  detail: errors/eden-ai-problem-types.yml
+rate_limit_signaling:
+  headers: none documented
+  detail: rate-limits/eden-ai-rate-limits.yml
+caching:
+  response_caching: >-
+    Identical model + input returns the stored earlier result immediately, at no additional cost.
+    Enabled by default, toggled per project from the dashboard. Recommended for deterministic
+    features (embeddings, moderation, OCR, NER), not for chat or image generation.
+  prompt_caching: Prefix reuse for LLM calls that still generates a fresh response.
+  docs: https://www.edenai.co/docs/v3/general/caching
+  note: >-
+    Response caching is a de-facto replay MITIGATION for deterministic reads, but it is not
+    idempotency: it is toggleable, scoped to identical inputs, and does not protect a duplicate
+    write from being charged.
+idempotency:
+  coverage: none
+  mechanism: null
+  header: null
+  scope: []
+  note: >-
+    Eden AI publishes no Idempotency-Key header and no replay-protection mechanism, and none appears
+    in any of the twelve first-party OpenAPI definitions. Two operations are documented as naturally
+    idempotent in their own descriptions — DELETE /v3/universal-ai/collections/{collection_id}
+    ("delete is idempotent and half-failed deletes can always be cleaned up") and DELETE
+    /v3/manage/auth-keys/{key_id} ("terminal, idempotent") — but both are DELETEs, where idempotency
+    is an HTTP property rather than a provider mechanism. The money-spending surface is unprotected:
+    a retried POST /v3/chat/completions or POST /v3/universal-ai/async is a second billed inference
+    call, with nothing in the request an agent can use to deduplicate it. `none` is the honest
+    verdict and no Idempotency pointer is emitted for this provider.
+  docs_checked:
+    - https://www.edenai.co/docs/llms.txt
+    - https://www.edenai.co/docs/v3/general/caching
+dry_run_mode:
+  available: true
+  mechanism: sandbox_api_token
+  note: >-
+    A sandbox token is a true rehearsal mode — the same call on the same endpoint returns a
+    structurally identical mock with no provider call and no charge. This is Eden AI's strongest
+    agent-safety affordance.
+  detail: sandbox/eden-ai-sandbox.yml
+reversibility:
+  grade: documented
+  note: >-
+    Eden AI's write surface splits in two, and the two halves grade very differently. Resource
+    writes (collections, files, keys, stored responses) all have an explicit delete or revoke path,
+    so they are reversible in the sense that they can be undone. INFERENCE writes cannot be: there
+    is no cancel, no refund and no void for a request that has been billed, and Eden AI publishes no
+    refund window for purchased credits. The grade is `documented` rather than `verified` because
+    the only stated WINDOW anywhere is the 7-day async-result retention, which is an expiry, not a
+    reversal window.
+  write_surfaces:
+    - surface: inference (POST /v3/chat/completions, /v3/responses, /v3/embeddings, /v3/moderations, /v3/images/*, /v3/audio/*, /v3/universal-ai)
+      reversal: none
+      window: null
+      note: >-
+        Billed on completion. No cancel, void or refund operation exists in any first-party spec and
+        none is documented. An agent that fires twice pays twice.
+    - surface: async job (POST /v3/universal-ai/async)
+      reversal_operation: delete_async_job_v3_universal_ai_async__job_id__delete
+      reversal: 'DELETE /v3/universal-ai/async/{job_id}'
+      window: null
+      note: >-
+        Deletes the job record. Eden AI does not state whether deleting an in-flight job stops
+        provider work or refunds its cost, so no such claim is made here. Results expire on their own
+        after 7 days (https://www.edenai.co/docs/v3/data-governance/data-retention).
+    - surface: stored LLM response (POST /v3/responses with store)
+      reversal_operation: delete_response_v3_responses__response_id__delete
+      reversal: 'DELETE /v3/responses/{response_id}'
+      window: null
+    - surface: collection (POST /v3/universal-ai/collections)
+      reversal_operation: delete_collection_v3_universal_ai_collections__collection_id__delete
+      reversal: 'DELETE /v3/universal-ai/collections/{collection_id}'
+      window: null
+      note: Documented as idempotent; deletes on the provider first, then removes the gateway ownership row.
+    - surface: collection item (POST /v3/universal-ai/collections/{collection_id}/items)
+      reversal_operation: delete_item_v3_universal_ai_collections__collection_id__items__item_id__delete
+      reversal: 'DELETE /v3/universal-ai/collections/{collection_id}/items/{item_id}'
+      window: null
+    - surface: uploaded file (POST /v3/upload)
+      reversal_operation: delete_files_by_ids_v3_upload_delete_post
+      reversal: 'POST /v3/upload/delete (by ids) or DELETE /v3/upload (all files)'
+      window: null
+    - surface: inference key (POST /v3/manage/keys)
+      reversal_operation: manage_keys_destroy
+      reversal: 'DELETE /v3/manage/keys/{key_id}'
+      window: null
+      irreversible: true
+      note: >-
+        Eden AI states the revoke is IRREVERSIBLE — it destroys the secret and keeps the row marked
+        revoked. Rotation (POST /v3/manage/keys/{key_id}/rotate) is the non-destructive alternative,
+        but the old secret stops working immediately and cannot be restored.
+    - surface: management worker key (POST /v3/manage/auth-keys)
+      reversal_operation: manage_auth_keys_destroy
+      reversal: 'DELETE /v3/manage/auth-keys/{key_id}'
+      window: null
+      note: Documented as terminal and idempotent.
+  credits:
+    refund_window: null
+    note: >-
+      Eden AI publishes no refund or cancellation window for purchased credits
+      (https://www.edenai.co/docs/v3/general/buying-credits). No window is asserted here.
+  retention_windows:
+    - {what: async job results, window: 7 days, expiry: true, recoverable_after: false,
+       source: 'https://www.edenai.co/docs/v3/data-governance/data-retention'}
+webhooks:
+  detail: asyncapi/eden-ai-webhooks.yml

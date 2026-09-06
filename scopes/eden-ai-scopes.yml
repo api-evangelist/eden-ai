@@ -1,0 +1,58 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/v3/organization/management-api
+docs: https://www.edenai.co/docs/v3/organization/management-api
+model: api-key-scopes
+oauth2: false
+note: >-
+  These are NOT OAuth 2.0 scopes — Eden AI publishes no oauth2 securityScheme and serves no
+  authorization-server metadata. They are explicit scopes carried by a management key
+  (mgmt-eden-...) and checked per management endpoint, documented by Eden AI in the Management API
+  reference and repeated in the operation descriptions of
+  openapi/_original/eden-ai-organization-management-openapi.json. Recorded here because the scope
+  surface is real and machine-relevant even though the grant mechanism is key issuance rather than
+  an authorization flow.
+scopes:
+  - name: manage:mint
+    description: >-
+      Mint and revoke management (worker) keys. Held by an ISSUER key, which can do nothing else —
+      it cannot read, write, or call inference, and it can never mint another issuer key.
+    operations:
+      - {method: POST, path: /v3/manage/auth-keys, operationId: manage_auth_keys_create}
+      - {method: GET, path: /v3/manage/auth-keys, operationId: manage_auth_keys_retrieve}
+      - {method: DELETE, path: '/v3/manage/auth-keys/{key_id}', operationId: manage_auth_keys_destroy}
+  - name: manage:read
+    description: Read the organization — inference keys, members, IdP-synced groups, usage, and key introspection. Org-scoped.
+    operations:
+      - {method: GET, path: /v3/manage/keys, operationId: manage_keys_list}
+      - {method: GET, path: '/v3/manage/keys/{key_id}', operationId: manage_keys_retrieve}
+      - {method: GET, path: '/v3/manage/keys/{key_id}/usage', operationId: manage_keys_usage_retrieve}
+      - {method: GET, path: /v3/manage/members, operationId: manage_members_list}
+      - {method: GET, path: /v3/manage/groups, operationId: manage_groups_list}
+      - {method: GET, path: '/v3/manage/groups/{external_group_id}', operationId: manage_groups_retrieve}
+      - {method: GET, path: /v3/manage/usage, operationId: manage_usage_retrieve}
+  - name: manage:write
+    description: >-
+      Mint, update, rotate and revoke inference keys (sk-eden-...) and set member RBAC roles.
+      This is the scope that can create a credential which spends money.
+    operations:
+      - {method: POST, path: /v3/manage/keys, operationId: manage_keys_create}
+      - {method: PATCH, path: '/v3/manage/keys/{key_id}', operationId: manage_keys_partial_update}
+      - {method: DELETE, path: '/v3/manage/keys/{key_id}', operationId: manage_keys_destroy}
+      - {method: POST, path: '/v3/manage/keys/{key_id}/rotate', operationId: manage_keys_rotate_create}
+      - {method: PATCH, path: '/v3/manage/members/{email}/role', operationId: manage_members_role_partial_update}
+  - name: (none)
+    description: >-
+      GET /v3/manage/whoami requires only a valid management key with no scope at all — enough to
+      prove the auth path end to end without granting any read.
+    operations:
+      - {method: GET, path: /v3/manage/whoami, operationId: manage_whoami_retrieve}
+inference_surface:
+  scoped: false
+  note: >-
+    The inference surface (v3 chat/completions, universal-ai, embeddings, images, audio, upload) has
+    NO scope model. An inference key is all-or-nothing on inference; spend is bounded by per-key
+    budget (balance / balance_reset_period / balance_reset_amount), expiry, and guardrails rather
+    than by scopes.
+  docs: https://www.edenai.co/docs/v3/organization/guardrails
+scope_count: 4

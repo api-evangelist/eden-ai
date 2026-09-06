@@ -1,0 +1,472 @@
+generated: '2026-09-06'
+method: derived
+source: mcp/eden-ai-mcp-tools.json + openapi/_original/eden-ai-v3-openapi.json + openapi/_original/eden-ai-<feature>-features-openapi.json
+description: Binds each live Eden AI MCP tool to the REST operation(s) that back it. The MCP catalogue
+  was read from the server itself (anonymous tools/list, 39 tools with inputSchema), and every operationId
+  below was grepped out of a first-party OpenAPI harvested from api.edenai.run — none are invented.
+surfaces:
+  openapi:
+  - name: Eden AI API V3
+    file: openapi/_original/eden-ai-v3-openapi.json
+    server: https://api.edenai.run
+    gated: false
+  - name: v2 feature slices
+    files:
+    - openapi/_original/eden-ai-text-features-openapi.json
+    - openapi/_original/eden-ai-image-features-openapi.json
+    - openapi/_original/eden-ai-ocr-features-openapi.json
+    - openapi/_original/eden-ai-audio-features-openapi.json
+    - openapi/_original/eden-ai-video-features-openapi.json
+    - openapi/_original/eden-ai-translation-features-openapi.json
+    - openapi/_original/eden-ai-multimodal-features-openapi.json
+    - openapi/_original/eden-ai-llm-features-openapi.json
+    server: https://api.edenai.run/v2
+    gated: false
+    note: Legacy. Eden AI documents v2 as supported through end of 2026 for cost monitoring and token
+      management only.
+  graphql: null
+  mcp:
+    url: https://mcp.edenai.run/mcp
+    gated: false
+    note: 'tools/list answers anonymously; tools/call requires Authorization: Bearer <api key>.'
+coverage:
+  mcp_tools: 39
+  crosswalk_rows: 39
+  mcp_only: 0
+  rest_only: 31
+  note: Every MCP tool binds to at least one real REST operationId, so mcp_only is empty.
+crosswalk:
+- tool: list_models
+  category: utility
+  rest:
+  - list_models_v3_models_get
+  - list_features_v3_info_get
+  binding: direct
+  confidence: high
+  note: Lists providers/models and pricing; the REST equivalents are the v3 catalog endpoints.
+- tool: upload_file
+  category: utility
+  rest:
+  - upload_file_v3_upload_post
+  binding: direct
+  confidence: high
+  note: Same persistent file store as POST /v3/upload.
+- tool: check_job
+  category: utility
+  rest:
+  - get_async_job_v3_universal_ai_async__job_id__get
+  binding: direct
+  confidence: high
+  note: Polls the same async job resource as GET /v3/universal-ai/async/{job_id}.
+- tool: text_ai_detection
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_ai_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/ai_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: text_topic_extraction
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_topic_extraction_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/topic_extraction/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: text_plagia_detection
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_plagia_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/plagia_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: web_map
+  category: web
+  rest:
+  - universal_ai_v3_universal_ai_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/map/<provider>") — there is no v2 splitted-schema
+    slice for them, so no dedicated REST operationId exists.
+- tool: web_search
+  category: web
+  rest:
+  - universal_ai_v3_universal_ai_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/search/<provider>") — there is no v2 splitted-schema
+    slice for them, so no dedicated REST operationId exists.
+- tool: web_scraping
+  category: web
+  rest:
+  - universal_ai_v3_universal_ai_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/scraping/<provider>") — there is no v2 splitted-schema
+    slice for them, so no dedicated REST operationId exists.
+- tool: text_named_entity_recognition
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_named_entity_recognition_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/named_entity_recognition/<provider>";
+    the legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: ocr
+  category: ocr
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - ocr_ocr_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/ocr/<provider>"; the legacy v2 feature
+    endpoint exposes the same capability as its own operation.
+- tool: web_crawl
+  category: web
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/crawl/<provider>") — there is no v2 splitted-schema
+    slice for them, so no dedicated REST operationId exists.
+- tool: web_structured_extraction
+  category: web
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/structured_extraction/<provider>") — there
+    is no v2 splitted-schema slice for them, so no dedicated REST operationId exists.
+- tool: web_batch_scrape
+  category: web
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/batch_scrape/<provider>") — there is no
+    v2 splitted-schema slice for them, so no dedicated REST operationId exists.
+- tool: web_research
+  category: web
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  binding: model-routed
+  confidence: medium
+  note: Web features ship only on v3 Universal AI (model "web/research/<provider>") — there is no v2 splitted-schema
+    slice for them, so no dedicated REST operationId exists.
+- tool: ocr_tables
+  category: ocr
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  - ocr_ocr_tables_async_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/tables/<provider>"; the legacy v2 feature
+    endpoint exposes the same capability as its own operation.
+- tool: ocr_identity_parser
+  category: ocr
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - ocr_identity_parser_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/identity_parser/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: ocr_resume_parser
+  category: ocr
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - ocr_resume_parser_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/resume_parser/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_background_removal
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_background_removal_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/background_removal/<provider>"; the
+    legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: ocr_async
+  category: ocr
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  - ocr_ocr_async_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/async/<provider>"; the legacy v2 feature
+    endpoint exposes the same capability as its own operation.
+- tool: image_object_detection
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_object_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/object_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_ai_detection
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_ai_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/ai_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: ocr_financial_parser
+  category: ocr
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - ocr_financial_parser_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "ocr/financial_parser/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_face_detection
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_face_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/face_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_generation
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_generation_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/generation/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_deepfake_detection
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_deepfake_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/deepfake_detection/<provider>"; the
+    legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_face_compare
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_face_compare_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/face_compare/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_explicit_content
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_explicit_content_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/explicit_content/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_anonymization
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_anonymization_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/anonymization/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: translation_automatic_translation
+  category: translation
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - translation_automatic_translation_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "translation/automatic_translation/<provider>";
+    the legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: image_logo_detection
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_logo_detection_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/logo_detection/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: audio_tts
+  category: audio
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - audio_text_to_speech_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "audio/tts/<provider>"; the legacy v2 feature
+    endpoint exposes the same capability as its own operation.
+- tool: image_face_recognition
+  category: image
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - image_face_recognition_recognize_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "image/face_recognition/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: translation_document_translation
+  category: translation
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - translation_document_translation_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "translation/document_translation/<provider>";
+    the legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: video_deepfake_detection
+  category: video
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  - video_deepfake_detection_async_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "video/deepfake_detection/<provider>"; the
+    legacy v2 feature endpoint exposes the same capability as its own operation.
+- tool: video_generation
+  category: video
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  - video_generation_async_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "video/generation/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: audio_speech_to_text
+  category: audio
+  rest:
+  - create_async_job_v3_universal_ai_async_post
+  - audio_speech_to_text_async_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "audio/speech_to_text/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+- tool: text_moderation
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_moderation_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/moderation/<provider>"; the legacy v2
+    feature endpoint exposes the same capability as its own operation.
+- tool: text_spell_check
+  category: text
+  rest:
+  - universal_ai_v3_universal_ai_post
+  - text_spell_check_create
+  binding: model-routed
+  confidence: high
+  note: The tool is the v3 Universal AI endpoint with model "text/spell_check/<provider>"; the legacy
+    v2 feature endpoint exposes the same capability as its own operation.
+mcp_only: []
+rest_only:
+- operationId: list_subfeatures_v3_info__feature__get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: get_feature_info_v3_info__feature___subfeature__get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: chat_completions_v3_chat_completions_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: create_response_v3_responses_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: retrieve_response_v3_responses__response_id__get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_response_v3_responses__response_id__delete
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: create_moderation_v3_moderations_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_moderation_models_v3_moderations_models_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: create_embeddings_v3_embeddings_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_embeddings_models_v3_embeddings_models_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: create_anthropic_message_v3_v1_messages_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: count_anthropic_tokens_v3_v1_messages_count_tokens_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: image_generations_v3_images_generations_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: image_edits_v3_images_edits_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_image_models_v3_images_models_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: audio_transcriptions_v3_audio_transcriptions_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_transcription_models_v3_audio_transcriptions_models_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: audio_speech_v3_audio_speech_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_speech_models_v3_audio_speech_models_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_async_jobs_v3_universal_ai_async_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_async_job_v3_universal_ai_async__job_id__delete
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: create_collection_v3_universal_ai_collections_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_collections_v3_universal_ai_collections_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: get_collection_v3_universal_ai_collections__collection_id__get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_collection_v3_universal_ai_collections__collection_id__delete
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: add_item_v3_universal_ai_collections__collection_id__items_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_items_v3_universal_ai_collections__collection_id__items_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_item_v3_universal_ai_collections__collection_id__items__item_id__delete
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: list_files_v3_upload_get
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_all_files_v3_upload_delete
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'
+- operationId: delete_files_by_ids_v3_upload_delete_post
+  api: Eden AI API V3
+  reason: 'No MCP tool: gateway/LLM/account surface not exposed as an expert-model tool.'

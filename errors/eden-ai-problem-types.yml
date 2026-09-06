@@ -1,0 +1,118 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  openapi/_original/eden-ai-v3-openapi.json and the v2 feature slices under openapi/_original/,
+  enriched from https://www.edenai.co/docs/v3/general/buying-credits and the provider-published
+  Agent Skill (skills/eden-ai-edenai.md)
+format: not-rfc9457
+description: >-
+  Eden AI publishes no error-code registry and no application/problem+json media type. This catalog
+  is derived from the 4xx/5xx responses actually declared in its twelve first-party OpenAPI
+  definitions, plus the two failure modes its own documentation names. The most important entry is
+  the last one — an error that arrives inside a 200.
+envelopes:
+  - id: v2-error
+    applies_to: 'https://api.edenai.run/v2/* (feature endpoints, user management)'
+    media_type: application/json
+    shape: '{"error": {"type": "<string>", "message": "<string>"}}'
+    schemas: [Error, NestedError]
+    source: openapi/_original/eden-ai-translation-features-openapi.json
+  - id: v2-bad-request
+    applies_to: 'https://api.edenai.run/v2/* (400 only)'
+    media_type: application/json
+    shape: '{"error": {"type": "<string>", "message": {"<parameter_name>": ["<message>", ...]}}}'
+    schemas: [BadRequest, NestedBadRequest, FieldError]
+    note: On 400 the `message` field is an object of per-parameter error arrays, not a string.
+  - id: v2-not-found
+    applies_to: 'https://api.edenai.run/v2/* (404 only)'
+    media_type: application/json
+    shape: '{"details": "Not Found"}'
+    schemas: [NotFoundResponse]
+    note: Uses `details`, not `error` — a third shape on the same surface.
+  - id: v3-validation
+    applies_to: 'https://api.edenai.run/v3/*'
+    media_type: application/json
+    shape: '{"detail": [{"loc": ["body", "<field>"], "msg": "<string>", "type": "<string>"}]}'
+    schemas: [HTTPValidationError, ValidationError]
+    source: openapi/_original/eden-ai-v3-openapi.json
+problem_types:
+  - id: validation-error
+    status: 422
+    envelope: v3-validation
+    title: Unprocessable Entity
+    description: >-
+      Request body or path/query parameters failed validation. Declared on 33 of the 37 v3
+      operations — it is the only error status the v3 contract documents at all.
+    retriable: false
+    remediation: Fix the field named in detail[].loc and resend.
+    source: openapi/_original/eden-ai-v3-openapi.json
+  - id: bad-request
+    status: 400
+    envelope: v2-bad-request
+    title: Bad Request
+    description: Invalid parameters on a v2 feature call; per-parameter messages are returned.
+    retriable: false
+    source: openapi/_original/eden-ai-translation-features-openapi.json
+  - id: forbidden
+    status: 403
+    envelope: v2-error
+    title: Forbidden
+    description: >-
+      Authentication or authorization failure on a v2 feature call. Eden AI's own Agent Skill
+      classifies 4xx auth errors as not retriable.
+    retriable: false
+  - id: not-found
+    status: 404
+    envelope: v2-not-found
+    title: Not Found
+    description: Unknown feature, subfeature, provider or resource.
+    retriable: false
+  - id: server-error
+    status: 500
+    envelope: v2-error
+    title: Internal Server Error
+    description: Gateway or upstream provider failure.
+    retriable: true
+    remediation: Retry with backoff; set `fallbacks` so an alternate provider is tried automatically.
+  - id: payment-required
+    status: 402
+    envelope: null
+    title: Payment Required
+    description: >-
+      The account's credit balance is depleted. Documented in the buying-credits guide, not in any
+      OpenAPI: "A depleted balance causes API requests to fail with a 402 Payment Required error."
+    retriable: false
+    remediation: Top up credits, or enable auto-refill with a threshold and refill amount.
+    source: https://www.edenai.co/docs/v3/general/buying-credits
+    method: searched
+  - id: rate-limited
+    status: 429
+    envelope: null
+    title: Too Many Requests
+    description: >-
+      Named as a retriable HTTP-level failure in Eden AI's published Agent Skill. It is NOT declared
+      in any OpenAPI response and no rate-limit or Retry-After header is documented, so an agent has
+      no signal for when to retry beyond blind backoff.
+    retriable: true
+    source: skills/eden-ai-edenai.md
+    method: searched
+  - id: fallbacks-exhausted
+    status: 200
+    envelope: provider-result
+    title: All fallbacks exhausted (error inside a success)
+    description: >-
+      When the primary `model` and every provider in `fallbacks` fail, Eden AI surfaces the failure
+      in the RESPONSE BODY of a 2xx. Eden AI's own guidance: "Always inspect the response body for
+      an `error` field even on a 2xx." The v2 response models carry a `status` enum whose success
+      member is literally spelled "sucess" in the published schema
+      (components.schemas.StatusEnum), so a client matching on the correct spelling silently
+      mis-classifies every successful call.
+    retriable: conditional
+    remediation: >-
+      Check `status` and `error` in the body on every 2xx before treating the call as successful,
+      and tolerate the "sucess" spelling.
+    source: skills/eden-ai-edenai.md
+    method: searched
+    agent_hazard: high
+error_registry_published: false
+error_count: 8

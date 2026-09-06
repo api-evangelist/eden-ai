@@ -1,0 +1,114 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, github.com/edenai, and
+  https://www.edenai.co/docs/v3/integrations/*
+description: >-
+  Eden AI's own integration strategy is to be OpenAI-wire-compatible rather than to ship a client
+  library: the docs tell you to point the official OpenAI Python or TypeScript SDK at
+  https://api.edenai.run/v3. Its own first-party publishing is therefore thin — an alpha Python SDK
+  that has not shipped since February 2025, an n8n community node, and an OpenClaw provider plugin.
+  The one npm package that carried the bare `edenai` name was UNPUBLISHED on 2026-04-08.
+posture:
+  strategy: openai-compatible-wire
+  note: >-
+    Eden AI documents the official OpenAI SDKs (Python, TypeScript/JS) as the supported clients, plus
+    LangChain, Pydantic AI, aisuite, Haystack, Atomic Agents, any-llm and others. Those are
+    THIRD-PARTY libraries Eden AI is a backend for, not Eden AI packages, and are recorded under
+    integrations below rather than as SDKs.
+  docs: https://www.edenai.co/docs/v3/integrations/openai-sdk-python
+packages:
+  - name: n8n-nodes-edenai
+    registry: npm
+    url: https://www.npmjs.com/package/n8n-nodes-edenai
+    repository: https://github.com/edenai/n8n-nodes-edenai
+    language: TypeScript
+    official: true
+    version: 0.1.16
+    published: '2026-08-19'
+    description: >-
+      n8n community node for Eden AI — access 300+ models from 50+ providers through a single
+      European AI gateway.
+    evidence: 'registry.npmjs.org/n8n-nodes-edenai; author "Eden AI <contact@edenai.co>", repo github.com/edenai'
+  - name: '@edenai/openclaw-plugin'
+    registry: npm
+    url: https://www.npmjs.com/package/@edenai/openclaw-plugin
+    repository: https://github.com/edenai/edenai-openclaw-plugin
+    language: TypeScript
+    official: true
+    version: 0.1.1
+    published: '2026-05-26'
+    description: Eden AI provider plugin for OpenClaw — route to OpenAI, Anthropic, Google and others.
+    evidence: registry.npmjs.org/-/v1/search?text=edenai; scoped to the @edenai npm org
+  - name: edenai-sdk
+    registry: pypi
+    url: https://pypi.org/project/edenai-sdk/
+    repository: https://github.com/edenai/python_sdk
+    language: Python
+    official: true
+    version: 0.1.0a4
+    published: '2025-02-03'
+    prerelease: true
+    description: EdenAI SDK for python.
+    decay_signal: >-
+      Three alpha releases only (0.1.0a2/a3/a4), the last on 2025-02-03 — more than eighteen months
+      before the v3 API this profile harvested. It predates /v3/chat/completions, /v3/universal-ai and
+      the management API entirely, so it cannot wrap the current surface. Treat as abandoned.
+    evidence: pypi.org/pypi/edenai-sdk/json (author "Eden AI <contact@edenai.co>")
+  - name: edenai
+    registry: npm
+    url: https://www.npmjs.com/package/edenai
+    language: JavaScript
+    official: unknown
+    version: null
+    published: null
+    status: unpublished
+    note: >-
+      The bare `edenai` npm name held 1.0.0-1.0.2 (Sept 2021) and was UNPUBLISHED on 2026-04-08.
+      registry.npmjs.org returns only the tombstone, with no dist-tags and no versions, so there is
+      no version or publish date to record and no way to confirm first-party authorship after the
+      fact. Recorded as a checked gap, not a guess.
+    evidence: 'registry.npmjs.org/edenai -> {"time":{"unpublished":{"time":"2026-04-08T12:36:46.687Z"}}}'
+  - name: pi-edenai
+    registry: null
+    url: https://github.com/edenai/pi-edenai
+    language: TypeScript
+    official: true
+    version: null
+    published: null
+    note: >-
+      Eden AI provider for Pi, published as a source repository in the edenai GitHub org (last push
+      2026-07-16). Not present on npm under `pi-edenai` or `@edenai/pi-edenai` (both 404), so there is
+      no registry metadata endpoint to read a version from.
+    evidence: github.com/edenai/pi-edenai; registry.npmjs.org/pi-edenai -> 404
+third_party_packages:
+  - name: edenai-node
+    registry: npm
+    url: https://www.npmjs.com/package/edenai-node
+    official: false
+    version: 1.1.5
+    published: '2023-11-16'
+    note: Community Node.js client by adriantandara; not published by Eden AI.
+  - name: generator-edenai-new-provider
+    registry: npm
+    url: https://www.npmjs.com/package/generator-edenai-new-provider
+    official: false
+    version: 1.0.2
+    published: '2022-09-05'
+    note: Yeoman generator for adding providers to Eden AI, published from a personal GitHub account.
+integrations_documented:
+  note: >-
+    Third-party frameworks Eden AI documents as clients. Eden AI does not publish these packages.
+  frameworks:
+    - {name: OpenAI Python SDK, docs: https://www.edenai.co/docs/v3/integrations/openai-sdk-python}
+    - {name: OpenAI TypeScript/JS SDK, docs: https://www.edenai.co/docs/v3/integrations/openai-sdk-typescript}
+    - {name: LangChain, docs: https://www.edenai.co/docs/v3/integrations/langchain}
+    - {name: Pydantic AI, docs: https://www.edenai.co/docs/v3/integrations/pydantic-ai}
+    - {name: aisuite, docs: https://www.edenai.co/docs/v3/integrations/aisuite}
+    - {name: Haystack, docs: https://www.edenai.co/docs/v3/integrations/haystack}
+    - {name: Atomic Agents, docs: https://www.edenai.co/docs/v3/integrations/atomic-agents}
+    - {name: any-llm, docs: https://www.edenai.co/docs/v3/integrations/any-llm}
+summary:
+  official_packages: 5
+  official_on_a_registry: 3
+  third_party_packages: 2

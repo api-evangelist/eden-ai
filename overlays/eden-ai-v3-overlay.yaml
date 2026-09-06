@@ -1,0 +1,79 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Eden AI API V3
+  version: 1.0.0
+extends: ../openapi/_original/eden-ai-v3-openapi.json
+x-provenance:
+  generated: '2026-09-06'
+  method: generated
+  source: >-
+    Derived from the harvested first-party spec at https://api.edenai.run/v3/docs/openapi.json plus
+    Eden AI's published documentation. Records API Evangelist's additions ONLY — the original spec
+    is never mutated. Nothing here is asserted as Eden AI's own text.
+  note: >-
+    The upstream spec is FastAPI-generated and carries no tags[], no servers description, no
+    security block at the document level, and only 200/422 responses. These actions add the
+    navigation and runtime semantics an agent needs, every one of them traceable to a documented
+    Eden AI statement recorded elsewhere in this repository.
+actions:
+  - target: $.info
+    description: Record the surfaces and the harvest provenance alongside the contract.
+    update:
+      x-apis-io-harvest:
+        harvested: '2026-09-06'
+        url: https://api.edenai.run/v3/docs/openapi.json
+        http_status: 200
+        indexed_by_provider_at: https://www.edenai.co/docs/llms.txt
+      x-companion-surfaces:
+        mcp: https://mcp.edenai.run/mcp
+        webhooks: asyncapi/eden-ai-webhooks.yml
+        legacy_v2_slices: 'https://api.edenai.run/v2/info/splitted-schema/{slice}/openapi.json'
+  - target: $.servers
+    description: Add the documented EU regional endpoint, which the upstream spec omits.
+    update:
+      - url: https://api.eu.edenai.run
+        description: >-
+          EU endpoint — routes exclusively through providers and models cleared for European
+          processing. Same key, same request and response shapes.
+        x-source: https://www.edenai.co/docs/v3/data-governance/eu-endpoint
+  - target: $
+    description: Apply the bearer scheme at the document level; upstream declares AuthBearer per operation but sets no root security.
+    update:
+      security:
+        - AuthBearer: []
+      tags:
+        - {name: LLM, description: 'OpenAI-compatible chat, responses, embeddings, moderation.'}
+        - {name: Anthropic, description: 'Anthropic Messages-compatible pass-through.'}
+        - {name: Images, description: OpenAI-compatible image generation and edits.}
+        - {name: Audio, description: OpenAI-compatible transcription and speech.}
+        - {name: Universal AI, description: 'Expert models — one model-routed endpoint, sync and async.'}
+        - {name: Collections, description: Provider-side collections and their items.}
+        - {name: Files, description: Persistent file storage referenced by id from any file parameter.}
+        - {name: Info, description: Feature, subfeature and model catalog.}
+  - target: $.paths['/v3/universal-ai/async'].post
+    description: Record the webhook callback contract, which the upstream spec references only as a request field.
+    update:
+      x-callbacks:
+        async_job_completed:
+          transport: 'HTTPS POST to webhook_receiver'
+          signature: 'X-Edenai-Signature (RSA PKCS1 v1.5 over the SHA-256 hex digest of canonical JSON)'
+          catalog: asyncapi/eden-ai-webhooks.yml
+          docs: https://www.edenai.co/docs/v3/expert-models/webhooks
+  - target: $.paths['/v3/chat/completions'].post
+    description: Flag the undeclared runtime failure modes an agent must handle on this operation.
+    update:
+      x-runtime-semantics:
+        undeclared_statuses: [402, 429, 500]
+        error_in_2xx: >-
+          When the primary model and every provider in `fallbacks` fail, the failure is reported in
+          the body of a 2xx. Inspect `error` even on success.
+        idempotency: none
+        catalog: errors/eden-ai-problem-types.yml
+  - target: $.paths['/v3/universal-ai'].post
+    description: Same runtime hazards on the expert-model endpoint.
+    update:
+      x-runtime-semantics:
+        undeclared_statuses: [400, 402, 403, 404, 429, 500]
+        model_format: 'feature/subfeature/provider'
+        idempotency: none
+        catalog: errors/eden-ai-problem-types.yml

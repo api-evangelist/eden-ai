@@ -1,0 +1,52 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/v3/general/sandbox
+docs:
+  - https://www.edenai.co/docs/v3/general/sandbox
+  - https://www.edenai.co/docs/v3/general/custom-api-keys
+name: Eden AI Sandbox
+description: >-
+  Eden AI implements test mode as a TOKEN TYPE rather than a separate host or a set of magic test
+  values. A sandbox token accepts the identical request shape on the identical endpoints and returns
+  simulated responses that match the real response structure — no provider call is made and no
+  credits are consumed. Swapping the token is the only change between development and production.
+mode_switch:
+  mechanism: token-type
+  same_base_url: true
+  base_urls: [https://api.edenai.run, https://api.eu.edenai.run]
+  note: There is no separate sandbox host, no test-mode header, and no key prefix that distinguishes the two.
+token_types:
+  - type: api_token
+    purpose: Production use
+    real_provider_calls: true
+    cost: pay-per-use
+  - type: sandbox_api_token
+    purpose: Testing and development
+    real_provider_calls: false
+    cost: free
+    returns: Mock responses matching the real response structure
+creation:
+  dashboard: 'https://app.edenai.run/ — API Keys'
+  api:
+    method: POST
+    url: https://api.edenai.run/v2/user/custom_token/
+    operationId: user_root_create
+    body: {name: dev-testing, token_type: sandbox_api_token}
+    spec: openapi/_original/eden-ai-user-management-openapi.json
+usage:
+  header: Authorization
+  format: 'Bearer <sandbox token>'
+  note: Identical to production usage.
+test_values:
+  published: false
+  note: >-
+    Eden AI publishes no test cards, test bank accounts, magic identifiers or fixture triggers —
+    the mock is generated server-side from the request, so there are no published test values to
+    record. Nothing has been invented to fill this section.
+recommended_for:
+  - CI pipelines
+  - Local development against the real request/response shape
+  - Validating integration wiring before spending credits
+console:
+  url: https://app.edenai.run/
+  note: Dashboard with model catalog, monitoring, key management and guardrails.

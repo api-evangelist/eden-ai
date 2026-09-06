@@ -1,0 +1,75 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/v3/expert-models/webhooks
+docs: https://www.edenai.co/docs/v3/expert-models/webhooks
+name: Eden AI Async Job Webhooks
+description: >-
+  Eden AI publishes a real, signed webhook surface for asynchronous Universal AI jobs. It does NOT
+  publish an AsyncAPI document — no /asyncapi.yaml or /asyncapi.json is served on any host and none
+  appears in the docs or the GitHub org — so this file captures the webhook catalog as documented
+  rather than inventing a spec. Type Webhooks is emitted; type AsyncAPI is not.
+asyncapi_spec:
+  published: false
+  checked:
+    - https://www.edenai.co/docs/llms.txt
+    - https://github.com/edenai
+subscription:
+  mechanism: per-request
+  note: >-
+    There is no webhook-endpoint registration API. A callback URL is supplied per request, in the
+    body of the async job that should report to it.
+  fields:
+    - name: webhook_receiver
+      type: string (URL)
+      required: false
+      description: HTTPS URL that receives the POST when the job completes or fails. Validated against SSRF.
+    - name: user_webhook_parameters
+      type: object
+      required: false
+      description: Free-form JSON echoed back as user_parameters, for correlating the callback to your own records.
+  triggering_operations:
+    - {operationId: create_async_job_v3_universal_ai_async_post, method: POST, path: /v3/universal-ai/async}
+delivery:
+  method: POST
+  content_type: application/json
+  headers:
+    - {name: Content-Type, value: application/json}
+    - {name: User-Agent, value: EdenAI/Ai-Features}
+    - {name: X-Edenai-Webhook, value: 'true'}
+    - {name: X-Edenai-Signature, value: hex, description: RSA PKCS1 v1.5 signature of the payload}
+    - {name: X-Edenai-Hash-Algorithm, value: SHA256}
+  retries: not documented
+  note: Eden AI does not document a retry policy, backoff schedule, or delivery-failure behaviour.
+security:
+  signing: RSA PKCS1 v1.5 / SHA-256
+  procedure:
+    - Serialize the payload with canonical JSON (sorted keys, 2-space indent, UTF-8).
+    - Compute sha256 over the canonical bytes and take the HEX digest.
+    - Sign that hex digest with RSA PKCS1 v1.5 / SHA-256.
+    - The hex-encoded signature is sent in X-Edenai-Signature.
+  public_key_distribution: >-
+    Out of band — "Ask Eden AI support for the webhook public key (webhook_rsa.pub.pem) and store it
+    with your service configuration." There is no published JWKS or key endpoint, which means an
+    agent cannot verify a callback without a human support round-trip first.
+  ssrf_protection: The webhook_receiver URL is validated against SSRF.
+events:
+  - name: async_job_completed
+    description: Emitted once when an asynchronous Universal AI job reaches a terminal state.
+    payload:
+      event: {type: string, const: async_job_completed}
+      job_id: {type: string, format: uuid}
+      status: {type: string, enum: [success, fail]}
+      feature: {type: string, example: ocr}
+      subfeature: {type: string, example: ocr_async}
+      provider: {type: string}
+      model: {type: [string, 'null']}
+      created_at: {type: string, format: date-time}
+      finished_at: {type: string, format: date-time}
+      output: {type: object, description: Normalized result. Present only when status is success.}
+      error: {type: object, description: '{"message": "..."} — present only when status is fail.'}
+      original_response: {type: any, description: Raw provider response; only when show_original_response was true.}
+      user_parameters: {type: object, description: Echo of user_webhook_parameters; absent if not set.}
+event_count: 1
+alternative: >-
+  Polling GET /v3/universal-ai/async/{job_id} (operationId
+  get_async_job_v3_universal_ai_async__job_id__get), or the check_job tool on the MCP server.

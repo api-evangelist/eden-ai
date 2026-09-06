@@ -1,0 +1,922 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Translation Features",
+        "version": "2.0",
+        "description": "Your project description"
+    },
+    "paths": {
+        "/translation/automatic_translation/": {
+            "post": {
+                "operationId": "translation_automatic_translation_create",
+                "description": "<details><summary><strong style='color: #0072a3; cursor: pointer'>Available Providers</strong></summary>\n\n\n\n|Provider|Model|Version|Price|Billing unit|\n|----|----|-------|-----|------------|\n|**amazon**|-|`boto3 (v1.15.18)`|15.0 (per 1000000 char)|1 char\n|**google**|-|`v3`|20.0 (per 1000000 char)|1 char\n|**microsoft**|-|`v3.0`|10.0 (per 1000000 char)|1 char\n|**deepl**|-|`v2`|20.0 (per 1000000 char)|1 char\n|**modernmt**|-|`1.2.8`|8.0 (per 1000000 char)|1 char\n|**openai**|-|`v1`|20.0 (per 1000000 token)|1 token\n|**openai**|**gpt-4o**|`v1`|20.0 (per 1000000 token)|1 token\n\n\n</details>\n\n<details><summary>Supported Languages</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**Afrikaans**|`af`|\n|**Albanian**|`sq`|\n|**Amharic**|`am`|\n|**Arabic**|`ar`|\n|**Armenian**|`hy`|\n|**Assamese**|`as`|\n|**Azerbaijani**|`az`|\n|**Bashkir**|`ba`|\n|**Basque**|`eu`|\n|**Belarusian**|`be`|\n|**Bengali**|`bn`|\n|**Bosnian**|`bs`|\n|**Bulgarian**|`bg`|\n|**Burmese**|`my`|\n|**Catalan**|`ca`|\n|**Cebuano**|`ceb`|\n|**Chinese**|`zh`|\n|**Corsican**|`co`|\n|**Croatian**|`hr`|\n|**Czech**|`cs`|\n|**Danish**|`da`|\n|**Dari**|`prs`|\n|**Dhivehi**|`dv`|\n|**Dutch**|`nl`|\n|**English**|`en`|\n|**Esperanto**|`eo`|\n|**Estonian**|`et`|\n|**Faroese**|`fo`|\n|**Fijian**|`fj`|\n|**Filipino**|`fil`|\n|**Finnish**|`fi`|\n|**French**|`fr`|\n|**Galician**|`gl`|\n|**Georgian**|`ka`|\n|**German**|`de`|\n|**Gujarati**|`gu`|\n|**Haitian**|`ht`|\n|**Hausa**|`ha`|\n|**Hawaiian**|`haw`|\n|**Hebrew**|`he`|\n|**Hindi**|`hi`|\n|**Hmong**|`hmn`|\n|**Hmong Daw**|`mww`|\n|**Hungarian**|`hu`|\n|**Icelandic**|`is`|\n|**Igbo**|`ig`|\n|**Indonesian**|`id`|\n|**Inuinnaqtun**|`ikt`|\n|**Inuktitut**|`iu`|\n|**Irish**|`ga`|\n|**Italian**|`it`|\n|**Japanese**|`ja`|\n|**Javanese**|`jv`|\n|**Kannada**|`kn`|\n|**Kazakh**|`kk`|\n|**Khmer**|`km`|\n|**Kinyarwanda**|`rw`|\n|**Kirghiz**|`ky`|\n|**Klingon**|`tlh`|\n|**Korean**|`ko`|\n|**Kurdish**|`ku`|\n|**Lao**|`lo`|\n|**Latin**|`la`|\n|**Latvian**|`lv`|\n|**Literary Chinese**|`lzh`|\n|**Lithuanian**|`lt`|\n|**Luxembourgish**|`lb`|\n|**Macedonian**|`mk`|\n|**Malagasy**|`mg`|\n|**Malay (macrolanguage)**|`ms`|\n|**Malayalam**|`ml`|\n|**Maltese**|`mt`|\n|**Maori**|`mi`|\n|**Marathi**|`mr`|\n|**Modern Greek (1453-)**|`el`|\n|**Mongolian**|`mn`|\n|**Nepali (macrolanguage)**|`ne`|\n|**Northern Kurdish**|`kmr`|\n|**Norwegian**|`no`|\n|**Norwegian Bokmål**|`nb`|\n|**Norwegian Nynorsk**|`nn`|\n|**Nyanja**|`ny`|\n|**Oriya (macrolanguage)**|`or`|\n|**Panjabi**|`pa`|\n|**Persian**|`fa`|\n|**Polish**|`pl`|\n|**Portuguese**|`pt`|\n|**Pushto**|`ps`|\n|**Querétaro Otomi**|`otq`|\n|**Romanian**|`ro`|\n|**Russian**|`ru`|\n|**Samoan**|`sm`|\n|**Scottish Gaelic**|`gd`|\n|**Serbian**|`sr`|\n|**Shona**|`sn`|\n|**Sindhi**|`sd`|\n|**Sinhala**|`si`|\n|**Slovak**|`sk`|\n|**Slovenian**|`sl`|\n|**Somali**|`so`|\n|**Southern Sotho**|`st`|\n|**Spanish**|`es`|\n|**Sundanese**|`su`|\n|**Swahili (macrolanguage)**|`sw`|\n|**Swedish**|`sv`|\n|**Tagalog**|`tl`|\n|**Tahitian**|`ty`|\n|**Tajik**|`tg`|\n|**Tamil**|`ta`|\n|**Tatar**|`tt`|\n|**Telugu**|`te`|\n|**Thai**|`th`|\n|**Tibetan**|`bo`|\n|**Tigrinya**|`ti`|\n|**Tonga (Tonga Islands)**|`to`|\n|**Turkish**|`tr`|\n|**Turkmen**|`tk`|\n|**Uighur**|`ug`|\n|**Ukrainian**|`uk`|\n|**Upper Sorbian**|`hsb`|\n|**Urdu**|`ur`|\n|**Uzbek**|`uz`|\n|**Vietnamese**|`vi`|\n|**Welsh**|`cy`|\n|**Western Frisian**|`fy`|\n|**Xhosa**|`xh`|\n|**Yiddish**|`yi`|\n|**Yoruba**|`yo`|\n|**Yucateco**|`yua`|\n|**Yue Chinese**|`yue`|\n|**Zulu**|`zu`|\n\n</details><details><summary>Supported Detailed Languages</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**Auto detection**|`auto-detect`|\n|**Chinese (China)**|`zh-CN`|\n|**Chinese (Simplified)**|`zh-Hans`|\n|**Chinese (Taiwan)**|`zh-TW`|\n|**Chinese (Traditional)**|`zh-Hant`|\n|**English (United Kingdom)**|`en-GB`|\n|**English (United States)**|`en-US`|\n|**French (Canada)**|`fr-CA`|\n|**Inuktitut (Latin)**|`iu-Latn`|\n|**Klingon (Klingon (KLI pIqaD))**|`tlh-Piqd`|\n|**Klingon (Latin)**|`tlh-Latn`|\n|**Mongolian (Cyrillic)**|`mn-Cyrl`|\n|**Mongolian (Mongolian)**|`mn-Mong`|\n|**Persian (Afghanistan)**|`fa-AF`|\n|**Portuguese (Brazil)**|`pt-BR`|\n|**Portuguese (Portugal)**|`pt-PT`|\n|**Serbian (Cyrillic)**|`sr-Cyrl`|\n|**Serbian (Latin)**|`sr-Latn`|\n|**Spanish (Latin America)**|`es-419`|\n|**Spanish (Mexico)**|`es-MX`|\n|**Spanish (Spain)**|`es-ES`|\n\n</details><a href='https://old-app.edenai.run/v2/models?technology=translation-automatic_translation' target='_blank' rel='noopener noreferrer' ><h4>Supported Models</h4></a>\n\n<details><summary>Default Models</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**openai**|`gpt-4o`|\n\n</details>",
+                "summary": "Automatic Translation",
+                "tags": [
+                    "Automatic Translation"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationRequest"
+                            },
+                            "examples": {
+                                "RequestExample": {
+                                    "value": {
+                                        "providers": "microsoft,openai,google,modernmt,amazon,deepl",
+                                        "text": "人工智能 亦稱智械、機器智能，指由人製造出來的機器所表現出來的智慧。通常人工智能是指通过普通電腦程式來呈現人類智能的技術。該詞也指出研究這樣的智能系統是否能夠實現，以及如何實現。同时，通過醫學、神經科學、機器人學及統計學等的進步，常態預測則認為人類的很多職業也逐漸被其取代。",
+                                        "source_language": "zh",
+                                        "target_language": "en"
+                                    },
+                                    "summary": "Request Example"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "FeatureApiAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/translationautomatic_translationResponseModel"
+                                },
+                                "examples": {
+                                    "ResponseExample": {
+                                        "value": {
+                                            "microsoft": {
+                                                "text": "Artificial intelligence, also known as intelligent weapons, machine intelligence, refers to the wisdom expressed by machines made by people. Usually artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether such intelligent systems can be achieved, and how. At the same time, through advances in medicine, neuroscience, robotics, and statistics, normal forecasts believe that many human occupations are gradually being replaced by them",
+                                                "cost": 0.0
+                                            },
+                                            "openai": {
+                                                "text": "Artificial intelligence, also known as intelligent machines and machine intelligence, refers to the wisdom demonstrated by machines created by humans. Typically, artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether and how such intelligent systems can be implemented. At the same time, through advances in medicine, neuroscience, robotics, and statistics, the common prediction is that many human occupations are gradually being replaced by them.",
+                                                "usage": {
+                                                    "completion_tokens": 96,
+                                                    "prompt_tokens": 361,
+                                                    "total_tokens": 457,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 0
+                                                    }
+                                                },
+                                                "cost": 0.0
+                                            },
+                                            "google": {
+                                                "text": "Artificial intelligence, also known as omniscient, machine intelligence, refers to the wisdom expressed by machines made by humans. Usually artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to research into whether and how such intelligent systems can be realized. At the same time, through advances in medicine, neuroscience, robotics, and statistics, the norm predicts that many human occupations are gradually being replaced by them.",
+                                                "cost": 0.0
+                                            },
+                                            "modernmt": {
+                                                "text": "Artificial intelligence, also known as intelligent machines, refers to the intelligence exhibited by machines manufactured by humans. Generally, artificial intelligence refers to technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether and how such an intelligent system can be achieved. At the same time, through advances in medicine, neuroscience, robotics and statistics, it is usually predicted that many human professions will gradually be replaced by them.",
+                                                "cost": 0.0
+                                            },
+                                            "amazon": {
+                                                "text": "Artificial intelligence, also known as intelligent devices and equipment intelligence, refers to the wisdom expressed by devices manufactured by humans. Generally, artificial intelligence refers to technology that presents human intelligence through ordinary computer programs. This phrase also indicates whether research such an intelligent system can be realized and how it can be implemented. At the same time, through advances in medicine, neuroscience, robot science, statistics, etc., many occupations recognized as human by the Normal Predictive Rules have gradually been replaced by them",
+                                                "cost": 0.0
+                                            },
+                                            "deepl": {
+                                                "text": "Artificial intelligence, also known as robotics and machine intelligence, refers to the intelligence expressed by human-made machines. Usually artificial intelligence refers to the technology of presenting human intelligence through ordinary computer programs. The term also refers to the study of whether and how such an intelligent system can be realized. At the same time, through advances in medicine, neuroscience, robotics and statistics, the norm is predicted that many human occupations are gradually being replaced by them.",
+                                                "cost": 0.0
+                                            }
+                                        },
+                                        "summary": "Response Example"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequest"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/translation/document_translation/": {
+            "post": {
+                "operationId": "translation_document_translation_create",
+                "description": "<details><summary><strong style='color: #0072a3; cursor: pointer'>Available Providers</strong></summary>\n\n\n\n|Provider|Version|Price|Billing unit|\n|----|-------|-----|------------|\n|**deepl**|`v2`|2.0 (per 20 page)|20 page\n|**google**|`v3`|0.08 (per 1 page)|1 page\n\n\n</details>\n\n<details><summary>Supported Languages</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**Afrikaans**|`af`|\n|**Albanian**|`sq`|\n|**Amharic**|`am`|\n|**Arabic**|`ar`|\n|**Armenian**|`hy`|\n|**Azerbaijani**|`az`|\n|**Basque**|`eu`|\n|**Belarusian**|`be`|\n|**Bengali**|`bn`|\n|**Bosnian**|`bs`|\n|**Bulgarian**|`bg`|\n|**Burmese**|`my`|\n|**Catalan**|`ca`|\n|**Cebuano**|`ceb`|\n|**Chinese**|`zh`|\n|**Corsican**|`co`|\n|**Croatian**|`hr`|\n|**Czech**|`cs`|\n|**Danish**|`da`|\n|**Dutch**|`nl`|\n|**English**|`en`|\n|**Esperanto**|`eo`|\n|**Estonian**|`et`|\n|**Finnish**|`fi`|\n|**French**|`fr`|\n|**Galician**|`gl`|\n|**Georgian**|`ka`|\n|**German**|`de`|\n|**Gujarati**|`gu`|\n|**Haitian**|`ht`|\n|**Hausa**|`ha`|\n|**Hawaiian**|`haw`|\n|**Hebrew**|`he`|\n|**Hindi**|`hi`|\n|**Hmong**|`hmn`|\n|**Hungarian**|`hu`|\n|**Icelandic**|`is`|\n|**Igbo**|`ig`|\n|**Indonesian**|`id`|\n|**Irish**|`ga`|\n|**Italian**|`it`|\n|**Japanese**|`ja`|\n|**Javanese**|`jv`|\n|**Kannada**|`kn`|\n|**Kazakh**|`kk`|\n|**Khmer**|`km`|\n|**Kinyarwanda**|`rw`|\n|**Kirghiz**|`ky`|\n|**Korean**|`ko`|\n|**Kurdish**|`ku`|\n|**Lao**|`lo`|\n|**Latin**|`la`|\n|**Latvian**|`lv`|\n|**Lithuanian**|`lt`|\n|**Luxembourgish**|`lb`|\n|**Macedonian**|`mk`|\n|**Malagasy**|`mg`|\n|**Malay (macrolanguage)**|`ms`|\n|**Malayalam**|`ml`|\n|**Maltese**|`mt`|\n|**Maori**|`mi`|\n|**Marathi**|`mr`|\n|**Modern Greek (1453-)**|`el`|\n|**Mongolian**|`mn`|\n|**Nepali (macrolanguage)**|`ne`|\n|**Norwegian**|`no`|\n|**Nyanja**|`ny`|\n|**Oriya (macrolanguage)**|`or`|\n|**Panjabi**|`pa`|\n|**Persian**|`fa`|\n|**Polish**|`pl`|\n|**Portuguese**|`pt`|\n|**Pushto**|`ps`|\n|**Romanian**|`ro`|\n|**Russian**|`ru`|\n|**Samoan**|`sm`|\n|**Scottish Gaelic**|`gd`|\n|**Serbian**|`sr`|\n|**Shona**|`sn`|\n|**Sindhi**|`sd`|\n|**Sinhala**|`si`|\n|**Slovak**|`sk`|\n|**Slovenian**|`sl`|\n|**Somali**|`so`|\n|**Southern Sotho**|`st`|\n|**Spanish**|`es`|\n|**Sundanese**|`su`|\n|**Swahili (macrolanguage)**|`sw`|\n|**Swedish**|`sv`|\n|**Tagalog**|`tl`|\n|**Tajik**|`tg`|\n|**Tamil**|`ta`|\n|**Tatar**|`tt`|\n|**Telugu**|`te`|\n|**Thai**|`th`|\n|**Turkish**|`tr`|\n|**Turkmen**|`tk`|\n|**Uighur**|`ug`|\n|**Ukrainian**|`uk`|\n|**Urdu**|`ur`|\n|**Uzbek**|`uz`|\n|**Vietnamese**|`vi`|\n|**Welsh**|`cy`|\n|**Western Frisian**|`fy`|\n|**Xhosa**|`xh`|\n|**Yiddish**|`yi`|\n|**Yoruba**|`yo`|\n|**Zulu**|`zu`|\n\n</details><details><summary>Supported Detailed Languages</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**Auto detection**|`auto-detect`|\n|**Chinese (China)**|`zh-CN`|\n|**Chinese (Taiwan)**|`zh-TW`|\n\n</details>",
+                "summary": "Document Translation",
+                "tags": [
+                    "Document Translation"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/translationdocument_translationDocumentTranslationRequest"
+                            },
+                            "examples": {
+                                "RequestExample": {
+                                    "value": {
+                                        "providers": "google,deepl",
+                                        "source_language": "en",
+                                        "target_language": "fr",
+                                        "file_url": "http://edenai-resource-example.pdf"
+                                    },
+                                    "summary": "Request Example"
+                                }
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/translationdocument_translationDocumentTranslationRequest"
+                            },
+                            "examples": {
+                                "RequestExample": {
+                                    "value": {
+                                        "providers": "google,deepl",
+                                        "file": "/edenai/edenai/features/translation/samples/data/document_translation.pdf",
+                                        "source_language": "en",
+                                        "target_language": "fr"
+                                    },
+                                    "summary": "Request Example"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "FeatureApiAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/translationdocument_translationResponseModel"
+                                },
+                                "examples": {
+                                    "ResponseExample": {
+                                        "value": {
+                                            "google": {
+                                                "file": "JVBERi0xLjcNCiWhs8XXDQoxIDAgb2JqDQo8PC9QYWdlcyAyIDAgUiAvVHl...",
+                                                "document_resource_url": "https://d14uq1pz7dzsdq.cloudfront.net/c76bef36-ab21-4caa-85ed-6f10d3fc7652_.pdf?Expires=1705666633&Signature=iJeEAj3UtVL1JuP0KAKYiH45oZkquRpu5yOZCOgaFmfgnnL6xwEmu2Tk3SXijHXaflIJH1lH6tSkxcLCOmL9~eKv1t-S4fFrnQvxyqbl88tCFqPdjNaSNwFFTy683hlioqbP6BPKc2DGUROEHhQyM00B~vq2jY~5kwGYLV94tY7Vz2avH3xeDfcXv~QUf831gIuk6euu08bRn49WPGpxIu2HQ7OJbHmxMmDIb27z6onNLj0bJM-qgQ9x0bepKXxFHYAHd0F3u3vN12VM3ymx6QJYddMivxXmW63-M2CYUOo1-2-u2Xn2WQvU5PMcSTiwL80cbtxk6w06aurfX9h0iw__&Key-Pair-Id=K1F55BTI9AHGIK",
+                                                "cost": 0.0
+                                            },
+                                            "deepl": {
+                                                "file": "JVBERi0xLjcNCjUgMCBvYmoNCjw8L1R5cGUgL1BhZ2UvUGFyZW50IDMgMCB...",
+                                                "document_resource_url": "https://d14uq1pz7dzsdq.cloudfront.net/c6a3e9bd-de89-4414-a6fa-30be83a96f9d_.pdf?Expires=1685361931&Signature=sbDBAK~xOgkRZAbCIiz97oXfOA1cFXU-y7Db2YAWnoVnGvGINX2A79Et0FvmQtCmyb~OzfNx-FCPMRj2rJKR9xhYq5mOyRf3m9jfmmoStbsdLtyjoGSUfaR7jxQb779uUWXIcopitwMx2UBUx1bZy1jtUTzLn~WqVT1qKupwEvTm2qGmMJa6KZ96gyAvIiT5mHrwUUSA9jyFaiMQ~rtZQylovVSVA4PNzGiZjBhVLDa0ZtmRgMb1JeT2wVzhHwiZD4Kvf3oOcurKeNCxlXQR~mD-~KJSLxTkIwzmbWoG1jWz6Qxm7oYdZxPko81pHEY5VOiM56xoSZwz8ONoVVmVsA__&Key-Pair-Id=K1F55BTI9AHGIK",
+                                                "cost": 0.0
+                                            }
+                                        },
+                                        "summary": "Response Example"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequest"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/translation/language_detection/": {
+            "post": {
+                "operationId": "translation_language_detection_create",
+                "description": "<details><summary><strong style='color: #0072a3; cursor: pointer'>Available Providers</strong></summary>\n\n\n\n|Provider|Model|Version|Price|Billing unit|\n|----|----|-------|-----|------------|\n|**amazon**|-|`boto3 (v1.15.18)`|1.0 (per 1000000 char)|300 char\n|**google**|-|`v1`|20.0 (per 1000000 char)|1 char\n|**microsoft**|-|`v3.1`|1.0 (per 1000000 char)|1000 char\n|**modernmt**|-|`1.1.0`|8.0 (per 1000000 char)|1 char\n|**openai**|-|`v1`|20.0 (per 1000000 token)|1 token\n|**openai**|**gpt-4o**|`v1`|10.0 (per 1000000 token)|1 token\n|**xai**|**grok-2-latest**|`v1`|10.0 (per 1000000 token)|1 token\n|**xai**|**grok-2**|`v1`|10.0 (per 1000000 token)|1 token\n\n\n</details>\n\n<a href='https://old-app.edenai.run/v2/models?technology=translation-language_detection' target='_blank' rel='noopener noreferrer' ><h4>Supported Models</h4></a>\n\n<details><summary>Default Models</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**openai**|`gpt-4o`|\n|**xai**|`grok-2-latest`|\n\n</details>",
+                "summary": "Language Detection",
+                "tags": [
+                    "Language Detection"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionRequest"
+                            },
+                            "examples": {
+                                "RequestExample": {
+                                    "value": {
+                                        "providers": "amazon,xai,openai,microsoft,google,modernmt",
+                                        "text": "Ogni individuo ha diritto all'istruzione. L'istruzione deve essere gratuita almeno per quanto riguarda le classi elementari e fondamentali. L'istruzione elementare deve essere obbligatoria. L'istruzione tecnica e professionale deve essere messa alla portata di tutti e l'istruzione superiore deve essere egualmente accessibile a tutti sulla base del merito.\nL'istruzione deve essere indirizzata al pieno sviluppo della personalità umana ed al rafforzamento del rispetto dei diritti umani e delle libertà fondamentali. Essa deve promuovere la comprensione, la tolleranza, l'amicizia fra tutte le Nazioni, i gruppi razziali e religiosi, e deve favorire l'opera delle Nazioni Unite per il mantenimento della pace.\nI genitori hanno diritto di priorità nella scelta del genere di istruzione da impartire ai loro figli."
+                                    },
+                                    "summary": "Request Example"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "FeatureApiAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/translationlanguage_detectionResponseModel"
+                                },
+                                "examples": {
+                                    "ResponseExample": {
+                                        "value": {
+                                            "amazon": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": 1.0
+                                                    }
+                                                ],
+                                                "cost": 0.0
+                                            },
+                                            "xai": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": 1.0
+                                                    }
+                                                ],
+                                                "cost": 0.0
+                                            },
+                                            "openai": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": 1.0
+                                                    }
+                                                ],
+                                                "usage": {
+                                                    "completion_tokens": 38,
+                                                    "prompt_tokens": 471,
+                                                    "total_tokens": 509,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 0
+                                                    }
+                                                },
+                                                "cost": 0.0
+                                            },
+                                            "microsoft": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": 1.0
+                                                    }
+                                                ],
+                                                "cost": 0.0
+                                            },
+                                            "google": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": 1.0
+                                                    }
+                                                ],
+                                                "cost": 0.0
+                                            },
+                                            "modernmt": {
+                                                "items": [
+                                                    {
+                                                        "language": "it",
+                                                        "display_name": "Italian",
+                                                        "confidence": null
+                                                    }
+                                                ],
+                                                "cost": 0.0
+                                            }
+                                        },
+                                        "summary": "Response Example"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequest"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BadRequest": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedBadRequest"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedError"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "FieldError": {
+                "type": "object",
+                "properties": {
+                    "<parameter_name>": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "<parameter_name>"
+                ]
+            },
+            "InfosLanguageDetectionDataClass": {
+                "properties": {
+                    "language": {
+                        "title": "Language",
+                        "type": "string"
+                    },
+                    "display_name": {
+                        "title": "Display Name",
+                        "type": "string"
+                    },
+                    "confidence": {
+                        "title": "Confidence",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "language",
+                    "display_name",
+                    "confidence"
+                ],
+                "title": "InfosLanguageDetectionDataClass",
+                "type": "object"
+            },
+            "NestedBadRequest": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/FieldError"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NestedError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "details": {
+                        "type": "string",
+                        "default": "Not Found"
+                    }
+                }
+            },
+            "StatusEnum": {
+                "enum": [
+                    "sucess",
+                    "fail"
+                ],
+                "type": "string"
+            },
+            "translationautomatic_translationAutomaticTranslationDataClass": {
+                "properties": {
+                    "text": {
+                        "title": "Text",
+                        "type": "string"
+                    },
+                    "original_response": {
+                        "default": null,
+                        "description": "original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request",
+                        "title": "Original Response"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "title": "Status"
+                    }
+                },
+                "required": [
+                    "text",
+                    "status"
+                ],
+                "title": "translationautomatic_translationAutomaticTranslationDataClass",
+                "type": "object"
+            },
+            "translationautomatic_translationAutomaticTranslationRequest": {
+                "type": "object",
+                "properties": {
+                    "settings": {
+                        "type": "string",
+                        "default": {},
+                        "description": "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+                    },
+                    "providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "It can be one (ex: **'amazon'** or **'google'**) or multiple provider(s) (ex: **'amazon,microsoft,google'**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **'amazon/model1, amazon/model2, google/model3'**)"
+                    },
+                    "fallback_providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [],
+                        "description": "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    ",
+                        "maxItems": 5
+                    },
+                    "response_as_dict": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+                    },
+                    "attributes_as_list": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+                    },
+                    "show_base_64": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "show_original_response": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+                    },
+                    "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Text to analyze"
+                    },
+                    "source_language": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Source language code (ex: en, fr)"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Target language code (ex: en, fr)"
+                    }
+                },
+                "required": [
+                    "providers",
+                    "target_language",
+                    "text"
+                ]
+            },
+            "translationautomatic_translationResponseModel": {
+                "properties": {
+                    "xai": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "openai": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "modernmt": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "deepl": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "microsoft": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "amazon": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    },
+                    "google": {
+                        "$ref": "#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass",
+                        "default": null
+                    }
+                },
+                "title": "translationautomatic_translationResponseModel",
+                "type": "object"
+            },
+            "translationdocument_translationDocumentTranslationDataClass": {
+                "properties": {
+                    "file": {
+                        "title": "File",
+                        "type": "string"
+                    },
+                    "document_resource_url": {
+                        "title": "Document Resource Url",
+                        "type": "string"
+                    },
+                    "original_response": {
+                        "default": null,
+                        "description": "original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request",
+                        "title": "Original Response"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "title": "Status"
+                    }
+                },
+                "required": [
+                    "file",
+                    "document_resource_url",
+                    "status"
+                ],
+                "title": "translationdocument_translationDocumentTranslationDataClass",
+                "type": "object"
+            },
+            "translationdocument_translationDocumentTranslationRequest": {
+                "type": "object",
+                "properties": {
+                    "settings": {
+                        "type": "string",
+                        "default": {},
+                        "description": "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+                    },
+                    "providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "It can be one (ex: **'amazon'** or **'google'**) or multiple provider(s) (ex: **'amazon,microsoft,google'**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **'amazon/model1, amazon/model2, google/model3'**)"
+                    },
+                    "fallback_providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [],
+                        "description": "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    ",
+                        "maxItems": 5
+                    },
+                    "response_as_dict": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+                    },
+                    "attributes_as_list": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+                    },
+                    "show_base_64": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "show_original_response": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**"
+                    },
+                    "file_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true,
+                        "description": "File **URL** to analyse to be used with with *content-type*: **application/json**."
+                    },
+                    "file_password": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "If your PDF file has a password, you can pass it here!",
+                        "maxLength": 200
+                    },
+                    "source_language": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Source language code (ex: en, fr)"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Target language code (ex: en, fr)"
+                    }
+                },
+                "required": [
+                    "providers",
+                    "target_language"
+                ]
+            },
+            "translationdocument_translationResponseModel": {
+                "properties": {
+                    "google": {
+                        "$ref": "#/components/schemas/translationdocument_translationDocumentTranslationDataClass",
+                        "default": null
+                    },
+                    "deepl": {
+                        "$ref": "#/components/schemas/translationdocument_translationDocumentTranslationDataClass",
+                        "default": null
+                    }
+                },
+                "title": "translationdocument_translationResponseModel",
+                "type": "object"
+            },
+            "translationlanguage_detectionLanguageDetectionDataClass": {
+                "properties": {
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/InfosLanguageDetectionDataClass"
+                        },
+                        "title": "Items",
+                        "type": "array"
+                    },
+                    "original_response": {
+                        "default": null,
+                        "description": "original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request",
+                        "title": "Original Response"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "title": "Status"
+                    }
+                },
+                "required": [
+                    "status"
+                ],
+                "title": "translationlanguage_detectionLanguageDetectionDataClass",
+                "type": "object"
+            },
+            "translationlanguage_detectionLanguageDetectionRequest": {
+                "type": "object",
+                "properties": {
+                    "settings": {
+                        "type": "string",
+                        "default": {},
+                        "description": "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+                    },
+                    "providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "It can be one (ex: **'amazon'** or **'google'**) or multiple provider(s) (ex: **'amazon,microsoft,google'**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **'amazon/model1, amazon/model2, google/model3'**)"
+                    },
+                    "fallback_providers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "default": [],
+                        "description": "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    ",
+                        "maxItems": 5
+                    },
+                    "response_as_dict": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+                    },
+                    "attributes_as_list": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+                    },
+                    "show_base_64": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "show_original_response": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+                    },
+                    "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Text to analyze"
+                    }
+                },
+                "required": [
+                    "providers",
+                    "text"
+                ]
+            },
+            "translationlanguage_detectionResponseModel": {
+                "properties": {
+                    "xai": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "openai": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "modernmt": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "oneai": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "microsoft": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "amazon": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    },
+                    "google": {
+                        "$ref": "#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass",
+                        "default": null
+                    }
+                },
+                "title": "translationlanguage_detectionResponseModel",
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "FeatureApiAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.edenai.run/v2"
+        }
+    ]
+}

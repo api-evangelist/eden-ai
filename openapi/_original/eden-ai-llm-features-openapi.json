@@ -1,0 +1,2276 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "LLM Features",
+        "version": "2.0",
+        "description": "Your project description"
+    },
+    "paths": {
+        "/llm/chat/": {
+            "post": {
+                "operationId": "llm_chat_create",
+                "description": "<details><summary><strong style='color: #0072a3; cursor: pointer'>Available Providers</strong></summary>\n\n\n\n|Provider|Model|Version|Price|Billing unit|\n|----|----|-------|-----|------------|\n|**amazon**|**amazon.nova-lite-v1:0**|`llmengine (v2)`|0.24 (per 1000000 token)|1 token\n|**amazon**|**amazon.nova-micro-v1:0**|`llmengine (v2)`|0.14 (per 1000000 token)|1 token\n|**amazon**|**amazon.nova-pro-v1:0**|`llmengine (v2)`|3.2 (per 1000000 token)|1 token\n|**anthropic**|**claude-opus-4-6**|`v1`|5e-06 (per 1 token)|1 token\n|**anthropic**|**claude-sonnet-4-20250514**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-opus-4-1-20250805**|`v1`|7.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-opus-4-5**|`v1`|2.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-3-7-sonnet-latest**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-3-5-haiku-20241022**|`v1`|4e-06 (per 1 token)|1 token\n|**anthropic**|**claude-3-5-haiku-latest**|`v1`|5e-06 (per 1 token)|1 token\n|**anthropic**|**claude-haiku-4-5-20251001**|`v1`|5e-06 (per 1 token)|1 token\n|**anthropic**|**claude-haiku-4-5**|`v1`|5e-06 (per 1 token)|1 token\n|**anthropic**|**claude-3-7-sonnet-20250219**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-3-haiku-20240307**|`v1`|1.25e-06 (per 1 token)|1 token\n|**anthropic**|**claude-4-opus-20250514**|`v1`|7.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-4-sonnet-20250514**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-sonnet-4-5**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-sonnet-4-5-20250929**|`v1`|1.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-opus-4-1**|`v1`|7.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-opus-4-20250514**|`v1`|7.5e-05 (per 1 token)|1 token\n|**anthropic**|**claude-opus-4-5-20251101**|`v1`|2.5e-05 (per 1 token)|1 token\n|**cohere**|**command-r7b-12-2024**|`llmengine (v2)`|0.15 (per 1000000 token)|1 token\n|**cohere**|**command-r-08-2024**|`llmengine (v2)`|0.6 (per 1000000 token)|1 token\n|**deepseek**|**deepseek-chat**|`llmengine (v2)`|1.1e-06 (per 1 token)|1 token\n|**deepseek**|**deepseek-reasoner**|`llmengine (v2)`|2.19e-06 (per 1 token)|1 token\n|**deepseek**|**deepseek-coder**|`llmengine (v2)`|2.8e-07 (per 1 token)|1 token\n|**meta**|**meta.llama3-1-405b-instruct-v1:0**|`llmengine (v2)`|2.4 (per 1000000 token)|1 token\n|**meta**|**meta.llama3-1-70b-instruct-v1:0**|`llmengine (v2)`|0.72 (per 1000000 token)|1 token\n|**meta**|**meta.llama3-1-8b-instruct-v1:0**|`llmengine (v2)`|0.22 (per 1000000 token)|1 token\n|**mistral**|**magistral-medium-2506**|`llmengine (v2)`|5e-06 (per 1 token)|1 token\n|**mistral**|**magistral-small-2506**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**mistral**|**mistral-medium-latest**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**mistral**|**pixtral-large-latest**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**mistral**|**mistral-small-latest**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**codestral-latest**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**mistral**|**mistral-large-latest**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**mistral**|**codestral-2405**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**mistral**|**codestral-2508**|`llmengine (v2)`|9e-07 (per 1 token)|1 token\n|**mistral**|**devstral-medium-2507**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**mistral**|**devstral-small-2505**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**devstral-small-2507**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**labs-devstral-small-2512**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**devstral-2512**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**mistral**|**magistral-medium-2509**|`llmengine (v2)`|5e-06 (per 1 token)|1 token\n|**mistral**|**magistral-medium-latest**|`llmengine (v2)`|5e-06 (per 1 token)|1 token\n|**mistral**|**magistral-small-latest**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**mistral**|**mistral-large-2402**|`llmengine (v2)`|1.2e-05 (per 1 token)|1 token\n|**mistral**|**mistral-large-2407**|`llmengine (v2)`|9e-06 (per 1 token)|1 token\n|**mistral**|**mistral-large-2411**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**mistral**|**mistral-medium**|`llmengine (v2)`|8.1e-06 (per 1 token)|1 token\n|**mistral**|**mistral-medium-2312**|`llmengine (v2)`|8.1e-06 (per 1 token)|1 token\n|**mistral**|**mistral-medium-2505**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**mistral**|**mistral-small**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**mistral-tiny**|`llmengine (v2)`|2.5e-07 (per 1 token)|1 token\n|**mistral**|**open-mistral-7b**|`llmengine (v2)`|2.5e-07 (per 1 token)|1 token\n|**mistral**|**open-mistral-nemo**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**open-mistral-nemo-2407**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**mistral**|**open-mixtral-8x22b**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**mistral**|**open-mixtral-8x7b**|`llmengine (v2)`|7e-07 (per 1 token)|1 token\n|**mistral**|**pixtral-12b-2409**|`llmengine (v2)`|1.5e-07 (per 1 token)|1 token\n|**mistral**|**pixtral-large-2411**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**openai**|**o4-mini**|`llmengine (v2)`|4.4e-06 (per 1 token)|1 token\n|**openai**|**gpt-4.1-mini-2025-04-14**|`llmengine (v2)`|1.6e-06 (per 1 token)|1 token\n|**openai**|**gpt-4.1-nano-2025-04-14**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**openai**|**gpt-5.1**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5-mini**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**openai**|**gpt-5-nano**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**openai**|**gpt-5-chat-latest**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5-pro**|`llmengine (v2)`|100.0 (per 1000000 token)|1 token\n|**openai**|**o4-mini-2025-04-16**|`llmengine (v2)`|4.4e-06 (per 1 token)|1 token\n|**openai**|**o3**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**openai**|**gpt-4**|`llmengine (v2)`|6e-05 (per 1 token)|1 token\n|**openai**|**gpt-4o**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-4o-mini**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**openai**|**gpt-4o-2024-05-13**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-turbo**|`llmengine (v2)`|3e-05 (per 1 token)|1 token\n|**openai**|**o1-2024-12-17**|`llmengine (v2)`|6e-05 (per 1 token)|1 token\n|**openai**|**o1**|`llmengine (v2)`|6e-05 (per 1 token)|1 token\n|**openai**|**o3-mini**|`llmengine (v2)`|4.4e-06 (per 1 token)|1 token\n|**openai**|**o3-mini-2025-01-31**|`llmengine (v2)`|4.4e-06 (per 1 token)|1 token\n|**openai**|**gpt-4o-2024-08-06**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-4o-mini-2024-07-18**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**openai**|**gpt-3.5-turbo**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**openai**|**gpt-5.2**|`llmengine (v2)`|1.4e-05 (per 1 token)|1 token\n|**openai**|**chatgpt-4o-latest**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**openai**|**gpt-3.5-turbo-0125**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**openai**|**gpt-3.5-turbo-1106**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**openai**|**gpt-3.5-turbo-16k**|`llmengine (v2)`|4e-06 (per 1 token)|1 token\n|**openai**|**gpt-4-0125-preview**|`llmengine (v2)`|3e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-0314**|`llmengine (v2)`|6e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-0613**|`llmengine (v2)`|6e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-1106-preview**|`llmengine (v2)`|3e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-turbo-2024-04-09**|`llmengine (v2)`|3e-05 (per 1 token)|1 token\n|**openai**|**gpt-4-turbo-preview**|`llmengine (v2)`|3e-05 (per 1 token)|1 token\n|**openai**|**gpt-4.1**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**openai**|**gpt-4.1-2025-04-14**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**openai**|**gpt-4.1-mini**|`llmengine (v2)`|1.6e-06 (per 1 token)|1 token\n|**openai**|**gpt-4.1-nano**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**openai**|**gpt-4o-2024-11-20**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-4o-mini-search-preview**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**openai**|**gpt-4o-mini-search-preview-2025-03-11**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**openai**|**gpt-4o-search-preview**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-4o-search-preview-2025-03-11**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5.1-2025-11-13**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5.1-chat-latest**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5.2-2025-12-11**|`llmengine (v2)`|1.4e-05 (per 1 token)|1 token\n|**openai**|**gpt-5.2-chat-latest**|`llmengine (v2)`|1.4e-05 (per 1 token)|1 token\n|**openai**|**gpt-5-2025-08-07**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**openai**|**gpt-5-mini-2025-08-07**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**openai**|**gpt-5-nano-2025-08-07**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**openai**|**o3-2025-04-16**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen2.5-72B-Instruct-Turbo**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo**|`llmengine (v2)`|1.8e-07 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen2.5-72B-Instruct-Turbo**|`llmengine (v2)`|1.2 (per 1000000 token)|1 token\n|**together_ai**|**meta-llama/Llama-3.3-70B-Instruct-Turbo**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Llama-3.3-70B-Instruct-Turbo**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**together_ai**|**mistralai/Mixtral-8x7B-Instruct-v0.1**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**together_ai**|**openai/gpt-oss-120b**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-235B-A22B-Thinking-2507**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-235B-A22B-fp8-tput**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**together_ai**|**deepseek-ai/DeepSeek-R1**|`llmengine (v2)`|7e-06 (per 1 token)|1 token\n|**together_ai**|**deepseek-ai/DeepSeek-R1-0528-tput**|`llmengine (v2)`|2.19e-06 (per 1 token)|1 token\n|**together_ai**|**deepseek-ai/DeepSeek-V3**|`llmengine (v2)`|1.25e-06 (per 1 token)|1 token\n|**together_ai**|**deepseek-ai/DeepSeek-V3.1**|`llmengine (v2)`|1.7e-06 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8**|`llmengine (v2)`|8.5e-07 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Llama-4-Scout-17B-16E-Instruct**|`llmengine (v2)`|5.9e-07 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo**|`llmengine (v2)`|3.5e-06 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo**|`llmengine (v2)`|1.8e-07 (per 1 token)|1 token\n|**together_ai**|**mistralai/Mixtral-8x7B-Instruct-v0.1**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**together_ai**|**moonshotai/Kimi-K2-Instruct**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**together_ai**|**openai/gpt-oss-20b**|`llmengine (v2)`|2e-07 (per 1 token)|1 token\n|**together_ai**|**zai-org/GLM-4.5-Air-FP8**|`llmengine (v2)`|1.1e-06 (per 1 token)|1 token\n|**together_ai**|**zai-org/GLM-4.6**|`llmengine (v2)`|2.2e-06 (per 1 token)|1 token\n|**together_ai**|**moonshotai/Kimi-K2-Instruct-0905**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-Next-80B-A3B-Instruct**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-Next-80B-A3B-Thinking**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**together_ai**|**Qwen/Qwen3-235B-A22B-Instruct-2507-tput**|`llmengine (v2)`|6e-06 (per 1 token)|1 token\n|**together_ai**|**meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo**|`llmengine (v2)`|3.5e-06 (per 1 token)|1 token\n|**xai**|**grok-2-vision-1212**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-4-0709**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-4-0709**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-2-vision-1212**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-2-vision-latest**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-2-vision**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-2-vision**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-2-vision-latest**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**xai**|**grok-3**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-3-beta**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-3-fast-beta**|`llmengine (v2)`|2.5e-05 (per 1 token)|1 token\n|**xai**|**grok-3-fast-latest**|`llmengine (v2)`|2.5e-05 (per 1 token)|1 token\n|**xai**|**grok-3-latest**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-3-mini**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-3-mini-beta**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-3-mini-fast**|`llmengine (v2)`|4e-06 (per 1 token)|1 token\n|**xai**|**grok-3-mini-fast-beta**|`llmengine (v2)`|4e-06 (per 1 token)|1 token\n|**xai**|**grok-3-mini-fast-latest**|`llmengine (v2)`|4e-06 (per 1 token)|1 token\n|**xai**|**grok-3-mini-latest**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-4-fast-reasoning**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-fast-non-reasoning**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-latest**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**xai**|**grok-4-1-fast**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-1-fast-reasoning**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-1-fast-reasoning-latest**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-1-fast-non-reasoning**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-4-1-fast-non-reasoning-latest**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**xai**|**grok-code-fast**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**xai**|**grok-code-fast-1**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**xai**|**grok-code-fast-1-0825**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**google**|**gemini-2.5-flash**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**google**|**gemini-3-pro-preview**|`llmengine (v2)`|1.2e-05 (per 1 token)|1 token\n|**google**|**gemini-2.5-flash-image-preview**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**google**|**gemini-3.1-pro-preview**|`llmengine (v2)`|1.2e-05 (per 1 token)|1 token\n|**google**|**gemini-2.5-flash-lite**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**google**|**gemini-3-pro-image-preview**|`llmengine (v2)`|12.0 (per 1000000 token)|1 token\n|**google**|**gemini-3-flash-preview**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**google**|**gemini-2.0-flash-lite**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**google**|**gemini-2.0-flash**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**google**|**gemini-2.0-flash-001**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**google**|**gemini-2.5-flash-lite-preview-09-2025**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**google**|**gemini-2.5-flash-preview-09-2025**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**google**|**gemini-flash-latest**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**google**|**gemini-flash-lite-latest**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**google**|**gemini-2.5-pro**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**google**|**gemma-3-27b-it**|`llmengine (v2)`|0.0 (per 1 token)|1 token\n|**groq**|**llama-3.1-8b-instant**|`v1`|8e-08 (per 1 token)|1 token\n|**groq**|**openai/gpt-oss-120b**|`v1`|7.5e-07 (per 1 token)|1 token\n|**groq**|**llama-3.3-70b-versatile**|`v1`|7.9e-07 (per 1 token)|1 token\n|**groq**|**llama-3.3-70b-versatile**|`v1`|7.9e-07 (per 1 token)|1 token\n|**groq**|**llama-3.1-8b-instant**|`v1`|8e-08 (per 1 token)|1 token\n|**groq**|**meta-llama/llama-guard-4-12b**|`v1`|2e-07 (per 1 token)|1 token\n|**groq**|**meta-llama/llama-4-maverick-17b-128e-instruct**|`v1`|6e-07 (per 1 token)|1 token\n|**groq**|**meta-llama/llama-4-scout-17b-16e-instruct**|`v1`|3.4e-07 (per 1 token)|1 token\n|**groq**|**moonshotai/kimi-k2-instruct-0905**|`v1`|3e-06 (per 1 token)|1 token\n|**groq**|**openai/gpt-oss-20b**|`v1`|5e-07 (per 1 token)|1 token\n|**groq**|**qwen/qwen3-32b**|`v1`|5.9e-07 (per 1 token)|1 token\n|**microsoft**|**gpt-4o**|`Azure AI Foundry`|5.0 (per 1000000 token)|1 token\n|**microsoft**|**o3-mini**|`Azure AI Foundry`|4.4 (per 1000000 token)|1 token\n|**microsoft**|**o1-mini**|`Azure AI Foundry`|12.0 (per 1000000 token)|1 token\n|**microsoft**|**gpt-4o-mini**|`Azure AI Foundry`|0.66 (per 1000000 token)|1 token\n|**microsoft**|**gpt-4**|`Azure AI Foundry`|60.0 (per 1000000 token)|1 token\n|**microsoft**|**gpt-35-turbo-16k**|`Azure AI Foundry`|4.0 (per 1000000 token)|1 token\n|**microsoft**|**gpt-35-turbo**|`Azure AI Foundry`|1.5 (per 1000000 token)|1 token\n|**minimax**|**minimax-m1**|`v1`|2.2 (per 1000000 token)|1 token\n|**minimax**|**minimax-text-01**|`v1`|1.1 (per 1000000 token)|1 token\n|**minimax**|**MiniMax-M2.1**|`v1`|1.2e-06 (per 1 token)|1 token\n|**minimax**|**MiniMax-M2.1-lightning**|`v1`|2.4e-06 (per 1 token)|1 token\n|**minimax**|**MiniMax-M2**|`v1`|1.2e-06 (per 1 token)|1 token\n|**bytedance**|**seed-1-6-250915**|`llmengine (v2)`|2.0 (per 1000000 token)|1 token\n|**perplexityai**|**sonar**|`llmengine (v2)`|1.0 (per 1000000 token)|1 token\n|**perplexityai**|**sonar**|`llmengine (v2)`|1e-06 (per 1 token)|1 token\n|**perplexityai**|**sonar-pro**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**perplexityai**|**sonar-deep-research**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**perplexityai**|**sonar-pro**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**perplexityai**|**sonar-reasoning-pro**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**deepinfra**|**Gryphe/MythoMax-L2-13b**|`v1`|9e-08 (per 1 token)|1 token\n|**deepinfra**|**NousResearch/Hermes-3-Llama-3.1-405B**|`v1`|1e-06 (per 1 token)|1 token\n|**deepinfra**|**NousResearch/Hermes-3-Llama-3.1-70B**|`v1`|3e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/QwQ-32B**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen2.5-72B-Instruct**|`v1`|3.9e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen2.5-7B-Instruct**|`v1`|1e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen2.5-VL-32B-Instruct**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-14B**|`v1`|2.4e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-235B-A22B**|`v1`|5.4e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-235B-A22B-Instruct-2507**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-235B-A22B-Thinking-2507**|`v1`|2.9e-06 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-30B-A3B**|`v1`|2.9e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-32B**|`v1`|2.8e-07 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-Coder-480B-A35B-Instruct**|`v1`|1.6e-06 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-Coder-480B-A35B-Instruct-Turbo**|`v1`|1.2e-06 (per 1 token)|1 token\n|**deepinfra**|**Qwen/Qwen3-Next-80B-A3B-Instruct**|`v1`|1.4e-06 (per 1 token)|1 token\n|**deepinfra**|**Sao10K/L3-8B-Lunaris-v1-Turbo**|`v1`|5e-08 (per 1 token)|1 token\n|**deepinfra**|**Sao10K/L3.1-70B-Euryale-v2.2**|`v1`|7.5e-07 (per 1 token)|1 token\n|**deepinfra**|**Sao10K/L3.3-70B-Euryale-v2.3**|`v1`|7.5e-07 (per 1 token)|1 token\n|**deepinfra**|**anthropic/claude-3-7-sonnet-latest**|`v1`|1.65e-05 (per 1 token)|1 token\n|**deepinfra**|**anthropic/claude-4-opus**|`v1`|8.25e-05 (per 1 token)|1 token\n|**deepinfra**|**anthropic/claude-4-sonnet**|`v1`|1.65e-05 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1**|`v1`|2.4e-06 (per 1 token)|1 token\n|**deepinfra**|**nvidia/Llama-3.3-Nemotron-Super-49B-v1.5**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1-0528**|`v1`|2.15e-06 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1-Distill-Llama-70B**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1-Distill-Qwen-32B**|`v1`|2.7e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1-Turbo**|`v1`|3e-06 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-V3**|`v1`|8.9e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-V3-0324**|`v1`|8.8e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-V3.1**|`v1`|1e-06 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-V3.1-Terminus**|`v1`|1e-06 (per 1 token)|1 token\n|**deepinfra**|**google/gemini-2.0-flash-001**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**google/gemini-2.5-flash**|`v1`|2.5e-06 (per 1 token)|1 token\n|**deepinfra**|**google/gemini-2.5-pro**|`v1`|1e-05 (per 1 token)|1 token\n|**deepinfra**|**google/gemma-3-12b-it**|`v1`|1e-07 (per 1 token)|1 token\n|**deepinfra**|**google/gemma-3-27b-it**|`v1`|1.6e-07 (per 1 token)|1 token\n|**deepinfra**|**google/gemma-3-4b-it**|`v1`|8e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-3.2-11B-Vision-Instruct**|`v1`|4.9e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-3.2-3B-Instruct**|`v1`|2e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-3.3-70B-Instruct**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-3.3-70B-Instruct-Turbo**|`v1`|3.9e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-4-Scout-17B-16E-Instruct**|`v1`|3e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-Guard-3-8B**|`v1`|5.5e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-Guard-4-12B**|`v1`|1.8e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3-8B-Instruct**|`v1`|6e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3.1-70B-Instruct**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo**|`v1`|2.8e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3.1-8B-Instruct**|`v1`|5e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo**|`v1`|3e-08 (per 1 token)|1 token\n|**deepinfra**|**microsoft/WizardLM-2-8x22B**|`v1`|4.8e-07 (per 1 token)|1 token\n|**deepinfra**|**microsoft/phi-4**|`v1`|1.4e-07 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mistral-Nemo-Instruct-2407**|`v1`|4e-08 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mistral-Small-24B-Instruct-2501**|`v1`|8e-08 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mistral-Small-3.2-24B-Instruct-2506**|`v1`|2e-07 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mixtral-8x7B-Instruct-v0.1**|`v1`|4e-07 (per 1 token)|1 token\n|**deepinfra**|**moonshotai/Kimi-K2-Instruct**|`v1`|2e-06 (per 1 token)|1 token\n|**deepinfra**|**moonshotai/Kimi-K2-Instruct-0905**|`v1`|2e-06 (per 1 token)|1 token\n|**deepinfra**|**nvidia/Llama-3.1-Nemotron-70B-Instruct**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**nvidia/NVIDIA-Nemotron-Nano-9B-v2**|`v1`|1.6e-07 (per 1 token)|1 token\n|**deepinfra**|**openai/gpt-oss-120b**|`v1`|4.5e-07 (per 1 token)|1 token\n|**deepinfra**|**openai/gpt-oss-20b**|`v1`|1.5e-07 (per 1 token)|1 token\n|**deepinfra**|**zai-org/GLM-4.5**|`v1`|1.6e-06 (per 1 token)|1 token\n|**deepinfra**|**lizpreciatior/lzlv_70b_fp16_hf**|`v1`|9e-07 (per 1 token)|1 token\n|**deepinfra**|**Gryphe/MythoMax-L2-13b**|`v1`|2.2e-07 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mistral-7B-Instruct-v0.1**|`v1`|1.3e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-2-70b-chat-hf**|`v1`|9e-07 (per 1 token)|1 token\n|**deepinfra**|**cognitivecomputations/dolphin-2.6-mixtral-8x7b**|`v1`|2.7e-07 (per 1 token)|1 token\n|**deepinfra**|**Phind/Phind-CodeLlama-34B-v2**|`v1`|6e-07 (per 1 token)|1 token\n|**deepinfra**|**mistralai/Mixtral-8x7B-Instruct-v0.1**|`v1`|2.7e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Llama-2-13b-chat-hf**|`v1`|2.2e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3-8B-Instruct**|`v1`|8e-08 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3-70B-Instruct**|`v1`|7.9e-07 (per 1 token)|1 token\n|**deepinfra**|**meta-llama/Meta-Llama-3.1-405B-Instruct**|`v1`|9e-07 (per 1 token)|1 token\n|**deepinfra**|**openchat/openchat_3.5**|`v1`|1.3e-07 (per 1 token)|1 token\n|**deepinfra**|**deepseek-ai/DeepSeek-R1-0528-Turbo**|`v1`|3e-06 (per 1 token)|1 token\n|**cerebras**|**llama3.1-8b**|`llmengine (v2)`|1e-07 (per 1 token)|1 token\n|**cerebras**|**gpt-oss-120b**|`llmengine (v2)`|6.9e-07 (per 1 token)|1 token\n|**cloudflare**|**@cf/meta/llama-2-7b-chat-fp16**|`llmengine (v2)`|1.923e-06 (per 1 token)|1 token\n|**cloudflare**|**@cf/meta/llama-2-7b-chat-int8**|`llmengine (v2)`|1.923e-06 (per 1 token)|1 token\n|**cloudflare**|**@cf/mistral/mistral-7b-instruct-v0.1**|`llmengine (v2)`|1.923e-06 (per 1 token)|1 token\n|**cloudflare**|**@hf/thebloke/codellama-7b-instruct-awq**|`llmengine (v2)`|1.923e-06 (per 1 token)|1 token\n|**databricks**|**databricks-claude-3-7-sonnet**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-claude-haiku-4-5**|`llmengine (v2)`|5e-06 (per 1 token)|1 token\n|**databricks**|**databricks-claude-opus-4-1**|`llmengine (v2)`|7.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-claude-opus-4-5**|`llmengine (v2)`|2.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-claude-sonnet-4**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-claude-sonnet-4-5**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-gemini-2-5-flash**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**databricks**|**databricks-gemini-2-5-pro**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**databricks**|**databricks-gemma-3-12b**|`llmengine (v2)`|5e-07 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-5**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-5-1**|`llmengine (v2)`|1e-05 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-5-mini**|`llmengine (v2)`|2e-06 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-5-nano**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-oss-120b**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**databricks**|**databricks-gpt-oss-20b**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**databricks**|**databricks-llama-4-maverick**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**databricks**|**databricks-meta-llama-3-1-405b-instruct**|`llmengine (v2)`|1.5e-05 (per 1 token)|1 token\n|**databricks**|**databricks-meta-llama-3-1-8b-instruct**|`llmengine (v2)`|4.5e-07 (per 1 token)|1 token\n|**databricks**|**databricks-meta-llama-3-3-70b-instruct**|`llmengine (v2)`|1.5e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen2p5-vl-32b-instruct**|`llmengine (v2)`|9e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-235b-a22b**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-235b-a22b-instruct-2507**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-235b-a22b-thinking-2507**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-8b**|`llmengine (v2)`|2e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-vl-235b-a22b-instruct**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-vl-235b-a22b-thinking**|`llmengine (v2)`|8.8e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-vl-30b-a3b-instruct**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-vl-30b-a3b-thinking**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/deepseek-r1-0528**|`llmengine (v2)`|8e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/deepseek-v3-0324**|`llmengine (v2)`|9e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/deepseek-v3p1**|`llmengine (v2)`|1.68e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/deepseek-v3p1-terminus**|`llmengine (v2)`|1.68e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/deepseek-v3p2**|`llmengine (v2)`|1.68e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/glm-4p6**|`llmengine (v2)`|2.19e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/gpt-oss-120b**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/gpt-oss-20b**|`llmengine (v2)`|2e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/kimi-k2-instruct-0905**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/kimi-k2-thinking**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/qwen3-coder-480b-a35b-instruct**|`llmengine (v2)`|1.8e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/llama-v3p3-70b-instruct**|`llmengine (v2)`|9e-07 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/minimax-m2**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**fireworks_ai**|**accounts/fireworks/models/mixtral-8x22b-instruct**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**nebius**|**MiniMaxAI/MiniMax-M2.1**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**nebius**|**moonshotai/Kimi-K2-Instruct**|`llmengine (v2)`|2.4e-06 (per 1 token)|1 token\n|**nebius**|**moonshotai/Kimi-K2-Thinking**|`llmengine (v2)`|2.5e-06 (per 1 token)|1 token\n|**nebius**|**NousResearch/Hermes-4-405B**|`llmengine (v2)`|3e-06 (per 1 token)|1 token\n|**nebius**|**NousResearch/Hermes-4-70B**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**nebius**|**nvidia/Llama-3_1-Nemotron-Ultra-253B-v1**|`llmengine (v2)`|1.8e-06 (per 1 token)|1 token\n|**nebius**|**nvidia/Nemotron-Nano-V2-12b**|`llmengine (v2)`|2e-07 (per 1 token)|1 token\n|**nebius**|**openai/gpt-oss-120b**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**nebius**|**openai/gpt-oss-20b**|`llmengine (v2)`|2e-07 (per 1 token)|1 token\n|**nebius**|**PrimeIntellect/INTELLECT-3**|`llmengine (v2)`|1.1e-06 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen2.5-VL-72B-Instruct**|`llmengine (v2)`|7.5e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-235B-A22B-Instruct-2507**|`llmengine (v2)`|6e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-235B-A22B-Thinking-2507**|`llmengine (v2)`|8e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-30B-A3B-Instruct-2507**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-30B-A3B-Thinking-2507**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-32B**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-Coder-30B-A3B-Instruct**|`llmengine (v2)`|3e-07 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-Coder-480B-A35B-Instruct**|`llmengine (v2)`|1.8e-06 (per 1 token)|1 token\n|**nebius**|**Qwen/Qwen3-Next-80B-A3B-Thinking**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**nebius**|**zai-org/GLM-4.5**|`llmengine (v2)`|2.2e-06 (per 1 token)|1 token\n|**nebius**|**zai-org/GLM-4.5-Air**|`llmengine (v2)`|1.2e-06 (per 1 token)|1 token\n|**ovhcloud**|**DeepSeek-R1-Distill-Llama-70B**|`llmengine (v2)`|6.7e-07 (per 1 token)|1 token\n|**ovhcloud**|**Llama-3.1-8B-Instruct**|`llmengine (v2)`|1e-07 (per 1 token)|1 token\n|**ovhcloud**|**Meta-Llama-3_3-70B-Instruct**|`llmengine (v2)`|6.7e-07 (per 1 token)|1 token\n|**ovhcloud**|**Mistral-7B-Instruct-v0.3**|`llmengine (v2)`|1e-07 (per 1 token)|1 token\n|**ovhcloud**|**Mistral-Nemo-Instruct-2407**|`llmengine (v2)`|1.3e-07 (per 1 token)|1 token\n|**ovhcloud**|**Mistral-Small-3.2-24B-Instruct-2506**|`llmengine (v2)`|2.8e-07 (per 1 token)|1 token\n|**ovhcloud**|**Mixtral-8x7B-Instruct-v0.1**|`llmengine (v2)`|6.3e-07 (per 1 token)|1 token\n|**ovhcloud**|**Qwen2.5-Coder-32B-Instruct**|`llmengine (v2)`|8.7e-07 (per 1 token)|1 token\n|**ovhcloud**|**Qwen2.5-VL-72B-Instruct**|`llmengine (v2)`|9.1e-07 (per 1 token)|1 token\n|**ovhcloud**|**Qwen3-32B**|`llmengine (v2)`|2.3e-07 (per 1 token)|1 token\n|**ovhcloud**|**gpt-oss-120b**|`llmengine (v2)`|4e-07 (per 1 token)|1 token\n|**ovhcloud**|**gpt-oss-20b**|`llmengine (v2)`|1.5e-07 (per 1 token)|1 token\n\n\n</details>\n\n<a href='https://old-app.edenai.run/v2/models?technology=llm-chat' target='_blank' rel='noopener noreferrer' ><h4>Supported Models</h4></a>\n\n<details><summary>Default Models</summary>\n\n\n\n\n\n|Name|Value|\n|----|-----|\n|**amazon**|`amazon.nova-pro-v1:0`|\n|**anthropic**|`claude-3-7-sonnet-latest`|\n|**cohere**|`command-r`|\n|**deepseek**|`deepseek-chat`|\n|**meta**|`meta.llama3-1-70b-instruct-v1:0`|\n|**mistral**|`mistral-large-latest`|\n|**openai**|`gpt-4o`|\n|**together_ai**|`Qwen/Qwen2.5-72B-Instruct-Turbo`|\n|**xai**|`grok-2-latest`|\n|**google**|`gemini-2.0-flash`|\n|**groq**|`llama-3.3-70b-versatile`|\n|**microsoft**|`gpt-4o`|\n|**minimax**|`MiniMax-M1`|\n|**bytedance**|`seed-1-6-250915`|\n|**perplexityai**|`sonar`|\n|**deepinfra**|`nvidia/Llama-3.3-Nemotron-Super-49B-v1.5`|\n|**cerebras**|`gpt-oss-120b`|\n\n</details>",
+                "summary": "Chat",
+                "tags": [
+                    "Chat"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/llmchatllmchatChatRequest"
+                            },
+                            "examples": {
+                                "RequestExample": {
+                                    "value": {
+                                        "providers": "together_ai,qwen,bytedance,anthropic,minimax,cohere,openai,xai,databricks,perplexityai,azure,deepinfra,nebius,ovhcloud,fireworks_ai,lilac,scaleway,compactifai,google,groq,cloudflare,meta,deepseek,vertex,mistral,amazon,microsoft,moonshot,flexai,infomaniak,ionos,xiaomi,zai,cerebras,tensorx",
+                                        "model": "gpt-4o-mini",
+                                        "messages": [
+                                            {
+                                                "role": "system",
+                                                "content": "Always reply like a pirate"
+                                            },
+                                            {
+                                                "role": "user",
+                                                "content": [
+                                                    {
+                                                        "type": "text",
+                                                        "text": "Describe this image please!"
+                                                    },
+                                                    {
+                                                        "type": "image_url",
+                                                        "image_url": {
+                                                            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ],
+                                        "temperature": 0,
+                                        "max_tokens": 200,
+                                        "stop_sequences": [],
+                                        "top_k": 0,
+                                        "top_p": 0
+                                    },
+                                    "summary": "Request Example"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "FeatureApiAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/llmchatResponseModel"
+                                },
+                                "examples": {
+                                    "ResponseExample": {
+                                        "value": {
+                                            "together_ai/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "qwen/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "bytedance/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "anthropic/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "minimax/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "cohere/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71RkHwax2QEWCrZXYl3mZh20fC5y",
+                                                "created": 1741013556,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr matey! In this fine image, ye be seein' a wooden pathway leadin' through a grand expanse of green grass and wild foliage. The sky above be painted in shades of blue, with fluffy clouds driftin' lazily. The boardwalk be settin' sail through this scenic wonder, invitin' ye to wander and explore the treasures of nature that lie ahead. Aye, 'tis a sight to behold for any landlubber or sea dog!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3751955066,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 100,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1270,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "openai/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "xai/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "databricks/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "perplexityai/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "azure/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "deepinfra/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "nebius/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "ovhcloud/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "fireworks_ai/fireworks_ai/accounts/fireworks/models/minimax-m2p1": {
+                                                "id": "92c68e43-c433-4ded-9d2a-e1ad314e34ce",
+                                                "created": 1769078717,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello! I'm MiniMax-M2.1, nice to meet you! \n\nI'm here and ready to help with whatever you need - whether that's coding, answering questions, brainstorming ideas, writing, analyzing information, or just having a conversation.\n\nWhat can I assist you with today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 5499940850,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 144,
+                                                    "prompt_tokens": 38,
+                                                    "total_tokens": 182,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "lilac/moonshotai/kimi-k2.6": {
+                                                "id": "chatcmpl-8e650c36-0ac6-4297-be14-05ed2b75c123",
+                                                "created": 1779719760,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "length",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": " I think you might have my",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3326167884,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 200,
+                                                    "prompt_tokens": 17,
+                                                    "total_tokens": 217,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "scaleway/moonshotai/kimi-k2.6": {
+                                                "id": "chatcmpl-8e650c36-0ac6-4297-be14-05ed2b75c123",
+                                                "created": 1779719760,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "length",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": " I think you might have my",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3326167884,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 200,
+                                                    "prompt_tokens": 17,
+                                                    "total_tokens": 217,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "compactifai/quasar-438b": {
+                                                "id": "chatcmpl-7c2a1f04-9b3d-4e6a-8f21-1d5c9a4e2b70",
+                                                "created": 1772712000,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 31284551200,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 140,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 176,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 130,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "google/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "groq/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "cloudflare/cloudflare/@cf/meta/llama-2-7b-chat-fp16": {
+                                                "id": "chatcmpl-40da733f-4466-470d-85aa-575cf1b58abd",
+                                                "created": 1769088979,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "  Hello! It's nice to meet you. Is there something I can help you with or would you like to chat?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 2623900184,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 25,
+                                                    "prompt_tokens": 10,
+                                                    "total_tokens": 35,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "meta/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "deepseek/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "vertex/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "mistral/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "amazon/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "microsoft/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "moonshot/moonshot/kimi-k2-0905-preview": {
+                                                "id": "chatcmpl-6f0c1d5a-2b47-4e0e-9c2a-1f7d3a9b8e10",
+                                                "created": 1769086004,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 468793209,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 10,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 46,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "flexai/Meta-Llama-3.1-8B-Instruct-FP8": {
+                                                "id": "chatcmpl-9f3e1c62-4d51-4bd7-9c1c-2a5b7e3f9a41",
+                                                "created": 1769086500,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 512438901,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 10,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 46,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "infomaniak/llama3.3": {
+                                                "id": "chatcmpl-4c6e8f0a-2b3d-4e5f-9a0b-5c7d9e1f3a4b",
+                                                "created": 1769086800,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 492731085,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 10,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 46,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "ionos/meta-llama/Meta-Llama-3.1-8B-Instruct": {
+                                                "id": "chatcmpl-5b7e0f2a-9d34-4c8a-8e2b-6c1f4a3d9e07",
+                                                "created": 1769086600,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 487213902,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 10,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 46,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "xiaomi/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "zai/gpt-4o-mini-2024-07-18": {
+                                                "id": "chatcmpl-B71qqu4Y7m1ZVuF5YGqxz7LXzgf0Y",
+                                                "created": 1741015112,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_7fcd609668",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Arrr, matey! What ye be seein’ in this here image is a grand pathway, made of wooden planks, weavin' its way through a lush and green landscape. The verdant grass sways in the gentle breeze, and the sky above be a brilliant blue, decorated with fluffy white clouds. Ye can spot trees and bushes on either side, makin' it a perfect setting for a stroll amongst nature. A peaceful place for a pirate at heart, aye!",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 3692885792,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 99,
+                                                    "prompt_tokens": 1170,
+                                                    "total_tokens": 1269,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": 0,
+                                                        "audio_tokens": 0,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": 0,
+                                                        "text_tokens": 99
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": 0,
+                                                        "cached_tokens": 1024,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": "default",
+                                                "cost": 0.0
+                                            },
+                                            "cerebras/cerebras/llama-3.3-70b": {
+                                                "id": "chatcmpl-b4b7664b-325f-43d9-95a8-b94028c0d9f7",
+                                                "created": 1769086004,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": "fp_e6a9e35b42fe424f8074",
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello. How can I help you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 468793209,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 10,
+                                                    "prompt_tokens": 36,
+                                                    "total_tokens": 46,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 0,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": null
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": 0,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            },
+                                            "tensorx/moonshotai/kimi-k3": {
+                                                "id": "224be80b91b545f88371ca79693f4030",
+                                                "created": 1786913673,
+                                                "object": "chat.completion",
+                                                "system_fingerprint": null,
+                                                "choices": [
+                                                    {
+                                                        "finish_reason": "stop",
+                                                        "index": 0,
+                                                        "message": {
+                                                            "content": "Hello! I’m doing well, thank you. How are you today?",
+                                                            "role": "assistant",
+                                                            "tool_calls": null,
+                                                            "function_call": null
+                                                        }
+                                                    }
+                                                ],
+                                                "provider_time": 1952078236,
+                                                "edenai_time": null,
+                                                "usage": {
+                                                    "completion_tokens": 50,
+                                                    "prompt_tokens": 129,
+                                                    "total_tokens": 179,
+                                                    "completion_tokens_details": {
+                                                        "accepted_prediction_tokens": null,
+                                                        "audio_tokens": null,
+                                                        "reasoning_tokens": 25,
+                                                        "rejected_prediction_tokens": null,
+                                                        "text_tokens": 25
+                                                    },
+                                                    "prompt_tokens_details": {
+                                                        "audio_tokens": null,
+                                                        "cached_tokens": null,
+                                                        "text_tokens": null,
+                                                        "image_tokens": null
+                                                    }
+                                                },
+                                                "service_tier": null,
+                                                "cost": 0.0
+                                            }
+                                        },
+                                        "summary": "Response Example"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BadRequest"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NotFoundResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BadRequest": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedBadRequest"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "ChatCompletionChoice": {
+                "properties": {
+                    "index": {
+                        "description": "The index of this completion choice",
+                        "title": "Index",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/ChatMessage",
+                        "description": "The chat completion message"
+                    },
+                    "finish_reason": {
+                        "description": "The reason the completion finished: 'stop', 'length', 'tool_calls', 'content_filter', or 'function_call'",
+                        "title": "Finish Reason",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "index",
+                    "message",
+                    "finish_reason"
+                ],
+                "title": "ChatCompletionChoice",
+                "type": "object"
+            },
+            "ChatCompletionUsage": {
+                "properties": {
+                    "completion_tokens_details": {
+                        "$ref": "#/components/schemas/UsageTokensDetails",
+                        "description": "Number of tokens in the generated completion"
+                    },
+                    "prompt_tokens_details": {
+                        "$ref": "#/components/schemas/UsageTokensDetails",
+                        "description": "Number of tokens in the prompt"
+                    },
+                    "total_tokens": {
+                        "description": "Total number of tokens used (prompt + completion)",
+                        "title": "Total Tokens",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "completion_tokens_details",
+                    "prompt_tokens_details",
+                    "total_tokens"
+                ],
+                "title": "ChatCompletionUsage",
+                "type": "object"
+            },
+            "ChatMessage": {
+                "properties": {
+                    "role": {
+                        "$ref": "#/components/schemas/ChatRole",
+                        "description": "The role of the message author"
+                    },
+                    "content": {
+                        "default": null,
+                        "description": "The content of the message",
+                        "title": "Content",
+                        "type": "string"
+                    },
+                    "name": {
+                        "default": null,
+                        "description": "The name of the author of this message",
+                        "title": "Name",
+                        "type": "string"
+                    },
+                    "function_call": {
+                        "additionalProperties": true,
+                        "default": null,
+                        "description": "The function call information",
+                        "title": "Function Call",
+                        "type": "object"
+                    },
+                    "tool_calls": {
+                        "default": null,
+                        "description": "The tool call information",
+                        "items": {
+                            "additionalProperties": true,
+                            "type": "object"
+                        },
+                        "title": "Tool Calls",
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "role"
+                ],
+                "title": "ChatMessage",
+                "type": "object"
+            },
+            "ChatRole": {
+                "enum": [
+                    "system",
+                    "user",
+                    "assistant",
+                    "function",
+                    "tool"
+                ],
+                "title": "ChatRole",
+                "type": "string"
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "$ref": "#/components/schemas/NestedError"
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            },
+            "FieldError": {
+                "type": "object",
+                "properties": {
+                    "<parameter_name>": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "<parameter_name>"
+                ]
+            },
+            "MetadataRequest": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                    },
+                    "value": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 512
+                    }
+                },
+                "required": [
+                    "key",
+                    "value"
+                ]
+            },
+            "NestedBadRequest": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "$ref": "#/components/schemas/FieldError"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NestedError": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message",
+                    "type"
+                ]
+            },
+            "NotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "details": {
+                        "type": "string",
+                        "default": "Not Found"
+                    }
+                }
+            },
+            "ReasoningEffortEnum": {
+                "enum": [
+                    "low",
+                    "medium",
+                    "high"
+                ],
+                "type": "string",
+                "description": "**Choices**:\n- 'low': Minimal reasoning, quick responses\n- 'medium': Balanced reasoning approach\n- 'high': In-depth, comprehensive reasoning\n\n**Example**: 'high' for complex problem-solving tasks\n\n* `low` - low\n* `medium` - medium\n* `high` - high"
+            },
+            "ServiceTierEnum": {
+                "enum": [
+                    "auto",
+                    "default"
+                ],
+                "type": "string",
+                "description": "**Choices**:\n- 'auto': Automatically select appropriate tier\n- 'default': Use default service configuration\n\n* `auto` - auto\n* `default` - default"
+            },
+            "StatusEnum": {
+                "enum": [
+                    "sucess",
+                    "fail"
+                ],
+                "type": "string"
+            },
+            "ThinkingRequest": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/TypeEnum"
+                    },
+                    "budget_tokens": {
+                        "type": "integer",
+                        "minimum": 1024
+                    }
+                },
+                "required": [
+                    "budget_tokens",
+                    "type"
+                ]
+            },
+            "TypeEnum": {
+                "enum": [
+                    "enabled",
+                    "disabled"
+                ],
+                "type": "string",
+                "description": "* `enabled` - enabled\n* `disabled` - disabled"
+            },
+            "UsageTokensDetails": {
+                "properties": {
+                    "audio_tokens": {
+                        "description": "Number of audio tokens in the prompt",
+                        "title": "Audio Tokens",
+                        "type": "integer"
+                    },
+                    "cached_tokens": {
+                        "description": "Number of cached tokens in the prompt",
+                        "title": "Cached Tokens",
+                        "type": "integer"
+                    },
+                    "prompt_tokens": {
+                        "description": "Number of tokens in the prompt",
+                        "title": "Prompt Tokens",
+                        "type": "integer"
+                    },
+                    "completion_tokens": {
+                        "description": "Number of tokens in the generated completion",
+                        "title": "Completion Tokens",
+                        "type": "integer"
+                    },
+                    "total_tokens": {
+                        "description": "Total number of tokens used (prompt + completion)",
+                        "title": "Total Tokens",
+                        "type": "integer"
+                    },
+                    "accepted_prediction_tokens": {
+                        "description": "Number of accepted tokens in the prompt",
+                        "title": "Accepted Prediction Tokens",
+                        "type": "integer"
+                    },
+                    "reasoning_tokens": {
+                        "description": "Number of reasoning tokens in the prompt",
+                        "title": "Reasoning Tokens",
+                        "type": "integer"
+                    },
+                    "rejected_prediction_tokens": {
+                        "description": "Number of rejected tokens in the prompt",
+                        "title": "Rejected Prediction Tokens",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "audio_tokens",
+                    "cached_tokens",
+                    "prompt_tokens",
+                    "completion_tokens",
+                    "total_tokens",
+                    "accepted_prediction_tokens",
+                    "reasoning_tokens",
+                    "rejected_prediction_tokens"
+                ],
+                "title": "UsageTokensDetails",
+                "type": "object"
+            },
+            "llmchatChatDataClass": {
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier for this completion",
+                        "title": "Id",
+                        "type": "string"
+                    },
+                    "object": {
+                        "description": "Object type, always 'chat.completion'",
+                        "title": "Object",
+                        "type": "string"
+                    },
+                    "created": {
+                        "description": "Unix timestamp for when the completion was created",
+                        "title": "Created",
+                        "type": "integer"
+                    },
+                    "model": {
+                        "description": "The model used for completion",
+                        "title": "Model",
+                        "type": "string"
+                    },
+                    "choices": {
+                        "description": "List of chat completion choices generated by the model",
+                        "items": {
+                            "$ref": "#/components/schemas/ChatCompletionChoice"
+                        },
+                        "title": "Choices",
+                        "type": "array"
+                    },
+                    "usage": {
+                        "$ref": "#/components/schemas/ChatCompletionUsage",
+                        "description": "Usage statistics for the completion request"
+                    },
+                    "system_fingerprint": {
+                        "default": null,
+                        "description": "Identifier for the system version that processed the request",
+                        "title": "System Fingerprint",
+                        "type": "string"
+                    },
+                    "original_response": {
+                        "default": null,
+                        "description": "original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request",
+                        "title": "Original Response"
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "title": "Status"
+                    }
+                },
+                "required": [
+                    "id",
+                    "object",
+                    "created",
+                    "model",
+                    "choices",
+                    "usage",
+                    "status"
+                ],
+                "title": "llmchatChatDataClass",
+                "type": "object"
+            },
+            "llmchatResponseModel": {
+                "properties": {
+                    "replicate": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "moonshot": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "tensorx": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "scaleway": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "together_ai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "databricks": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "tsystems": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "openai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "lilac": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "groq": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "minimax": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "nebius": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "ovhcloud": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "deepseek": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "bytedance": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "iointelligence": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "amazon": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "compactifai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "deepinfra": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "cohere": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "flexai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "qwen": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "azure": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "anthropic": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "cloudflare": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "huggingface": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "microsoft": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "xai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "xiaomi": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "dashscope": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "ionos": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "mistral": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "zai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "cerebras": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "google": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "tenstorrent": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "fireworks_ai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "infomaniak": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "sakana": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "perplexityai": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    },
+                    "vertex": {
+                        "$ref": "#/components/schemas/llmchatChatDataClass",
+                        "default": null
+                    }
+                },
+                "title": "llmchatResponseModel",
+                "type": "object"
+            },
+            "llmchatllmchatChatRequest": {
+                "type": "object",
+                "properties": {
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {}
+                        },
+                        "description": "A list containing all the conversations between the user and the assistant.\nEach item in the list should be a dictionary with two keys: 'role' and 'message'.\n\n**role**: Specifies the role of the speaker and can have the values 'user', 'system', 'assistant' or 'tool'.\nThe system role instructs the way the model should answer, e.g. 'You are a helpful assistant'. The user\nrole specifies the user query and assistant is the model's response. The tool role is for external tools that\ncan be used in the conversation.\n\n**message**: A list of dictionaries. Each dictionary in the 'message' list must contain the keys 'type' and 'content'.\n\n#### Structure\n- **type**: Specifies the type of content and can be 'image_url' or 'text'.\n- **content**: A dictionary with the actual content based on the 'type':\n    - If 'type' is 'image_url', 'content' must contain 'image_url' and must not contain 'text'.\n    - If 'type' is 'text', 'content' must contain 'text' and must not contain 'image_url'.\n\n#### Example\n```json\n[\n  {\n    \"role\": \"user\",\n    \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Describe this image\"\n        },\n        {\n        \"type\": \"image_url\",\n        \"image_url\": {\n          \"url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg\"\n          }\n        }\n    ]\n  }\n]\n```"
+                    },
+                    "model": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The OpenAI model to use for the chat completion. \nThis field is required and specifies which language model will process the conversation. \n\n**Example values**: 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo'"
+                    },
+                    "reasoning_effort": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ReasoningEffortEnum"
+                            }
+                        ],
+                        "description": "Optional parameter to control the model's reasoning depth. \nAllows specifying the level of analytical effort in generating responses. \n\n**Choices**:\n- 'low': Minimal reasoning, quick responses\n- 'medium': Balanced reasoning approach\n- 'high': In-depth, comprehensive reasoning\n\n**Example**: 'high' for complex problem-solving tasks\n\n* `low` - low\n* `medium` - medium\n* `high` - high"
+                    },
+                    "metadata": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/MetadataRequest"
+                        },
+                        "description": "Optional list of metadata associated with the chat request. \nCan be used to provide additional context or tracking information. \n\n**Example**:\n```json\n{\n  \"metadata\": [\n    {\"key\": \"conversation_id\", \"value\": \"chat_12345\"},\n    {\"key\": \"source\", \"value\": \"customer_support\"}\n  ]\n}\n```"
+                    },
+                    "frequency_penalty": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 2.0,
+                        "minimum": -2.0,
+                        "description": "Controls repetitiveness of model responses by penalizing frequent tokens. \nRanges from -2.0 to 2.0. \n\n**Values**:\n- Positive values: Reduce token repetition\n- Negative values: Encourage repetition\n- 0.0: Default behavior\n\n**Example**: 1.5 to significantly reduce repeated phrases"
+                    },
+                    "logit_bias": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "number",
+                            "format": "double"
+                        },
+                        "description": "Modify the likelihood of specific tokens appearing in the response. \nA dictionary where keys are token IDs and values are bias scores. \n\n**Example**:\n```json\n{\n  \"logit_bias\": {\n    \"50256\": -100,  # Reduce probability of end-of-text token\n    \"15\": 5  # Slightly increase probability of a specific token\n  }\n}\n```"
+                    },
+                    "logprobs": {
+                        "type": "boolean",
+                        "description": "If set to True, returns log probabilities of the most likely tokens. \nUseful for advanced token probability analysis. \n\n**Example**: True to get detailed token likelihood information"
+                    },
+                    "top_logprobs": {
+                        "type": "integer",
+                        "maximum": 20,
+                        "minimum": 0,
+                        "description": "Number of top log probabilities to return with each token. \nMust be between 0 and 20. \n\n**Example**: 5 to get top 5 most likely tokens for each position"
+                    },
+                    "max_completion_tokens": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Maximum number of tokens to generate in the completion. \nMust be at least 1. \n\n**Example**: 150 to limit response to approximately 100-150 words"
+                    },
+                    "n": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Number of chat completion choices to generate.\n\n    **Example**: 3 to generate multiple alternative responses"
+                    },
+                    "modalities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "List of supported input/output modalities for the chat. \n\n**Example**:\n```json\n{\n  \"modalities\": [\"text\", \"image\", \"audio\"]\n}\n```"
+                    },
+                    "prediction": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Optional field for storing prediction-related information. \nFlexible dictionary to capture model's predictive metadata. \n\n**Example**:\n```json\n{\n  \"prediction\": {\n    \"confidence_score\": 0.85,\n    \"top_prediction\": \"response_category\"\n  }\n}\n```"
+                    },
+                    "audio": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Optional dictionary for audio-related parameters or metadata. \n\n**Example**:\n```json\n{\n  \"audio\": {\n    \"language\": \"en-US\",\n    \"transcription_format\": \"srt\"\n  }\n}\n```"
+                    },
+                    "presence_penalty": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 2.0,
+                        "minimum": -2.0,
+                        "description": "Adjusts likelihood of discussing new topics by penalizing existing tokens. \nRanges from -2.0 to 2.0. \n\n**Values**:\n- Positive values: Encourage more diverse topics\n- Negative values: Keep discussion more focused\n- 0.0: Default behavior\n\n**Example**: 1.0 to promote topic diversity"
+                    },
+                    "response_format": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Specify the desired response format for the completion. \n\n**Example**:\n```json\n{\n  \"response_format\": {\n    \"type\": \"json_object\",\n    \"schema\": {...}\n  }\n}\n```"
+                    },
+                    "seed": {
+                        "type": "integer",
+                        "description": "Set a seed for deterministic sampling to reproduce consistent results. \n\n**Example**: 42 for a reproducible random generation process"
+                    },
+                    "service_tier": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ServiceTierEnum"
+                            }
+                        ],
+                        "description": "Select the service tier for the API request. \n\n**Choices**:\n- 'auto': Automatically select appropriate tier\n- 'default': Use default service configuration\n\n* `auto` - auto\n* `default` - default"
+                    },
+                    "stop": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "List of strings that will cause the model to stop generating. \n\n**Example**:\n```json\n{\n  \"stop\": [\"\\n\", \"Human:\", \"AI:\"]\n}\n```"
+                    },
+                    "stream": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "If True, returns tokens as they are generated in a streaming format. \nDefault is False. \n\n**Example**: True for real-time token streaming"
+                    },
+                    "stream_options": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Additional configuration for streaming responses. \n\n**Example**:\n```json\n{\n  \"stream_options\": {\n    \"include_usage\": true\n  }\n}\n```"
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 2,
+                        "minimum": 0,
+                        "description": "Controls randomness in token selection. \nRanges from 0.0 to 2.0. \n\n**Values**:\n- 0.0: Most deterministic, focused responses\n- 1.0: Balanced randomness\n- 2.0: Most creative, unpredictable responses\n\n**Example**: 0.7 for a good balance of creativity and focus"
+                    },
+                    "top_p": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 1,
+                        "minimum": 0,
+                        "description": "Nucleus sampling threshold for token selection. \nRanges from 0.0 to 1.0. Default is 1.0. \n\n**Values**:\n- 1.0: Consider all tokens\n- Lower values: More focused, deterministic sampling\n\n**Example**: 0.9 to select from top 90% most probable tokens"
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {},
+                        "description": "List of tools or function definitions available to the model. \n\n**Example**:\n```json\n{\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"get_weather\",\n        \"description\": \"Retrieve current weather\"\n      }\n    }\n  ]\n}\n```"
+                    },
+                    "tool_choice": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Specify how tools should be used in the completion. \n\n**Example values**:\n- 'auto': Model decides when to use tools\n- 'none': Disable tool usage\n- Specific tool name to always use a particular tool"
+                    },
+                    "parallel_tool_calls": {
+                        "type": "boolean",
+                        "description": "Allow the model to make multiple tool calls in parallel. \n\n**Example**: True to enable concurrent tool invocations"
+                    },
+                    "user": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Optional identifier for the end-user to help track and monitor API usage. \n\n**Example**: 'user_123456'"
+                    },
+                    "function_call": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "Control how function calls are handled. \n\n**Example values**:\n- 'auto': Default behavior\n- 'none': Disable function calls\n- Specific function name to force its execution"
+                    },
+                    "functions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {}
+                        },
+                        "description": "List of function definitions available to the model. \n\n**Example**:\n```json\n{\n  \"functions\": [\n    {\n      \"name\": \"get_current_weather\",\n      \"description\": \"Get the current weather for a location\",\n      \"parameters\": {...}\n    }\n  ]\n}\n```"
+                    },
+                    "thinking": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ThinkingRequest"
+                            }
+                        ],
+                        "description": "Configuration for enabling Claude's extended thinking. When enabled, responses include thinking content blocks showing Claude's thinking process before the final answer. Requires a minimum budget of 1,024 tokens and counts towards your max_tokens limit.\n\n**Example**:\n```json\n{\n  'thinking': {\n    'type': 'enabled'\n    'budget_tokens': '1024'  }\n}\n```"
+                    },
+                    "web_search_options": {
+                        "type": "object",
+                        "additionalProperties": {},
+                        "description": "Options for web search integration. \n        **Example**:\n        ```json\n        web_search_options={\n            \"search_context_size\": \"medium\"  # Options: \"low\", \"medium\", \"high\"\n        }\n        ```"
+                    }
+                },
+                "required": [
+                    "messages",
+                    "model"
+                ]
+            }
+        },
+        "securitySchemes": {
+            "FeatureApiAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.edenai.run/v2"
+        }
+    ]
+}

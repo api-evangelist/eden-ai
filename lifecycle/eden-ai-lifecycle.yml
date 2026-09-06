@@ -1,0 +1,83 @@
+generated: '2026-09-06'
+method: searched
+source: https://www.edenai.co/docs/v3/general/support
+docs:
+  - https://www.edenai.co/docs/v3/general/support
+  - https://www.edenai.co/docs/v3/overview/plans-prices
+  - https://www.edenai.co/docs/v3/data-governance/data-retention
+description: Versioning, deprecation, status and support commitments as Eden AI publishes them.
+versioning:
+  style: uri-path
+  current_version: v3
+  base_urls:
+    - https://api.edenai.run
+    - https://api.eu.edenai.run
+  previous_version: v2
+  note: >-
+    v3 is the current AI surface. v2 survives for cost monitoring and API-token management and is
+    still the only place several feature contracts are published — the twelve harvested specs
+    include eight v2 feature slices with no v3 per-feature equivalent (the v3 replacement is one
+    model-routed /v3/universal-ai operation).
+deprecation:
+  policy_page: null
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  statements:
+    - scope: v2 API
+      statement: >-
+        "v2 is legacy. Only cost monitoring and user-token management remain on /v2/* — supported
+        through end of 2026. Never use v2 for AI calls."
+      source: skills/eden-ai-edenai.md
+      upstream: https://github.com/edenai/edenai-skill
+      note: >-
+        This is the only end-of-life date Eden AI publishes anywhere, and it appears in the Agent
+        Skill repository rather than in the documentation site. It is a real first-party statement
+        with a real date, so it is recorded — but there is no deprecation-policy page, no
+        Sunset/Deprecation response header, and no `deprecated: true` flag on any operation in any
+        of the twelve first-party specs.
+    - scope: legacy account tokens
+      statement: >-
+        A legacy primary/sandbox key (a JWT in a User column) is regenerated as a real hashed
+        sk-eden custom key via POST /v2/user/custom_token/legacy/{legacy_type}/regenerate/.
+      source: openapi/_original/eden-ai-user-management-openapi.json
+  gap: >-
+    No machine-readable deprecation signal exists. An agent calling a v2 feature endpoint on
+    2027-01-01 gets no advance warning from the API itself.
+status_page:
+  url: https://app-edenai.instatus.com/
+  provider: Instatus
+  subscribable: true
+  http_status: 200
+  checked: '2026-09-06'
+  source: https://www.edenai.co/docs/v3/general/support
+support:
+  channels:
+    - {type: live chat, availability: 'every docs page and the dashboard', sla: 'responses within 48 working hours (Self-serve)'}
+    - {type: dedicated channel with SLA, plan: Advanced AI Platform}
+    - {type: help center, url: 'https://help.edenai.co/en/', http_status: 200}
+    - {type: email, address: support@edenai.co, purpose: GDPR data-subject requests}
+  professional_services:
+    available: true
+    plan: Advanced AI Platform
+sla:
+  published: false
+  note: >-
+    "Dedicated support & SLA" is listed as an Advanced AI Platform benefit, but no uptime target,
+    latency target or credit schedule is published. No number is recorded here.
+changelog:
+  published: false
+  checked:
+    - {url: 'https://changelog.edenai.co', result: 'NXDOMAIN — the host does not resolve; a search engine index of it is stale'}
+    - {url: 'https://www.edenai.co/docs/sitemap.xml', result: 'no changelog / release-notes / version page'}
+    - {url: 'https://www.edenai.co/sitemap.xml', result: 'no changelog path'}
+  note: >-
+    Eden AI announces product changes as dated blog posts under /post/ (e.g. product-update posts,
+    captured in blogs/), but publishes no versioned changelog or release-notes surface. No ChangeLog
+    pointer is emitted.
+retention:
+  async_job_results: 7 days
+  request_response_content: not stored by default (Zero Data Retention)
+  log_retention: opt-in per project from the dashboard
+  training_on_customer_data: false
+  source: https://www.edenai.co/docs/v3/data-governance/data-retention

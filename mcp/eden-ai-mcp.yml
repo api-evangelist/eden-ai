@@ -1,0 +1,96 @@
+generated: '2026-09-06'
+method: probed
+source: https://mcp.edenai.run/mcp
+docs: https://www.edenai.co/docs/v3/expert-models/mcp-server
+name: Eden AI MCP Server
+provider: Eden AI
+status: published
+description: >-
+  Eden AI publishes a hosted, remote Model Context Protocol server that exposes its expert-model
+  catalog (OCR, web, image, text, translation, audio, video) as MCP tools, plus three utility
+  tools. Every tool call is a normal Eden AI expert-model call billed to the key in the
+  Authorization header. tools/list answers ANONYMOUSLY over streamable HTTP, so the full tool
+  catalogue with per-tool inputSchema was captured live rather than inferred from prose.
+deployment:
+  mode: remote
+  endpoint: https://mcp.edenai.run/mcp
+  auth: api-key
+  verified: probed
+transport: streamable-http
+authentication:
+  header: Authorization
+  scheme: Bearer
+  credential: Eden AI API key (sk-eden-...)
+  note: >-
+    tools/list is served without credentials; tools/call bills the key in the Authorization
+    header. No /.well-known/oauth-authorization-server or /.well-known/oauth-protected-resource
+    is served on mcp.edenai.run (both 404 on 2026-09-06).
+x-evidence:
+  fetched: '2026-09-06'
+  url: https://mcp.edenai.run/mcp
+  method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 200
+  content_type: text/event-stream
+  tools_returned: 39
+  verbatim: mcp/eden-ai-mcp-tools.json
+clients_documented:
+  - Claude Code
+  - Codex CLI
+  - Cline
+  - Continue.dev
+  - OpenCode
+  - Hermes Agent
+  - OpenClaw
+conventions:
+  model_parameter: >-
+    Every feature tool takes `model` as "provider" or "provider/model"; call list_models for the
+    exact names, pricing and regions.
+  file_parameters: File parameters take a public URL or a file ID returned by upload_file.
+  long_running: >-
+    Async feature tools return a job id immediately; poll check_job until status is success or fail.
+tools:
+  utility:
+    - name: list_models
+      description: List available providers/models and their pricing.
+    - name: upload_file
+      description: Upload a file to Eden AI and get a file ID to use in other tools.
+    - name: check_job
+      description: Fetch the status and result of a long-running tool's job.
+  feature:
+    - text_ai_detection
+    - text_topic_extraction
+    - text_plagia_detection
+    - text_named_entity_recognition
+    - text_moderation
+    - text_spell_check
+    - web_map
+    - web_search
+    - web_scraping
+    - web_crawl
+    - web_structured_extraction
+    - web_batch_scrape
+    - web_research
+    - ocr
+    - ocr_async
+    - ocr_tables
+    - ocr_identity_parser
+    - ocr_resume_parser
+    - ocr_financial_parser
+    - image_background_removal
+    - image_object_detection
+    - image_ai_detection
+    - image_face_detection
+    - image_generation
+    - image_deepfake_detection
+    - image_face_compare
+    - image_explicit_content
+    - image_anonymization
+    - image_logo_detection
+    - image_face_recognition
+    - translation_automatic_translation
+    - translation_document_translation
+    - audio_tts
+    - audio_speech_to_text
+    - video_deepfake_detection
+    - video_generation
+tool_count: 39

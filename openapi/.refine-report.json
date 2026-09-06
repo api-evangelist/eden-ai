@@ -17,6 +17,13 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
+  "notes": [
+    "eden-ai-audio-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "eden-ai-image-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "eden-ai-ocr-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "eden-ai-text-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "eden-ai-translation-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
   "skipped": []
 }

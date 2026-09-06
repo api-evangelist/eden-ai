@@ -1,16 +1,51 @@
-generated: '2026-07-11'
+generated: '2026-09-06'
 method: searched
 probe: true
 source: https://trust.edenai.co/
 url: https://trust.edenai.co/
+http_status: 200
+platform: Bastion
+description: >-
+  Eden AI runs a public trust center at trust.edenai.co carrying 3 documents, 248 controls and a
+  6-entry FAQ, grouped as Business Operations, Cloud Security, Human Resources and Data.
+posture:
+  zero_data_retention_by_default: true
+  training_on_customer_data: false
+  encryption_in_transit: TLS 1.2 minimum
+  encryption_at_rest: AES-256 via AWS KMS
+  hosting: AWS EU (Paris) region
+  audit_logging: continuous monitoring with tamper-evident audit logging
+  penetration_testing: independent third-party testers
+  incident_response: documented process
 certifications:
-- SOC 2
-- ISO 27001
-- GDPR
+  - name: GDPR
+    status: supported
+    evidence: 'Listed under Compliance on https://trust.edenai.co/; DPA published at https://www.edenai.co/dpa (200)'
+  - name: 'ISO/IEC 27001:2022'
+    status: conflicting
+    evidence: >-
+      Listed under Compliance on https://trust.edenai.co/, and https://www.edenai.co/security states
+      "ISO 27001 certified" — but the trust center's own overview says "GDPR, SOC 2, and ISO 27001
+      audits are in progress" (read 2026-09-06).
+  - name: SOC 2 Type 2
+    status: conflicting
+    evidence: >-
+      https://trust.edenai.co/ labels the SOC 2 Type 2 report "(In progress)" while
+      https://www.edenai.co/security markets "SOC 2 certified".
+discrepancy:
+  observed: '2026-09-06'
+  detail: >-
+    Eden AI's marketing security page asserts SOC 2 and ISO 27001 CERTIFICATION; its own trust
+    center says both audits are IN PROGRESS. Recorded rather than resolved — a procurement reader
+    needs to know the two first-party surfaces disagree. An earlier version of this artifact recorded
+    the certifications flat, without the in-progress qualifier.
+  sources:
+    - {url: 'https://trust.edenai.co/', status: 200}
+    - {url: 'https://www.edenai.co/security', status: 200}
+documents:
+  - {name: Data Processing Agreement, url: 'https://www.edenai.co/dpa', status: 200}
+  - {name: Privacy Policy, url: 'https://www.edenai.co/privacy-policy', status: 200}
+  - {name: Terms & Conditions, url: 'https://www.edenai.co/terms-conditions', status: 200}
 evidence:
-- source: https://trust.edenai.co/
-  keywords:
-  - soc 2
-  - iso 27001
-  - trust center
-  - gdpr
+  - source: https://trust.edenai.co/
+    keywords: [soc 2, iso 27001, gdpr, trust center, zero data retention, aes-256, aws kms, penetration testing]

@@ -1,0 +1,543 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "User Management",
+        "version": "2.0",
+        "description": "Your project description"
+    },
+    "paths": {
+        "/user/custom_token/": {
+            "get": {
+                "operationId": "user_root_list",
+                "summary": "List Tokens",
+                "tags": [
+                    "User Management"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomTokensList"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "user_root_create",
+                "summary": "Create new Token",
+                "tags": [
+                    "User Management"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomTokensCreateRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomTokensCreate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/custom_token/{name}/": {
+            "get": {
+                "operationId": "user_root_retrieve",
+                "summary": "Retrieve Token",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomTokensList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "user_root_partial_update",
+                "summary": "Update Token",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedCustomTokenUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomTokenUpdate"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "user_root_destroy",
+                "summary": "Delete Token",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/user/custom_token/{name}/rotate/": {
+            "post": {
+                "operationId": "user_rotate_create",
+                "description": "Rotate a key's secret in place: same key (name, id, budget, guardrail),\nbrand-new ``sk-eden`` value. The old value stops working immediately; the new\none is returned exactly once. Operates on real ``Token`` rows only — a legacy\nprimary/sandbox key (a JWT in a ``User`` column) is regenerated via\nMigrateLegacyKey instead. Mutating, so the session access token is required —\nno API key can rotate itself or others.",
+                "summary": "Rotate a Token's secret",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "name",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/user/custom_token/legacy/{legacy_type}/regenerate/": {
+            "post": {
+                "operationId": "user_legacy_regenerate_create",
+                "description": "Regenerate a legacy primary/sandbox key — a JWT stored in a ``User`` column,\nnot a ``Token`` row — as a real hashed ``sk-eden`` custom key.\n\nNulls the ``User`` column, which revokes the old JWT immediately in BOTH\nservices (edenai-back matches the column in ``auth.py``; aifeatures re-checks\nit against the column on every request), and mints a new key returned exactly\nonce. The new key's name defaults to \"Production\"/\"Sandbox\" (auto-suffixed to\n\"Production 2\" etc. if that name is already taken) and may be overridden in the\nbody. Session-only and NOT quota-gated — migrating an existing key is never\nblocked, even at the custom-key cap. The old key can't authorize its own\nreplacement.",
+                "summary": "Regenerate a legacy primary/sandbox key",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "legacy_type",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "User Management"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/user/custom_token/me/": {
+            "get": {
+                "operationId": "user_me_retrieve",
+                "description": "Return info about the API key used to authenticate *this* request — its\nlabel, masking, budget and remaining balance. The introspection counterpart\nto OpenRouter's ``GET /key``: authenticated BY the key itself (FeatureAuth),\nnever by a session, and it can only ever see its own row. Key management\n(list/create/rotate/delete) lives on the session-only endpoints.",
+                "summary": "Inspect the calling API key",
+                "tags": [
+                    "User Management"
+                ],
+                "security": [
+                    {
+                        "FeatureApiAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BalanceResetPeriodEnum": {
+                "enum": [
+                    "none",
+                    "daily",
+                    "weekly",
+                    "monthly"
+                ],
+                "type": "string",
+                "description": "* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+            },
+            "CustomTokenUpdate": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "readOnly": true,
+                        "description": "The token name"
+                    },
+                    "token_type": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TokenTypeEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable"
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "balance_reset_amount": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'."
+                    },
+                    "balance_reset_period": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BalanceResetPeriodEnum"
+                            }
+                        ],
+                        "description": "How often this token's balance is reinitialized to balance_reset_amount. 'none' = one-time balance (default, current behaviour).\n\n* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+                    }
+                },
+                "required": [
+                    "name",
+                    "token_type"
+                ]
+            },
+            "CustomTokensCreate": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "balance": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,5}(?:\\.\\d{0,9})?$",
+                        "nullable": true,
+                        "description": "Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable"
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "balance_reset_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,5}(?:\\.\\d{0,9})?$",
+                        "nullable": true,
+                        "description": "The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'."
+                    },
+                    "balance_reset_period": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BalanceResetPeriodEnum"
+                            }
+                        ],
+                        "description": "How often this token's balance is reinitialized to balance_reset_amount. 'none' = one-time balance (default, current behaviour).\n\n* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "CustomTokensCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "balance": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,5}(?:\\.\\d{0,9})?$",
+                        "nullable": true,
+                        "description": "Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable"
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "balance_reset_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,5}(?:\\.\\d{0,9})?$",
+                        "nullable": true,
+                        "description": "The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'."
+                    },
+                    "balance_reset_period": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BalanceResetPeriodEnum"
+                            }
+                        ],
+                        "description": "How often this token's balance is reinitialized to balance_reset_amount. 'none' = one-time balance (default, current behaviour).\n\n* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "CustomTokensList": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "label": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "masked": {
+                        "type": "string",
+                        "description": "Non-secret display value, e.g. ``sk-eden-live…c5d6``. Owns the\nlegacy-JWT vs hash-row duality so every surface (API, admin, shell) masks\nthe same way. Falls back to the last 4 of a legacy row's stored token.",
+                        "readOnly": true
+                    },
+                    "key_prefix": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "last4": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 4
+                    },
+                    "revoked": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable"
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "balance_reset_amount": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'."
+                    },
+                    "balance_reset_period": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BalanceResetPeriodEnum"
+                            }
+                        ],
+                        "description": "How often this token's balance is reinitialized to balance_reset_amount. 'none' = one-time balance (default, current behaviour).\n\n* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+                    },
+                    "legacy": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "synthesized": {
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "label",
+                    "legacy",
+                    "masked",
+                    "name",
+                    "revoked",
+                    "synthesized"
+                ]
+            },
+            "PatchedCustomTokenUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "balance": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable"
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "balance_reset_amount": {
+                        "type": "number",
+                        "format": "double",
+                        "maximum": 100000,
+                        "minimum": -100000,
+                        "exclusiveMaximum": true,
+                        "exclusiveMinimum": true,
+                        "nullable": true,
+                        "description": "The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'."
+                    },
+                    "balance_reset_period": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/BalanceResetPeriodEnum"
+                            }
+                        ],
+                        "description": "How often this token's balance is reinitialized to balance_reset_amount. 'none' = one-time balance (default, current behaviour).\n\n* `none` - None\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly"
+                    }
+                }
+            },
+            "TokenTypeEnum": {
+                "enum": [
+                    "sandbox_api_token",
+                    "api_token"
+                ],
+                "type": "string",
+                "description": "* `sandbox_api_token` - Sandbox\n* `api_token` - Back"
+            }
+        },
+        "securitySchemes": {
+            "FeatureApiAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.edenai.run/v2"
+        }
+    ]
+}

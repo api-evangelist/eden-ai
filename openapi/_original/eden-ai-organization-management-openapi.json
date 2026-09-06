@@ -1,0 +1,764 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Organization Management",
+        "version": "2.0",
+        "description": "Your project description"
+    },
+    "paths": {
+        "/manage/auth-keys/": {
+            "get": {
+                "operationId": "manage_auth_keys_retrieve",
+                "description": "List the org's management keys (issuer + worker), never their secrets. ``manage:mint``.",
+                "tags": [
+                    "auth-keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "manage_auth_keys_create",
+                "description": "``POST /v3/manage/auth-keys`` (manage:mint) -- an ISSUER key mints a new WORKER\n(manage:read/manage:write) key for its own org; the secret is shown ONCE. This is the\nprogrammatic middle of the service->auth->inference chain: an issuer key (born once from the\nowner-authed dashboard) mints short-lived working keys with no human in the loop, which in turn\nmint inference keys via ``POST /manage/keys``.\n\nA minted key can NEVER carry ``manage:mint`` -- an issuer cannot mint another issuer\n(no self-propagation); issuer keys are born only from the session-authed, owner-only dashboard\nendpoint. Enforced twice: the serializer's ``allowed_scopes`` restricts this endpoint to\nread/write, and ``validate_scopes`` on the model rejects any mint/worker mix regardless.",
+                "tags": [
+                    "auth-keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/auth-keys/{key_id}/": {
+            "delete": {
+                "operationId": "manage_auth_keys_destroy",
+                "description": "``DELETE /v3/manage/auth-keys/{key_id}`` (``manage:mint``) -- an issuer revokes a WORKER key it\nmanages (terminal, idempotent). Refuses an ISSUER-key target: issuer keys are born and killed only\nfrom the owner-authed dashboard, mirroring the no-self-propagation rule on mint. Org-scoped: a\nkey_id outside the issuer's org is a 404.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "auth-keys"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/groups/": {
+            "get": {
+                "operationId": "manage_groups_list",
+                "description": "``GET /v3/manage/groups`` -- the org's IdP-synced directory groups and their members, ordered\nby name for a stable page. ``manage:read``, org-scoped. Read-only in v1 (see module docstring).",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedManageGroupList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manage/groups/{external_group_id}/": {
+            "get": {
+                "operationId": "manage_groups_retrieve",
+                "description": "``GET /v3/manage/groups/{external_group_id}`` -- one IdP-synced group and its members, for\nlist+detail parity with ``/keys``. ``manage:read``, org-scoped: a group id not in the calling key's\norg is a 404, never another org's group. Addressed by ``external_group_id`` (the IdP id), like the\nlist; the internal PK is never exposed. ``external_group_id`` is unique per org\n(``unique_together`` with ``organization`` on the model), so the org-scoped lookup matches at most\none row -- ``get_object`` cannot raise ``MultipleObjectsReturned``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "external_group_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "groups"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ManageGroup"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manage/keys/": {
+            "get": {
+                "operationId": "manage_keys_list",
+                "description": "``GET /v3/manage/keys`` (list, ``manage:read``) and ``POST /v3/manage/keys`` (mint an inference\nkey, ``manage:write``). Org-scoped through ``principals_in_org``. Balance is pending-adjusted per\npage on the list; the created secret is returned ONCE in the 201 and never by a read.",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedManagementKeyList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "manage_keys_create",
+                "description": "``GET /v3/manage/keys`` (list, ``manage:read``) and ``POST /v3/manage/keys`` (mint an inference\nkey, ``manage:write``). Org-scoped through ``principals_in_org``. Balance is pending-adjusted per\npage on the list; the created secret is returned ONCE in the 201 and never by a read.",
+                "tags": [
+                    "keys"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ManagementKeyRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ManagementKeyRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ManagementKeyRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ManagementKey"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manage/keys/{key_id}/": {
+            "get": {
+                "operationId": "manage_keys_retrieve",
+                "description": "``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)\nfor one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key's org\nis a 404, not another org's key. DELETE destroys the secret and keeps the row marked revoked (see\n``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ManagementKey"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "manage_keys_partial_update",
+                "description": "``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)\nfor one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key's org\nis a 404, not another org's key. DELETE destroys the secret and keeps the row marked revoked (see\n``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedManagementKeyRequest"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedManagementKeyRequest"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedManagementKeyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ManagementKey"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "manage_keys_destroy",
+                "description": "``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)\nfor one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key's org\nis a 404, not another org's key. DELETE destroys the secret and keeps the row marked revoked (see\n``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/keys/{key_id}/rotate/": {
+            "post": {
+                "operationId": "manage_keys_rotate_create",
+                "description": "``POST /v3/manage/keys/{key_id}/rotate`` (manage:write) -- replace a key's secret in place: same\nidentity (name, key_id, budget, guardrail), a brand-new ``sk-eden`` value returned ONCE. Lets a\ncompliance pipeline roll a secret without reconfiguring the key. Distinct from DELETE: revoke KILLS\n(terminal), rotate RE-SECRETS.\n\nA REVOKED key is a 404 here, never resurrected. ``rotate_key_secret`` clears ``revoked_at`` and\nwrites fresh secret material, so rotating a revoked key would REVIVE it -- the exact one-way-door\nthat revoke depends on. The read filters a revoked (or cross-org, or unknown) key_id to a 404, and\nthe whole rotate runs in a transaction that ``select_for_update``-locks the row: a concurrent DELETE\neither commits its revoke first (``revoked_at`` then filters the row out -> 404) or blocks on the\nlock until the rotate commits and then still wins its own compare-and-set. Without the lock the read\nfilter alone is a check-then-act race -- a rotate that resolved a live key could blind-write a fresh\nsecret AFTER a concurrent revoke landed, resurrecting a terminally-revoked key. So revocation stays\nterminal.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/keys/{key_id}/usage/": {
+            "get": {
+                "operationId": "manage_keys_usage_retrieve",
+                "description": "``GET /v3/manage/keys/{key_id}/usage`` -- usage for one key, filtered by ``custom_token``\nIDENTITY (precise, unlike the dashboard's name filter). A ``key_id`` not in the org is a 404.\nTime-series only. ``manage:read``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "key_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "keys"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/members/": {
+            "get": {
+                "operationId": "manage_members_list",
+                "description": "``GET /v3/manage/members`` — the org's active members and owner. Reuses the\ndashboard's ``OrganisationUsersSerializer`` and the one ``principals_in_org``\ndefinition, so the management plane and the dashboard cannot disagree on who is a\nmember. Ordered by email for a stable page across requests.",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "required": false,
+                        "in": "query",
+                        "description": "The initial index from which to return the results.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "members"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedOrganisationUsersList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/manage/members/{email}/role/": {
+            "patch": {
+                "operationId": "manage_members_role_partial_update",
+                "description": "``PATCH /v3/manage/members/{email}/role`` -- set a member's RBAC role. ``manage:write``,\norg-scoped: the member must be a principal of the calling key's org (else 404). The org owner's\nrole is immutable. Audited (actor = the management key). Returns the updated member in the same\nrepresentation as GET /manage/members.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "email",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "members"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/usage/": {
+            "get": {
+                "operationId": "manage_usage_retrieve",
+                "description": "``GET /v3/manage/usage`` -- organization usage aggregated over History, scoped to the calling\nkey's org (``principals_in_org``). ``manage:read``. ``end`` is exclusive at day granularity; see the\nmodule docstring for the parameter and envelope contract.",
+                "tags": [
+                    "usage"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/manage/whoami/": {
+            "get": {
+                "operationId": "manage_whoami_retrieve",
+                "description": "``GET /v3/manage/whoami`` — the calling key's own organization, scopes and\nexpiry. Requires only a valid management key (no scope), which is enough to prove\nthe auth path end to end. Never returns the secret, its hash, or last4.",
+                "tags": [
+                    "whoami"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ManageGroup": {
+                "type": "object",
+                "description": "A directory-synced group as the management plane exposes it: the stable IdP identifiers plus\nthe member emails. The internal PK is not exposed; ``external_group_id`` is the addressable id.",
+                "properties": {
+                    "external_group_id": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "members": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "external_group_id",
+                    "members",
+                    "name"
+                ]
+            },
+            "ManagementKey": {
+                "type": "object",
+                "description": "An org's inference key as the management plane exposes it. Never the secret or\nits hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).\n\n``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.\nFor a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the\nbatched rollup has not settled, so a management admin must be shown available, not\nsettled (the shipped display-vs-accounting doctrine, mirrored from\n``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled\ndeltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in\n``context[\"pending\"]``; a non-ledger org simply has none, so the add is a no-op.\n\n``id`` is null for an un-migrated legacy key (one still stored as a JWT, no\n``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until\nit is regenerated onto the hashed scheme.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "member": {
+                        "type": "string",
+                        "format": "email",
+                        "readOnly": true
+                    },
+                    "masked": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "balance": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "revoked": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "revoked_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "balance",
+                    "id",
+                    "masked",
+                    "member",
+                    "name",
+                    "revoked"
+                ]
+            },
+            "ManagementKeyRequest": {
+                "type": "object",
+                "description": "An org's inference key as the management plane exposes it. Never the secret or\nits hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).\n\n``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.\nFor a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the\nbatched rollup has not settled, so a management admin must be shown available, not\nsettled (the shipped display-vs-accounting doctrine, mirrored from\n``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled\ndeltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in\n``context[\"pending\"]``; a non-ledger org simply has none, so the add is a no-op.\n\n``id`` is null for an un-migrated legacy key (one still stored as a JWT, no\n``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until\nit is regenerated onto the hashed scheme.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "revoked_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "OrganisationUsers": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true,
+                        "maxLength": 500
+                    },
+                    "fullname": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z\\'\\- ]+$",
+                        "maxLength": 60
+                    },
+                    "is_confirmed": {
+                        "type": "boolean"
+                    },
+                    "role": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "guardrail": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "effective_rate_limit": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "tokens": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "is_org_owner": {
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "directory_groups": {
+                        "type": "string",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "directory_groups",
+                    "effective_rate_limit",
+                    "fullname",
+                    "guardrail",
+                    "is_org_owner",
+                    "role",
+                    "tokens"
+                ]
+            },
+            "PaginatedManageGroupList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=400&limit=100"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=200&limit=100"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ManageGroup"
+                        }
+                    }
+                }
+            },
+            "PaginatedManagementKeyList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=400&limit=100"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=200&limit=100"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ManagementKey"
+                        }
+                    }
+                }
+            },
+            "PaginatedOrganisationUsersList": {
+                "type": "object",
+                "required": [
+                    "count",
+                    "results"
+                ],
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=400&limit=100"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?offset=200&limit=100"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrganisationUsers"
+                        }
+                    }
+                }
+            },
+            "PatchedManagementKeyRequest": {
+                "type": "object",
+                "description": "An org's inference key as the management plane exposes it. Never the secret or\nits hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).\n\n``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.\nFor a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the\nbatched rollup has not settled, so a management admin must be shown available, not\nsettled (the shipped display-vs-accounting doctrine, mirrored from\n``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled\ndeltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in\n``context[\"pending\"]``; a non-ledger org simply has none, so the add is a no-op.\n\n``id`` is null for an un-migrated legacy key (one still stored as a JWT, no\n``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until\nit is regenerated onto the hashed scheme.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The token name",
+                        "maxLength": 200
+                    },
+                    "token_type": {
+                        "$ref": "#/components/schemas/TokenTypeEnum"
+                    },
+                    "active_balance": {
+                        "type": "boolean",
+                        "description": "Weither to use the balance field or not."
+                    },
+                    "expire_time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "revoked_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                }
+            },
+            "TokenTypeEnum": {
+                "enum": [
+                    "sandbox_api_token",
+                    "api_token"
+                ],
+                "type": "string",
+                "description": "* `sandbox_api_token` - Sandbox\n* `api_token` - Back"
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "https://api.edenai.run/v3"
+        }
+    ]
+}

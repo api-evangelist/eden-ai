@@ -1,0 +1,146 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  openapi/_original/eden-ai-v3-openapi.json (87 component schemas) and
+  openapi/_original/eden-ai-organization-management-openapi.json, enriched from
+  https://www.edenai.co/docs/v3/organization/management-api
+description: >-
+  The entity graph an agent has to hold in its head to drive Eden AI. It is small and mostly flat —
+  a gateway's data model is thin by design, because the interesting nouns (models, providers) live
+  in a catalog rather than in the caller's account. The one real hierarchy is on the credential
+  side, where three key tiers mint each other.
+id_conventions:
+  - {entity: inference key, prefix: 'sk-eden-', field: null}
+  - {entity: management key (issuer and worker), prefix: 'mgmt-eden-', field: key_id}
+  - {entity: async job, format: uuid, field: 'job_id (v3) / public_id (v2 list item)'}
+  - {entity: file, format: uuid, field: file_id}
+  - {entity: collection, format: uuid, field: collection_id}
+  - {entity: stored response, format: string, field: 'response_id / id'}
+  - {entity: model, format: 'provider/model-id', field: id}
+entities:
+  - name: Organization
+    schema: null
+    description: The billing and RBAC boundary. Every management operation is org-scoped; a key_id outside the calling key's org is a 404, never another org's row.
+    source: openapi/_original/eden-ai-organization-management-openapi.json
+    relationships:
+      - {type: has_many, target: Member, via: /manage/members}
+      - {type: has_many, target: Group, via: /manage/groups}
+      - {type: has_many, target: ManagementKey, via: /manage/auth-keys}
+      - {type: has_many, target: InferenceKey, via: /manage/keys}
+  - name: Member
+    description: An active member of the org, with an RBAC role. The owner's role is immutable.
+    key: email
+    relationships:
+      - {type: belongs_to, target: Organization}
+      - {type: has_many, target: Group, via: IdP sync}
+  - name: Group
+    description: An IdP-synced directory group and its members. Read-only.
+    key: external_group_id
+    relationships:
+      - {type: belongs_to, target: Organization}
+  - name: ManagementKey
+    description: Issuer or worker (auth) key. An issuer key can only mint; a worker key carries manage:read / manage:write.
+    key: key_id
+    prefix: 'mgmt-eden-'
+    relationships:
+      - {type: belongs_to, target: Organization}
+      - {type: has_many, target: InferenceKey, via: 'POST /manage/keys (manage:write)'}
+      - {type: has_many, target: ManagementKey, via: 'POST /manage/auth-keys (manage:mint) — issuer mints worker only'}
+  - name: InferenceKey
+    description: The credential that spends. Carries name, balance, balance_reset_period, balance_reset_amount, expire_time and a guardrail.
+    key: key_id
+    prefix: 'sk-eden-'
+    relationships:
+      - {type: belongs_to, target: Organization}
+      - {type: has_many, target: Usage, via: '/manage/keys/{key_id}/usage'}
+      - {type: has_one, target: Guardrail}
+  - name: LegacyToken
+    schema: null
+    description: The v2 custom_token row — api_token or sandbox_api_token, addressed by name rather than id.
+    key: name
+    source: openapi/_original/eden-ai-user-management-openapi.json
+    relationships:
+      - {type: belongs_to, target: Organization}
+  - name: File
+    schema: FileResponse
+    key: file_id
+    fields: [file_id, file_name, file_size, file_mimetype, purpose, metadata, created_at, expires_at]
+    description: Persistent uploaded file. Referenced by id from any file parameter on any feature call.
+    relationships:
+      - {type: has_many, target: AsyncJob, via: 'input.file'}
+      - {type: has_many, target: CollectionItem, via: 'AddItemRequest.file'}
+  - name: Collection
+    schema: CollectionResponse
+    key: collection_id
+    fields: [collection_id, model, name]
+    description: >-
+      A provider-side collection (e.g. a face-recognition or image-search index) with a gateway-side
+      ownership row. `model` names the provider the collection lives on.
+    relationships:
+      - {type: has_many, target: CollectionItem, via: '/v3/universal-ai/collections/{collection_id}/items'}
+  - name: CollectionItem
+    schema: ItemsResponse
+    key: item_id
+    description: An item stored in a collection, listed live from the provider.
+    relationships:
+      - {type: belongs_to, target: Collection, via: collection_id}
+      - {type: belongs_to, target: File, via: 'AddItemRequest.file (uuid or url)'}
+  - name: AsyncJob
+    schema: UniversalAIAsyncJobListItem
+    key: job_id
+    fields: [public_id, status, feature, subfeature, provider, model, created_at]
+    description: A long-running Universal AI job. Results retained 7 days, then deleted and unrecoverable.
+    relationships:
+      - {type: belongs_to, target: Model, via: model}
+      - {type: has_one, target: WebhookCallback, via: webhook_receiver}
+  - name: WebhookCallback
+    schema: null
+    description: The signed async_job_completed POST. Not a stored resource — it exists only in flight.
+    source: asyncapi/eden-ai-webhooks.yml
+    relationships:
+      - {type: belongs_to, target: AsyncJob, via: job_id}
+  - name: StoredResponse
+    schema: LLMResponseObject
+    key: response_id
+    fields: [id, object, created_at, model, status, output, usage, cost, provider, previous_response_id, error, metadata]
+    description: >-
+      Server-side conversation state for the Responses API. `previous_response_id` makes this a
+      self-referencing chain — the only recursive relationship in the model.
+    relationships:
+      - {type: belongs_to, target: StoredResponse, via: previous_response_id}
+      - {type: belongs_to, target: Model, via: model}
+  - name: Model
+    schema: ModelObject
+    key: id
+    fields: [id, object, created, owned_by, model_name, context_length, description, source, capabilities, pricing, list_pricing, discount, regions, alias_of]
+    description: >-
+      A catalog entry, not an account-owned resource. `alias_of` links an alias to its canonical
+      model; `regions` carries the residency data the EU endpoint routes on.
+    relationships:
+      - {type: has_one, target: Capabilities, via: capabilities}
+      - {type: has_many, target: Region, via: regions}
+      - {type: belongs_to, target: Model, via: alias_of}
+  - name: Feature
+    schema: FeatureInfo
+    description: An expert-model feature (ocr, image, text, translation, audio, video, web) with its subfeatures.
+    relationships:
+      - {type: has_many, target: Subfeature, via: '/v3/info/{feature}'}
+  - name: Subfeature
+    schema: SubfeatureInfo
+    description: >-
+      The routing unit of the Universal AI endpoint. The `model` string on /v3/universal-ai is
+      "feature/subfeature/provider", so this entity IS the routing key.
+    relationships:
+      - {type: belongs_to, target: Feature}
+graph_notes:
+  - >-
+    There is no Customer/Account entity in the contract. The account is implicit in the bearer key,
+    which is why the key hierarchy carries so much of the model.
+  - >-
+    The model catalog is read-only and shared; nothing a caller creates references it by foreign key
+    except through the free-text `model` string. An agent cannot validate a model name structurally
+    — it has to call list_models (or the MCP list_models tool) first.
+  - >-
+    `previous_response_id` on StoredResponse is the only self-referencing relationship, and it is
+    how multi-turn conversations avoid resending history.
+entity_count: 16
