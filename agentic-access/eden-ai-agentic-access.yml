@@ -1,122 +1,120 @@
-generated: '2026-09-06'
+generated: '2026-09-16'
 method: generated
-source: openapi/_original/eden-ai-v3-openapi.json + openapi/_original/eden-ai-organization-management-openapi.json
-description: Recommended x-agentic-access execution contracts, classified from the FIRST-PARTY Eden AI contracts
-  harvested from api.edenai.run on 2026-09-06. A governance starting point for exposing this API to AI agents —
-  review and bind audience per deployment. REPLACES a 2026-07-15 version built from openapi/_original/eden-ai-openapi.yml,
-  whose nine camelCase operationIds do not appear in anything Eden AI publishes (see provenance.yml).
-risk_notes:
-- Inference operations SPEND MONEY on completion and there is no Idempotency-Key header anywhere in the contract,
-  so a retried call is a second charge. Bound spend per key (balance, balance_reset_period) and with guardrails
-  rather than relying on request-level replay protection.
-- Errors can arrive inside a 2xx when every fallback is exhausted; an agent that treats HTTP 200 as success will
-  bill for and act on failures.
-- A sandbox_api_token gives a true rehearsal mode on the same endpoints at no cost — prefer it for any unattended
-  dry run.
-- DELETE /v3/manage/keys/{key_id} is documented as irreversible.
+source: openapi/eden-ai-ai-detection-api-openapi.yml, openapi/eden-ai-anonymization-api-openapi.yml,
+  openapi/eden-ai-anonymization-async-api-openapi.yml, openapi/eden-ai-anthropic-messages-api-openapi.yml,
+  openapi/eden-ai-audio-api-openapi.yml, openapi/eden-ai-auth-keys-api-openapi.yml, openapi/eden-ai-automatic-translation-api-openapi.yml,
+  openapi/eden-ai-automl-classification-api-openapi.yml, openapi/eden-ai-background-removal-api-openapi.yml,
+  openapi/eden-ai-bank-check-parsing-api-openapi.yml, openapi/eden-ai-chat-api-openapi.yml,
+  openapi/eden-ai-code-generation-api-openapi.yml, openapi/eden-ai-collections-api-openapi.yml,
+  openapi/eden-ai-cost-monitoring-api-openapi.yml, openapi/eden-ai-custom-document-parsing-async-api-openapi.yml,
+  openapi/eden-ai-data-extraction-api-openapi.yml, openapi/eden-ai-deepfake-detection-api-openapi.yml,
+  openapi/eden-ai-deepfake-detection-async-api-openapi.yml, openapi/eden-ai-document-translation-api-openapi.yml,
+  openapi/eden-ai-embeddings-api-openapi.yml, openapi/eden-ai-emotion-detection-api-openapi.yml,
+  openapi/eden-ai-entity-sentiment-api-openapi.yml, openapi/eden-ai-explicit-content-api-openapi.yml,
+  openapi/eden-ai-explicit-content-detection-async-api-openapi.yml, openapi/eden-ai-face-compare-api-openapi.yml,
+  openapi/eden-ai-face-detection-api-openapi.yml, openapi/eden-ai-face-detection-async-api-openapi.yml,
+  openapi/eden-ai-face-recognition-api-openapi.yml, openapi/eden-ai-files-management-api-openapi.yml,
+  openapi/eden-ai-financial-parser-api-openapi.yml, openapi/eden-ai-generation-api-openapi.yml,
+  openapi/eden-ai-generation-async-api-openapi.yml, openapi/eden-ai-groups-api-openapi.yml,
+  openapi/eden-ai-identity-parser-api-openapi.yml, openapi/eden-ai-image-api-openapi.yml, openapi/eden-ai-images-api-openapi.yml,
+  openapi/eden-ai-info-api-openapi.yml, openapi/eden-ai-keys-api-openapi.yml, openapi/eden-ai-keyword-extraction-api-openapi.yml,
+  openapi/eden-ai-label-detection-async-api-openapi.yml, openapi/eden-ai-landmark-detection-api-openapi.yml,
+  openapi/eden-ai-language-detection-api-openapi.yml, openapi/eden-ai-logo-detection-api-openapi.yml,
+  openapi/eden-ai-logo-detection-async-api-openapi.yml, openapi/eden-ai-members-api-openapi.yml,
+  openapi/eden-ai-models-api-openapi.yml, openapi/eden-ai-moderation-api-openapi.yml, openapi/eden-ai-moderations-api-openapi.yml,
+  openapi/eden-ai-named-entity-recognition-api-openapi.yml, openapi/eden-ai-object-detection-api-openapi.yml,
+  openapi/eden-ai-object-tracking-async-api-openapi.yml, openapi/eden-ai-ocr-api-openapi.yml,
+  openapi/eden-ai-ocr-async-api-openapi.yml, openapi/eden-ai-ocr-tables-async-api-openapi.yml,
+  openapi/eden-ai-person-tracking-async-api-openapi.yml, openapi/eden-ai-plagia-detection-api-openapi.yml,
+  openapi/eden-ai-prompt-optimization-api-openapi.yml, openapi/eden-ai-question-answer-api-openapi.yml,
+  openapi/eden-ai-question-answer-async-api-openapi.yml, openapi/eden-ai-responses-api-openapi.yml,
+  openapi/eden-ai-resume-parser-api-openapi.yml, openapi/eden-ai-search-api-openapi.yml, openapi/eden-ai-sentiment-analysis-api-openapi.yml,
+  openapi/eden-ai-shot-change-detection-async-api-openapi.yml, openapi/eden-ai-speech-to-text-async-api-openapi.yml,
+  openapi/eden-ai-spell-check-api-openapi.yml, openapi/eden-ai-summarize-api-openapi.yml, openapi/eden-ai-text-api-openapi.yml,
+  openapi/eden-ai-text-detection-async-api-openapi.yml, openapi/eden-ai-text-to-speech-api-openapi.yml,
+  openapi/eden-ai-text-to-speech-async-api-openapi.yml, openapi/eden-ai-topic-extraction-api-openapi.yml,
+  openapi/eden-ai-translation-api-openapi.yml, openapi/eden-ai-universal-ai-api-openapi.yml,
+  openapi/eden-ai-usage-api-openapi.yml, openapi/eden-ai-user-management-api-openapi.yml, openapi/eden-ai-whoami-api-openapi.yml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
 summary:
-  operations: 53
+  operations: 204
   by_action_class:
-    connected: 25
-    acting: 28
+    acting: 129
+    connected: 75
   by_consequence:
-    read: 25
-    write: 21
-    destructive: 7
-  human_in_the_loop_required: 6
+    write: 129
+    read: 75
+  human_in_the_loop_required: 0
 operations:
-- path: /v3/info
-  method: get
-  operationId: list_features_v3_info_get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/info/{feature}
-  method: get
-  operationId: list_subfeatures_v3_info__feature__get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/info/{feature}/{subfeature}
-  method: get
-  operationId: get_feature_info_v3_info__feature___subfeature__get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/chat/completions
+- path: /image/ai_detection/
   method: post
-  operationId: chat_completions_v3_chat_completions_post
+  operationId: image_ai_detection_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/responses
+    audit: required
+- path: /text/ai_detection/
   method: post
-  operationId: create_response_v3_responses_post
+  operationId: text_ai_detection_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/responses/{response_id}
+    audit: required
+- path: /image/anonymization/
+  method: post
+  operationId: image_anonymization_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/anonymization/
+  method: post
+  operationId: text_anonymization_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/anonymization_async/
   method: get
-  operationId: retrieve_response_v3_responses__response_id__get
+  operationId: ocr_anonymization_async_retrieve
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -124,52 +122,41 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /ocr/anonymization_async/
+  method: post
+  operationId: ocr_anonymization_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/responses/{response_id}
+      - high-value
+    audit: required
+- path: /ocr/anonymization_async/
   method: delete
-  operationId: delete_response_v3_responses__response_id__delete
-  x-agentic-access:
-    action-class: acting
-    consequence: destructive
-    subject: required
-    token:
-      max-ttl: 900
-    audit: required
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - bulk-delete
-      - abnormal
-    reversibility: none
-- path: /v3/moderations
-  method: post
-  operationId: create_moderation_v3_moderations_post
+  operationId: ocr_anonymization_async_destroy
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/moderations/models
+    audit: required
+- path: /ocr/anonymization_async/{public_id}/
   method: get
-  operationId: list_moderation_models_v3_moderations_models_get
+  operationId: ocr_anonymization_async_retrieve_2
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -177,48 +164,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/embeddings
-  method: post
-  operationId: create_embeddings_v3_embeddings_post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    token:
-      max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-      - budget-threshold
-- path: /v3/embeddings/models
-  method: get
-  operationId: list_embeddings_models_v3_embeddings_models_get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/v1/messages
   method: post
   operationId: create_anthropic_message_v3_v1_messages_post
@@ -226,21 +171,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
+    audit: required
 - path: /v3/v1/messages/count_tokens
   method: post
   operationId: count_anthropic_tokens_v3_v1_messages_count_tokens_post
@@ -248,61 +187,34 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/images/generations
-  method: post
-  operationId: image_generations_v3_images_generations_post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    token:
-      max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/images/edits
+    audit: required
+- path: /audio/speech_to_text_async
   method: post
-  operationId: image_edits_v3_images_edits_post
+  operationId: audioSpeechToTextAsyncCreate
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/images/models
+    audit: required
+- path: /audio/speech_to_text_async/{public_id}
   method: get
-  operationId: list_image_models_v3_images_models_get
+  operationId: audioSpeechToTextAsyncGet
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -310,11 +222,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/audio/transcriptions
   method: post
   operationId: audio_transcriptions_v3_audio_transcriptions_post
@@ -322,21 +229,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
+    audit: required
 - path: /v3/audio/transcriptions/models
   method: get
   operationId: list_transcription_models_v3_audio_transcriptions_models_get
@@ -347,11 +248,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/audio/speech
   method: post
   operationId: audio_speech_v3_audio_speech_post
@@ -359,21 +255,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
+    audit: required
 - path: /v3/audio/speech/models
   method: get
   operationId: list_speech_models_v3_audio_speech_models_get
@@ -384,14 +274,9 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/models
+- path: /manage/auth-keys/
   method: get
-  operationId: list_models_v3_models_get
+  operationId: manage_auth_keys_retrieve
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -399,101 +284,332 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/universal-ai
+- path: /manage/auth-keys/
   method: post
-  operationId: universal_ai_v3_universal_ai_post
+  operationId: manage_auth_keys_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
-- path: /v3/universal-ai/async
-  method: post
-  operationId: create_async_job_v3_universal_ai_async_post
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    token:
-      max-ttl: 900
     audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-      - budget-threshold
-- path: /v3/universal-ai/async
-  method: get
-  operationId: list_async_jobs_v3_universal_ai_async_get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/universal-ai/async/{job_id}
-  method: get
-  operationId: get_async_job_v3_universal_ai_async__job_id__get
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/universal-ai/async/{job_id}
+- path: /manage/auth-keys/{key_id}/
   method: delete
-  operationId: delete_async_job_v3_universal_ai_async__job_id__delete
+  operationId: manage_auth_keys_destroy
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
-      - bulk-delete
       - abnormal
-    reversibility: none
+      - high-value
+    audit: required
+- path: /translation/automatic_translation/
+  method: post
+  operationId: translation_automatic_translation_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/create_project/
+  method: post
+  operationId: image_automl_classification_create_project_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/delete_project/
+  method: post
+  operationId: image_automl_classification_delete_project_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/list_projects/
+  method: get
+  operationId: image_automl_classification_list_projects_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/predict_async/
+  method: get
+  operationId: image_automl_classification_predict_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/predict_async/
+  method: post
+  operationId: image_automl_classification_predict_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/predict_async/{public_id}/
+  method: get
+  operationId: image_automl_classification_predict_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/train_async/
+  method: get
+  operationId: image_automl_classification_train_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/train_async/
+  method: post
+  operationId: image_automl_classification_train_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/train_async/{public_id}/
+  method: get
+  operationId: image_automl_classification_train_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/upload_data_async/
+  method: get
+  operationId: image_automl_classification_upload_data_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/automl_classification/upload_data_async/
+  method: post
+  operationId: image_automl_classification_upload_data_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/automl_classification/upload_data_async/{public_id}/
+  method: get
+  operationId: image_automl_classification_upload_data_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/background_removal/
+  method: post
+  operationId: image_background_removal_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/bank_check_parsing/
+  method: post
+  operationId: ocr_bank_check_parsing_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /llm/chat/
+  method: post
+  operationId: llm_chat_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /multimodal/chat/
+  method: post
+  operationId: multimodal_multimodal_chat_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/chat/
+  method: post
+  operationId: text_chat_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/chat/stream/
+  method: post
+  operationId: text_chat_stream_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/chat/completions
+  method: post
+  operationId: chat_completions_v3_chat_completions_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/code_generation/
+  method: post
+  operationId: text_code_generation_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v3/universal-ai/collections
   method: post
   operationId: create_collection_v3_universal_ai_collections_post
@@ -501,21 +617,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
+    audit: required
 - path: /v3/universal-ai/collections
   method: get
   operationId: list_collections_v3_universal_ai_collections_get
@@ -526,11 +636,6 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/universal-ai/collections/{collection_id}
   method: get
   operationId: get_collection_v3_universal_ai_collections__collection_id__get
@@ -541,27 +646,22 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/universal-ai/collections/{collection_id}
   method: delete
   operationId: delete_collection_v3_universal_ai_collections__collection_id__delete
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
-      - bulk-delete
       - abnormal
-    reversibility: none
+      - high-value
+    audit: required
 - path: /v3/universal-ai/collections/{collection_id}/items
   method: post
   operationId: add_item_v3_universal_ai_collections__collection_id__items_post
@@ -569,21 +669,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    spend:
-      billed: true
-      currency: USD
-      cost-field: cost
-      note: Billed on completion. No idempotency key exists, so a retry is a second charge.
-    reversibility: none
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
       - high-value
-      - budget-threshold
+    audit: required
 - path: /v3/universal-ai/collections/{collection_id}/items
   method: get
   operationId: list_items_v3_universal_ai_collections__collection_id__items_get
@@ -594,27 +688,494 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/universal-ai/collections/{collection_id}/items/{item_id}
   method: delete
   operationId: delete_item_v3_universal_ai_collections__collection_id__items__item_id__delete
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
-      - bulk-delete
       - abnormal
-    reversibility: none
+      - high-value
+    audit: required
+- path: /cost_management/
+  method: get
+  operationId: cost_management_root_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /cost_management/credits/
+  method: get
+  operationId: cost_management_<Display Name of your Subfeature>
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/custom_document_parsing_async/
+  method: get
+  operationId: ocr_custom_document_parsing_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/custom_document_parsing_async/
+  method: post
+  operationId: ocr_custom_document_parsing_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/custom_document_parsing_async/
+  method: delete
+  operationId: ocr_custom_document_parsing_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/custom_document_parsing_async/{public_id}/
+  method: get
+  operationId: ocr_custom_document_parsing_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/data_extraction/
+  method: post
+  operationId: ocr_data_extraction_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/deepfake_detection/
+  method: post
+  operationId: image_deepfake_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/deepfake_detection_async/
+  method: get
+  operationId: video_deepfake_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/deepfake_detection_async/
+  method: post
+  operationId: video_deepfake_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/deepfake_detection_async/
+  method: delete
+  operationId: video_deepfake_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/deepfake_detection_async/{public_id}/
+  method: get
+  operationId: video_deepfake_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /translation/document_translation/
+  method: post
+  operationId: translation_document_translation_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/embeddings/
+  method: post
+  operationId: image_embeddings_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/embeddings/
+  method: post
+  operationId: text_embeddings_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/embeddings
+  method: post
+  operationId: create_embeddings_v3_embeddings_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/embeddings/models
+  method: get
+  operationId: list_embeddings_models_v3_embeddings_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/emotion_detection/
+  method: post
+  operationId: text_emotion_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/entity_sentiment/
+  method: post
+  operationId: text_entity_sentiment_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/explicit_content/
+  method: post
+  operationId: image_explicit_content_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/explicit_content_detection_async/
+  method: get
+  operationId: video_explicit_content_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/explicit_content_detection_async/
+  method: post
+  operationId: video_explicit_content_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/explicit_content_detection_async/
+  method: delete
+  operationId: video_explicit_content_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/explicit_content_detection_async/{public_id}/
+  method: get
+  operationId: video_explicit_content_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/face_compare/
+  method: post
+  operationId: image_face_compare_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/face_detection/
+  method: post
+  operationId: image_face_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/face_detection_async/
+  method: get
+  operationId: video_face_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/face_detection_async/
+  method: post
+  operationId: video_face_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/face_detection_async/
+  method: delete
+  operationId: video_face_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/face_detection_async/{public_id}/
+  method: get
+  operationId: video_face_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/face_recognition/add_face/
+  method: post
+  operationId: image_face_recognition_add_face_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/face_recognition/delete_face/
+  method: post
+  operationId: image_face_recognition_delete_face_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/face_recognition/list_faces/
+  method: get
+  operationId: image_face_recognition_list_faces_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/face_recognition/recognize/
+  method: post
+  operationId: image_face_recognition_recognize_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
 - path: /v3/upload
   method: post
   operationId: upload_file_v3_upload_post
@@ -622,14 +1183,15 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
+      - high-value
+    audit: required
 - path: /v3/upload
   method: get
   operationId: list_files_v3_upload_get
@@ -640,27 +1202,22 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
 - path: /v3/upload
   method: delete
   operationId: delete_all_files_v3_upload_delete
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
-      - bulk-delete
       - abnormal
-    reversibility: none
+      - high-value
+    audit: required
 - path: /v3/upload/delete
   method: post
   operationId: delete_files_by_ids_v3_upload_delete_post
@@ -668,17 +1225,50 @@ operations:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/manage/auth-keys/
+      - high-value
+    audit: required
+- path: /ocr/financial_parser/
+  method: post
+  operationId: ocr_financial_parser_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/generation/
+  method: post
+  operationId: image_generation_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/generation_async/
   method: get
-  operationId: manage_auth_keys_retrieve
+  operationId: video_generation_async_retrieve
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -686,48 +1276,49 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/manage/auth-keys/
+- path: /video/generation_async/
   method: post
-  operationId: manage_auth_keys_create
+  operationId: video_generation_async_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:mint
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: rotatable
-- path: /v3/manage/auth-keys/{key_id}/
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/generation_async/
   method: delete
-  operationId: manage_auth_keys_destroy
+  operationId: video_generation_async_destroy
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:mint
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: irreversible
-- path: /v3/manage/groups/
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/generation_async/{public_id}/
+  method: get
+  operationId: video_generation_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /manage/groups/
   method: get
   operationId: manage_groups_list
   x-agentic-access:
@@ -737,12 +1328,7 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/manage/groups/{external_group_id}/
+- path: /manage/groups/{external_group_id}/
   method: get
   operationId: manage_groups_retrieve
   x-agentic-access:
@@ -752,12 +1338,111 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /ocr/identity_parser/
+  method: post
+  operationId: ocr_identity_parser_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/manage/keys/
+      - high-value
+    audit: required
+- path: /image/object_detection
+  method: post
+  operationId: imageObjectDetection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/images/generations
+  method: post
+  operationId: image_generations_v3_images_generations_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/images/edits
+  method: post
+  operationId: image_edits_v3_images_edits_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/images/models
+  method: get
+  operationId: list_image_models_v3_images_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/info
+  method: get
+  operationId: list_features_v3_info_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/info/{feature}
+  method: get
+  operationId: list_subfeatures_v3_info__feature__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/info/{feature}/{subfeature}
+  method: get
+  operationId: get_feature_info_v3_info__feature___subfeature__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /manage/keys/
   method: get
   operationId: manage_keys_list
   x-agentic-access:
@@ -767,30 +1452,23 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/manage/keys/
+- path: /manage/keys/
   method: post
   operationId: manage_keys_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:write
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: rotatable
-- path: /v3/manage/keys/{key_id}/
+      - abnormal
+      - high-value
+    audit: required
+- path: /manage/keys/{key_id}/
   method: get
   operationId: manage_keys_retrieve
   x-agentic-access:
@@ -800,66 +1478,55 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/manage/keys/{key_id}/
+- path: /manage/keys/{key_id}/
   method: patch
   operationId: manage_keys_partial_update
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:write
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: rotatable
-- path: /v3/manage/keys/{key_id}/
+      - abnormal
+      - high-value
+    audit: required
+- path: /manage/keys/{key_id}/
   method: delete
   operationId: manage_keys_destroy
   x-agentic-access:
     action-class: acting
-    consequence: destructive
+    consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:write
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: irreversible
-- path: /v3/manage/keys/{key_id}/rotate/
+      - abnormal
+      - high-value
+    audit: required
+- path: /manage/keys/{key_id}/rotate/
   method: post
   operationId: manage_keys_rotate_create
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
-    scope:
-    - manage:write
     escalation:
-      human-in-the-loop: required
+      human-in-the-loop: conditional
       triggers:
-      - credential-issuance
-      - credential-revocation
-    reversibility: rotatable
-- path: /v3/manage/keys/{key_id}/usage/
+      - abnormal
+      - high-value
+    audit: required
+- path: /manage/keys/{key_id}/usage/
   method: get
   operationId: manage_keys_usage_retrieve
   x-agentic-access:
@@ -869,12 +1536,175 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /text/keyword_extraction/
+  method: post
+  operationId: text_keyword_extraction_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/manage/members/
+      - high-value
+    audit: required
+- path: /video/label_detection_async/
+  method: get
+  operationId: video_label_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/label_detection_async/
+  method: post
+  operationId: video_label_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/label_detection_async/
+  method: delete
+  operationId: video_label_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/label_detection_async/{public_id}/
+  method: get
+  operationId: video_label_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/landmark_detection/
+  method: post
+  operationId: image_landmark_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /translation/language_detection/
+  method: post
+  operationId: translation_language_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/logo_detection/
+  method: post
+  operationId: image_logo_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/logo_detection_async/
+  method: get
+  operationId: video_logo_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/logo_detection_async/
+  method: post
+  operationId: video_logo_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/logo_detection_async/
+  method: delete
+  operationId: video_logo_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/logo_detection_async/{public_id}/
+  method: get
+  operationId: video_logo_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /manage/members/
   method: get
   operationId: manage_members_list
   x-agentic-access:
@@ -884,27 +1714,1025 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
-- path: /v3/manage/members/{email}/role/
+- path: /manage/members/{email}/role/
   method: patch
   operationId: manage_members_role_partial_update
   x-agentic-access:
     action-class: acting
     consequence: write
     subject: required
+    audience: null
     token:
       max-ttl: 900
-    audit: required
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/manage/usage/
+      - high-value
+    audit: required
+- path: /v3/models
+  method: get
+  operationId: list_models_v3_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/moderation/
+  method: post
+  operationId: text_moderation_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/moderations
+  method: post
+  operationId: create_moderation_v3_moderations_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/moderations/models
+  method: get
+  operationId: list_moderation_models_v3_moderations_models_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/named_entity_recognition/
+  method: post
+  operationId: text_named_entity_recognition_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/object_detection/
+  method: post
+  operationId: image_object_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/object_tracking_async/
+  method: get
+  operationId: video_object_tracking_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/object_tracking_async/
+  method: post
+  operationId: video_object_tracking_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/object_tracking_async/
+  method: delete
+  operationId: video_object_tracking_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/object_tracking_async/{public_id}/
+  method: get
+  operationId: video_object_tracking_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/ocr/
+  method: post
+  operationId: ocr_ocr_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr
+  method: post
+  operationId: ocr
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr_async/
+  method: get
+  operationId: ocr_ocr_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/ocr_async/
+  method: post
+  operationId: ocr_ocr_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr_async/
+  method: delete
+  operationId: ocr_ocr_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr_async/{public_id}/
+  method: get
+  operationId: ocr_ocr_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/ocr_tables_async/
+  method: get
+  operationId: ocr_ocr_tables_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /ocr/ocr_tables_async/
+  method: post
+  operationId: ocr_ocr_tables_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr_tables_async/
+  method: delete
+  operationId: ocr_ocr_tables_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/ocr_tables_async/{public_id}/
+  method: get
+  operationId: ocr_ocr_tables_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/person_tracking_async/
+  method: get
+  operationId: video_person_tracking_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/person_tracking_async/
+  method: post
+  operationId: video_person_tracking_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/person_tracking_async/
+  method: delete
+  operationId: video_person_tracking_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/person_tracking_async/{public_id}/
+  method: get
+  operationId: video_person_tracking_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/plagia_detection/
+  method: post
+  operationId: text_plagia_detection_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/prompt_optimization/
+  method: post
+  operationId: text_prompt_optimization_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/question_answer/
+  method: post
+  operationId: image_question_answer_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/question_answer/
+  method: post
+  operationId: video_question_answer_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/question_answer_async/
+  method: get
+  operationId: video_question_answer_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/question_answer_async/
+  method: post
+  operationId: video_question_answer_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/question_answer_async/
+  method: delete
+  operationId: video_question_answer_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/question_answer_async/{public_id}/
+  method: get
+  operationId: video_question_answer_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/responses
+  method: post
+  operationId: create_response_v3_responses_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/responses/{response_id}
+  method: get
+  operationId: retrieve_response_v3_responses__response_id__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/responses/{response_id}
+  method: delete
+  operationId: delete_response_v3_responses__response_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /ocr/resume_parser/
+  method: post
+  operationId: ocr_resume_parser_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/search/delete_image/
+  method: post
+  operationId: image_search_delete_image_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/search/get_image/
+  method: get
+  operationId: image_search_get_image_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/search/get_images/
+  method: get
+  operationId: image_search_get_images_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /image/search/launch_similarity/
+  method: post
+  operationId: image_search_launch_similarity_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /image/search/upload_image/
+  method: post
+  operationId: image_search_upload_image_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/sentiment_analysis/
+  method: post
+  operationId: text_sentiment_analysis_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/shot_change_detection_async/
+  method: get
+  operationId: video_shot_change_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/shot_change_detection_async/
+  method: post
+  operationId: video_shot_change_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/shot_change_detection_async/
+  method: delete
+  operationId: video_shot_change_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/shot_change_detection_async/{public_id}/
+  method: get
+  operationId: video_shot_change_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /audio/speech_to_text_async/
+  method: get
+  operationId: audio_speech_to_text_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /audio/speech_to_text_async/
+  method: post
+  operationId: audio_speech_to_text_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /audio/speech_to_text_async/
+  method: delete
+  operationId: audio_speech_to_text_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /audio/speech_to_text_async/{public_id}/
+  method: get
+  operationId: audio_speech_to_text_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/spell_check/
+  method: post
+  operationId: text_spell_check_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/summarize/
+  method: post
+  operationId: text_summarize_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/sentiment_analysis
+  method: post
+  operationId: textSentimentAnalysis
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/keyword_extraction
+  method: post
+  operationId: textKeywordExtraction
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/named_entity_recognition
+  method: post
+  operationId: textNamedEntityRecognition
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /text/emotion_detection
+  method: post
+  operationId: textEmotionDetection
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/text_detection_async/
+  method: get
+  operationId: video_text_detection_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /video/text_detection_async/
+  method: post
+  operationId: video_text_detection_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/text_detection_async/
+  method: delete
+  operationId: video_text_detection_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /video/text_detection_async/{public_id}/
+  method: get
+  operationId: video_text_detection_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /audio/text_to_speech/
+  method: post
+  operationId: audio_text_to_speech_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /audio/text_to_speech_async/
+  method: get
+  operationId: audio_text_to_speech_async_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /audio/text_to_speech_async/
+  method: post
+  operationId: audio_text_to_speech_async_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /audio/text_to_speech_async/
+  method: delete
+  operationId: audio_text_to_speech_async_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /audio/text_to_speech_async/{public_id}/
+  method: get
+  operationId: audio_text_to_speech_async_retrieve_2
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /text/topic_extraction/
+  method: post
+  operationId: text_topic_extraction_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /translation/automatic_translation
+  method: post
+  operationId: automaticTranslation
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/universal-ai
+  method: post
+  operationId: universal_ai_v3_universal_ai_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/universal-ai/async
+  method: post
+  operationId: create_async_job_v3_universal_ai_async_post
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /v3/universal-ai/async
+  method: get
+  operationId: list_async_jobs_v3_universal_ai_async_get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/universal-ai/async/{job_id}
+  method: get
+  operationId: get_async_job_v3_universal_ai_async__job_id__get
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /v3/universal-ai/async/{job_id}
+  method: delete
+  operationId: delete_async_job_v3_universal_ai_async__job_id__delete
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /manage/usage/
   method: get
   operationId: manage_usage_retrieve
   x-agentic-access:
@@ -914,12 +2742,117 @@ operations:
     token:
       max-ttl: 3600
     audit: none
+- path: /user/custom_token/
+  method: get
+  operationId: user_root_list
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /user/custom_token/
+  method: post
+  operationId: user_root_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
     escalation:
       human-in-the-loop: conditional
       triggers:
       - abnormal
-    reversibility: documented
-- path: /v3/manage/whoami/
+      - high-value
+    audit: required
+- path: /user/custom_token/{name}/
+  method: get
+  operationId: user_root_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /user/custom_token/{name}/
+  method: patch
+  operationId: user_root_partial_update
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /user/custom_token/{name}/
+  method: delete
+  operationId: user_root_destroy
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /user/custom_token/{name}/rotate/
+  method: post
+  operationId: user_rotate_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /user/custom_token/legacy/{legacy_type}/regenerate/
+  method: post
+  operationId: user_legacy_regenerate_create
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /user/custom_token/me/
+  method: get
+  operationId: user_me_retrieve
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /manage/whoami/
   method: get
   operationId: manage_whoami_retrieve
   x-agentic-access:
@@ -929,8 +2862,3 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-    reversibility: documented
