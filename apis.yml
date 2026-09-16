@@ -11,172 +11,1725 @@ apis:
   properties:
   - type: Documentation
     url: https://www.edenai.co/docs
-  description: Eden AI API is a versatile tool that leverages artificial intelligence to enhance and streamline
-    various business processes. By providing access to advanced machine learning and natural language processing
-    capabilities, this API enables businesses to automate tasks, analyze data, and generate valuable insights in
-    real-time.
+  description: >-
+    Eden AI API is a versatile tool that leverages artificial intelligence to enhance and streamline various
+    business processes. By providing access to advanced machine learning and natural language processing
+    capabilities, this API enables businesses to automate tasks, analyze data, and generate valuable insights
+    in real-time.
   baseURL: https://api.edenai.run
-- aid: eden-ai:eden-ai-audio-api
-  name: Eden AI Audio API
-  description: The Audio API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 9 operation(s).
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/audio/tts
-  tags:
-  - Audio
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-audio-features-openapi.json
-  baseURL: https://api.edenai.run/v2
-- aid: eden-ai:eden-ai-image-api
-  name: Eden AI Image API
-  description: The Image API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 34 operation(s).
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/image/generation
-  tags:
-  - Image
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-image-features-openapi.json
-  baseURL: https://api.edenai.run/v2
-- aid: eden-ai:eden-ai-ocr-api
-  name: Eden AI OCR API
-  description: The OCR API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 22 operation(s).
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/ocr/ocr
-  tags:
-  - OCR
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-ocr-features-openapi.json
-  baseURL: https://api.edenai.run/v2
-- aid: eden-ai:eden-ai-text-api
-  name: Eden AI Text API
-  description: The Text API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares 17 operation(s).
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/text/moderation
-  tags:
-  - Text
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-text-features-openapi.json
-  baseURL: https://api.edenai.run/v2
-- aid: eden-ai:eden-ai-translation-api
-  name: Eden AI Translation API
-  description: The Translation API from Eden AI — the first-party OpenAPI harvested from api.edenai.run declares
-    3 operation(s).
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/translation/automatic-translation
-  tags:
-  - Translation
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-translation-features-openapi.json
-  baseURL: https://api.edenai.run/v2
-- aid: eden-ai:eden-ai-v3-api
-  name: Eden AI API V3
-  description: 'The current Eden AI gateway: OpenAI-compatible chat completions, responses, embeddings, moderations,
-    images and audio, an Anthropic Messages pass-through, the model-routed Universal AI expert-model endpoint (sync
-    and async), collections and persistent file storage. 37 operations in the first-party OpenAPI 3.1.0 served at
-    https://api.edenai.run/v3/docs/openapi.json.'
-  humanURL: https://www.edenai.co/docs/v3/overview/ai-gateway
+- aid: eden-ai:eden-ai-ai-detection-api
+  name: Eden AI Ai Detection API
+  description: The Ai Detection API from Eden AI — 2 operation(s) for ai detection.
+  humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
-  - Artificial Intelligence
-  - AI Gateway
-  - LLM
-  - Chat Completions
-  - Embeddings
+  - Ai Detection
   properties:
   - type: OpenAPI
-    url: openapi/_original/eden-ai-v3-openapi.json
-  - type: Overlay
-    url: overlays/eden-ai-v3-overlay.yaml
+    url: openapi/eden-ai-ai-detection-api-openapi.yml
   - type: APIReference
     url: https://www.edenai.co/docs/api-reference/chat/chat-completions
   - type: DataModel
     url: data-model/eden-ai-data-model.yml
   - type: ToolCrosswalk
     url: mcp/eden-ai-tool-crosswalk.yml
-  - type: MCPServer
-    url: mcp/eden-ai-mcp.yml
-- aid: eden-ai:eden-ai-video-api
-  name: Eden AI Video API
-  description: Asynchronous video features on the legacy v2 surface — generation, deepfake detection, explicit-content,
-    face/label/logo/object/person/shot-change/text detection and question answering. 45 operations in the first-party
-    OpenAPI harvested from api.edenai.run.
-  humanURL: https://www.edenai.co/docs/v3/expert-models/features/video/generation-async
-  baseURL: https://api.edenai.run/v2
-  tags:
-  - Video
-  - Artificial Intelligence
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-video-features-openapi.json
-- aid: eden-ai:eden-ai-llm-api
-  name: Eden AI LLM API (v2)
-  description: The legacy v2 LLM chat endpoint. Superseded by the OpenAI-compatible /v3/chat/completions on the
-    v3 gateway.
-  humanURL: https://www.edenai.co/docs/v3/llms/chat-completions
-  baseURL: https://api.edenai.run/v2
-  tags:
-  - LLM
-  - Artificial Intelligence
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-llm-features-openapi.json
-- aid: eden-ai:eden-ai-multimodal-api
-  name: Eden AI Multimodal API
-  description: The legacy v2 multimodal chat endpoint, accepting mixed text and image input across providers.
-  humanURL: https://www.edenai.co/docs/v3/llms/chat-completions
-  baseURL: https://api.edenai.run/v2
-  tags:
-  - Multimodal
-  - Artificial Intelligence
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-multimodal-features-openapi.json
-- aid: eden-ai:eden-ai-user-management-api
-  name: Eden AI User Management API
-  description: Create, list, update, rotate and delete custom API tokens, including sandbox tokens, and introspect
-    the calling key. 8 operations. Eden AI documents v2 as supported for token management through end of 2026.
-  humanURL: https://www.edenai.co/docs/v3/general/custom-api-keys
-  baseURL: https://api.edenai.run/v2
-  tags:
-  - API Keys
-  - Account Management
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-user-management-openapi.json
   - type: Authentication
     url: authentication/eden-ai-authentication.yml
-- aid: eden-ai:eden-ai-cost-monitoring-api
-  name: Eden AI Cost Monitoring API
-  description: Aggregated consumption over time and current credit balance, for FinOps reporting against a multi-provider
-    AI spend.
-  humanURL: https://www.edenai.co/docs/v3/general/monitoring
-  baseURL: https://api.edenai.run/v2
-  tags:
-  - Cost Management
-  - FinOps
-  - Billing
-  properties:
-  - type: OpenAPI
-    url: openapi/_original/eden-ai-cost-monitoring-openapi.json
   - type: FinOps
     url: finops/eden-ai-finops.yml
-- aid: eden-ai:eden-ai-organization-management-api
-  name: Eden AI Organization Management API
-  description: 'The management plane: an issuer key mints scoped worker keys, worker keys mint, rotate and revoke
-    inference keys, and manage-scoped reads cover members, IdP-synced groups and organization usage. 16 operations,
-    scoped by manage:read / manage:write / manage:mint.'
-  humanURL: https://www.edenai.co/docs/v3/organization/management-api
-  baseURL: https://api.edenai.run/v3
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-anonymization-api
+  name: Eden AI Anonymization API
+  description: The Anonymization API from Eden AI — 2 operation(s) for anonymization.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
   tags:
-  - Organization Management
-  - API Keys
-  - RBAC
+  - Anonymization
   properties:
   - type: OpenAPI
-    url: openapi/_original/eden-ai-organization-management-openapi.json
+    url: openapi/eden-ai-anonymization-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-anonymization-async-api
+  name: Eden AI Anonymization Async API
+  description: The Anonymization Async API from Eden AI — 2 operation(s) for anonymization async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Anonymization Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-anonymization-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-anthropic-messages-api
+  name: Eden AI Anthropic Messages API
+  description: The Anthropic Messages API from Eden AI — 2 operation(s) for anthropic messages.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Anthropic Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-anthropic-messages-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-audio-api
+  name: Eden AI Audio API
+  description: The Audio API from Eden AI — 6 operation(s) for audio.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Audio
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-audio-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-auth-keys-api
+  name: Eden AI Auth Keys API
+  description: The auth-keys API from Eden AI — 2 operation(s) for auth-keys.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - auth-keys
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-auth-keys-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-automatic-translation-api
+  name: Eden AI Automatic Translation API
+  description: The Automatic Translation API from Eden AI — 1 operation(s) for automatic translation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Automatic Translation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-automatic-translation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-automl-classification-api
+  name: Eden AI Automl Classification API
+  description: The Automl Classification API from Eden AI — 9 operation(s) for automl classification.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Automl Classification
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-automl-classification-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-background-removal-api
+  name: Eden AI Background Removal API
+  description: The Background Removal API from Eden AI — 1 operation(s) for background removal.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Background Removal
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-background-removal-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-bank-check-parsing-api
+  name: Eden AI Bank Check Parsing API
+  description: The Bank Check Parsing API from Eden AI — 1 operation(s) for bank check parsing.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Bank Check Parsing
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-bank-check-parsing-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-chat-api
+  name: Eden AI Chat API
+  description: The Chat API from Eden AI — 5 operation(s) for chat.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-chat-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-code-generation-api
+  name: Eden AI Code Generation API
+  description: The Code Generation API from Eden AI — 1 operation(s) for code generation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Code Generation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-code-generation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-collections-api
+  name: Eden AI Collections API
+  description: The collections API from Eden AI — 4 operation(s) for collections.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - collections
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-collections-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-cost-monitoring-api
+  name: Eden AI Cost Monitoring API
+  description: The Cost Monitoring API from Eden AI — 2 operation(s) for cost monitoring.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Cost Monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-cost-monitoring-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-custom-document-parsing-async-api
+  name: Eden AI Custom Document Parsing Async API
+  description: >-
+    The Custom Document Parsing Async API from Eden AI — 2 operation(s) for custom document parsing async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Custom Document Parsing Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-custom-document-parsing-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-data-extraction-api
+  name: Eden AI Data Extraction API
+  description: The Data Extraction API from Eden AI — 1 operation(s) for data extraction.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Data Extraction
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-data-extraction-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-deepfake-detection-api
+  name: Eden AI Deepfake Detection API
+  description: The Deepfake Detection API from Eden AI — 1 operation(s) for deepfake detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Deepfake Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-deepfake-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-deepfake-detection-async-api
+  name: Eden AI Deepfake Detection Async API
+  description: >-
+    The Deepfake Detection Async API from Eden AI — 2 operation(s) for deepfake detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Deepfake Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-deepfake-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-document-translation-api
+  name: Eden AI Document Translation API
+  description: The Document Translation API from Eden AI — 1 operation(s) for document translation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Document Translation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-document-translation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-embeddings-api
+  name: Eden AI Embeddings API
+  description: The Embeddings API from Eden AI — 4 operation(s) for embeddings.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Embeddings
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-embeddings-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-emotion-detection-api
+  name: Eden AI Emotion Detection API
+  description: The Emotion Detection API from Eden AI — 1 operation(s) for emotion detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Emotion Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-emotion-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-entity-sentiment-api
+  name: Eden AI Entity Sentiment API
+  description: The Entity Sentiment API from Eden AI — 1 operation(s) for entity sentiment.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Entity Sentiment
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-entity-sentiment-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-explicit-content-api
+  name: Eden AI Explicit Content API
+  description: The Explicit Content API from Eden AI — 1 operation(s) for explicit content.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Explicit Content
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-explicit-content-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-explicit-content-detection-async-api
+  name: Eden AI Explicit Content Detection Async API
+  description: >-
+    The Explicit Content Detection Async API from Eden AI — 2 operation(s) for explicit content detection
+    async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Explicit Content Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-explicit-content-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-face-compare-api
+  name: Eden AI Face Compare API
+  description: The Face Compare API from Eden AI — 1 operation(s) for face compare.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Face Compare
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-face-compare-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-face-detection-api
+  name: Eden AI Face Detection API
+  description: The Face Detection API from Eden AI — 1 operation(s) for face detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Face Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-face-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-face-detection-async-api
+  name: Eden AI Face Detection Async API
+  description: The Face Detection Async API from Eden AI — 2 operation(s) for face detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Face Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-face-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-face-recognition-api
+  name: Eden AI Face Recognition API
+  description: The Face Recognition API from Eden AI — 4 operation(s) for face recognition.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Face Recognition
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-face-recognition-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-files-management-api
+  name: Eden AI files management API
+  description: The files management API from Eden AI — 2 operation(s) for files management.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - files management
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-files-management-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-financial-parser-api
+  name: Eden AI Financial Parser API
+  description: The Financial Parser API from Eden AI — 1 operation(s) for financial parser.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Financial Parser
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-financial-parser-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-generation-api
+  name: Eden AI Generation API
+  description: The Generation API from Eden AI — 1 operation(s) for generation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Generation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-generation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-generation-async-api
+  name: Eden AI Generation Async API
+  description: The Generation Async API from Eden AI — 2 operation(s) for generation async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Generation Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-generation-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-groups-api
+  name: Eden AI Groups API
+  description: The groups API from Eden AI — 2 operation(s) for groups.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - groups
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-groups-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-identity-parser-api
+  name: Eden AI Identity Parser API
+  description: The Identity Parser API from Eden AI — 1 operation(s) for identity parser.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Identity Parser
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-identity-parser-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-image-api
+  name: Eden AI Image API
+  description: The Image API from Eden AI — 1 operation(s) for image.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Image
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-image-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-images-api
+  name: Eden AI Images API
+  description: The Images API from Eden AI — 3 operation(s) for images.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Images
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-images-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-info-api
+  name: Eden AI Info API
+  description: The info API from Eden AI — 3 operation(s) for info.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - info
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-info-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-keys-api
+  name: Eden AI Keys API
+  description: The keys API from Eden AI — 4 operation(s) for keys.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - keys
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-keys-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-keyword-extraction-api
+  name: Eden AI Keyword Extraction API
+  description: The Keyword Extraction API from Eden AI — 1 operation(s) for keyword extraction.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Keyword Extraction
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-keyword-extraction-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-label-detection-async-api
+  name: Eden AI Label Detection Async API
+  description: The Label Detection Async API from Eden AI — 2 operation(s) for label detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Label Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-label-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-landmark-detection-api
+  name: Eden AI Landmark Detection API
+  description: The Landmark Detection API from Eden AI — 1 operation(s) for landmark detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Landmark Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-landmark-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-language-detection-api
+  name: Eden AI Language Detection API
+  description: The Language Detection API from Eden AI — 1 operation(s) for language detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Language Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-language-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-logo-detection-api
+  name: Eden AI Logo Detection API
+  description: The Logo Detection API from Eden AI — 1 operation(s) for logo detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Logo Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-logo-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-logo-detection-async-api
+  name: Eden AI Logo Detection Async API
+  description: The Logo Detection Async API from Eden AI — 2 operation(s) for logo detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Logo Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-logo-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-members-api
+  name: Eden AI Members API
+  description: The members API from Eden AI — 2 operation(s) for members.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - members
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-members-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-models-api
+  name: Eden AI Models API
+  description: The Models API from Eden AI — 1 operation(s) for models.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Models
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-models-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-moderation-api
+  name: Eden AI Moderation API
+  description: The Moderation API from Eden AI — 1 operation(s) for moderation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Moderation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-moderation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-moderations-api
+  name: Eden AI Moderations API
+  description: The Moderations API from Eden AI — 2 operation(s) for moderations.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Moderations
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-moderations-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-named-entity-recognition-api
+  name: Eden AI Named Entity Recognition API
+  description: >-
+    The Named Entity Recognition API from Eden AI — 1 operation(s) for named entity recognition.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Named Entity Recognition
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-named-entity-recognition-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-object-detection-api
+  name: Eden AI Object Detection API
+  description: The Object Detection API from Eden AI — 1 operation(s) for object detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Object Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-object-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-object-tracking-async-api
+  name: Eden AI Object Tracking Async API
+  description: The Object Tracking Async API from Eden AI — 2 operation(s) for object tracking async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Object Tracking Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-object-tracking-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-ocr-api
+  name: Eden AI Ocr API
+  description: The Ocr API from Eden AI — 2 operation(s) for ocr.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Ocr
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-ocr-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-ocr-async-api
+  name: Eden AI Ocr Async API
+  description: The Ocr Async API from Eden AI — 2 operation(s) for ocr async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Ocr Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-ocr-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-ocr-tables-async-api
+  name: Eden AI Ocr Tables Async API
+  description: The Ocr Tables Async API from Eden AI — 2 operation(s) for ocr tables async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Ocr Tables Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-ocr-tables-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-person-tracking-async-api
+  name: Eden AI Person Tracking Async API
+  description: The Person Tracking Async API from Eden AI — 2 operation(s) for person tracking async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Person Tracking Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-person-tracking-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-plagia-detection-api
+  name: Eden AI Plagia Detection API
+  description: The Plagia Detection API from Eden AI — 1 operation(s) for plagia detection.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Plagia Detection
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-plagia-detection-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-prompt-optimization-api
+  name: Eden AI Prompt Optimization API
+  description: The Prompt Optimization API from Eden AI — 1 operation(s) for prompt optimization.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Prompt Optimization
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-prompt-optimization-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-question-answer-api
+  name: Eden AI Question Answer API
+  description: The Question Answer API from Eden AI — 2 operation(s) for question answer.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Question Answer
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-question-answer-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-question-answer-async-api
+  name: Eden AI Question Answer Async API
+  description: The Question Answer Async API from Eden AI — 2 operation(s) for question answer async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Question Answer Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-question-answer-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-responses-api
+  name: Eden AI Responses API
+  description: The Responses API from Eden AI — 2 operation(s) for responses.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Responses
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-responses-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-resume-parser-api
+  name: Eden AI Resume Parser API
+  description: The Resume Parser API from Eden AI — 1 operation(s) for resume parser.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Resume Parser
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-resume-parser-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-search-api
+  name: Eden AI Search API
+  description: The Search API from Eden AI — 5 operation(s) for search.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-search-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-sentiment-analysis-api
+  name: Eden AI Sentiment Analysis API
+  description: The Sentiment Analysis API from Eden AI — 1 operation(s) for sentiment analysis.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Sentiment Analysis
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-sentiment-analysis-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-shot-change-detection-async-api
+  name: Eden AI Shot Change Detection Async API
+  description: >-
+    The Shot Change Detection Async API from Eden AI — 2 operation(s) for shot change detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Shot Change Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-shot-change-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-speech-to-text-async-api
+  name: Eden AI Speech To Text Async API
+  description: The Speech To Text Async API from Eden AI — 2 operation(s) for speech to text async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Speech To Text Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-speech-to-text-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-spell-check-api
+  name: Eden AI Spell Check API
+  description: The Spell Check API from Eden AI — 1 operation(s) for spell check.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Spell Check
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-spell-check-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-summarize-api
+  name: Eden AI Summarize API
+  description: The Summarize API from Eden AI — 1 operation(s) for summarize.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Summarize
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-summarize-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-text-api
+  name: Eden AI Text API
+  description: The Text API from Eden AI — 4 operation(s) for text.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Text
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-text-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-text-detection-async-api
+  name: Eden AI Text Detection Async API
+  description: The Text Detection Async API from Eden AI — 2 operation(s) for text detection async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Text Detection Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-text-detection-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-text-to-speech-api
+  name: Eden AI Text To Speech API
+  description: The Text To Speech API from Eden AI — 1 operation(s) for text to speech.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Text To Speech
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-text-to-speech-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-text-to-speech-async-api
+  name: Eden AI Text To Speech Async API
+  description: The Text To Speech Async API from Eden AI — 2 operation(s) for text to speech async.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Text To Speech Async
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-text-to-speech-async-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-topic-extraction-api
+  name: Eden AI Topic Extraction API
+  description: The Topic Extraction API from Eden AI — 1 operation(s) for topic extraction.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Topic Extraction
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-topic-extraction-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-translation-api
+  name: Eden AI Translation API
+  description: The Translation API from Eden AI — 1 operation(s) for translation.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Translation
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-translation-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-universal-ai-api
+  name: Eden AI Universal AI API
+  description: The universal-ai API from Eden AI — 3 operation(s) for universal-ai.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - universal-ai
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-universal-ai-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-usage-api
+  name: Eden AI Usage API
+  description: The usage API from Eden AI — 1 operation(s) for usage.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - usage
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-usage-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-user-management-api
+  name: Eden AI User Management API
+  description: The User Management API from Eden AI — 5 operation(s) for user management.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - User Management
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-user-management-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
+  - type: OAuthScopes
+    url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-whoami-api
+  name: Eden AI Whoami API
+  description: The whoami API from Eden AI — 1 operation(s) for whoami.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - whoami
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-whoami-api-openapi.yml
+  - type: APIReference
+    url: https://www.edenai.co/docs/api-reference/chat/chat-completions
+  - type: DataModel
+    url: data-model/eden-ai-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/eden-ai-tool-crosswalk.yml
+  - type: Authentication
+    url: authentication/eden-ai-authentication.yml
+  - type: FinOps
+    url: finops/eden-ai-finops.yml
   - type: OAuthScopes
     url: scopes/eden-ai-scopes.yml
 name: Eden AI
 tags:
+- Artificial Intelligence
+- AI Gateway
+- LLM
+- Machine-Learning
+- OCR
+- Translation
+- Speech
+- Computer-Vision
+- MCP
+- Emotion Detection
+tags_raw:
 - Artificial Intelligence
 - AI Gateway
 - LLM
@@ -252,6 +1805,8 @@ maintainers:
   email: kin@apievangelist.com
 specificationVersion: '0.23'
 common:
+- type: Overlay
+  url: overlays/eden-ai-v3-overlay.yaml
 - type: Website
   url: https://www.edenai.co/
 - type: AgenticAccess
