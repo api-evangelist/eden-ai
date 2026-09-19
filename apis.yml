@@ -23,6 +23,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - AI Detection
+  tags_raw:
   - Ai Detection
   properties:
   - type: OpenAPI
@@ -287,6 +289,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Collection
+  tags_raw:
   - collections
   properties:
   - type: OpenAPI
@@ -731,6 +735,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Group
+  tags_raw:
   - groups
   properties:
   - type: OpenAPI
@@ -797,6 +803,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Image
+  tags_raw:
   - Images
   properties:
   - type: OpenAPI
@@ -819,6 +827,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Info
+  tags_raw:
   - info
   properties:
   - type: OpenAPI
@@ -841,6 +851,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Keys
+  tags_raw:
   - keys
   properties:
   - type: OpenAPI
@@ -995,6 +1007,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Members
+  tags_raw:
   - members
   properties:
   - type: OpenAPI
@@ -1150,6 +1164,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - OCR
+  tags_raw:
   - Ocr
   properties:
   - type: OpenAPI
@@ -1547,6 +1563,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Text-to-Speech
+  tags_raw:
   - Text To Speech
   properties:
   - type: OpenAPI
@@ -1657,6 +1675,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Usage
+  tags_raw:
   - usage
   properties:
   - type: OpenAPI
@@ -1701,6 +1721,8 @@ apis:
   humanURL: https://www.edenai.co/docs
   baseURL: https://api.edenai.run
   tags:
+  - Whoami
+  tags_raw:
   - whoami
   properties:
   - type: OpenAPI

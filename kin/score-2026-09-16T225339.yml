@@ -1,0 +1,51 @@
+# Kin Score artifact — eden-ai — 2026-09-16T225339
+# The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
+---
+kin_score:
+  slug: eden-ai
+  schema_version: 0.22.0
+  scored_at: '2026-09-16'
+  run_ts: 2026-09-16T225339
+  composite: 60.7
+  band: strong
+  facets:
+    discoverability: 75.9
+    contract_quality: 66.0
+    contract_governance: 18.2
+    operational_transparency: 31.6
+    developer_ergonomics: 78.6
+    access_clarity: 76.3
+  agent_readiness:
+    score: 47.1
+    band: agent-ready
+    band_gated_from: agent-native
+    dimensions:
+      spec_presence: true
+      agentic_access: derived
+      reversibility_documented: false
+      mcp_server: verified
+      auth_clarity: bearer
+      idempotency: false
+      error_semantics: verified
+      openapi_examples: verified
+      rate_limit_signal: documented
+      event_surface_described: true
+      agent_skills: true
+      well_known_catalog: false
+      consent_identity: false
+      agent_card: false
+      dry_run_mode: false
+      delegated_identity: false
+      protected_resource_metadata: false
+      dynamic_client_registration: false
+      agentic_commerce: false
+  provenance:
+    mcp: first-party
+    skills: first-party
+    agentic_access: derived
+    conformance: first-party
+    contracts:
+      total: 77
+      derived: 0
+      coverage: 0.0
+      callable: 100.0
