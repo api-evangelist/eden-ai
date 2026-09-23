@@ -1,0 +1,565 @@
+openapi: 3.2.0
+info:
+  title: Image Features Face Recognition API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Face Recognition
+paths:
+  /image/face_recognition/add_face/:
+    post:
+      operationId: image_face_recognition_add_face_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 1.26.8`|1.0 (per 1000 image)|1 image'
+      summary: Face Recognition - Add Face
+      tags:
+      - Face Recognition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageface_recognitionadd_faceFaceRecognitionAddFaceRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,amazon,amazon,amazon,amazon,amazon,amazon
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageface_recognitionadd_faceFaceRecognitionAddFaceRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,amazon,amazon,amazon,amazon,amazon,amazon
+                  file: /edenai/edenai/features/image/samples/data/face.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_recognitionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      face_ids:
+                      - 77aefffe-b35b-4379-912c-2a509d8340f5
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+  /image/face_recognition/delete_face/:
+    post:
+      operationId: image_face_recognition_delete_face_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 1.26.8`|free|-'
+      summary: Face Recognition - Delete Face
+      tags:
+      - Face Recognition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageface_recognitiondelete_faceFaceRecognitionDeleteFaceRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,amazon,amazon,amazon,amazon,amazon,amazon
+                  face_id: f73b8ac1-e330-499e-8e6c-897046a36b10
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_recognitionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      deleted: true
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+  /image/face_recognition/list_faces/:
+    get:
+      operationId: image_face_recognition_list_faces_retrieve
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 1.26.8`|free|-'
+      summary: Face Recognition - List Faces
+      parameters:
+      - in: query
+        name: attributes_as_list
+        schema:
+          type: boolean
+          default: false
+        description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+      - in: query
+        name: fallback_providers
+        schema:
+          type: array
+          items:
+            type: string
+          default: []
+          maxItems: 5
+        description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+      - in: query
+        name: providers
+        schema:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+        description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+      - in: query
+        name: settings
+        schema:
+          type: string
+          default: {}
+        description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+        description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+      tags:
+      - Face Recognition
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_recognitionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      collection_id: test_f28ca5a9-48f4-4267-a8a8-1007c0f41f6f
+                      face_ids:
+                      - 211dbf3e-c258-4e58-8a97-0a886a22900d
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+  /image/face_recognition/recognize/:
+    post:
+      operationId: image_face_recognition_recognize_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 1.26.8`|1.0 (per 1000 file)|1 file'
+      summary: Face Recognition - Recognize Face
+      tags:
+      - Face Recognition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageface_recognitionrecognizeFaceRecognitionDetectFaceRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,amazon,amazon,amazon,amazon,amazon,amazon
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageface_recognitionrecognizeFaceRecognitionDetectFaceRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,amazon,amazon,amazon,amazon,amazon,amazon
+                  file: /edenai/edenai/features/image/samples/data/face.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_recognitionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      items:
+                      - confidence: 1.0
+                        face_id: 77aefffe-b35b-4379-912c-2a509d8340f5
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    imageface_recognitionResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/imageface_recognitionFaceRecognitionAddFaceDataClass'
+          default: null
+        facepp:
+          $ref: '#/components/schemas/imageface_recognitionFaceRecognitionAddFaceDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageface_recognitionFaceRecognitionAddFaceDataClass'
+          default: null
+      title: imageface_recognitionResponseModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imageface_recognitionrecognizeFaceRecognitionDetectFaceRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|bmp)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageface_recognitionadd_faceFaceRecognitionAddFaceRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|bmp)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    imageface_recognitionFaceRecognitionAddFaceDataClass:
+      properties:
+        face_ids:
+          items:
+            type: string
+          title: Face Ids
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - face_ids
+      - status
+      title: imageface_recognitionFaceRecognitionAddFaceDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imageface_recognitiondelete_faceFaceRecognitionDeleteFaceRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        face_id:
+          type: string
+          minLength: 1
+          description: ID of face to delete
+      required:
+      - face_id
+      - providers
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

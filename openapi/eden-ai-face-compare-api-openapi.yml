@@ -1,0 +1,300 @@
+openapi: 3.2.0
+info:
+  title: Image Features Face Compare API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Face Compare
+paths:
+  /image/face_compare/:
+    post:
+      operationId: image_face_compare_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**base64**|`latest`|0.25 (per 1 request)|1 request
+
+        |**facepp**|`v3`|2.0 (per 1000 request)|1 request
+
+        |**amazon**|`boto3 (v1.15.18)`|1.0 (per 1000 request)|1 request'
+      summary: Face Comparison
+      tags:
+      - Face Compare
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageface_compareFaceCompareRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: facepp,amazon,base64
+                  file1_url: http://edenai-resource-example.jpg
+                  file2_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageface_compareFaceCompareRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: facepp,amazon,base64
+                  file1: /edenai/edenai/features/image/samples/data/face.jpeg
+                  file2: /edenai/edenai/features/image/samples/data/face.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_compareResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    facepp:
+                      items:
+                      - confidence: 0.97283
+                        bounding_box:
+                          top: 189.0
+                          left: 340.0
+                          height: 348.0
+                          width: 348.0
+                      cost: 0.0
+                    amazon:
+                      items:
+                      - confidence: 1.0
+                        bounding_box:
+                          top: 0.08223077654838562
+                          left: 0.25835734605789185
+                          height: 0.33433008193969727
+                          width: 0.2857730984687805
+                      cost: 0.0
+                    base64:
+                      items:
+                      - confidence: 0.7
+                        bounding_box:
+                          top: 95.0
+                          left: 317.0
+                          height: 432.0
+                          width: 364.0
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FaceMatch:
+      properties:
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/FaceCompareBoundingBox'
+      required:
+      - confidence
+      - bounding_box
+      title: FaceMatch
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageface_compareResponseModel:
+      properties:
+        facepp:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+      title: imageface_compareResponseModel
+      type: object
+    imageface_compareFaceCompareDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FaceMatch'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageface_compareFaceCompareDataClass
+      type: object
+    FaceCompareBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: FaceCompareBoundingBox
+      type: object
+    imageface_compareFaceCompareRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file1:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file1_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file2:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file2_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

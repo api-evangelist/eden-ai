@@ -1,0 +1,376 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Data Extraction API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Data Extraction
+paths:
+  /ocr/data_extraction/:
+    post:
+      operationId: ocr_data_extraction_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 (v1.15.18)`|0.05 (per 1 page)|1 page
+
+        |**base64**|`latest`|0.25 (per 1 page)|1 page'
+      summary: Data Extraction
+      tags:
+      - Data Extraction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ocrdata_extractionDataExtractionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,base64
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ocrdata_extractionDataExtractionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,base64
+                  file: /edenai/edenai/features/ocr/samples/data/invoice.png
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ocrdata_extractionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      fields:
+                      - key: Classification
+                        value: Post
+                        bounding_box:
+                          left: 0.6780509948730469
+                          top: 0.8059332370758057
+                          width: 0.02771328017115593
+                          height: 0.008247338235378265
+                        confidence_score: 1.0
+                      cost: 0.0
+                    base64:
+                      fields:
+                      - key: Company name
+                        value: SC AUCHAN ROMANIA SA
+                        bounding_box:
+                          left: 83.0
+                          top: 90.0
+                          width: 137.0
+                          height: 18.0
+                        confidence_score: 0.99
+                      - key: Company address
+                        value: '1 BUC X 3,60
+
+                          PATE DE'
+                        bounding_box:
+                          left: 10.0
+                          top: 470.0
+                          width: 164.0
+                          height: 37.0
+                        confidence_score: 1.0
+                      - key: Phone number
+                        value: 021-9141
+                        bounding_box:
+                          left: 193.0
+                          top: 1373.0
+                          width: 56.0
+                          height: 15.0
+                        confidence_score: 0.92
+                      - key: Card number
+                        value: 168,95
+                        bounding_box:
+                          left: 13.0
+                          top: 831.0
+                          width: 271.0
+                          height: 21.0
+                        confidence_score: 0.99
+                      - key: Date
+                        value: '2022-04-02'
+                        bounding_box:
+                          left: 11.0
+                          top: 1087.0
+                          width: 120.0
+                          height: 17.0
+                        confidence_score: 1.0
+                      - key: Time
+                        value: '12:29:23'
+                        bounding_box:
+                          left: 230.0
+                          top: 1083.0
+                          width: 59.0
+                          height: 16.0
+                        confidence_score: 1.0
+                      - key: Receipt no
+                        value: 1081-00024
+                        bounding_box:
+                          left: 15.0
+                          top: 1486.0
+                          width: 278.0
+                          height: 18.0
+                        confidence_score: 0.53
+                      - key: Card type
+                        value: Mastercard
+                        bounding_box:
+                          left: 217.0
+                          top: 1026.0
+                          width: 70.0
+                          height: 14.0
+                        confidence_score: 0.99
+                      - key: Tax
+                        value: '24.52'
+                        bounding_box:
+                          left: 14.0
+                          top: 1297.0
+                          width: 145.0
+                          height: 17.0
+                        confidence_score: 0.99
+                      - key: Total
+                        value: '168.95'
+                        bounding_box:
+                          left: 13.0
+                          top: 784.0
+                          width: 271.0
+                          height: 33.0
+                        confidence_score: 0.99
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ocrdata_extractionDataExtractionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ItemDataExtraction:
+      properties:
+        key:
+          title: Key
+          type: string
+        value:
+          title: Value
+        bounding_box:
+          $ref: '#/components/schemas/BoundingBox'
+        confidence_score:
+          maximum: 1
+          minimum: 0
+          title: Confidence Score
+          type: integer
+      required:
+      - key
+      - value
+      - bounding_box
+      - confidence_score
+      title: ItemDataExtraction
+      type: object
+    ocrdata_extractionDataExtractionDataClass:
+      properties:
+        fields:
+          items:
+            $ref: '#/components/schemas/ItemDataExtraction'
+          title: Fields
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: ocrdata_extractionDataExtractionDataClass
+      type: object
+    ocrdata_extractionResponseModel:
+      properties:
+        base64:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+      title: ocrdata_extractionResponseModel
+      type: object
+    BoundingBox:
+      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
+      properties:
+        left:
+          description: Left coordinate of the bounding box
+          title: Left
+          type: integer
+        top:
+          description: Top coordinate of the bounding box
+          title: Top
+          type: integer
+        width:
+          description: Width of the bounding box
+          title: Width
+          type: integer
+        height:
+          description: Height of the bounding box
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: BoundingBox
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

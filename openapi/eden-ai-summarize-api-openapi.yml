@@ -1,0 +1,365 @@
+openapi: 3.2.0
+info:
+  title: Text Features Summarize API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Summarize
+paths:
+  /text/summarize/:
+    post:
+      operationId: text_summarize_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**microsoft**|-|`v3.1`|2.0 (per 1000000 char)|1000 char
+
+        |**openai**|-|`v3.0.0`|60.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-1106**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0314**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-2024-04-09**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0125**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**chatgpt-4o-latest**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0301**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0613**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k-0613**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0125-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0314**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0613**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0613**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-2025-04-14**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini-2025-04-14**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano-2025-04-14**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview-2025-02-27**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-05-13**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-08-06**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-11-20**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-10-01**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-12-17**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2025-06-03**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-2024-07-18**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview-2024-12-17**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview-2024-12-17**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview-2025-03-11**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-10-01**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-12-17**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2025-06-03**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview**|`v3.0.0`|1e-05 (per 1 token)|1…'
+      summary: Summarize
+      tags:
+      - Summarize
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textsummarizeSummarizeRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: microsoft,openai,xai,cohere
+                  output_sentences: 3
+                  text: Barack Hussein Obama is an American politician who served as the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, Obama was the first African-American president of the United States. He previously served as a U.S. senator from Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.
+                  language: en
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textsummarizeResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    microsoft:
+                      result: Barack Hussein Obama is an American politician who served as the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, Obama was the first African-American president of the United States. He previously served as a U.S. senator from Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.
+                      cost: 0.0
+                    openai:
+                      result: Barack Hussein Obama, an American politician, served as the 44th president of the United States from 2009 to 2017. A Democrat, Obama was the first African-American U.S. president. He was also a U.S. senator from Illinois from 2005 to 2008, and an Illinois state senator from 1997 to 2004.
+                      usage:
+                        completion_tokens: 82
+                        prompt_tokens: 300
+                        total_tokens: 382
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    xai:
+                      result: Barack Obama is an American politician who served as the 44th president of the United States from 2009 to 2017. He was the first African-American president and had previously served as a U.S. senator and an Illinois state senator.
+                      cost: 0.0
+                    cohere:
+                      result: '"You have to have a big-picture vision for where you want to go.'
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textsummarizeSummarizeRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+        output_sentences:
+          type: integer
+          minimum: 1
+          default: 1
+      required:
+      - providers
+      - text
+    textsummarizeResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        alephalpha:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        writesonic:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        cohere:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        meaningcloud:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+        emvista:
+          $ref: '#/components/schemas/textsummarizeSummarizeDataClass'
+          default: null
+      title: textsummarizeResponseModel
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textsummarizeSummarizeDataClass:
+      properties:
+        result:
+          title: Result
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - result
+      - status
+      title: textsummarizeSummarizeDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

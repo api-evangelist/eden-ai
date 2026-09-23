@@ -1,0 +1,404 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Bank Check Parsing API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Bank Check Parsing
+paths:
+  /ocr/bank_check_parsing/:
+    post:
+      operationId: ocr_bank_check_parsing_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**base64**|`latest`|0.25 (per 1 page)|1 page
+
+        |**veryfi**|`v8`|0.16 (per 1 request)|1 request
+
+        |**mindee**|`v1`|0.1 (per 1 page)|1 page
+
+        |**extracta**|`v1`|0.1 (per 1 page)|1 page'
+      summary: Bank Check Parsing
+      tags:
+      - Bank Check Parsing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: extracta,veryfi,base64,mindee
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: extracta,veryfi,base64,mindee
+                  file: /edenai/edenai/features/ocr/samples/data/signed_check.jpg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ocrbank_check_parsingResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    extracta:
+                      extracted_data:
+                      - amount: 25.0
+                        amount_text: Twenty-five and no/100 Dollars
+                        bank_address: WASHINGTON'S OLDEST NATIONAL BANK THE FIRST NATIONAL BANK OF WASHINGTON WASHINGTON, D. C.
+                        bank_name: THE FIRST NATIONAL BANK OF WASHINGTON
+                        date: '1975-01-13'
+                        memo: world hunger relief
+                        payer_address: ''
+                        payer_name: HON. GERALD R. FORD MRS. BETTY B. FORD
+                        receiver_address: ''
+                        receiver_name: Presiding Bishop, Episcopal Church
+                        currency: USD
+                        micr:
+                          raw: '0540000414061161160000002500'
+                          account_number: '6116'
+                          routing_number: '05400004'
+                          serial_number: null
+                          check_number: '878'
+                      cost: 0.0
+                    veryfi:
+                      extracted_data:
+                      - amount: 25.0
+                        amount_text: Twenty-five and no/100
+                        bank_address: null
+                        bank_name: 'WASHINGTON''S OLDEST NATIONAL BANK
+
+                          FIRST NATIONAL BANK'
+                        date: null
+                        memo: world hunger relief
+                        payer_address: null
+                        payer_name: 'HON. GERALD R. FORD
+
+                          MRS. BETTY B. FORD'
+                        receiver_address: null
+                        receiver_name: Presiding Bishop, Episcopal Church
+                        currency: null
+                        micr:
+                          raw: A0540D0004A C140611 6C B0000002500B
+                          account_number: null
+                          routing_number: '05400004'
+                          serial_number: null
+                          check_number: '878'
+                      cost: 0.0
+                    base64:
+                      extracted_data:
+                      - amount: 25.0
+                        amount_text: null
+                        bank_address: null
+                        bank_name: null
+                        date: '1975-01-13'
+                        memo: null
+                        payer_address: ''
+                        payer_name: Presiding Bishop,
+                        receiver_address: null
+                        receiver_name: null
+                        currency: USD
+                        micr:
+                          raw: ⑆0540⑉0004⑆6116⑈06116⑈⑇0000002500⑇
+                          account_number: null
+                          routing_number: '06116'
+                          serial_number: null
+                          check_number: '878'
+                      cost: 0.0
+                    mindee:
+                      extracted_data:
+                      - amount: 25.0
+                        amount_text: null
+                        bank_address: null
+                        bank_name: null
+                        date: '2019-10-13'
+                        memo: null
+                        payer_address: null
+                        payer_name: WASHINGTON'S OLDEST NATIONAL BANK FIRST NATIONAL BANK OF WASHINGTON
+                        receiver_address: null
+                        receiver_name: null
+                        currency: null
+                        micr:
+                          raw: null
+                          account_number: '6111611'
+                          routing_number: null
+                          serial_number: null
+                          check_number: ''
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ItemBankCheckParsingDataClass:
+      properties:
+        amount:
+          title: Amount
+          type: integer
+        amount_text:
+          title: Amount Text
+          type: string
+        bank_address:
+          title: Bank Address
+          type: string
+        bank_name:
+          title: Bank Name
+          type: string
+        date:
+          title: Date
+          type: string
+        memo:
+          title: Memo
+          type: string
+        payer_address:
+          title: Payer Address
+          type: string
+        payer_name:
+          title: Payer Name
+          type: string
+        receiver_address:
+          title: Receiver Address
+          type: string
+        receiver_name:
+          title: Receiver Name
+          type: string
+        currency:
+          title: Currency
+          type: string
+        micr:
+          $ref: '#/components/schemas/MicrModel'
+      required:
+      - amount
+      - amount_text
+      - bank_address
+      - bank_name
+      - date
+      - memo
+      - payer_address
+      - payer_name
+      - receiver_address
+      - receiver_name
+      - currency
+      - micr
+      title: ItemBankCheckParsingDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    MicrModel:
+      properties:
+        raw:
+          title: Raw
+          type: string
+        account_number:
+          title: Account Number
+          type: string
+        routing_number:
+          title: Routing Number
+          type: string
+        serial_number:
+          title: Serial Number
+          type: string
+        check_number:
+          title: Check Number
+          type: string
+      required:
+      - raw
+      - account_number
+      - routing_number
+      - serial_number
+      - check_number
+      title: MicrModel
+      type: object
+    ocrbank_check_parsingBankCheckParsingRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ocrbank_check_parsingBankCheckParsingDataClass:
+      properties:
+        extracted_data:
+          items:
+            $ref: '#/components/schemas/ItemBankCheckParsingDataClass'
+          title: Extracted Data
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: ocrbank_check_parsingBankCheckParsingDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    ocrbank_check_parsingResponseModel:
+      properties:
+        mindee:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        veryfi:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+      title: ocrbank_check_parsingResponseModel
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

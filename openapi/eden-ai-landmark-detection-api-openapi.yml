@@ -1,0 +1,319 @@
+openapi: 3.2.0
+info:
+  title: Image Features Landmark Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Landmark Detection
+paths:
+  /image/landmark_detection/:
+    post:
+      operationId: image_landmark_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**google**|`v1`|1.5 (per 1000 file)|1 file
+
+        |**microsoft**|`v3.2`|1.0 (per 1000 file)|1 file'
+      summary: Landmark Detection
+      tags:
+      - Landmark Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,microsoft
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,microsoft
+                  file: /edenai/edenai/features/image/samples/data/landmark.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imagelandmark_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      items:
+                      - description: Saint Basil's Cathedral
+                        confidence: 0.92191577
+                        bounding_box:
+                        - x: 73
+                          y: 175
+                        - x: 410
+                          y: 175
+                        - x: 410
+                          y: 404
+                        - x: 73
+                          y: 404
+                        locations:
+                        - lat_lng:
+                            latitude: 55.752912
+                            longitude: 37.622315883636475
+                      - description: St. Basil's Cathedral
+                        confidence: 0.85232186
+                        bounding_box:
+                        - x: 161
+                          y: 73
+                        - x: 410
+                          y: 73
+                        - x: 410
+                          y: 407
+                        - x: 161
+                          y: 407
+                        locations:
+                        - lat_lng:
+                            latitude: 55.752522899999995
+                            longitude: 37.623086799999996
+                      cost: 0.0
+                    microsoft:
+                      items:
+                      - description: Saint Basil's Cathedral
+                        confidence: 0.9888749122619629
+                        bounding_box: []
+                        locations: []
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    LandmarkVertice:
+      properties:
+        x:
+          title: X
+          type: integer
+        y:
+          title: Y
+          type: integer
+      required:
+      - x
+      - y
+      title: LandmarkVertice
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    LandmarkItem:
+      properties:
+        description:
+          title: Description
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          items:
+            $ref: '#/components/schemas/LandmarkVertice'
+          title: Bounding Box
+          type: array
+        locations:
+          items:
+            $ref: '#/components/schemas/LandmarkLocation'
+          title: Locations
+          type: array
+      required:
+      - description
+      - confidence
+      title: LandmarkItem
+      type: object
+    imagelandmark_detectionLandmarkDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/LandmarkItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagelandmark_detectionLandmarkDetectionDataClass
+      type: object
+    LandmarkLocation:
+      properties:
+        lat_lng:
+          $ref: '#/components/schemas/LandmarkLatLng'
+      required:
+      - lat_lng
+      title: LandmarkLocation
+      type: object
+    LandmarkLatLng:
+      properties:
+        latitude:
+          title: Latitude
+          type: integer
+        longitude:
+          title: Longitude
+          type: integer
+      required:
+      - latitude
+      - longitude
+      title: LandmarkLatLng
+      type: object
+    imagelandmark_detectionResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+      title: imagelandmark_detectionResponseModel
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

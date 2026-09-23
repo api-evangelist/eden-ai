@@ -1,0 +1,468 @@
+openapi: 3.2.0
+info:
+  title: Video Features Deepfake Detection Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Deepfake Detection Async
+paths:
+  /video/deepfake_detection_async/:
+    get:
+      operationId: video_deepfake_detection_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Deepfake Detection List Jobs
+      tags:
+      - Deepfake Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''resemble'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 173f771e-80d4-46a0-8c75-4189d28456fa
+                      state: finished
+                      created_at: '2026-09-06T00:05:16.762132'
+                    - providers: '[''resemble'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 26a9955d-9aee-464a-82d2-31a641f44f62
+                      state: finished
+                      created_at: '2026-09-05T23:05:16.762145'
+                    - providers: '[''resemble'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 5d29d203-3f10-4f4e-a4a5-366792190005
+                      state: finished
+                      created_at: '2026-09-05T22:05:16.762152'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: video_deepfake_detection_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**resemble**|`v2`|0.07 (per 1 seconde)|1 seconde'
+      summary: Deepfake Detection Launch Job
+      tags:
+      - Deepfake Detection Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: resemble
+                  file: /edenai/edenai/features/video/samples/data/faces.mp4
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: resemble
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 45133e7c-d15b-48bd-b2bd-7f3ecddff500
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: video_deepfake_detection_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Deepfake Detection delete Jobs
+      tags:
+      - Deepfake Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /video/deepfake_detection_async/{public_id}/:
+    get:
+      operationId: video_deepfake_detection_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Deepfake Detection Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Deepfake Detection Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncvideodeepfake_detection_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: f070b254-3f40-4e38-97b5-601e5a97ff93
+                    status: finished
+                    error: null
+                    results:
+                      resemble:
+                        error: null
+                        id: 9a36409d-6323-4be7-b283-9ecf2e79bba7
+                        final_status: finished
+                        average_score: 0.02
+                        prediction: original
+                        details_per_frame:
+                        - position: 0.0
+                          score: 0.02
+                          prediction: original
+                        - position: 2000.0
+                          score: 0.03
+                          prediction: original
+                        - position: 4000.0
+                          score: 0.02
+                          prediction: original
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    videodeepfake_detection_asyncModel:
+      properties:
+        resemble:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
+          default: null
+        sightengine:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
+          default: null
+      title: videodeepfake_detection_asyncModel
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    AsyncVideoAnalysisRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mov|mp4|avi)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    DetailPerFrame:
+      properties:
+        position:
+          title: Position
+          type: integer
+        score:
+          maximum: 1
+          minimum: 0
+          title: Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/PredictionEnum'
+          title: Prediction
+      required:
+      - position
+      - score
+      - prediction
+      title: DetailPerFrame
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    asyncvideodeepfake_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideodeepfake_detection_asyncResponseModel
+      type: object
+    videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass:
+      properties:
+        average_score:
+          maximum: 1
+          minimum: 0
+          title: Average Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/PredictionEnum'
+          title: Prediction
+        details_per_frame:
+          items:
+            $ref: '#/components/schemas/DetailPerFrame'
+          title: Details Per Frame
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - average_score
+      - prediction
+      - id
+      - final_status
+      title: videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    PredictionEnum:
+      enum:
+      - deepfake
+      - original
+      type: string
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

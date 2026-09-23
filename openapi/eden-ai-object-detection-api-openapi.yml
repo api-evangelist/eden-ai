@@ -1,0 +1,482 @@
+openapi: 3.2.0
+info:
+  title: Image Features Object Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Object Detection
+paths:
+  /image/object_detection/:
+    post:
+      operationId: image_object_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 (v1.15.18)`|1.0 (per 1000 file)|1 file
+
+        |**api4ai**|`1.9.2`|0.5 (per 1000 file)|1 file
+
+        |**google**|`v1`|2.25 (per 1000 file)|1 file
+
+        |**microsoft**|`v3.2`|1.0 (per 1000 file)|1 file
+
+        |**sentisight**|`v3.3.1`|0.75 (per 1000 file)|1 file'
+      summary: Object Detection
+      tags:
+      - Object Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageobject_detectionObjectDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google,api4ai,microsoft,sentisight
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageobject_detectionObjectDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google,api4ai,microsoft,sentisight
+                  file: /edenai/edenai/features/image/samples/data/objects.png
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageobject_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      items:
+                      - label: Living Room
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Furniture
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Indoors
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Room
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Building
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Architecture
+                        confidence: 1.0
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Couch
+                        confidence: 0.9999996948242188
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Interior Design
+                        confidence: 0.999984130859375
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Table
+                        confidence: 0.9944863891601563
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      - label: Cushion
+                        confidence: 0.9899651336669922
+                        x_min: null
+                        x_max: null
+                        y_min: null
+                        y_max: null
+                      cost: 0.0
+                    google:
+                      items:
+                      - label: Couch
+                        confidence: 0.87114835
+                        x_min: 0.66105765
+                        x_max: 0.9353079
+                        y_min: 0.5171873
+                        y_max: 0.91517144
+                      - label: Couch
+                        confidence: 0.8493409
+                        x_min: 0.3995088
+                        x_max: 0.65442437
+                        y_min: 0.4860921
+                        y_max: 0.6775963
+                      - label: Person
+                        confidence: 0.84032625
+                        x_min: 0.642284
+                        x_max: 0.8311648
+                        y_min: 0.46736634
+                        y_max: 0.77956
+                      - label: Lighting
+                        confidence: 0.679412
+                        x_min: 0.27088618
+                        x_max: 0.33400524
+                        y_min: 0.24709482
+                        y_max: 0.5099434
+                      - label: Lighting
+                        confidence: 0.67128795
+                        x_min: 0.6391575
+                        x_max: 0.73852676
+                        y_min: 0.29109618
+                        y_max: 0.532905
+                      - label: Table
+                        confidence: 0.5540873
+                        x_min: 0.3807793
+                        x_max: 0.6623654
+                        y_min: 0.63843435
+                        y_max: 0.9065644
+                      cost: 0.0
+                    api4ai:
+                      items:
+                      - label: person
+                        confidence: 0.659053385257721
+                        x_min: 0.6336137056350708
+                        x_max: 0.827919602394104
+                        y_min: 0.4696902632713318
+                        y_max: 0.7678610384464264
+                      - label: couch
+                        confidence: 0.455354243516922
+                        x_min: 0.4121762216091156
+                        x_max: 0.6568307876586914
+                        y_min: 0.4908463656902313
+                        y_max: 0.6873724162578583
+                      - label: book
+                        confidence: 0.439803808927536
+                        x_min: 0.4353419542312622
+                        x_max: 0.49192070960998535
+                        y_min: 0.6771218180656433
+                        y_max: 0.7233667559921741
+                      - label: couch
+                        confidence: 0.42072421312332153
+                        x_min: 0.6839652061462402
+                        x_max: 0.949138879776001
+                        y_min: 0.513281524181366
+                        y_max: 0.9183924198150635
+                      - label: book
+                        confidence: 0.3950415849685669
+                        x_min: 0.515918493270874
+                        x_max: 0.5847917795181274
+                        y_min: 0.659927248954773
+                        y_max: 0.7150227092206478
+                      cost: 0.0
+                    microsoft:
+                      items:
+                      - label: couch
+                        confidence: 0.771
+                        x_min: 0.4140625
+                        x_max: 0.6510416666666666
+                        y_min: 0.5120370370370371
+                        y_max: 0.6990740740740741
+                      - label: person
+                        confidence: 0.71
+                        x_min: 0.6541666666666667
+                        x_max: 0.840625
+                        y_min: 0.46944444444444444
+                        y_max: 0.7518518518518519
+                      - label: couch
+                        confidence: 0.699
+                        x_min: 0.6692708333333334
+                        x_max: 0.9359375
+                        y_min: 0.5055555555555555
+                        y_max: 0.925
+                      cost: 0.0
+                    sentisight:
+                      items:
+                      - label: Couch
+                        confidence: 0.8370000000000001
+                        x_min: 0.6567708333333333
+                        x_max: 0.9416666666666667
+                        y_min: 0.5435185185185185
+                        y_max: 0.9120370370370371
+                      - label: Coffee table
+                        confidence: 0.8009999999999999
+                        x_min: 0.3875
+                        x_max: 0.6625
+                        y_min: 0.6444444444444445
+                        y_max: 0.9407407407407408
+                      - label: House
+                        confidence: 0.759
+                        x_min: 0.058333333333333334
+                        x_max: 0.9489583333333333
+                        y_min: 0.08981481481481482
+                        y_max: 0.9546296296296296
+                      - label: Couch
+                        confidence: 0.639
+                        x_min: 0.6109375
+                        x_max: 0.9104166666666667
+                        y_min: 0.5018518518518519
+                        y_max: 0.8185185185185185
+                      - label: Woman
+                        confidence: 0.595
+                        x_min: 0.6489583333333333
+                        x_max: 0.8432291666666667
+                        y_min: 0.45925925925925926
+                        y_max: 0.7916666666666666
+                      - label: Bed
+                        confidence: 0.58
+                        x_min: 0.375
+                        x_max: 0.6645833333333333
+                        y_min: 0.5111111111111111
+                        y_max: 0.8666666666666667
+                      - label: Furniture
+                        confidence: 0.535
+                        x_min: 0.09583333333333334
+                        x_max: 0.3307291666666667
+                        y_min: 0.45
+                        y_max: 0.9027777777777778
+                      - label: Clothing
+                        confidence: 0.493
+                        x_min: 0.6770833333333334
+                        x_max: 0.8291666666666667
+                        y_min: 0.5268518518518519
+                        y_max: 0.7425925925925926
+                      - label: Elephant
+                        confidence: 0.358
+                        x_min: 0.16041666666666668
+                        x_max: 0.2609375
+                        y_min: 0.07962962962962963
+                        y_max: 0.2759259259259259
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    imageobject_detectionObjectDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ObjectItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageobject_detectionObjectDetectionDataClass
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imageobject_detectionResponseModel:
+      properties:
+        clarifai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+      title: imageobject_detectionResponseModel
+      type: object
+    imageobject_detectionObjectDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    ObjectItem:
+      properties:
+        label:
+          title: Label
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - label
+      - confidence
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: ObjectItem
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

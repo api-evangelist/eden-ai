@@ -1,0 +1,32 @@
+# Front Door AI Index — eden-ai — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: eden-ai
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.edenai.co
+  final_host: www.edenai.co
+  ownership: own
+  owner: eden-ai
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 86
+  host_score: 86
+  density: 71.61
+  words: 1201
+  tiers:
+    agentic: 0
+    core: 73
+    model: 13
+  ambiguous: 4
+  top_terms:
+    AI: 68
+    LLMs: 5
+    Claude: 4
+    Gemini: 4
+    OpenAI: 4
+    smart: 3
+    Mistral: 1
+    automation: 1

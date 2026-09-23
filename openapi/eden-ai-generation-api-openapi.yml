@@ -1,0 +1,404 @@
+openapi: 3.2.0
+info:
+  title: Image Features Generation API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Generation
+paths:
+  /image/generation/:
+    post:
+      operationId: image_generation_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Resolution|Price|Billing unit|
+
+        |----|----|-------|------|-----|------------|
+
+        |**openai**|-|`v1Beta`|`1024x1024`|0.034 (per 1 image)|1 image
+
+        |**openai**|**gpt-image-2**|`v1Beta`|`1024x1024`|0.053 (per 1 image)|1 image
+
+        |**openai**|**gpt-image-1**|`v1Beta`|`1024x1024`|0.042 (per 1 image)|None image
+
+        |**openai**|**gpt-image-1.5**|`v1Beta`|`1024x1024`|0.034 (per 1 image)|None image
+
+        |**openai**|**gpt-image-1-mini**|`v1Beta`|`1024x1024`|0.011 (per 1 image)|None image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`1024x1024`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|-|`v1Beta`|`1024x1024`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`1152x896`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`896x1152`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`1216x832`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`1344x768`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`768x1344`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`1536x640`|15.0 (per 1000 image)|1 image
+
+        |**stabilityai**|**stable-diffusion-xl-1024-v1-0**|`v1Beta`|`640x1536`|15.0 (per 1000 image)|1 image
+
+        |**replicate**|**anime-style**|`v1`|`1024x1024`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**anime-style**|`v1`|`256x256`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|-|`v1`|-|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**classic**|`v1`|`512x512`|0.00115 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**anime-style**|`v1`|`512x512`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**vintedois-diffusion**|`v1`|`512x512`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**vintedois-diffusion**|`v1`|`1024x1024`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**vintedois-diffusion**|`v1`|`256x256`|0.000225 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**classic**|`v1`|`1024x1024`|0.00115 (per 1 exec_time)|1 exec_time
+
+        |**replicate**|**classic**|`v1`|`256x256`|0.00115 (per 1 exec_time)|1 exec_time
+
+        |**leonardo**|**Leonardo Phoenix**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Phoenix**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Lightning XL**|`v1`|`512x512`|0.011 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Lightning XL**|`v1`|`1024x1024`|0.012 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Anime XL**|`v1`|`512x512`|0.011 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Anime XL**|`v1`|`1024x1024`|0.012 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Kino XL**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Kino XL**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Vision XL**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Vision XL**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Diffusion XL**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**Leonardo Diffusion XL**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**AlbedoBase XL**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**AlbedoBase XL**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**SDXL 0.9**|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|**SDXL 0.9**|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|-|`v1`|`512x512`|0.014 (per 1 image)|1 image
+
+        |**leonardo**|-|`v1`|`1024x1024`|0.017 (per 1 image)|1 image
+
+        |**leonardo**|**AlbedoBase XL**|`v1`|-|0.017 (per 1 image)|1 image
+
+        |**minimax**|**image-01**|`v1`|-|0.0035 (per 1 image)|1 image
+
+        |**minimax**|-|`v1`|-|0.0035 (per 1 image)|1 image
+
+        |**bytedance**|**seedream-5-0-260128**|`v3`|-|0.035 (per 1 image)|1 image
+
+        |**bytedance**|**seedream-4-0-250828**|`v3`|-|0.03 (per 1 request)|1…'
+      summary: Image generation
+      tags:
+      - Generation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imagegenerationGenerationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: minimax,bytedance,replicate,stabilityai,openai,google,leonardo
+                  text: A huge red ballon flying outside the city.
+                  resolution: 512x512
+                  num_images: 2
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imagegenerationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    minimax:
+                      items:
+                      - image: /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQECAgICAgQDAgI...
+                        image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/434fe3c4-c8c6-4bfb-9bf1-23a7474fbaa7_.png?Expires=1751877975&Signature=gLlPAazpt5yz3ugjfJ2bbBWs1V8Y57nzuOTm0DacR3JuPQJvOsZ6ElSmS3ra1E~Rq63CsUAtVOz3jsH-OEPgTz9yvZDDr1LSVMjOc18UAP1i~iOzBENC60w29fqe9C92vYX232LTuPYibGKNgn1n6uLGgeUhdap0680DQjlOhdlyeAa386thj1nUzlcA7WXfWjjWvhLreG1FbIBsZlXspMOijwWtiQp6O4i~YN4pcG8mTj85ME4xTztStQAw14nj4nf1AYCr1o1AeqoGs9Trs4EzmbkfmMkbaPWgEVdx8KxS0apssiB-QY5PfdYGFwE2gzydq8O0G92Bqhmwt7lFkw__&Key-Pair-Id=K1F55BTI9AHGIK
+                      usage: null
+                      cost: 0.0
+                    bytedance:
+                      items:
+                      - image: /9j/4AAQSkZJRgABAQAAAQABAAD/4QBjRXhpZgAATU0AKgAAAAgAAQE7AAI...
+                        image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/afb83616-50ec-418c-a338-c695f6d71875_.png?Expires=1752158179&Signature=c4qssfskPiNq6Vgy4AqpV3yX9ShZPrhCc5~27Afp-nHqBGElSDSS8ffD0z0Xq~AdXBm6W8TNMCceVYP2rTC10QDt-8JB9jIWJdWegHFHPccZRmFX7BzrTgFusaAo3k16siIr26frVW5S7wnPhh7znVCoQO6QTRLOuvgm0Na-DT9fcN8t3cmEz2byBNtsbGcm09-uYNSV2-7yoffIRmbGDu~lpnMTqlI--adCqZyIwjZt9OKMfvMHSofl3B8XlIVtMu6J3-6oAnCtoE36idbrkxEiY~cKyRay5UEflHVijR4VvvsvaOWcLpgZpc~sfJl~CD7FzKMBL7J2e2U76mRsIQ__&Key-Pair-Id=K1F55BTI9AHGIK
+                      usage: null
+                      cost: 0.0
+                    replicate:
+                      items:
+                      - image: iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAEAAElEQVR4nKz...
+                        image_resource_url: https://replicate.delivery/pbxt/N8YZSDak4f09EqPuBPSlrO1fZaZba1WMDN1YxwjxQTVjBTzRA/out-0.png
+                      cost: 0.0
+                    stabilityai:
+                      items:
+                      - image: iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAIAAAB7GkOtAAFF12NhQlgAAUX...
+                        image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/58227d17-eb68-4be3-b151-2d040a64ceb7_.png?Expires=1701085264&Signature=LGDhFSnxREut9kiFCz1d2-vwO7davnnS9I4ZdR~bpT9XPu5qPXMwkKljSGrIcfUQfBVMyEp4AwQ6LRu9sNzUO0h3UkavAtufOGT3bVMX2Ba~o8HD44TbteEwoHlN-dGrjqmd9lK2VRRXZC9jhoMnWtOo-H38LdBceDH-h9I9iRO4n8OJ2YBa~1O-u0pkUXzPNK-kpDEZ14yg2X8ATuYXWllBQV-6ZkpB9wUAnGctCgRMsaLpB4Loc9H4GGzE0ORP9CFK6FqDNBEp9pUEaQiOMYb4NYE9VEtI3CaGDP-oIya4eBUKX77aJgspPtNHHfjhiBAYvoA6T4Sz9AJhed8JzA__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    openai:
+                      items:
+                      - image: iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAIAAADwf7zUAAAAimVYSWZNTQA...
+                        image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/73c8cc9b-e1e0-46c7-b7d9-9e909dd37ed9_.png?Expires=1739291944&Signature=UUDEf5ltLup3c8DvedDeIh0dcX1ToNiWjFr32H73~hHbVMlzxOC0E5KTfxhMJlVlQ~xqHLh5JPEz3k~FODMb0PG5AzRAhOgMTziP1FXEu722sqAxjq8os9zdaCR9J1f91YxDIoHkimmGYBS-pUvlYT6HUCfed9gBb5e8W4Z8IyHbwNfiUB56Nr4DQOW4rjdzFTo9ObYWRCCWawdNQ8LapUVYWLWfPO4U0WVdsGqV7wSrIeedg4VmdmRuZK4H8BKmQf-Q99n4DQ4OOOoH9oeiKXQjT9eDfx6WgrEVKroTgaFI3QPQ0dy10NzxqDhDbrJP2t9k9D43qpb3cGsXWDjlUw__&Key-Pair-Id=K1F55BTI9AHGIK
+                      usage:
+                        completion_tokens: 0
+                        prompt_tokens: 0
+                        total_tokens: 0
+                        completion_tokens_details: null
+                        prompt_tokens_details: null
+                      cost: 0.0
+                    google:
+                      items:
+                      - image: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mN...
+                        image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/00000000-0000-0000-0000-000000000000_.png
+                      usage:
+                        completion_tokens: 0
+                        prompt_tokens: 0
+                        total_tokens: 0
+                        completion_tokens_details: null
+                        prompt_tokens_details: null
+                        input_tokens: 0
+                        input_tokens_details:
+                          image_tokens: 0
+                          text_tokens: 0
+                        output_tokens: 0
+                      cost: 0.0
+                    leonardo:
+                      items:
+                      - image: /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQE...
+                        image_resource_url: https://cdn.leonardo.ai/users/c43daf63-80d2-464d-90ed-b15598d10a90/generations/74f1debc-addd-435c-8319-e8ebfa6bf4a0/Leonardo_Phoenix_An_orange_cat_on_a_ball_0.jpg
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    imagegenerationResponseModel:
+      properties:
+        minimax:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        deepai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        leonardo:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        stabilityai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        bytedance:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        replicate:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+      title: imagegenerationResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imagegenerationGenerationDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/GeneratedImageDataClass'
+          title: Items
+          type: array
+        usage:
+          additionalProperties: true
+          default: null
+          title: Usage
+          type: object
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagegenerationGenerationDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imagegenerationGenerationRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Description of the desired image(s).
+        resolution:
+          type: string
+          minLength: 1
+          description: 'The image resolution (ex: 512x512, 1024x1024)'
+          maxLength: 50
+        num_images:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+          description: The number of images to generate. Must be between 1 and 10.
+      required:
+      - providers
+      - resolution
+      - text
+    GeneratedImageDataClass:
+      properties:
+        image:
+          title: Image
+          type: string
+        image_resource_url:
+          title: Image Resource Url
+          type: string
+      required:
+      - image
+      - image_resource_url
+      title: GeneratedImageDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

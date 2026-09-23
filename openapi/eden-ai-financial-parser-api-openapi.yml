@@ -1,0 +1,2987 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Financial Parser API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Financial Parser
+paths:
+  /ocr/financial_parser/:
+    post:
+      operationId: ocr_financial_parser_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Document Type|Price|Billing unit|
+
+        |----|----|-------|------|-----|------------|
+
+        |**affinda**|-|`v3`|`invoice`|0.08 (per 1 page)|1 page
+
+        |**affinda**|-|`v3`|`receipt`|0.07 (per 1 page)|1 page
+
+        |**amazon**|-|`boto3 1.26.8`|-|0.01 (per 1 page)|1 page
+
+        |**base64**|-|`latest`|-|0.25 (per 1 page)|1 page
+
+        |**google**|-|`DocumentAI v1 beta3`|`invoice`|0.01 (per 1 page)|10 page
+
+        |**google**|-|`DocumentAI v1 beta3`|`receipt`|0.01 (per 1 page)|10 page
+
+        |**klippa**|-|`v1`|-|0.1 (per 1 file)|1 file
+
+        |**microsoft**|-|`rest API 4.0 (2024-02-29-preview)`|-|0.01 (per 1 page)|1 page
+
+        |**mindee**|-|`v1.2`|-|0.1 (per 1 page)|1 page
+
+        |**tabscanner**|-|`latest`|-|0.08 (per 1 page)|1 page
+
+        |**veryfi**|-|`v8`|`receipt`|0.08 (per 1 file)|1 file
+
+        |**veryfi**|-|`v8`|`invoice`|0.16 (per 1 file)|1 file
+
+        |**eagledoc**|-|`v1`|-|0.03 (per 1 page)|1 page
+
+        |**extracta**|-|`v1`|-|0.1 (per 1 page)|1 page
+
+        |**openai**|**gpt-4o**|`v1.0`|-|0.04 (per 1 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chinese**|`zh`|
+
+        |**Corsican**|`co`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong**|`hmn`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Kurdish**|`ku`|
+
+        |**Lao**|`lo`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Nyanja**|`ny`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Samoan**|`sm`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Shona**|`sn`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Catalan (Spain)**|`ca-ES`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (China)**|`zh-cn`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|
+
+        |**Chinese (Taiwan)**|`zh-tw`|
+
+        |**Danish (Denmark)**|`da-DK`|
+
+        |**Dutch (Netherlands)**|`nl-NL`|
+
+        |**English (United Kingdom)**|`en-GB`|
+
+        |**English (United States)**|`en-US`|
+
+        |**French (Canada)**|`fr-CA`|
+
+        |**French (France)**|`fr-FR`|
+
+        |**French (Switzerland)**|`fr-CH`|
+
+        |**German (Germany)**|`de-DE`|
+
+        |**German (Switzerland)**|`de-CH`|
+
+        |**Italian (Italy)**|`it-IT`|
+
+        |**Italian (Switzerland)**|`it-CH`|
+
+        |**Portuguese (Portugal)**|`pt-PT`|
+
+        |**Spanish (Spain)**|`es-ES`|
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|'
+      summary: Financial Parser
+      tags:
+      - Financial Parser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ocrfinancial_parserFinancialParserRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: tabscanner,veryfi,openai,microsoft,klippa,extracta,mindee,google,base64,amazon,affinda,eagledoc
+                  language: en
+                  document_type: invoice
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ocrfinancial_parserFinancialParserRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: tabscanner,veryfi,openai,microsoft,klippa,extracta,mindee,google,base64,amazon,affinda,eagledoc
+                  file: /edenai/edenai/features/ocr/samples/data/invoice.png
+                  language: en
+                  document_type: invoice
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ocrfinancial_parserResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    tabscanner:
+                      extracted_data:
+                      - customer_information:
+                          name: null
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: null
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: SAG
+                          address: 344 Main Street Suite 200 Gaithersburg, MD 20878
+                          phone: ''
+                          tax_id: null
+                          id_reference: ''
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: erols.com
+                          registration: null
+                          city: Gaithersburg
+                          country: USA
+                          house_number: '344'
+                          province: MD
+                          street_name: Main Street
+                          zip_code: '20878'
+                          country_code: null
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: 0.0
+                          amount_shipping: null
+                          amount_change: 0.0
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: 0.0
+                          tax_rate: null
+                          discount: 0.0
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: ''
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: null
+                          purchase_order: null
+                          invoice_date: null
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: Field inspection of conruction on 1/19/2003 deficiencies in house conruction,Garage drive way legal support to Attorney to
+                          quantity: 1.0
+                          unit_price: null
+                          unit_type: null
+                          date: null
+                          product_code: ''
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: 0.0
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: invoice
+                      cost: 0.0
+                    veryfi:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: '201 Stan Fey Dr
+
+                            Upper Marlboro, MD 20774'
+                          shipping_address: '201 Stan Fey Drive
+
+                            Upper Marlboro'
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: Sng Engineering
+                          address: '344 Main Street Suite 200
+
+                            Gaithersburg, MD 20878'
+                          phone: 301-548-0055
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          country_code: null
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014-03
+                          purchase_order: null
+                          invoice_date: '2023-12-15 00:00:00'
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: VBFFG-91453
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: USD
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: 'Field inspection of construction on 1/19/2003 deficiencies in house
+
+                            construction, Garage drive way & legal support to Attorney to
+
+                            1/19/2003'
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: invoice
+                      cost: 0.0
+                    openai:
+                      extracted_data:
+                      - customer_information:
+                          name: ABC Company
+                          id_reference: ''
+                          mailling_address: null
+                          billing_address: 789 Pine Avenue, Capital City, TX 78390
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: contact@abccompany.com
+                          phone: 555-9876
+                          vat_number: US123456789
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: www.abccompany.com
+                          remit_to_name: null
+                          city: Capital City
+                          country: US
+                          house_number: '789'
+                          province: ''
+                          street_name: Pine Avenue
+                          zip_code: '78390'
+                          municipality: ''
+                        merchant_information:
+                          name: XYZ Services
+                          address: 123 Maple Street, Shelbyville, TX 75850
+                          phone: 555-1234
+                          tax_id: null
+                          id_reference: ''
+                          vat_number: ''
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: ''
+                          fiscal_number: ''
+                          email: info@xyzservices.com
+                          fax: null
+                          website: www.xyzservices.com
+                          registration: null
+                          city: Shelbyville
+                          country: US
+                          house_number: '123'
+                          province: ''
+                          street_name: Maple Street
+                          zip_code: '75850'
+                          country_code: null
+                        payment_information:
+                          amount_due: 350.0
+                          amount_tip: 0.0
+                          amount_shipping: 20.0
+                          amount_change: 0.0
+                          amount_paid: null
+                          total: 370.0
+                          subtotal: 350.0
+                          total_tax: 20.0
+                          tax_rate: 5.71
+                          discount: 10.0
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: Net 30
+                          payment_method: Bank Transfer
+                          payment_card_number: ''
+                          payment_auth_code: ''
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: INV-67890
+                          purchase_order: null
+                          invoice_date: '2023-09-25T00:00:00'
+                          time: null
+                          invoice_due_date: '2023-10-25'
+                          service_start_date: ''
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: '2023-09-25'
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: USD
+                          currency_exchange_rate: null
+                          country: US
+                          language: EN
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: ''
+                          account_number: ''
+                          routing_number: null
+                          bic: ''
+                        item_lines:
+                        - tax: 15.0
+                          amount_line: 100.0
+                          description: Consulting services
+                          quantity: 1.0
+                          unit_price: 100.0
+                          unit_type: null
+                          date: null
+                          product_code: ''
+                          purchase_order: null
+                          tax_rate: 15.0
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        - tax: 5.0
+                          amount_line: 50.0
+                          description: Maintenance services
+                          quantity: 1.0
+                          unit_price: 50.0
+                          unit_type: null
+                          date: null
+                          product_code: ''
+                          purchase_order: null
+                          tax_rate: 10.0
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        - tax: 0.0
+                          amount_line: 200.0
+                          description: Software subscription
+                          quantity: 1.0
+                          unit_price: 200.0
+                          unit_type: null
+                          date: null
+                          product_code: ''
+                          purchase_order: null
+                          tax_rate: 0.0
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: invoice
+                      cost: 0.0
+                    microsoft:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: null
+                          mailling_address: '201 Stan Fey Dr
+
+                            Upper Marlboro , MD 20774'
+                          billing_address: null
+                          shipping_address: '201 Stan Fey Drive
+
+                            Upper Marlboro'
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: Damita J Goldsmith
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: 'SNG Engineering, Inc.
+
+                            SNG'
+                          address: '344 Main Street Suite 200
+
+                            Gaithersburg, MD 20878'
+                          phone: null
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          country_code: null
+                        payment_information:
+                          amount_due: null
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: on receipt of service
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014- 03
+                          purchase_order: null
+                          invoice_date: '2003-01-20'
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: USD
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: 'Field inspection of construction on 1/19/2003 deficiencies in house
+
+                            construction, Garage drive way & legal support to Attorney to
+
+                            1/19/2003'
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: 1
+                          document_page_number: 1
+                          document_type: invoice
+                      cost: 0.0
+                    klippa:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: ''
+                          mailling_address: null
+                          billing_address: ''
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: ''
+                          phone: ''
+                          vat_number: ''
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: ''
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: ''
+                          country: ''
+                          house_number: ''
+                          province: ''
+                          street_name: ''
+                          zip_code: ''
+                          municipality: ''
+                        merchant_information:
+                          name: Sng Engineering
+                          address: ''
+                          phone: '3015480055'
+                          tax_id: null
+                          id_reference: ''
+                          vat_number: ''
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: ''
+                          fiscal_number: ''
+                          email: ''
+                          fax: null
+                          website: ''
+                          registration: null
+                          city: null
+                          country: US
+                          house_number: ''
+                          province: ''
+                          street_name: ''
+                          zip_code: ''
+                          country_code: null
+                        payment_information:
+                          amount_due: 75000.0
+                          amount_tip: 0.0
+                          amount_shipping: 0.0
+                          amount_change: 0.0
+                          amount_paid: null
+                          total: 75000.0
+                          subtotal: 75000.0
+                          total_tax: 0.0
+                          tax_rate: 0.0
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: ''
+                          payment_card_number: ''
+                          payment_auth_code: ''
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014-03
+                          purchase_order: null
+                          invoice_date: '2003-01-20T00:00:00'
+                          time: null
+                          invoice_due_date: ''
+                          service_start_date: ''
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: '2003-01-20'
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: USD
+                          currency_exchange_rate: null
+                          country: null
+                          language: EN
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: ''
+                          account_number: ''
+                          routing_number: null
+                          bic: ''
+                        item_lines:
+                        - tax: null
+                          amount_line: 75000.0
+                          description: ''
+                          quantity: 1.0
+                          unit_price: 75000.0
+                          unit_type: null
+                          date: null
+                          product_code: ''
+                          purchase_order: null
+                          tax_rate: 0.0
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: invoice
+                      cost: 0.0
+                    extracta:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: 201 Stan Fey Dr Upper Marlboro , MD 20774
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: Upper Marlboro
+                          country: MD
+                          house_number: '201'
+                          province: MD
+                          street_name: Stan Fey Dr
+                          zip_code: '20774'
+                          municipality: null
+                        merchant_information:
+                          name: SNG Engineering, Inc. Consulting Engineers
+                          address: 344 Main Street Suite 200 Gaithersburg, MD 20878
+                          phone: 301.548.0055
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: sng.engineering@erols.com
+                          fax: 301.548.1840
+                          website: null
+                          registration: null
+                          city: Gaithersburg
+                          country: MD
+                          house_number: '344'
+                          province: MD
+                          street_name: Main Street
+                          zip_code: '20878'
+                          country_code: null
+                        payment_information:
+                          amount_due: null
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014- 03
+                          purchase_order: null
+                          invoice_date: '2003-01-20'
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: null
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: Field inspection of construction on 1/19/2003 deficiencies in house construction, Garage drive way & legal support to Attorney to 1/19/2003
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: invoice
+                      cost: 0.0
+                    mindee:
+                      extracted_data:
+                      - customer_information:
+                          name: DAMITA J GOLDSMITH
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: 201 Stan Fey Dr Upper Marlboro MD 20774
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: SNG ENGINEERING, INC.
+                          address: 344 Main Street Suite 200 Gaithersburg.MD 20878
+                          phone: null
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          country_code: null
+                        payment_information:
+                          amount_due: null
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014-03
+                          purchase_order: null
+                          invoice_date: '2013-01-20'
+                          time: null
+                          invoice_due_date: '2013-01-20'
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: Field inspection of construction on 1/19/2003 deficiencies in house
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: 1
+                          document_type: INVOICE
+                      cost: 0.0
+                    google:
+                      extracted_data:
+                      - customer_information:
+                          name: Jessie M Horne
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: '2019 Redbud Drive
+
+                            New York, NY 10011'
+                          shipping_address: '2019 Redbud Drive
+
+                            New York, NY 10011'
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: Machinarium LLC
+                          address: '4490 Oak Drive
+
+                            Albany, NY 12210'
+                          phone: null
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          country_code: null
+                        payment_information:
+                          amount_due: 195.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 204.75
+                          subtotal: null
+                          total_tax: 9.75
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: Payment is due within 15 days
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: INT-001
+                          purchase_order: 2412/2019
+                          invoice_date: '2019-11-02'
+                          time: null
+                          invoice_due_date: '2019-11-26'
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: USD
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 100.0
+                          description: Front and rear brake cables
+                          quantity: 1.0
+                          unit_price: 100.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        - tax: null
+                          amount_line: 50.0
+                          description: New set of pedal arms
+                          quantity: 2.0
+                          unit_price: 25.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        - tax: null
+                          amount_line: 45.0
+                          description: Labor 3hrs
+                          quantity: 3.0
+                          unit_price: 15.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: 1
+                          document_type: invoice_statement
+                      cost: 0.0
+                    base64:
+                      extracted_data:
+                      - customer_information:
+                          name: null
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: null
+                          shipping_address: Same
+                          service_address: null
+                          remittance_address: Same
+                          email: null
+                          phone: (301) 548-0055
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: SIG SNG Engineering, Inc
+                          address: 344 Main Street Suite 200 Gaithersburg, MD 20878
+                          phone: null
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          country_code: null
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: null
+                          purchase_order: 1 Field inspection of
+                          invoice_date: '2003-01-20'
+                          time: null
+                          invoice_due_date: ' receipt of invoice by the owner/contractor.'
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: Field inspection of construction on 1/19/2003 deficiencies in house construction, Garage drive way & legal support to Attorney to 1/19/2003
+                          quantity: null
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: 1
+                          document_page_number: 1
+                          document_type: Invoice
+                      cost: 0.0
+                    amazon:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: null
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: 'SNG Engineering, Inc.
+
+                            Consulting Engineers
+
+                            344 Main Street Suite 200
+
+                            Gaithersburg, MD 20878'
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: null
+                          country: null
+                          house_number: null
+                          province: null
+                          street_name: null
+                          zip_code: null
+                          municipality: null
+                        merchant_information:
+                          name: SNG
+                          address: 'SNG Engineering, Inc.
+
+                            Consulting Engineers
+
+                            344 Main Street Suite 200
+
+                            Gaithersburg, MD 20878'
+                          phone: 301.548.0055
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: null
+                          fax: null
+                          website: null
+                          registration: null
+                          city: Gaithersburg,
+                          country: null
+                          house_number: null
+                          province: MD
+                          street_name: null
+                          zip_code: '20878'
+                          country_code: null
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: null
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: on receipt of service
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014-03
+                          purchase_order: ''
+                          invoice_date: January20, 2003
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: null
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 75000.0
+                          description: 'Field inspection of construction on 1/19/2003 deficiencies in house
+
+                            construction Garage drive way & legal support to Attorney to
+
+                            1/19/2003'
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: 1
+                          document_page_number: 1
+                          document_type: null
+                      cost: 0.0
+                    affinda:
+                      extracted_data:
+                      - customer_information:
+                          name: null
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: 201 Stan Fey Dr Upper Marlboro , MD 20774
+                          shipping_address: Upper Marlboro
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: Upper Marlboro
+                          country: United States
+                          house_number: null
+                          province: Maryland
+                          street_name: Stan Fey Drive
+                          zip_code: '20774'
+                          municipality: null
+                        merchant_information:
+                          name: SNG Engineering, Inc.
+                          address: 344 Main Street Suite 200 Gaithersburg, MD 20878
+                          phone: 301.548.0055
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: sng.engineering@erols.com
+                          fax: null
+                          website: null
+                          registration: null
+                          city: Gaithersburg
+                          country: United States
+                          house_number: null
+                          province: Maryland
+                          street_name: Main Street
+                          zip_code: '20878'
+                          country_code: null
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: null
+                          subtotal: 750.0
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014- 03
+                          purchase_order: null
+                          invoice_date: January20, 2003
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: null
+                          currency_code: USD
+                          currency_exchange_rate: null
+                          country: null
+                          language: null
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: null
+                          description: Field inspection of construction on 1/19/2003 deficiencies in house construction, Garage drive way & legal support to Attorney to
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        - tax: null
+                          amount_line: null
+                          description: 1/19/2003
+                          quantity: null
+                          unit_price: null
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: null
+                        document_metadata:
+                          document_index: null
+                          document_page_number: 1
+                          document_type: null
+                      cost: 0.0
+                    eagledoc:
+                      extracted_data:
+                      - customer_information:
+                          name: Damita J Goldsmith
+                          id_reference: null
+                          mailling_address: null
+                          billing_address: 201 Stan Fey Dr, Upper Marlboro, 20774, MD, US
+                          shipping_address: null
+                          service_address: null
+                          remittance_address: null
+                          email: null
+                          phone: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          pan_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          customer_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          registration_number: null
+                          tax_id: null
+                          website: null
+                          remit_to_name: null
+                          city: Upper Marlboro
+                          country: US
+                          house_number: null
+                          province: MD
+                          street_name: 201 Stan Fey Dr
+                          zip_code: '20774'
+                          municipality: null
+                        merchant_information:
+                          name: SNG Engineering, Inc.
+                          address: 344 Main Street Suite 200, 20878, Gaithersburg, MD, US
+                          phone: null
+                          tax_id: null
+                          id_reference: null
+                          vat_number: null
+                          abn_number: null
+                          gst_number: null
+                          business_number: null
+                          siret_number: null
+                          siren_number: null
+                          pan_number: null
+                          coc_number: null
+                          fiscal_number: null
+                          email: sng.engineering@erols.com
+                          fax: null
+                          website: null
+                          registration: null
+                          city: Gaithersburg
+                          country: null
+                          house_number: null
+                          province: MD
+                          street_name: 344 Main Street Suite 200
+                          zip_code: '20878'
+                          country_code: US
+                        payment_information:
+                          amount_due: 750.0
+                          amount_tip: null
+                          amount_shipping: null
+                          amount_change: null
+                          amount_paid: null
+                          total: 750.0
+                          subtotal: null
+                          total_tax: null
+                          tax_rate: null
+                          discount: null
+                          gratuity: null
+                          service_charge: null
+                          previous_unpaid_balance: null
+                          prior_balance: null
+                          payment_terms: null
+                          payment_method: null
+                          payment_card_number: null
+                          payment_auth_code: null
+                          shipping_handling_charge: null
+                          transaction_number: null
+                          transaction_reference: null
+                        financial_document_information:
+                          invoice_receipt_id: 014-03
+                          purchase_order: null
+                          invoice_date: '2003-01-20'
+                          time: null
+                          invoice_due_date: null
+                          service_start_date: null
+                          service_end_date: null
+                          reference: null
+                          biller_code: null
+                          order_date: null
+                          tracking_number: null
+                          barcodes: []
+                        local:
+                          currency: USD
+                          currency_code: USD
+                          currency_exchange_rate: null
+                          country: US
+                          language: en
+                        bank:
+                          iban: null
+                          swift: null
+                          bsb: null
+                          sort_code: null
+                          account_number: null
+                          routing_number: null
+                          bic: null
+                        item_lines:
+                        - tax: null
+                          amount_line: 750.0
+                          description: Field inspection of construction on 1/19/2003 deficiencies in house
+                          quantity: 1.0
+                          unit_price: 750.0
+                          unit_type: null
+                          date: null
+                          product_code: null
+                          purchase_order: null
+                          tax_rate: null
+                          base_total: null
+                          sub_total: null
+                          discount_amount: null
+                          discount_rate: null
+                          discount_code: null
+                          order_number: null
+                          title: Field inspection of construction on 1/19/2003 deficiencies in house
+                        document_metadata:
+                          document_index: null
+                          document_page_number: null
+                          document_type: Invoice
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    FinancialBankInformation:
+      properties:
+        iban:
+          default: null
+          description: International Bank Account Number.
+          title: Iban
+          type: string
+        swift:
+          default: null
+          description: Society for Worldwide Interbank Financial Telecommunication code.
+          title: Swift
+          type: string
+        bsb:
+          default: null
+          description: Bank State Branch code (Australia).
+          title: Bsb
+          type: string
+        sort_code:
+          default: null
+          description: Sort code for UK banks.
+          title: Sort Code
+          type: string
+        account_number:
+          default: null
+          description: Bank account number.
+          title: Account Number
+          type: string
+        routing_number:
+          default: null
+          description: Routing number for banks in the United States.
+          title: Routing Number
+          type: string
+        bic:
+          default: null
+          description: Bank Identifier Code.
+          title: Bic
+          type: string
+      title: FinancialBankInformation
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FinancialBarcode:
+      properties:
+        value:
+          title: Value
+          type: string
+        type:
+          title: Type
+          type: string
+      required:
+      - value
+      - type
+      title: FinancialBarcode
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ocrfinancial_parserFinancialParserRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          default: invoice
+          description: 'Specify the type of your document. Can be Set to ''auto-detect'' for automatic detection if the provider supports it. Otherwise, the default is ''invoice''.
+
+
+            * `auto-detect` - auto-detect
+
+            * `invoice` - invoice
+
+            * `receipt` - receipt'
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
+    ocrfinancial_parserResponseModel:
+      properties:
+        veryfi:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        tabscanner:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        eagledoc:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        mindee:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        affinda:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        dataleon:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        klippa:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+      title: ocrfinancial_parserResponseModel
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FinancialDocumentInformation:
+      properties:
+        invoice_receipt_id:
+          default: null
+          description: Identifier for the invoice.
+          title: Invoice Receipt Id
+          type: string
+        purchase_order:
+          default: null
+          description: Purchase order related to the document.
+          title: Purchase Order
+          type: string
+        invoice_date:
+          default: null
+          description: Date of the invoice.
+          title: Invoice Date
+          type: string
+        time:
+          default: null
+          description: Time associated with the document.
+          title: Time
+          type: string
+        invoice_due_date:
+          default: null
+          description: Due date for the invoice.
+          title: Invoice Due Date
+          type: string
+        service_start_date:
+          default: null
+          description: Start date of the service associated with the document.
+          title: Service Start Date
+          type: string
+        service_end_date:
+          default: null
+          description: End date of the service associated with the document.
+          title: Service End Date
+          type: string
+        reference:
+          default: null
+          description: Reference number associated with the document.
+          title: Reference
+          type: string
+        biller_code:
+          default: null
+          description: Biller code associated with the document.
+          title: Biller Code
+          type: string
+        order_date:
+          default: null
+          description: Date of the order associated with the document.
+          title: Order Date
+          type: string
+        tracking_number:
+          default: null
+          description: Tracking number associated with the document.
+          title: Tracking Number
+          type: string
+        barcodes:
+          description: List of barcodes associated with the document.
+          items:
+            $ref: '#/components/schemas/FinancialBarcode'
+          title: Barcodes
+          type: array
+      title: FinancialDocumentInformation
+      type: object
+    ocrfinancial_parserFinancialParserDataClass:
+      properties:
+        extracted_data:
+          description: List of parsed financial data objects (per page).
+          items:
+            $ref: '#/components/schemas/FinancialParserObjectDataClass'
+          title: Extracted Data
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: ocrfinancial_parserFinancialParserDataClass
+      type: object
+    FinancialPaymentInformation:
+      properties:
+        amount_due:
+          default: null
+          description: Amount due for payment.
+          title: Amount Due
+          type: integer
+        amount_tip:
+          default: null
+          description: Tip amount in a financial transaction.
+          title: Amount Tip
+          type: integer
+        amount_shipping:
+          default: null
+          description: Shipping cost in a financial transaction.
+          title: Amount Shipping
+          type: integer
+        amount_change:
+          default: null
+          description: Change amount in a financial transaction.
+          title: Amount Change
+          type: integer
+        amount_paid:
+          default: null
+          description: Amount already paid in a financial transaction.
+          title: Amount Paid
+          type: integer
+        total:
+          default: null
+          description: Total amount in the invoice.
+          title: Total
+          type: integer
+        subtotal:
+          default: null
+          description: Subtotal amount in a financial transaction.
+          title: Subtotal
+          type: integer
+        total_tax:
+          default: null
+          description: Total tax amount in a financial transaction.
+          title: Total Tax
+          type: integer
+        tax_rate:
+          default: null
+          description: Tax rate applied in a financial transaction.
+          title: Tax Rate
+          type: integer
+        discount:
+          default: null
+          description: Discount amount applied in a financial transaction.
+          title: Discount
+          type: integer
+        gratuity:
+          default: null
+          description: Gratuity amount in a financial transaction.
+          title: Gratuity
+          type: integer
+        service_charge:
+          default: null
+          description: Service charge in a financial transaction.
+          title: Service Charge
+          type: integer
+        previous_unpaid_balance:
+          default: null
+          description: Previous unpaid balance in a financial transaction.
+          title: Previous Unpaid Balance
+          type: integer
+        prior_balance:
+          default: null
+          description: Prior balance before the current financial transaction.
+          title: Prior Balance
+          type: integer
+        payment_terms:
+          default: null
+          description: Terms and conditions for payment.
+          title: Payment Terms
+          type: string
+        payment_method:
+          default: null
+          description: Payment method used in the financial transaction.
+          title: Payment Method
+          type: string
+        payment_card_number:
+          default: null
+          description: Card number used in the payment.
+          title: Payment Card Number
+          type: string
+        payment_auth_code:
+          default: null
+          description: Authorization code for the payment.
+          title: Payment Auth Code
+          type: string
+        shipping_handling_charge:
+          default: null
+          description: Charge for shipping and handling in a financial transaction.
+          title: Shipping Handling Charge
+          type: integer
+        transaction_number:
+          default: null
+          description: Unique identifier for the financial transaction.
+          title: Transaction Number
+          type: string
+        transaction_reference:
+          default: null
+          description: Reference number for the financial transaction.
+          title: Transaction Reference
+          type: string
+      title: FinancialPaymentInformation
+      type: object
+    DocumentTypeEnum:
+      enum:
+      - auto-detect
+      - invoice
+      - receipt
+      type: string
+      description: '* `auto-detect` - auto-detect
+
+        * `invoice` - invoice
+
+        * `receipt` - receipt'
+    FinancialCustomerInformation:
+      properties:
+        name:
+          default: null
+          description: The name of the invoiced customer.
+          title: Name
+          type: string
+        id_reference:
+          default: null
+          description: Unique reference ID for the customer.
+          title: Id Reference
+          type: string
+        mailling_address:
+          default: null
+          description: The mailing address of the customer.
+          title: Mailling Address
+          type: string
+        billing_address:
+          default: null
+          description: The explicit billing address for the customer.
+          title: Billing Address
+          type: string
+        shipping_address:
+          default: null
+          description: The shipping address for the customer.
+          title: Shipping Address
+          type: string
+        service_address:
+          default: null
+          description: The service address associated with the customer.
+          title: Service Address
+          type: string
+        remittance_address:
+          default: null
+          description: The address to which payments should be remitted.
+          title: Remittance Address
+          type: string
+        email:
+          default: null
+          description: The email address of the customer.
+          title: Email
+          type: string
+        phone:
+          default: null
+          description: The phone number associated with the customer.
+          title: Phone
+          type: string
+        vat_number:
+          default: null
+          description: VAT (Value Added Tax) number of the customer.
+          title: Vat Number
+          type: string
+        abn_number:
+          default: null
+          description: ABN (Australian Business Number) of the customer.
+          title: Abn Number
+          type: string
+        gst_number:
+          default: null
+          description: GST (Goods and Services Tax) number of the customer.
+          title: Gst Number
+          type: string
+        pan_number:
+          default: null
+          description: PAN (Permanent Account Number) of the customer.
+          title: Pan Number
+          type: string
+        business_number:
+          default: null
+          description: Business registration number of the customer.
+          title: Business Number
+          type: string
+        siret_number:
+          default: null
+          description: SIRET (Système d'Identification du Répertoire des Entreprises et de leurs Établissements) number of the customer.
+          title: Siret Number
+          type: string
+        siren_number:
+          default: null
+          description: SIREN (Système d'Identification du Répertoire des Entreprises) number of the customer.
+          title: Siren Number
+          type: string
+        customer_number:
+          default: null
+          description: Customer identification number.
+          title: Customer Number
+          type: string
+        coc_number:
+          default: null
+          description: Chamber of Commerce registration number.
+          title: Coc Number
+          type: string
+        fiscal_number:
+          default: null
+          description: Fiscal identification number of the customer.
+          title: Fiscal Number
+          type: string
+        registration_number:
+          default: null
+          description: Official registration number of the customer.
+          title: Registration Number
+          type: string
+        tax_id:
+          default: null
+          description: Tax identification number of the customer.
+          title: Tax Id
+          type: string
+        website:
+          default: null
+          description: The website associated with the customer.
+          title: Website
+          type: string
+        remit_to_name:
+          default: null
+          description: The name associated with the customer's remittance address.
+          title: Remit To Name
+          type: string
+        city:
+          default: null
+          description: The city associated with the customer's address.
+          title: City
+          type: string
+        country:
+          default: null
+          description: The country associated with the customer's address.
+          title: Country
+          type: string
+        house_number:
+          default: null
+          description: The house number associated with the customer's address.
+          title: House Number
+          type: string
+        province:
+          default: null
+          description: The province associated with the customer's address.
+          title: Province
+          type: string
+        street_name:
+          default: null
+          description: The street name associated with the customer's address.
+          title: Street Name
+          type: string
+        zip_code:
+          default: null
+          description: The ZIP code associated with the customer's address.
+          title: Zip Code
+          type: string
+        municipality:
+          default: null
+          description: The municipality associated with the customer's address.
+          title: Municipality
+          type: string
+      title: FinancialCustomerInformation
+      type: object
+    FinancialParserObjectDataClass:
+      properties:
+        customer_information:
+          $ref: '#/components/schemas/FinancialCustomerInformation'
+        merchant_information:
+          $ref: '#/components/schemas/FinancialMerchantInformation'
+        payment_information:
+          $ref: '#/components/schemas/FinancialPaymentInformation'
+        financial_document_information:
+          $ref: '#/components/schemas/FinancialDocumentInformation'
+        local:
+          $ref: '#/components/schemas/FinancialLocalInformation'
+        bank:
+          $ref: '#/components/schemas/FinancialBankInformation'
+        item_lines:
+          description: List of line items associated with the document.
+          items:
+            $ref: '#/components/schemas/FinancialLineItem'
+          title: Item Lines
+          type: array
+        document_metadata:
+          $ref: '#/components/schemas/FinancialDocumentMetadata'
+      required:
+      - customer_information
+      - merchant_information
+      - payment_information
+      - financial_document_information
+      - local
+      - bank
+      - document_metadata
+      title: FinancialParserObjectDataClass
+      type: object
+    FinancialDocumentMetadata:
+      properties:
+        document_index:
+          default: null
+          description: Index of the detected document.
+          title: Document Index
+          type: integer
+        document_page_number:
+          default: null
+          description: Page number within the document.
+          title: Document Page Number
+          type: integer
+        document_type:
+          default: null
+          description: Type or category of the document.
+          title: Document Type
+          type: string
+      title: FinancialDocumentMetadata
+      type: object
+    FinancialMerchantInformation:
+      properties:
+        name:
+          default: null
+          description: Name of the merchant.
+          title: Name
+          type: string
+        address:
+          default: null
+          description: Address of the merchant.
+          title: Address
+          type: string
+        phone:
+          default: null
+          description: Phone number of the merchant.
+          title: Phone
+          type: string
+        tax_id:
+          default: null
+          description: Tax identification number of the merchant.
+          title: Tax Id
+          type: string
+        id_reference:
+          default: null
+          description: Unique reference ID for the merchant.
+          title: Id Reference
+          type: string
+        vat_number:
+          default: null
+          description: VAT (Value Added Tax) number of the merchant.
+          title: Vat Number
+          type: string
+        abn_number:
+          default: null
+          description: ABN (Australian Business Number) of the merchant.
+          title: Abn Number
+          type: string
+        gst_number:
+          default: null
+          description: GST (Goods and Services Tax) number of the merchant.
+          title: Gst Number
+          type: string
+        business_number:
+          default: null
+          description: Business registration number of the merchant.
+          title: Business Number
+          type: string
+        siret_number:
+          default: null
+          description: SIRET (Système d'Identification du Répertoire des Entreprises et de leurs Établissements) number of the merchant.
+          title: Siret Number
+          type: string
+        siren_number:
+          default: null
+          description: SIREN (Système d'Identification du Répertoire des Entreprises) number of the merchant.
+          title: Siren Number
+          type: string
+        pan_number:
+          default: null
+          description: PAN (Permanent Account Number) of the merchant.
+          title: Pan Number
+          type: string
+        coc_number:
+          default: null
+          description: Chamber of Commerce registration number of the merchant.
+          title: Coc Number
+          type: string
+        fiscal_number:
+          default: null
+          description: Fiscal identification number of the merchant.
+          title: Fiscal Number
+          type: string
+        email:
+          default: null
+          description: Email address of the merchant.
+          title: Email
+          type: string
+        fax:
+          default: null
+          description: Fax number of the merchant.
+          title: Fax
+          type: string
+        website:
+          default: null
+          description: Website of the merchant.
+          title: Website
+          type: string
+        registration:
+          default: null
+          description: Official registration information of the merchant.
+          title: Registration
+          type: string
+        city:
+          default: null
+          description: City associated with the merchant's address.
+          title: City
+          type: string
+        country:
+          default: null
+          description: Country associated with the merchant's address.
+          title: Country
+          type: string
+        house_number:
+          default: null
+          description: House number associated with the merchant's address.
+          title: House Number
+          type: string
+        province:
+          default: null
+          description: Province associated with the merchant's address.
+          title: Province
+          type: string
+        street_name:
+          default: null
+          description: Street name associated with the merchant's address.
+          title: Street Name
+          type: string
+        zip_code:
+          default: null
+          description: ZIP code associated with the merchant's address.
+          title: Zip Code
+          type: string
+        country_code:
+          default: null
+          description: Country code associated with the merchant's location.
+          title: Country Code
+          type: string
+      title: FinancialMerchantInformation
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FinancialLineItem:
+      properties:
+        tax:
+          default: null
+          description: Tax amount for the line item.
+          title: Tax
+          type: integer
+        amount_line:
+          default: null
+          description: Total amount for the line item.
+          title: Amount Line
+          type: integer
+        description:
+          default: null
+          description: Description of the line item.
+          title: Description
+          type: string
+        quantity:
+          default: null
+          description: Quantity of units for the line item.
+          title: Quantity
+          type: integer
+        unit_price:
+          default: null
+          description: Unit price for each unit in the line item.
+          title: Unit Price
+          type: integer
+        unit_type:
+          default: null
+          description: Type of unit (e.g., hours, items).
+          title: Unit Type
+          type: string
+        date:
+          default: null
+          description: Date associated with the line item.
+          title: Date
+          type: string
+        product_code:
+          default: null
+          description: Product code or identifier for the line item.
+          title: Product Code
+          type: string
+        purchase_order:
+          default: null
+          description: Purchase order related to the line item.
+          title: Purchase Order
+          type: string
+        tax_rate:
+          default: null
+          description: Tax rate applied to the line item.
+          title: Tax Rate
+          type: integer
+        base_total:
+          default: null
+          description: Base total amount before any discounts or taxes.
+          title: Base Total
+          type: integer
+        sub_total:
+          default: null
+          description: Subtotal amount for the line item.
+          title: Sub Total
+          type: integer
+        discount_amount:
+          default: null
+          description: Amount of discount applied to the line item.
+          title: Discount Amount
+          type: integer
+        discount_rate:
+          default: null
+          description: Rate of discount applied to the line item.
+          title: Discount Rate
+          type: integer
+        discount_code:
+          default: null
+          description: Code associated with any discount applied to the line item.
+          title: Discount Code
+          type: string
+        order_number:
+          default: null
+          description: Order number associated with the line item.
+          title: Order Number
+          type: string
+        title:
+          default: null
+          description: Title or name of the line item.
+          title: Title
+          type: string
+      title: FinancialLineItem
+      type: object
+    FinancialLocalInformation:
+      properties:
+        currency:
+          default: null
+          description: Currency used in financial transactions.
+          title: Currency
+          type: string
+        currency_code:
+          default: null
+          description: Currency code (e.g., USD, EUR).
+          title: Currency Code
+          type: string
+        currency_exchange_rate:
+          default: null
+          description: Exchange rate for the specified currency.
+          title: Currency Exchange Rate
+          type: string
+        country:
+          default: null
+          description: Country associated with the local financial information.
+          title: Country
+          type: string
+        language:
+          default: null
+          description: Language used in financial transactions.
+          title: Language
+          type: string
+      title: FinancialLocalInformation
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

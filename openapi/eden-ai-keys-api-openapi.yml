@@ -1,0 +1,430 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Keys API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: Keys
+paths:
+  /manage/keys/:
+    get:
+      operationId: manage_keys_list
+      description: '``GET /v3/manage/keys`` (list, ``manage:read``) and ``POST /v3/manage/keys`` (mint an inference
+
+        key, ``manage:write``). Org-scoped through ``principals_in_org``. Balance is pending-adjusted per
+
+        page on the list; the created secret is returned ONCE in the 201 and never by a read.'
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - Keys
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedManagementKeyList'
+          description: ''
+      summary: Manage keys list
+      x-summary-source: derived
+    post:
+      operationId: manage_keys_create
+      description: '``GET /v3/manage/keys`` (list, ``manage:read``) and ``POST /v3/manage/keys`` (mint an inference
+
+        key, ``manage:write``). Org-scoped through ``principals_in_org``. Balance is pending-adjusted per
+
+        page on the list; the created secret is returned ONCE in the 201 and never by a read.'
+      tags:
+      - Keys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManagementKeyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ManagementKeyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ManagementKeyRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementKey'
+          description: ''
+      summary: Manage keys create
+      x-summary-source: derived
+  /manage/keys/{key_id}/:
+    get:
+      operationId: manage_keys_retrieve
+      description: '``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)
+
+        for one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key''s org
+
+        is a 404, not another org''s key. DELETE destroys the secret and keeps the row marked revoked (see
+
+        ``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Keys
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementKey'
+          description: ''
+      summary: Manage keys retrieve
+      x-summary-source: derived
+    patch:
+      operationId: manage_keys_partial_update
+      description: '``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)
+
+        for one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key''s org
+
+        is a 404, not another org''s key. DELETE destroys the secret and keeps the row marked revoked (see
+
+        ``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Keys
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedManagementKeyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedManagementKeyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedManagementKeyRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagementKey'
+          description: ''
+      summary: Manage keys partial update
+      x-summary-source: derived
+    delete:
+      operationId: manage_keys_destroy
+      description: '``GET`` (read), ``PATCH`` (write, policy fields + rename), ``DELETE`` (write, IRREVERSIBLE revoke)
+
+        for one key at ``/v3/manage/keys/{key_id}``, org-scoped: a ``key_id`` not in the calling key''s org
+
+        is a 404, not another org''s key. DELETE destroys the secret and keeps the row marked revoked (see
+
+        ``destroy``); there is no re-enable. Balance is pending-adjusted. Never returns the secret or its hash.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Keys
+      responses:
+        '204':
+          description: No response body
+      summary: Manage keys destroy
+      x-summary-source: derived
+  /manage/keys/{key_id}/rotate/:
+    post:
+      operationId: manage_keys_rotate_create
+      description: '``POST /v3/manage/keys/{key_id}/rotate`` (manage:write) -- replace a key''s secret in place: same
+
+        identity (name, key_id, budget, guardrail), a brand-new ``sk-eden`` value returned ONCE. Lets a
+
+        compliance pipeline roll a secret without reconfiguring the key. Distinct from DELETE: revoke KILLS
+
+        (terminal), rotate RE-SECRETS.
+
+
+        A REVOKED key is a 404 here, never resurrected. ``rotate_key_secret`` clears ``revoked_at`` and
+
+        writes fresh secret material, so rotating a revoked key would REVIVE it -- the exact one-way-door
+
+        that revoke depends on. The read filters a revoked (or cross-org, or unknown) key_id to a 404, and
+
+        the whole rotate runs in a transaction that ``select_for_update``-locks the row: a concurrent DELETE
+
+        either commits its revoke first (``revoked_at`` then filters the row out -> 404) or blocks on the
+
+        lock until the rotate commits and then still wins its own compare-and-set. Without the lock the read
+
+        filter alone is a check-then-act race -- a rotate that resolved a live key could blind-write a fresh
+
+        secret AFTER a concurrent revoke landed, resurrecting a terminally-revoked key. So revocation stays
+
+        terminal.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Keys
+      responses:
+        '200':
+          description: No response body
+      summary: Manage keys rotate create
+      x-summary-source: derived
+  /manage/keys/{key_id}/usage/:
+    get:
+      operationId: manage_keys_usage_retrieve
+      description: '``GET /v3/manage/keys/{key_id}/usage`` -- usage for one key, filtered by ``custom_token``
+
+        IDENTITY (precise, unlike the dashboard''s name filter). A ``key_id`` not in the org is a 404.
+
+        Time-series only. ``manage:read``.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Keys
+      responses:
+        '200':
+          description: No response body
+      summary: Manage keys usage retrieve
+      x-summary-source: derived
+components:
+  schemas:
+    ManagementKey:
+      type: object
+      description: 'An org''s inference key as the management plane exposes it. Never the secret or
+
+        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
+
+
+        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
+
+        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
+
+        batched rollup has not settled, so a management admin must be shown available, not
+
+        settled (the shipped display-vs-accounting doctrine, mirrored from
+
+        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
+
+        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
+
+        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
+
+
+        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
+
+        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
+
+        it is regenerated onto the hashed scheme.'
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        member:
+          type: string
+          format: email
+          readOnly: true
+        masked:
+          type: string
+          readOnly: true
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance:
+          type: string
+          readOnly: true
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revoked:
+          type: boolean
+          readOnly: true
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - balance
+      - id
+      - masked
+      - member
+      - name
+      - revoked
+    TokenTypeEnum:
+      enum:
+      - sandbox_api_token
+      - api_token
+      type: string
+      description: '* `sandbox_api_token` - Sandbox
+
+        * `api_token` - Back'
+    PaginatedManagementKeyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementKey'
+    PatchedManagementKeyRequest:
+      type: object
+      description: 'An org''s inference key as the management plane exposes it. Never the secret or
+
+        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
+
+
+        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
+
+        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
+
+        batched rollup has not settled, so a management admin must be shown available, not
+
+        settled (the shipped display-vs-accounting doctrine, mirrored from
+
+        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
+
+        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
+
+        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
+
+
+        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
+
+        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
+
+        it is regenerated onto the hashed scheme.'
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    ManagementKeyRequest:
+      type: object
+      description: 'An org''s inference key as the management plane exposes it. Never the secret or
+
+        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
+
+
+        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
+
+        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
+
+        batched rollup has not settled, so a management admin must be shown available, not
+
+        settled (the shipped display-vs-accounting doctrine, mirrored from
+
+        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
+
+        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
+
+        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
+
+
+        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
+
+        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
+
+        it is regenerated onto the hashed scheme.'
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - name

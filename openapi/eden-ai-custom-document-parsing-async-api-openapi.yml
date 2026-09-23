@@ -1,0 +1,547 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Custom Document Parsing Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Custom Document Parsing Async
+paths:
+  /ocr/custom_document_parsing_async/:
+    get:
+      operationId: ocr_custom_document_parsing_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Custom Document Parsing List Job
+      tags:
+      - Custom Document Parsing Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''extracta'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: a8d7c813-bcf5-4718-95af-d238dca00198
+                      state: finished
+                      created_at: '2026-09-06T03:58:32.131274'
+                    - providers: '[''extracta'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: f118ac78-7f71-4c7d-8ed2-adce4cf3b3ff
+                      state: finished
+                      created_at: '2026-09-06T02:58:32.131285'
+                    - providers: '[''extracta'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: bf66ba46-0381-4e08-aaf4-2f6ddfc39f66
+                      state: finished
+                      created_at: '2026-09-06T01:58:32.131289'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: ocr_custom_document_parsing_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 1.26.8`|15.0 (per 1000 page)|1 page
+
+        |**extracta**|`v1`|0.1 (per 1 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**English**|`en`|
+
+        |**French**|`fr`|
+
+        |**German**|`de`|
+
+        |**Italian**|`it`|
+
+        |**Portuguese**|`pt`|
+
+        |**Spanish**|`es`|'
+      summary: Custom Document Parsing Launch Job
+      tags:
+      - Custom Document Parsing Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomDocumentParsingAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: extracta,amazon
+                  file: /edenai/edenai/features/ocr/samples/data/resume.pdf
+                  queries: '[{"query" : "What is the person full-name","pages" : "1-*"},{"query" : "What is the first Adult Care experience?","pages" : "1"}]'
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomDocumentParsingAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: extracta,amazon
+                  queries: '[{"query" : "What is the person full-name","pages" : "1-*"},{"query" : "What is the first Adult Care experience?","pages" : "1"}]'
+                  file_url: http://edenai-resource-example.pdf
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 263a0b9b-5e8e-43c7-855f-00df2b92d7dd
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: ocr_custom_document_parsing_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Custom Document Parsing delete Jobs
+      tags:
+      - Custom Document Parsing Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /ocr/custom_document_parsing_async/{public_id}/:
+    get:
+      operationId: ocr_custom_document_parsing_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Custom Document Parsing Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Custom Document Parsing Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncocrcustom_document_parsing_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 0706ce7f-4f84-4143-a7a4-1a82df2a35a5
+                    status: finished
+                    error: null
+                    results:
+                      extracta:
+                        error: null
+                        id: 1594a51f-9f8d-449e-921c-5fc33309c7db
+                        final_status: finished
+                        items:
+                        - confidence: 1.0
+                          value: jwsmith@colostate.edu
+                          query: What is the resume's email address?
+                          bounding_box:
+                            left: 0.0
+                            top: 0.0
+                            width: 0.0
+                            height: 0.0
+                          page: 0
+                        - confidence: 1.0
+                          value: Determined work placement for 150 special needs adult clients.
+                          query: What is the first Adult Care experience?
+                          bounding_box:
+                            left: 0.0
+                            top: 0.0
+                            width: 0.0
+                            height: 0.0
+                          page: 0
+                      amazon:
+                        error: null
+                        id: 78fb0dc7-26a0-4a24-8eb6-5da35f7142f5
+                        final_status: finished
+                        items:
+                        - confidence: 97.0
+                          value: jwsmith@colostate.edu
+                          query: What is the resume's email address?
+                          bounding_box:
+                            left: 0.40480345487594604
+                            top: 0.13232094049453735
+                            width: 0.18646040558815002
+                            height: 0.014690706506371498
+                          page: 1
+                        - confidence: 89.0
+                          value: Determined work placement for 150 special needs adult clients.
+                          query: What is the first Adult Care experience?
+                          bounding_box:
+                            left: 0.17573566734790802
+                            top: 0.27843594551086426
+                            width: 0.4986802041530609
+                            height: 0.014926792122423649
+                          page: 1
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    asyncocrcustom_document_parsing_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncocrcustom_document_parsing_asyncResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    CustomDocumentParsingAsyncRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        queries:
+          type: string
+          minLength: 1
+          description: 'Your queries need to be a list of dict containing the questions you want answered and the page to look for the information in :  ''[{''query'':''your query'',''pages'':''your pages''},{''query'':''your query'',''pages'':''your pages''}]'''
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
+      - queries
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    ocrcustom_document_parsing_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
+          default: null
+      title: ocrcustom_document_parsing_asyncModel
+      type: object
+    CustomDocumentParsingAsyncBoundingBox:
+      properties:
+        left:
+          title: Left
+          type: integer
+        top:
+          title: Top
+          type: integer
+        width:
+          title: Width
+          type: integer
+        height:
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: CustomDocumentParsingAsyncBoundingBox
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    CustomDocumentParsingAsyncItem:
+      properties:
+        confidence:
+          title: Confidence
+          type: integer
+        value:
+          title: Value
+          type: string
+        query:
+          title: Query
+          type: string
+        bounding_box:
+          $ref: '#/components/schemas/CustomDocumentParsingAsyncBoundingBox'
+        page:
+          title: Page
+          type: integer
+      required:
+      - confidence
+      - value
+      - query
+      - bounding_box
+      - page
+      title: CustomDocumentParsingAsyncItem
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CustomDocumentParsingAsyncItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

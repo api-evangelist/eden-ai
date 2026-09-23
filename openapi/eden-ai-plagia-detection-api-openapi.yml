@@ -1,0 +1,329 @@
+openapi: 3.2.0
+info:
+  title: Text Features Plagia Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Plagia Detection
+paths:
+  /text/plagia_detection/:
+    post:
+      operationId: text_plagia_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**winstonai**|`v2`|14.0 (per 1000000 char)|1 char'
+      summary: Plagia Detection
+      tags:
+      - Plagia Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textplagia_detectionPlagiaDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: winstonai
+                  text: The Galaxy S23 launch may be far behind us, but Samsung likely has plenty more to announce in 2023.             That's if history repeats itself. Should Samsung stick to its annual routine, we can expect to see new             foldable phones and wearable devices in August. The company also previewed new designs for bendable phones and tablets             earlier this year, hinting that the company may be planning to expand beyond the Z Fold and Z Flip in the near future.             Though Samsung regularly releases new products across many categories, including TVs, home appliances and monitors,             I'm most interested in where its mobile devices are headed. Samsung is one of the world's largest smartphone manufacturers             by market share, meaning it has more influence than most other tech companies on the devices we carry in our pockets each day.             Wearables have also become a large part of how Samsung intends to differentiate its phones from those of other Android device makers.             It's a strategy to create a web of products that keep people hooked, much like Apple's range of devices.
+                  title: n'importe nawak
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textplagia_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    winstonai:
+                      plagia_score: 100.0
+                      items:
+                      - text: 'Rumored Samsung Gadgets For 2023: Galaxy Z Flip 5, Z Fold 5 and More - MSN'
+                        candidates:
+                        - url: https://www.msn.com/en-us/news/technology/rumored-samsung-gadgets-for-2023-galaxy-z-flip-5-z-fold-5-and-more/ar-AA16w9Ee
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Wearables have also become a large part of how Samsung intends to differentiate its phones from those of other Android device makers. It's a strategy to create a web of products that keep people hooked, much like Apple's range of devices.
+                      - text: Originality.ai API Documentation
+                        candidates:
+                        - url: https://docs.originality.ai/api-v1-0-reference
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Should Samsung stick to its annual routine, we can expect to see new foldable phones and wearable devices in August. The company also previewed new designs for ...
+                        - url: https://docs.originality.ai/api-v1-0-reference
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... The company also previewed new designs for bendable phones and tablets earlier this year, hinting that the company may be planning to expand beyond the Z ...'
+                        - url: https://docs.originality.ai/api-v1-0-reference
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Though Samsung regularly releases new products across many categories, including TVs, home appliances and monitors, I'm most interested in where its mobile ...
+                        - url: https://docs.originality.ai/api-v1-0-reference
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Wearables have also become a large part of how Samsung intends to differentiate its phones from those of other Android device makers. It's a strategy to create ...
+                        - url: https://docs.originality.ai/api-v1-0-reference
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... It''s a strategy to create a web of products that keep people hooked, much like Apple''s range of devices.", "matches": [ { "website": "https://www.cnet.com ...'
+                      - text: 'Rumored Samsung Gadgets For 2023: Galaxy Z Flip 5, Z Fold 5 and More - CNET'
+                        candidates:
+                        - url: https://www.cnet.com/tech/mobile/galaxy-s23-z-fold-5-and-more-samsung-gadgets-rumored-for-2023/
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... Though Samsung regularly releases new products across many categories, including TVs, home appliances and monitors, I''m most interested in ...'
+                        - url: https://www.cnet.com/tech/mobile/galaxy-s23-z-fold-5-and-more-samsung-gadgets-rumored-for-2023/
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Wearables have also become a large part of how Samsung intends to differentiate its phones from those of other Android device makers. It's a ...
+                        - url: https://www.cnet.com/tech/mobile/galaxy-s23-z-fold-5-and-more-samsung-gadgets-rumored-for-2023/
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: Wearables have also become a large part of how Samsung intends to differentiate its phones from those of other Android device makers. It's a strategy to create a web of products that keep people hooked, much like Apple's range of devices.
+                      - text: The Biggest Rumored Samsung Gadgets to Expect in 2023 - YouTube
+                        candidates:
+                        - url: https://www.youtube.com/watch?v=7DXADBWKlgA
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... Though Samsung regularly releases new products across many categories, including TVs, home appliances and monitors, I''m most interested in where its mobile ...'
+                        - url: https://www.youtube.com/watch?v=7DXADBWKlgA
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... influence than most other tech companies on the devices we carry in our pockets each day. Wearables have also become a large part of how Samsung intends to ...'
+                        - url: https://www.youtube.com/watch?v=7DXADBWKlgA
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... It''s a strategy to create a web of products that keep people hooked, much like Apple''s range of devices. Here are the rumored Samsung products I''m most ...'
+                      - text: Galaxy Z Fold 5 and Other Samsung Gadgets to Look for in 2023 IT ...
+                        candidates:
+                        - url: https://www.rbsitsoftwaresolution.com/blog/galaxy-z-fold-5-and-other-samsung-gadgets-to-look-for-in-2023.html
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... the company may be planning to expand beyond the Z Fold and Z Flip in the near future. Though Samsung regularly releases new products across many categories ...'
+                      - text: Galaxy S23, Z Fold 5 and more Samsung gadgets rumored for 2023 - US Today News
+                        candidates:
+                        - url: https://ustoday.news/galaxy-s23-z-fold-5-and-more-samsung-gadgets-rumored-for-2023/
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: '... the company may be planning to expand beyond the Z Fold and Z Flip in the near future. Although Samsung regularly releases new products in ...'
+                      - text: Galaxy Z Fold 5 and Other Samsung Gadgets to Look for in 2023
+                        candidates:
+                        - url: https://www.umaconferences.com/galaxy-z-fold-5-and-other-samsung-gadgets-to-look-for-in-2023/
+                          plagia_score: 1.0
+                          prediction: plagiarized
+                          plagiarized_text: The Galaxy S23 launch may be far behind us, but Samsung likely has plenty more to announce in 2023. That's if history repeats itself.
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    textplagia_detectionResponseModel:
+      properties:
+        originalityai:
+          $ref: '#/components/schemas/textplagia_detectionPlagiaDetectionDataClass'
+          default: null
+        winstonai:
+          $ref: '#/components/schemas/textplagia_detectionPlagiaDetectionDataClass'
+          default: null
+      title: textplagia_detectionResponseModel
+      type: object
+    textplagia_detectionPlagiaDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: A text content on which a plagiarism detection analysis will be run
+        title:
+          type:
+          - string
+          - 'null'
+          default: ''
+          description: Content title
+      required:
+      - providers
+      - text
+    PlagiaDetectionCandidate:
+      properties:
+        url:
+          title: Url
+          type: string
+        plagia_score:
+          title: Plagia Score
+          type: integer
+        prediction:
+          title: Prediction
+          type: string
+        plagiarized_text:
+          title: Plagiarized Text
+          type: string
+      required:
+      - url
+      - plagia_score
+      - prediction
+      - plagiarized_text
+      title: PlagiaDetectionCandidate
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textplagia_detectionPlagiaDetectionDataClass:
+      properties:
+        plagia_score:
+          title: Plagia Score
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/PlagiaDetectionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - plagia_score
+      - status
+      title: textplagia_detectionPlagiaDetectionDataClass
+      type: object
+    PlagiaDetectionItem:
+      properties:
+        text:
+          title: Text
+          type: string
+        candidates:
+          items:
+            $ref: '#/components/schemas/PlagiaDetectionCandidate'
+          title: Candidates
+          type: array
+      required:
+      - text
+      title: PlagiaDetectionItem
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

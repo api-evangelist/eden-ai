@@ -1,0 +1,1470 @@
+openapi: 3.2.0
+info:
+  title: Audio Features Speech To Text Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Speech To Text Async
+paths:
+  /audio/speech_to_text_async/:
+    get:
+      operationId: audio_speech_to_text_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Speech to Text List Jobs
+      tags:
+      - Speech To Text Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''gladia'', ''microsoft'', ''assembly'', ''deepgram'', ''google'', ''amazon'', ''openai'']'
+                      nb: 7
+                      nb_ok: 7
+                      public_id: 2a213f8e-5721-41e2-a435-50758e553883
+                      state: finished
+                      created_at: '2026-09-06T09:41:47.406169'
+                    - providers: '[''gladia'', ''microsoft'', ''assembly'', ''deepgram'', ''google'', ''amazon'', ''openai'']'
+                      nb: 7
+                      nb_ok: 7
+                      public_id: 17e80ccc-3f76-4b4f-9434-435e1a25c76f
+                      state: finished
+                      created_at: '2026-09-06T08:41:47.406180'
+                    - providers: '[''gladia'', ''microsoft'', ''assembly'', ''deepgram'', ''google'', ''amazon'', ''openai'']'
+                      nb: 7
+                      nb_ok: 7
+                      public_id: 237bff8b-6c61-4bbe-97bc-6b7b2d4892a5
+                      state: finished
+                      created_at: '2026-09-06T07:41:47.406185'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: audio_speech_to_text_async_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|0.024 (per 60 seconde)|15 seconde
+
+        |**google**|-|`v1p1beta1`|0.024 (per 60 seconde)|1 seconde
+
+        |**microsoft**|-|`v1.0`|0.0168 (per 60 seconde)|1 seconde
+
+        |**assembly**|-|`v2`|0.011 (per 60 seconde)|1 seconde
+
+        |**deepgram**|**nova-3**|`v1`|0.0052 (per 60 seconde)|1 seconde
+
+        |**deepgram**|**enhanced**|`v1`|0.0189 (per 60 seconde)|1 seconde
+
+        |**deepgram**|-|`v1`|0.0189 (per 60 seconde)|1 seconde
+
+        |**deepgram**|**base**|`v1`|0.0169 (per 60 seconde)|1 seconde
+
+        |**openai**|-|`boto3 (v1.15.18)`|0.006 (per 60 seconde)|1 seconde
+
+        |**gladia**|-|`v1`|0.0102 (per 60 seconde)|1 seconde
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Bashkir**|`ba`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Breton**|`br`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Chinese**|`zh`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hebrew**|`he`|
+
+        |**Hebrew**|`iw`|
+
+        |**Hindi**|`hi`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Indonesian**|`id`|
+
+        |**Interlingua (International Auxiliary Language Association)**|`ia`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Korean**|`ko`|
+
+        |**Lao**|`lo`|
+
+        |**Latvian**|`lv`|
+
+        |**Lingala**|`ln`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Mandarin Chinese**|`cmn`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Occitan (post 1500)**|`oc`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`mo`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Serbian**|`sr`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tamil**|`ta`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Wu Chinese**|`wuu`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Yue Chinese**|`yue`|
+
+        |**Zulu**|`zu`|
+
+        |**at**|`at`|
+
+        |**jp**|`jp`|
+
+        |**mymr**|`mymr`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Afrikaans (South Africa)**|`af-ZA`|
+
+        |**Albanian (Albania)**|`sq-AL`|
+
+        |**Amharic (Ethiopia)**|`am-ET`|
+
+        |**Arabic (Algeria)**|`ar-DZ`|
+
+        |**Arabic (Bahrain)**|`ar-BH`|
+
+        |**Arabic (Egypt)**|`ar-EG`|
+
+        |**Arabic (Iraq)**|`ar-IQ`|
+
+        |**Arabic (Israel)**|`ar-IL`|
+
+        |**Arabic (Jordan)**|`ar-JO`|
+
+        |**Arabic (Kuwait)**|`ar-KW`|
+
+        |**Arabic (Lebanon)**|`ar-LB`|
+
+        |**Arabic (Libya)**|`ar-LY`|
+
+        |**Arabic (Mauritania)**|`ar-MR`|
+
+        |**Arabic (Morocco)**|`ar-MA`|
+
+        |**Arabic (Oman)**|`ar-OM`|
+
+        |**Arabic (Palestinian Territories)**|`ar-PS`|
+
+        |**Arabic (Qatar)**|`ar-QA`|
+
+        |**Arabic (Saudi Arabia)**|`ar-SA`|
+
+        |**Arabic (Syria)**|`ar-SY`|
+
+        |**Arabic (Tunisia)**|`ar-TN`|
+
+        |**Arabic (United Arab Emirates)**|`ar-AE`|
+
+        |**Arabic (Yemen)**|`ar-YE`|
+
+        |**Armenian (Armenia)**|`hy-AM`|
+
+        |**Azerbaijani (Azerbaijan)**|`az-AZ`|
+
+        |**Bangla (Bangladesh)**|`bn-BD`|
+
+        |**Bangla (India)**|`bn-IN`|
+
+        |**Basque (Spain)**|`eu-ES`|
+
+        |**Bosnian (Bosnia & Herzegovina)**|`bs-BA`|
+
+        |**Bulgarian (Bulgaria)**|`bg-BG`|
+
+        |**Burmese (Myanmar (Burma))**|`my-MM`|
+
+        |**Cantonese (China)**|`yue-CN`|
+
+        |**Cantonese…'
+      summary: Speech to Text Launch Job
+      tags:
+      - Speech To Text Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SpeechToTextAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: gladia,microsoft,assembly,deepgram,google,amazon,openai
+                  file: /edenai/edenai/features/audio/samples/data/conversation.mp3
+                  language: en
+                  speakers: 2
+                  profanity_filter: false
+                  custom_vocabulary: ''
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpeechToTextAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: gladia,microsoft,assembly,deepgram,google,amazon,openai
+                  language: en
+                  speakers: 2
+                  profanity_filter: false
+                  custom_vocabulary: ''
+                  file_url: http://edenai-resource-example.mp3
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 32adbdd8-1867-4a71-873d-c9e1dfdb2b99
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: audio_speech_to_text_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Speech to text delete Jobs
+      tags:
+      - Speech To Text Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /audio/speech_to_text_async/{public_id}/:
+    get:
+      operationId: audio_speech_to_text_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Speech to Text Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Speech To Text Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncaudiospeech_to_text_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: ba0b8897-7ed9-49bd-a8f6-563689be3ccc
+                    status: finished
+                    error: null
+                    results:
+                      gladia:
+                        error: null
+                        id: 49520dd8-666f-42ce-a3b4-cbb74da5b518
+                        final_status: finished
+                        text: Unit 1, page 14, real conversations. Hello. Hi. What's your name? Claudia. What's your name? I'm Chihiro. Nice to meet you. Chihiro? Yeah, that's right. Where are you from?
+                        diarization:
+                          total_speakers: 6
+                          entries:
+                          - segment: Unit
+                            start_time: '0.25004'
+                            end_time: '0.47012'
+                            speaker: 0
+                            confidence: 0.7
+                          - segment: ' 1,'
+                            start_time: '0.65018'
+                            end_time: '0.89026'
+                            speaker: 0
+                            confidence: 0.02
+                          - segment: ' page'
+                            start_time: '1.4904600000000001'
+                            end_time: '1.85058'
+                            speaker: 1
+                            confidence: 0.21
+                          - segment: ' 14,'
+                            start_time: '1.9306100000000002'
+                            end_time: '2.55082'
+                            speaker: 1
+                            confidence: 0.01
+                          - segment: ' real'
+                            start_time: '3.43112'
+                            end_time: '3.69121'
+                            speaker: 1
+                            confidence: 0.99
+                          - segment: ' conversations.'
+                            start_time: '3.7712399999999997'
+                            end_time: '4.7115599999999995'
+                            speaker: 1
+                            confidence: 0.97
+                          - segment: ' Hello.'
+                            start_time: '6.8923'
+                            end_time: '7.1323799999999995'
+                            speaker: 2
+                            confidence: 0.05
+                          - segment: ' Hi.'
+                            start_time: '7.1924'
+                            end_time: '7.31244'
+                            speaker: 2
+                            confidence: 0.0
+                          - segment: ' What''s'
+                            start_time: '7.31244'
+                            end_time: '8.39281'
+                            speaker: 2
+                            confidence: 0.01
+                          - segment: ' your'
+                            start_time: '8.39281'
+                            end_time: '8.51285'
+                            speaker: 2
+                            confidence: 0.04
+                          - segment: ' name?'
+                            start_time: '8.55286'
+                            end_time: '8.87297'
+                            speaker: 2
+                            confidence: 0.04
+                          - segment: ' Claudia.'
+                            start_time: '9.373140000000001'
+                            end_time: '9.793280000000001'
+                            speaker: 3
+                            confidence: 0.61
+                          - segment: ' What''s'
+                            start_time: '10.613560000000001'
+                            end_time: '10.83364'
+                            speaker: 3
+                            confidence: 0.66
+                          - segment: ' your'
+                            start_time: '10.873650000000001'
+                            end_time: '10.99369'
+                            speaker: 3
+                            confidence: 0.49
+                          - segment: ' name?'
+                            start_time: '11.033700000000001'
+                            end_time: '11.333810000000001'
+                            speaker: 3
+                            confidence: 0.99
+                          - segment: ' I''m'
+                            start_time: '11.53387'
+                            end_time: '11.653910000000002'
+                            speaker: 4
+                            confidence: 0.3
+                          - segment: ' Chihiro.'
+                            start_time: '11.713940000000001'
+                            end_time: '12.09406'
+                            speaker: 4
+                            confidence: 0.58
+                          - segment: ' Nice'
+                            start_time: '12.7743'
+                            end_time: '13.014380000000001'
+                            speaker: 4
+                            confidence: 0.59
+                          - segment: ' to'
+                            start_time: '13.014380000000001'
+                            end_time: '13.0944'
+                            speaker: 4
+                            confidence: 0.24
+                          - segment: ' meet'
+                            start_time: '13.114410000000001'
+                            end_time: '13.374500000000001'
+                            speaker: 4
+                            confidence: 0.81
+                          - segment: ' you.'
+                            start_time: '13.41451'
+                            end_time: '13.534550000000001'
+                            speaker: 4
+                            confidence: 0.36
+                          - segment: ' Chihiro?'
+                            start_time: '14.01472'
+                            end_time: '15.075080000000002'
+                            speaker: 5
+                            confidence: 0.61
+                          - segment: ' Yeah,'
+                            start_time: '15.37518'
+                            end_time: '15.495220000000002'
+                            speaker: 5
+                            confidence: 0.31
+                          - segment: ' that''s'
+                            start_time: '15.51523'
+                            end_time: '15.655270000000002'
+                            speaker: 6
+                            confidence: 0.3
+                          - segment: ' right.'
+                            start_time: '15.7353'
+                            end_time: '16.0154'
+                            speaker: 6
+                            confidence: 0.27
+                          - segment: ' Where'
+                            start_time: '16.375519999999998'
+                            end_time: '16.595589999999998'
+                            speaker: 6
+                            confidence: 0.02
+                          - segment: ' are'
+                            start_time: '16.595589999999998'
+                            end_time: '16.65561'
+                            speaker: 6
+                            confidence: 0.02
+                          - segment: ' you'
+                            start_time: '16.65561'
+                            end_time: '16.75565'
+                            speaker: 6
+                            confidence: 0.01
+                          - segment: ' from?'
+                            start_time: '16.795659999999998'
+                            end_time: '16.97572'
+                            speaker: 6
+                            confidence: 0.12
+                          error_message: null
+                      microsoft:
+                        error: null
+                        id: 3d66a3f5-6523-4e62-8c76-40a80aab8289
+                        final_status: finished
+                        text: Unit 1, page 14, real conversations. Hello. Hi. What's your name? Claudia. What's your name? I'm chihiro. Nice to meet you, Chihiro. Yeah, that's right. Where you from?
+                        diarization:
+                          total_speakers: 0
+                          entries: []
+                          error_message: Use mono audio files for diarization
+                      assembly:
+                        error: null
+                        id: bf965a4a-c7b3-41a5-b634-9720bf4f2ac5
+                        final_status: finished
+                        text: Unit one, page 14. Real conversations. Hello. Hi. What's your name? Claudia. What's your name? I'm Chihiro. Nice to meet you, Chihiro. Yeah, that's right. Where are you from?
+                        diarization:
+                          total_speakers: 2
+                          entries:
+                          - segment: Unit
+                            start_time: '0.25'
+                            end_time: '0.586'
+                            speaker: 1
+                            confidence: 1.0
+                          - segment: one,
+                            start_time: '0.618'
+                            end_time: '1.246'
+                            speaker: 1
+                            confidence: 1.0
+                          - segment: page
+                            start_time: '1.428'
+                            end_time: '1.87'
+                            speaker: 1
+                            confidence: 0.99872
+                          - segment: '14.'
+                            start_time: '1.94'
+                            end_time: '2.75'
+                            speaker: 1
+                            confidence: 0.94
+                          - segment: Real
+                            start_time: '3.25'
+                            end_time: '3.71'
+                            speaker: 1
+                            confidence: 0.88
+                          - segment: conversations.
+                            start_time: '3.78'
+                            end_time: '4.75'
+                            speaker: 1
+                            confidence: 0.7266
+                          - segment: Hello.
+                            start_time: '6.69'
+                            end_time: '7.39'
+                            speaker: 2
+                            confidence: 0.93878
+                          - segment: Hi.
+                            start_time: '7.54'
+                            end_time: '8.046'
+                            speaker: 2
+                            confidence: 0.99357
+                          - segment: What's
+                            start_time: '8.148'
+                            end_time: '8.458'
+                            speaker: 2
+                            confidence: 0.68777
+                          - segment: your
+                            start_time: '8.474'
+                            end_time: '8.606'
+                            speaker: 2
+                            confidence: 0.98
+                          - segment: name?
+                            start_time: '8.628'
+                            end_time: '9.15'
+                            speaker: 2
+                            confidence: 1.0
+                          - segment: Claudia.
+                            start_time: '9.3'
+                            end_time: '10.266'
+                            speaker: 2
+                            confidence: 0.99562
+                          - segment: What's
+                            start_time: '10.458'
+                            end_time: '10.858'
+                            speaker: 2
+                            confidence: 0.987
+                          - segment: your
+                            start_time: '10.874'
+                            end_time: '11.054'
+                            speaker: 2
+                            confidence: 0.67
+                          - segment: name?
+                            start_time: '11.092'
+                            end_time: '11.39'
+                            speaker: 2
+                            confidence: 1.0
+                          - segment: I'm
+                            start_time: '11.46'
+                            end_time: '11.706'
+                            speaker: 2
+                            confidence: 0.91851
+                          - segment: Chihiro.
+                            start_time: '11.738'
+                            end_time: '12.554'
+                            speaker: 2
+                            confidence: 0.3871
+                          - segment: Nice
+                            start_time: '12.682'
+                            end_time: '12.974'
+                            speaker: 2
+                            confidence: 0.99995
+                          - segment: to
+                            start_time: '13.012'
+                            end_time: '13.166'
+                            speaker: 2
+                            confidence: 0.88
+                          - segment: meet
+                            start_time: '13.188'
+                            end_time: '13.374'
+                            speaker: 2
+                            confidence: 0.99855
+                          - segment: you,
+                            start_time: '13.412'
+                            end_time: '13.902'
+                            speaker: 2
+                            confidence: 0.99545
+                          - segment: Chihiro.
+                            start_time: '14.036'
+                            end_time: '15.242'
+                            speaker: 2
+                            confidence: 0.28991
+                          - segment: Yeah,
+                            start_time: '15.306'
+                            end_time: '15.534'
+                            speaker: 2
+                            confidence: 0.77969
+                          - segment: that's
+                            start_time: '15.572'
+                            end_time: '15.786'
+                            speaker: 2
+                            confidence: 0.97781
+                          - segment: right.
+                            start_time: '15.818'
+                            end_time: '16.254'
+                            speaker: 2
+                            confidence: 0.99923
+                          - segment: Where
+                            start_time: '16.372'
+                            end_time: '16.606'
+                            speaker: 2
+                            confidence: 0.50608
+                          - segment: are
+                            start_time: '16.628'
+                            end_time: '16.706'
+                            speaker: 2
+                            confidence: 0.51734
+                          - segment: you
+                            start_time: '16.708'
+                            end_time: '16.79'
+                            speaker: 2
+                            confidence: 0.56109
+                          - segment: from?
+                            start_time: '16.8'
+                            end_time: '16.86'
+                            speaker: 2
+                            confidence: 0.99711
+                          error_message: null
+                      deepgram:
+                        error: null
+                        id: 7b004d84-a8e7-46bd-a6c4-1f1c32ec11ed
+                        final_status: finished
+                        text: Unit one, page fourteen, real conversations. Hello. Hi. Your name. Claudia. What's your name? I'm ji hero. Let's meet you. Chi. Yeah. This right. Away from
+                        diarization:
+                          total_speakers: 1
+                          entries:
+                          - segment: unit
+                            start_time: '0.25971738'
+                            end_time: '0.69923913'
+                            speaker: 1
+                            confidence: 0.9913108
+                          - segment: one
+                            start_time: '0.69923913'
+                            end_time: '1.1992391'
+                            speaker: 1
+                            confidence: 0.9839318
+                          - segment: page
+                            start_time: '1.6182392'
+                            end_time: '2.057761'
+                            speaker: 1
+                            confidence: 0.9943756
+                          - segment: fourteen
+                            start_time: '2.057761'
+                            end_time: '2.557761'
+                            speaker: 1
+                            confidence: 0.9976669
+                          - segment: real
+                            start_time: '3.4961956'
+                            end_time: '3.9961956'
+                            speaker: 1
+                            confidence: 0.98366654
+                          - segment: conversations
+                            start_time: '4.215413'
+                            end_time: '4.715413'
+                            speaker: 1
+                            confidence: 0.9958252
+                          - segment: hello
+                            start_time: '7.1721954'
+                            end_time: '7.4518914'
+                            speaker: 1
+                            confidence: 0.99554515
+                          - segment: hi
+                            start_time: '7.7715435'
+                            end_time: '8.211065'
+                            speaker: 1
+                            confidence: 0.92837864
+                          - segment: your
+                            start_time: '8.410848'
+                            end_time: '8.650587'
+                            speaker: 1
+                            confidence: 0.75730735
+                          - segment: name
+                            start_time: '8.650587'
+                            end_time: '8.810413'
+                            speaker: 1
+                            confidence: 0.9079083
+                          - segment: claudia
+                            start_time: '9.544568'
+                            end_time: '10.044568'
+                            speaker: 1
+                            confidence: 0.95630527
+                          - segment: what's
+                            start_time: '10.663147'
+                            end_time: '10.9028425'
+                            speaker: 1
+                            confidence: 0.9905171
+                          - segment: your
+                            start_time: '10.9028425'
+                            end_time: '11.142538'
+                            speaker: 1
+                            confidence: 0.9875116
+                          - segment: name
+                            start_time: '11.142538'
+                            end_time: '11.382234'
+                            speaker: 1
+                            confidence: 0.99638486
+                          - segment: i'm
+                            start_time: '11.54203'
+                            end_time: '11.781726'
+                            speaker: 1
+                            confidence: 0.97502315
+                          - segment: ji
+                            start_time: '11.781726'
+                            end_time: '11.941523'
+                            speaker: 1
+                            confidence: 0.43853936
+                          - segment: hero
+                            start_time: '11.941523'
+                            end_time: '12.441523'
+                            speaker: 1
+                            confidence: 0.2038527
+                          - segment: let's
+                            start_time: '12.860355'
+                            end_time: '13.179949'
+                            speaker: 1
+                            confidence: 0.5411279
+                          - segment: meet
+                            start_time: '13.179949'
+                            end_time: '13.539492'
+                            speaker: 1
+                            confidence: 0.9986645
+                          - segment: you
+                            start_time: '13.539492'
+                            end_time: '13.819138'
+                            speaker: 1
+                            confidence: 0.9692243
+                          - segment: chi
+                            start_time: '14.17868'
+                            end_time: '14.67868'
+                            speaker: 1
+                            confidence: 0.5391963
+                          - segment: yeah
+                            start_time: '15.417107'
+                            end_time: '15.457056'
+                            speaker: 1
+                            confidence: 0.9215713
+                          - segment: this
+                            start_time: '15.536955'
+                            end_time: '15.816599'
+                            speaker: 1
+                            confidence: 0.6133976
+                          - segment: right
+                            start_time: '15.816599'
+                            end_time: '15.936447'
+                            speaker: 1
+                            confidence: 0.95664394
+                          - segment: away
+                            start_time: '16.575634'
+                            end_time: '16.935177'
+                            speaker: 1
+                            confidence: 0.62204456
+                          - segment: from
+                            start_time: '16.935177'
+                            end_time: '17.084063'
+                            speaker: 1
+                            confidence: 0.96798146
+                          error_message: null
+                      google:
+                        error: null
+                        id: 5cb6cc7f-8ba9-45dc-a0f5-b5625042fca6
+                        final_status: finished
+                        text: unit 1 page 14 real conversations hello hi what's your name Claudia what's your name I'm Chihiro nice to meet you Chihiro yeah that's right where you from
+                        diarization:
+                          total_speakers: 0
+                          entries: []
+                          error_message: null
+                      amazon:
+                        error: null
+                        id: 4e71c2a8-c31d-4f99-8127-b2122f38fd24
+                        final_status: finished
+                        text: Unit one page 14. Real Conversations. Hello? Hi. What's your name? Claudia. What's your name? I'm Chihiro. Nice to meet you, Chihiro. Yeah, that's right. Uh, where are you from?
+                        diarization:
+                          total_speakers: 2
+                          entries:
+                          - segment: Unit
+                            start_time: '0.009'
+                            end_time: '0.479'
+                            speaker: 1
+                            confidence: 0.998
+                          - segment: one
+                            start_time: '0.49'
+                            end_time: '1.059'
+                            speaker: 1
+                            confidence: 0.998
+                          - segment: page
+                            start_time: '1.289'
+                            end_time: '1.879'
+                            speaker: 1
+                            confidence: 0.998
+                          - segment: '14.'
+                            start_time: '1.889'
+                            end_time: '2.75'
+                            speaker: 1
+                            confidence: 0.997
+                          - segment: Real
+                            start_time: '3.19'
+                            end_time: '3.65'
+                            speaker: 1
+                            confidence: 0.998
+                          - segment: Conversations.
+                            start_time: '3.66'
+                            end_time: '4.789'
+                            speaker: 1
+                            confidence: 0.998
+                          - segment: Hello?
+                            start_time: '6.679'
+                            end_time: '7.36'
+                            speaker: 1
+                            confidence: 0.996
+                          - segment: Hi.
+                            start_time: '7.369'
+                            end_time: '8.13'
+                            speaker: 2
+                            confidence: 0.995
+                          - segment: What's
+                            start_time: '8.18'
+                            end_time: '8.319'
+                            speaker: 2
+                            confidence: 0.923
+                          - segment: your
+                            start_time: '8.34'
+                            end_time: '8.47'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: name?
+                            start_time: '8.489'
+                            end_time: '8.939'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: Claudia.
+                            start_time: '9.189'
+                            end_time: '10.069'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: What's
+                            start_time: '10.47'
+                            end_time: '10.779'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: your
+                            start_time: '10.789'
+                            end_time: '10.979'
+                            speaker: 2
+                            confidence: 0.997
+                          - segment: name?
+                            start_time: '10.989'
+                            end_time: '11.38'
+                            speaker: 2
+                            confidence: 0.999
+                          - segment: I'm
+                            start_time: '11.39'
+                            end_time: '11.659'
+                            speaker: 2
+                            confidence: 0.986
+                          - segment: Chihiro.
+                            start_time: '11.899'
+                            end_time: '12.34'
+                            speaker: 2
+                            confidence: 0.94
+                          - segment: Nice
+                            start_time: '12.59'
+                            end_time: '12.96'
+                            speaker: 2
+                            confidence: 0.998
+                          - segment: to
+                            start_time: '12.97'
+                            end_time: '13.029'
+                            speaker: 2
+                            confidence: 0.997
+                          - segment: meet
+                            start_time: '13.039'
+                            end_time: '13.399'
+                            speaker: 2
+                            confidence: 0.997
+                          - segment: you,
+                            start_time: '13.409'
+                            end_time: '13.869'
+                            speaker: 2
+                            confidence: 0.997
+                          - segment: Chihiro.
+                            start_time: '14.149'
+                            end_time: '14.199'
+                            speaker: 2
+                            confidence: 0.893
+                          - segment: Yeah,
+                            start_time: '15.25'
+                            end_time: '15.399'
+                            speaker: 2
+                            confidence: 0.98
+                          - segment: that's
+                            start_time: '15.409'
+                            end_time: '15.64'
+                            speaker: 2
+                            confidence: 0.992
+                          - segment: right.
+                            start_time: '15.649'
+                            end_time: '16.03'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: Uh,
+                            start_time: '16.159'
+                            end_time: '16.18'
+                            speaker: 2
+                            confidence: 0.751
+                          - segment: where
+                            start_time: '16.19'
+                            end_time: '16.54'
+                            speaker: 2
+                            confidence: 0.996
+                          - segment: are
+                            start_time: '16.549'
+                            end_time: '16.629'
+                            speaker: 2
+                            confidence: 0.811
+                          - segment: you
+                            start_time: '16.639'
+                            end_time: '16.68'
+                            speaker: 2
+                            confidence: 0.997
+                          - segment: from?
+                            start_time: '16.69'
+                            end_time: '16.979'
+                            speaker: 2
+                            confidence: 0.997
+                          error_message: null
+                      openai:
+                        error: null
+                        id: 8b863612-e447-4b2a-afac-eab0675d527c
+                        final_status: finished
+                        text: Unit 1, page 14, Real Conversations.
+                        diarization:
+                          total_speakers: 0
+                          entries: []
+                          error_message: null
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    asyncaudiospeech_to_text_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncaudiospeech_to_text_asyncResponseModel
+      type: object
+    SpeechDiarization:
+      properties:
+        total_speakers:
+          title: Total Speakers
+          type: integer
+        entries:
+          items:
+            $ref: '#/components/schemas/SpeechDiarizationEntry'
+          title: Entries
+          type: array
+        error_message:
+          default: null
+          title: Error Message
+          type: string
+      required:
+      - total_speakers
+      title: SpeechDiarization
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    SpeechToTextAsyncRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        provider_params:
+          type: string
+          description: "\nParameters specific to the provider that you want to send along the request.\n\nit should take a *provider* name as key and an object of parameters as value.\n\nExample:\n\n    {\n      \"deepgram\": {\n        \"filler_words\": true,\n        \"smart_format\": true,\n        \"callback\": \"https://webhook.site/0000\"\n      },\n      \"assembly\": {\n        \"webhook_url\": \"https://webhook.site/0000\"\n      }\n    }\n\nPlease refer to the documentation of each provider to see which parameters to send.\n"
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code expected (ex: en, fr)'
+        speakers:
+          type:
+          - integer
+          - 'null'
+          default: 2
+          description: Number of speakers in the file audio
+        profanity_filter:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather or not the service will filter profanity and replace inappropriate words with a series of asterisks
+        custom_vocabulary:
+          type: string
+          default: ''
+          description: 'List of words or composed words to be detected by the speech to text engine. (Ex: Word, Mike, Draw, Los Angeles,...)'
+        convert_to_wav:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the audio/video file to wav format to be accepted by a majority of the providers
+      required:
+      - providers
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    SpeechDiarizationEntry:
+      properties:
+        segment:
+          title: Segment
+          type: string
+        start_time:
+          title: Start Time
+          type: string
+        end_time:
+          title: End Time
+          type: string
+        speaker:
+          title: Speaker
+          type: integer
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - segment
+      - start_time
+      - end_time
+      - speaker
+      - confidence
+      title: SpeechDiarizationEntry
+      type: object
+    audiospeech_to_text_asyncSpeechToTextAsyncDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        diarization:
+          $ref: '#/components/schemas/SpeechDiarization'
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - text
+      - diarization
+      - id
+      - final_status
+      title: audiospeech_to_text_asyncSpeechToTextAsyncDataClass
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    audiospeech_to_text_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        voci:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        speechmatics:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        voxist:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        faker:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        gladia:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        deepgram:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        assembly:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        symbl:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+      title: audiospeech_to_text_asyncModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

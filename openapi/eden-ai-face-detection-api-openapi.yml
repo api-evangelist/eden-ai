@@ -1,0 +1,1237 @@
+openapi: 3.2.0
+info:
+  title: Image Features Face Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Face Detection
+paths:
+  /image/face_detection/:
+    post:
+      operationId: image_face_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 (v1.15.18)`|1.0 (per 1000 file)|1 file
+
+        |**google**|`v1`|1.5 (per 1000 file)|1 file
+
+        |**api4ai**|`v1.0.0`|0.75 (per 1000 file)|1 file'
+      summary: Face Detection
+      tags:
+      - Face Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageface_detectionFaceDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon,api4ai
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageface_detectionFaceDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon,api4ai
+                  file: /edenai/edenai/features/image/samples/data/face.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageface_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      items:
+                      - confidence: 0.35867542
+                        landmarks:
+                          left_eye:
+                          - 0.5593928
+                          - 0.35563782222222223
+                          left_eye_top:
+                          - 0.5623617777777778
+                          - 0.33500637333333333
+                          left_eye_right:
+                          - 0.6094655555555556
+                          - 0.3619852711111111
+                          left_eye_bottom:
+                          - 0.5562037155555556
+                          - 0.37223462222222226
+                          left_eye_left:
+                          - 0.5129351111111111
+                          - 0.3470724
+                          right_eye:
+                          - 0.7493147111111111
+                          - 0.37685453333333335
+                          right_eye_top:
+                          - 0.7594370666666668
+                          - 0.35611131555555553
+                          right_eye_right:
+                          - 0.7932376444444443
+                          - 0.3804408
+                          right_eye_bottom:
+                          - 0.7520020888888889
+                          - 0.39370306666666666
+                          right_eye_left:
+                          - 0.709422
+                          - 0.3764042666666667
+                          left_eyebrow_left:
+                          - 0.4800930666666666
+                          - 0.28822359999999997
+                          left_eyebrow_right:
+                          - 0.7182963111111111
+                          - 0.3118995555555556
+                          left_eyebrow_top:
+                          - 0.5554626222222222
+                          - 0.2737745511111111
+                          right_eyebrow_left:
+                          - 0.6244671555555555
+                          - 0.3007544622222222
+                          right_eyebrow_right:
+                          - 0.8179752
+                          - 0.3369044888888889
+                          left_pupil: []
+                          right_pupil: []
+                          nose_tip:
+                          - 0.6797081333333332
+                          - 0.4878652444444444
+                          nose_bottom_right:
+                          - 0.7014897333333334
+                          - 0.5141742666666667
+                          nose_bottom_left:
+                          - 0.5890595555555556
+                          - 0.4941219111111111
+                          mouth_left:
+                          - 0.5682549777777778
+                          - 0.6044451111111111
+                          mouth_right:
+                          - 0.7088203111111111
+                          - 0.6129685333333333
+                          right_eyebrow_top:
+                          - 0.7756757777777777
+                          - 0.3068927111111111
+                          midpoint_between_eyes:
+                          - 0.6695876888888889
+                          - 0.3506298666666667
+                          nose_bottom_center:
+                          - 0.6512152
+                          - 0.5210045777777778
+                          nose_left_alar_out_tip: []
+                          nose_left_alar_top: []
+                          nose_right_alar_out_tip: []
+                          nose_right_alar_top: []
+                          nose_root_left: []
+                          nose_root_right: []
+                          upper_lip: []
+                          under_lip: []
+                          under_lip_bottom: []
+                          under_lip_top: []
+                          upper_lip_bottom: []
+                          upper_lip_top: []
+                          mouth_center:
+                          - 0.6439076
+                          - 0.5986145777777777
+                          mouth_top: []
+                          mouth_bottom: []
+                          left_ear_tragion:
+                          - 0.3470447111111111
+                          - 0.43821248888888886
+                          right_ear_tragion:
+                          - 0.8367084444444445
+                          - 0.4644870222222222
+                          forehead_glabella:
+                          - 0.6762984
+                          - 0.30784039999999996
+                          chin_gnathion:
+                          - 0.6263550666666666
+                          - 0.7220664444444443
+                          chin_left_gonion:
+                          - 0.38817488888888885
+                          - 0.6194026222222222
+                          chin_right_gonion:
+                          - 0.7651971999999999
+                          - 0.6562912444444444
+                          upper_jawline_left: []
+                          mid_jawline_left: []
+                          mid_jawline_right: []
+                          upper_jawline_right: []
+                          left_cheek_center:
+                          - 0.506162
+                          - 0.49832377777777775
+                          right_cheek_center:
+                          - 0.7725734666666666
+                          - 0.5275757511111111
+                        emotions:
+                          joy: 1
+                          sorrow: 1
+                          anger: 1
+                          surprise: 1
+                          disgust: null
+                          fear: null
+                          confusion: null
+                          calm: null
+                          unknown: null
+                          neutral: null
+                          contempt: null
+                        poses:
+                          pitch: 14.24138
+                          roll: 5.686333
+                          yaw: 3.5769544
+                        age: null
+                        gender: null
+                        bounding_box:
+                          x_min: 0.3422222222222222
+                          x_max: 0.9066666666666666
+                          y_min: 0.1288888888888889
+                          y_max: 0.7333333333333333
+                        hair:
+                          hair_color: []
+                          bald: null
+                          invisible: null
+                        facial_hair:
+                          moustache: null
+                          beard: null
+                          sideburns: null
+                        quality:
+                          noise: null
+                          exposure: 0.2
+                          blur: 0.2
+                          brightness: null
+                          sharpness: null
+                        makeup:
+                          eye_make: null
+                          lip_make: null
+                        accessories:
+                          sunglasses: null
+                          reading_glasses: null
+                          swimming_goggles: null
+                          face_mask: null
+                          eyeglasses: null
+                          headwear: 0.2
+                        occlusions:
+                          eye_occluded: null
+                          forehead_occluded: null
+                          mouth_occluded: null
+                        features:
+                          eyes_open: null
+                          smile: null
+                          mouth_open: null
+                      cost: 0.0
+                    amazon:
+                      items:
+                      - confidence: 0.9999288177490234
+                        landmarks:
+                          left_eye: []
+                          left_eye_top: []
+                          left_eye_right: []
+                          left_eye_bottom:
+                          - 0.5501091480255127
+                          - 0.3644578754901886
+                          left_eye_left:
+                          - 0.5098364949226379
+                          - 0.35217949748039246
+                          right_eye: []
+                          right_eye_top: []
+                          right_eye_right: []
+                          right_eye_bottom:
+                          - 0.7295994162559509
+                          - 0.38350656628608704
+                          right_eye_left:
+                          - 0.6943686008453369
+                          - 0.37203922867774963
+                          left_eyebrow_left:
+                          - 0.46207547187805176
+                          - 0.30150917172431946
+                          left_eyebrow_right:
+                          - 0.6085187196731567
+                          - 0.2816685438156128
+                          left_eyebrow_top:
+                          - 0.5452707409858704
+                          - 0.26769474148750305
+                          right_eyebrow_left:
+                          - 0.7139508724212646
+                          - 0.2933151125907898
+                          right_eyebrow_right:
+                          - 0.7793994545936584
+                          - 0.33506274223327637
+                          left_pupil:
+                          - 0.550325870513916
+                          - 0.3533038794994354
+                          right_pupil:
+                          - 0.7308822870254517
+                          - 0.37301766872406006
+                          nose_tip:
+                          - 0.6931577324867249
+                          - 0.47005921602249146
+                          nose_bottom_right:
+                          - 0.6889317631721497
+                          - 0.5114378929138184
+                          nose_bottom_left:
+                          - 0.6205337643623352
+                          - 0.5048233866691589
+                          mouth_left: []
+                          mouth_right: []
+                          right_eyebrow_top:
+                          - 0.7573572993278503
+                          - 0.29060468077659607
+                          midpoint_between_eyes: []
+                          nose_bottom_center: []
+                          nose_left_alar_out_tip: []
+                          nose_left_alar_top: []
+                          nose_right_alar_out_tip: []
+                          nose_right_alar_top: []
+                          nose_root_left: []
+                          nose_root_right: []
+                          upper_lip: []
+                          under_lip: []
+                          under_lip_bottom: []
+                          under_lip_top: []
+                          upper_lip_bottom: []
+                          upper_lip_top: []
+                          mouth_center: []
+                          mouth_top:
+                          - 0.6577637791633606
+                          - 0.5625283122062683
+                          mouth_bottom:
+                          - 0.6467559933662415
+                          - 0.6366827487945557
+                          left_ear_tragion: []
+                          right_ear_tragion: []
+                          forehead_glabella: []
+                          chin_gnathion:
+                          - 0.6162575483322144
+                          - 0.7660348415374756
+                          chin_left_gonion: []
+                          chin_right_gonion: []
+                          upper_jawline_left:
+                          - 0.3500298261642456
+                          - 0.3823089003562927
+                          mid_jawline_left:
+                          - 0.38666123151779175
+                          - 0.6350533962249756
+                          mid_jawline_right:
+                          - 0.714935302734375
+                          - 0.666611909866333
+                          upper_jawline_right:
+                          - 0.7515450716018677
+                          - 0.4238313138484955
+                          left_cheek_center: []
+                          right_cheek_center: []
+                        emotions:
+                          joy: 2
+                          sorrow: null
+                          anger: 5
+                          surprise: null
+                          disgust: null
+                          fear: 5
+                          confusion: 5
+                          calm: 5
+                          unknown: null
+                          neutral: null
+                          contempt: null
+                        poses:
+                          pitch: 10.816276550292969
+                          roll: 7.98797082901001
+                          yaw: 17.846946716308594
+                        age: 35.0
+                        gender: Male
+                        bounding_box:
+                          x_min: 0.35086357593536377
+                          x_max: 0.7837132513523102
+                          y_min: 0.1173710972070694
+                          y_max: 0.7823788076639175
+                        hair:
+                          hair_color: []
+                          bald: null
+                          invisible: null
+                        facial_hair:
+                          moustache: 0.7281935882568359
+                          beard: 0.9939611053466797
+                          sideburns: null
+                        quality:
+                          noise: null
+                          exposure: null
+                          blur: null
+                          brightness: 0.7615447998046875
+                          sharpness: 0.9222801208496094
+                        makeup:
+                          eye_make: null
+                          lip_make: null
+                        accessories:
+                          sunglasses: 0.9775999450683593
+                          reading_glasses: null
+                          swimming_goggles: null
+                          face_mask: null
+                          eyeglasses: 0.9999999237060547
+                          headwear: null
+                        occlusions:
+                          eye_occluded: null
+                          forehead_occluded: null
+                          mouth_occluded: null
+                        features:
+                          eyes_open: 0.0
+                          smile: 0.0
+                          mouth_open: 0.0
+                      cost: 0.0
+                    api4ai:
+                      items:
+                      - confidence: 0.9920044541358948
+                        landmarks:
+                          left_eye:
+                          - 0.5686073875427247
+                          - 0.3465519905090332
+                          left_eye_top: []
+                          left_eye_right: []
+                          left_eye_bottom: []
+                          left_eye_left: []
+                          right_eye:
+                          - 0.764842004776001
+                          - 0.3802739334106445
+                          right_eye_top: []
+                          right_eye_right: []
+                          right_eye_bottom: []
+                          right_eye_left: []
+                          left_eyebrow_left: []
+                          left_eyebrow_right: []
+                          left_eyebrow_top: []
+                          right_eyebrow_left: []
+                          right_eyebrow_right: []
+                          left_pupil: []
+                          right_pupil: []
+                          nose_tip:
+                          - 0.6892597675323486
+                          - 0.48434698820114136
+                          nose_bottom_right: []
+                          nose_bottom_left: []
+                          mouth_left:
+                          - 0.5597362375259399
+                          - 0.5910256290435791
+                          mouth_right:
+                          - 0.7118245601654053
+                          - 0.6196095657348633
+                          right_eyebrow_top: []
+                          midpoint_between_eyes: []
+                          nose_bottom_center: []
+                          nose_left_alar_out_tip: []
+                          nose_left_alar_top: []
+                          nose_right_alar_out_tip: []
+                          nose_right_alar_top: []
+                          nose_root_left: []
+                          nose_root_right: []
+                          upper_lip: []
+                          under_lip: []
+                          under_lip_bottom: []
+                          under_lip_top: []
+                          upper_lip_bottom: []
+                          upper_lip_top: []
+                          mouth_center: []
+                          mouth_top: []
+                          mouth_bottom: []
+                          left_ear_tragion: []
+                          right_ear_tragion: []
+                          forehead_glabella: []
+                          chin_gnathion: []
+                          chin_left_gonion: []
+                          chin_right_gonion: []
+                          upper_jawline_left: []
+                          mid_jawline_left: []
+                          mid_jawline_right: []
+                          upper_jawline_right: []
+                          left_cheek_center: []
+                          right_cheek_center: []
+                        emotions:
+                          joy: null
+                          sorrow: null
+                          anger: null
+                          surprise: null
+                          disgust: null
+                          fear: null
+                          confusion: null
+                          calm: null
+                          unknown: null
+                          neutral: null
+                          contempt: null
+                        poses:
+                          pitch: null
+                          roll: null
+                          yaw: null
+                        age: null
+                        gender: null
+                        bounding_box:
+                          x_min: 0.2931367974543039
+                          x_max: 0.2931367974543039
+                          y_min: 0.2931367974543039
+                          y_max: 0.2931367974543039
+                        hair:
+                          hair_color: []
+                          bald: null
+                          invisible: null
+                        facial_hair:
+                          moustache: null
+                          beard: null
+                          sideburns: null
+                        quality:
+                          noise: null
+                          exposure: null
+                          blur: null
+                          brightness: null
+                          sharpness: null
+                        makeup:
+                          eye_make: null
+                          lip_make: null
+                        accessories:
+                          sunglasses: null
+                          reading_glasses: null
+                          swimming_goggles: null
+                          face_mask: null
+                          eyeglasses: null
+                          headwear: null
+                        occlusions:
+                          eye_occluded: null
+                          forehead_occluded: null
+                          mouth_occluded: null
+                        features:
+                          eyes_open: null
+                          smile: null
+                          mouth_open: null
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    FaceFeatures:
+      properties:
+        eyes_open:
+          title: Eyes Open
+          type: integer
+        smile:
+          title: Smile
+          type: integer
+        mouth_open:
+          title: Mouth Open
+          type: integer
+      required:
+      - eyes_open
+      - smile
+      - mouth_open
+      title: FaceFeatures
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FaceLandmarks:
+      properties:
+        left_eye:
+          items:
+            type: integer
+          title: Left Eye
+          type: array
+        left_eye_top:
+          items:
+            type: integer
+          title: Left Eye Top
+          type: array
+        left_eye_right:
+          items:
+            type: integer
+          title: Left Eye Right
+          type: array
+        left_eye_bottom:
+          items:
+            type: integer
+          title: Left Eye Bottom
+          type: array
+        left_eye_left:
+          items:
+            type: integer
+          title: Left Eye Left
+          type: array
+        right_eye:
+          items:
+            type: integer
+          title: Right Eye
+          type: array
+        right_eye_top:
+          items:
+            type: integer
+          title: Right Eye Top
+          type: array
+        right_eye_right:
+          items:
+            type: integer
+          title: Right Eye Right
+          type: array
+        right_eye_bottom:
+          items:
+            type: integer
+          title: Right Eye Bottom
+          type: array
+        right_eye_left:
+          items:
+            type: integer
+          title: Right Eye Left
+          type: array
+        left_eyebrow_left:
+          items:
+            type: integer
+          title: Left Eyebrow Left
+          type: array
+        left_eyebrow_right:
+          items:
+            type: integer
+          title: Left Eyebrow Right
+          type: array
+        left_eyebrow_top:
+          items:
+            type: integer
+          title: Left Eyebrow Top
+          type: array
+        right_eyebrow_left:
+          items:
+            type: integer
+          title: Right Eyebrow Left
+          type: array
+        right_eyebrow_right:
+          items:
+            type: integer
+          title: Right Eyebrow Right
+          type: array
+        left_pupil:
+          items:
+            type: integer
+          title: Left Pupil
+          type: array
+        right_pupil:
+          items:
+            type: integer
+          title: Right Pupil
+          type: array
+        nose_tip:
+          items:
+            type: integer
+          title: Nose Tip
+          type: array
+        nose_bottom_right:
+          items:
+            type: integer
+          title: Nose Bottom Right
+          type: array
+        nose_bottom_left:
+          items:
+            type: integer
+          title: Nose Bottom Left
+          type: array
+        mouth_left:
+          items:
+            type: integer
+          title: Mouth Left
+          type: array
+        mouth_right:
+          items:
+            type: integer
+          title: Mouth Right
+          type: array
+        right_eyebrow_top:
+          items:
+            type: integer
+          title: Right Eyebrow Top
+          type: array
+        midpoint_between_eyes:
+          items:
+            type: integer
+          title: Midpoint Between Eyes
+          type: array
+        nose_bottom_center:
+          items:
+            type: integer
+          title: Nose Bottom Center
+          type: array
+        nose_left_alar_out_tip:
+          items:
+            type: integer
+          title: Nose Left Alar Out Tip
+          type: array
+        nose_left_alar_top:
+          items:
+            type: integer
+          title: Nose Left Alar Top
+          type: array
+        nose_right_alar_out_tip:
+          items:
+            type: integer
+          title: Nose Right Alar Out Tip
+          type: array
+        nose_right_alar_top:
+          items:
+            type: integer
+          title: Nose Right Alar Top
+          type: array
+        nose_root_left:
+          items:
+            type: integer
+          title: Nose Root Left
+          type: array
+        nose_root_right:
+          items:
+            type: integer
+          title: Nose Root Right
+          type: array
+        upper_lip:
+          items:
+            type: integer
+          title: Upper Lip
+          type: array
+        under_lip:
+          items:
+            type: integer
+          title: Under Lip
+          type: array
+        under_lip_bottom:
+          items:
+            type: integer
+          title: Under Lip Bottom
+          type: array
+        under_lip_top:
+          items:
+            type: integer
+          title: Under Lip Top
+          type: array
+        upper_lip_bottom:
+          items:
+            type: integer
+          title: Upper Lip Bottom
+          type: array
+        upper_lip_top:
+          items:
+            type: integer
+          title: Upper Lip Top
+          type: array
+        mouth_center:
+          items:
+            type: integer
+          title: Mouth Center
+          type: array
+        mouth_top:
+          items:
+            type: integer
+          title: Mouth Top
+          type: array
+        mouth_bottom:
+          items:
+            type: integer
+          title: Mouth Bottom
+          type: array
+        left_ear_tragion:
+          items:
+            type: integer
+          title: Left Ear Tragion
+          type: array
+        right_ear_tragion:
+          items:
+            type: integer
+          title: Right Ear Tragion
+          type: array
+        forehead_glabella:
+          items:
+            type: integer
+          title: Forehead Glabella
+          type: array
+        chin_gnathion:
+          items:
+            type: integer
+          title: Chin Gnathion
+          type: array
+        chin_left_gonion:
+          items:
+            type: integer
+          title: Chin Left Gonion
+          type: array
+        chin_right_gonion:
+          items:
+            type: integer
+          title: Chin Right Gonion
+          type: array
+        upper_jawline_left:
+          items:
+            type: integer
+          title: Upper Jawline Left
+          type: array
+        mid_jawline_left:
+          items:
+            type: integer
+          title: Mid Jawline Left
+          type: array
+        mid_jawline_right:
+          items:
+            type: integer
+          title: Mid Jawline Right
+          type: array
+        upper_jawline_right:
+          items:
+            type: integer
+          title: Upper Jawline Right
+          type: array
+        left_cheek_center:
+          items:
+            type: integer
+          title: Left Cheek Center
+          type: array
+        right_cheek_center:
+          items:
+            type: integer
+          title: Right Cheek Center
+          type: array
+      title: FaceLandmarks
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FaceBoundingBox:
+      properties:
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: FaceBoundingBox
+      type: object
+    FaceHairColor:
+      properties:
+        color:
+          title: Color
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - color
+      - confidence
+      title: FaceHairColor
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FaceAccessories:
+      properties:
+        sunglasses:
+          title: Sunglasses
+          type: integer
+        reading_glasses:
+          title: Reading Glasses
+          type: integer
+        swimming_goggles:
+          title: Swimming Goggles
+          type: integer
+        face_mask:
+          title: Face Mask
+          type: integer
+        eyeglasses:
+          title: Eyeglasses
+          type: integer
+        headwear:
+          title: Headwear
+          type: integer
+      required:
+      - sunglasses
+      - reading_glasses
+      - swimming_goggles
+      - face_mask
+      - eyeglasses
+      - headwear
+      title: FaceAccessories
+      type: object
+    FaceEmotions:
+      properties:
+        joy:
+          title: Joy
+          type: integer
+        sorrow:
+          title: Sorrow
+          type: integer
+        anger:
+          title: Anger
+          type: integer
+        surprise:
+          title: Surprise
+          type: integer
+        disgust:
+          title: Disgust
+          type: integer
+        fear:
+          title: Fear
+          type: integer
+        confusion:
+          title: Confusion
+          type: integer
+        calm:
+          title: Calm
+          type: integer
+        unknown:
+          title: Unknown
+          type: integer
+        neutral:
+          title: Neutral
+          type: integer
+        contempt:
+          title: Contempt
+          type: integer
+      required:
+      - joy
+      - sorrow
+      - anger
+      - surprise
+      - disgust
+      - fear
+      - confusion
+      - calm
+      - unknown
+      - neutral
+      - contempt
+      title: FaceEmotions
+      type: object
+    FaceQuality:
+      properties:
+        noise:
+          title: Noise
+          type: integer
+        exposure:
+          title: Exposure
+          type: integer
+        blur:
+          title: Blur
+          type: integer
+        brightness:
+          title: Brightness
+          type: integer
+        sharpness:
+          title: Sharpness
+          type: integer
+      required:
+      - noise
+      - exposure
+      - blur
+      - brightness
+      - sharpness
+      title: FaceQuality
+      type: object
+    FaceItem:
+      properties:
+        confidence:
+          title: Confidence
+          type: integer
+        landmarks:
+          $ref: '#/components/schemas/FaceLandmarks'
+        emotions:
+          $ref: '#/components/schemas/FaceEmotions'
+        poses:
+          $ref: '#/components/schemas/FacePoses'
+        age:
+          title: Age
+          type: integer
+        gender:
+          title: Gender
+          type: string
+        bounding_box:
+          $ref: '#/components/schemas/FaceBoundingBox'
+        hair:
+          $ref: '#/components/schemas/FaceHair'
+        facial_hair:
+          $ref: '#/components/schemas/FaceFacialHair'
+        quality:
+          $ref: '#/components/schemas/FaceQuality'
+        makeup:
+          $ref: '#/components/schemas/FaceMakeup'
+        accessories:
+          $ref: '#/components/schemas/FaceAccessories'
+        occlusions:
+          $ref: '#/components/schemas/FaceOcclusions'
+        features:
+          $ref: '#/components/schemas/FaceFeatures'
+      required:
+      - confidence
+      - landmarks
+      - emotions
+      - poses
+      - age
+      - gender
+      - bounding_box
+      - hair
+      - facial_hair
+      - quality
+      - makeup
+      - accessories
+      - occlusions
+      - features
+      title: FaceItem
+      type: object
+    FaceMakeup:
+      properties:
+        eye_make:
+          title: Eye Make
+          type: boolean
+        lip_make:
+          title: Lip Make
+          type: boolean
+      required:
+      - eye_make
+      - lip_make
+      title: FaceMakeup
+      type: object
+    FaceOcclusions:
+      properties:
+        eye_occluded:
+          title: Eye Occluded
+          type: boolean
+        forehead_occluded:
+          title: Forehead Occluded
+          type: boolean
+        mouth_occluded:
+          title: Mouth Occluded
+          type: boolean
+      required:
+      - eye_occluded
+      - forehead_occluded
+      - mouth_occluded
+      title: FaceOcclusions
+      type: object
+    imageface_detectionFaceDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    FaceFacialHair:
+      properties:
+        moustache:
+          title: Moustache
+          type: integer
+        beard:
+          title: Beard
+          type: integer
+        sideburns:
+          title: Sideburns
+          type: integer
+      required:
+      - moustache
+      - beard
+      - sideburns
+      title: FaceFacialHair
+      type: object
+    imageface_detectionResponseModel:
+      properties:
+        clarifai:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+      title: imageface_detectionResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FaceHair:
+      properties:
+        hair_color:
+          items:
+            $ref: '#/components/schemas/FaceHairColor'
+          title: Hair Color
+          type: array
+        bald:
+          title: Bald
+          type: integer
+        invisible:
+          title: Invisible
+          type: boolean
+      required:
+      - bald
+      - invisible
+      title: FaceHair
+      type: object
+    imageface_detectionFaceDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FaceItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageface_detectionFaceDetectionDataClass
+      type: object
+    FacePoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yaw:
+          title: Yaw
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yaw
+      title: FacePoses
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

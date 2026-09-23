@@ -1,0 +1,490 @@
+openapi: 3.2.0
+info:
+  title: Translation Features Document Translation API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Document Translation
+paths:
+  /translation/document_translation/:
+    post:
+      operationId: translation_document_translation_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**deepl**|`v2`|2.0 (per 20 page)|20 page
+
+        |**google**|`v3`|0.08 (per 1 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chinese**|`zh`|
+
+        |**Corsican**|`co`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong**|`hmn`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Kurdish**|`ku`|
+
+        |**Lao**|`lo`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Nyanja**|`ny`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Samoan**|`sm`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Shona**|`sn`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|'
+      summary: Document Translation
+      tags:
+      - Document Translation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/translationdocument_translationDocumentTranslationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,deepl
+                  source_language: en
+                  target_language: fr
+                  file_url: http://edenai-resource-example.pdf
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/translationdocument_translationDocumentTranslationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,deepl
+                  file: /edenai/edenai/features/translation/samples/data/document_translation.pdf
+                  source_language: en
+                  target_language: fr
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/translationdocument_translationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      file: JVBERi0xLjcNCiWhs8XXDQoxIDAgb2JqDQo8PC9QYWdlcyAyIDAgUiAvVHl...
+                      document_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/c76bef36-ab21-4caa-85ed-6f10d3fc7652_.pdf?Expires=1705666633&Signature=iJeEAj3UtVL1JuP0KAKYiH45oZkquRpu5yOZCOgaFmfgnnL6xwEmu2Tk3SXijHXaflIJH1lH6tSkxcLCOmL9~eKv1t-S4fFrnQvxyqbl88tCFqPdjNaSNwFFTy683hlioqbP6BPKc2DGUROEHhQyM00B~vq2jY~5kwGYLV94tY7Vz2avH3xeDfcXv~QUf831gIuk6euu08bRn49WPGpxIu2HQ7OJbHmxMmDIb27z6onNLj0bJM-qgQ9x0bepKXxFHYAHd0F3u3vN12VM3ymx6QJYddMivxXmW63-M2CYUOo1-2-u2Xn2WQvU5PMcSTiwL80cbtxk6w06aurfX9h0iw__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    deepl:
+                      file: JVBERi0xLjcNCjUgMCBvYmoNCjw8L1R5cGUgL1BhZ2UvUGFyZW50IDMgMCB...
+                      document_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/c6a3e9bd-de89-4414-a6fa-30be83a96f9d_.pdf?Expires=1685361931&Signature=sbDBAK~xOgkRZAbCIiz97oXfOA1cFXU-y7Db2YAWnoVnGvGINX2A79Et0FvmQtCmyb~OzfNx-FCPMRj2rJKR9xhYq5mOyRf3m9jfmmoStbsdLtyjoGSUfaR7jxQb779uUWXIcopitwMx2UBUx1bZy1jtUTzLn~WqVT1qKupwEvTm2qGmMJa6KZ96gyAvIiT5mHrwUUSA9jyFaiMQ~rtZQylovVSVA4PNzGiZjBhVLDa0ZtmRgMb1JeT2wVzhHwiZD4Kvf3oOcurKeNCxlXQR~mD-~KJSLxTkIwzmbWoG1jWz6Qxm7oYdZxPko81pHEY5VOiM56xoSZwz8ONoVVmVsA__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    translationdocument_translationResponseModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+        deepl:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+      title: translationdocument_translationResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    translationdocument_translationDocumentTranslationDataClass:
+      properties:
+        file:
+          title: File
+          type: string
+        document_resource_url:
+          title: Document Resource Url
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - file
+      - document_resource_url
+      - status
+      title: translationdocument_translationDocumentTranslationDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    translationdocument_translationDocumentTranslationRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        source_language:
+          type:
+          - string
+          - 'null'
+          description: 'Source language code (ex: en, fr)'
+        target_language:
+          type: string
+          minLength: 1
+          description: 'Target language code (ex: en, fr)'
+      required:
+      - providers
+      - target_language
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

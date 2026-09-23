@@ -1,0 +1,296 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Info API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: Info
+paths:
+  /v3/info:
+    get:
+      tags:
+      - Info
+      summary: List Features
+      description: 'List all available features and their subfeatures.
+
+
+        Returns features that exist in both the registry (technically supported)
+
+        and database (have available providers).'
+      operationId: list_features_v3_info_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeaturesListResponse'
+  /v3/info/{feature}:
+    get:
+      tags:
+      - Info
+      summary: List Subfeatures
+      description: 'List all subfeatures for a specific feature.
+
+
+        Args:
+
+        feature: Feature name (e.g., ''text'', ''image'', ''ocr'', ''translation'')
+
+
+        Returns:
+
+        Feature info with display names and list of subfeatures.'
+      operationId: list_subfeatures_v3_info__feature__get
+      parameters:
+      - name: feature
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Feature
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/info/{feature}/{subfeature}:
+    get:
+      tags:
+      - Info
+      summary: Get Feature Info
+      description: 'Get detailed information for a specific feature/subfeature.
+
+
+        Args:
+
+        feature: Feature name (e.g., ''text'', ''image'', ''ocr'', ''translation'')
+
+        subfeature: Subfeature name (e.g., ''ai_detection'', ''ocr'', ''generation'')
+
+        format: Schema output format (simplified or json_schema)
+
+
+        Returns:
+
+        - Feature and subfeature display names
+
+        - Input schema
+
+        - Output schema
+
+        - Available providers and their models'
+      operationId: get_feature_info_v3_info__feature___subfeature__get
+      parameters:
+      - name: feature
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Feature
+      - name: subfeature
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Subfeature
+      - name: format
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/SchemaFormat'
+          description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
+          default: simplified
+        description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubfeatureDetailResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    FeaturesListResponse:
+      properties:
+        features:
+          items:
+            $ref: '#/components/schemas/FeatureInfo'
+          type: array
+          title: Features
+      type: object
+      required:
+      - features
+      title: FeaturesListResponse
+      description: Response for listing all features.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        subfeatures:
+          items:
+            $ref: '#/components/schemas/SubfeatureInfo'
+          type: array
+          title: Subfeatures
+      type: object
+      required:
+      - name
+      - fullname
+      - subfeatures
+      title: FeatureInfo
+      description: Info about a feature and its subfeatures.
+    SubfeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        mode:
+          type: string
+          enum:
+          - sync
+          - async
+          title: Mode
+        models:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Models
+          default: []
+      type: object
+      required:
+      - name
+      - fullname
+      - mode
+      title: SubfeatureInfo
+      description: Info about a subfeature.
+    SubfeatureDetailResponse:
+      properties:
+        feature:
+          type: string
+          title: Feature
+        feature_fullname:
+          type: string
+          title: Feature Fullname
+        subfeature:
+          type: string
+          title: Subfeature
+        subfeature_fullname:
+          type: string
+          title: Subfeature Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        mode:
+          type: string
+          enum:
+          - sync
+          - async
+          title: Mode
+        endpoints:
+          additionalProperties: true
+          type: object
+          title: Endpoints
+        input_schema:
+          additionalProperties: true
+          type: object
+          title: Input Schema
+        output_schema:
+          additionalProperties: true
+          type: object
+          title: Output Schema
+        models:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Models
+      type: object
+      required:
+      - feature
+      - feature_fullname
+      - subfeature
+      - subfeature_fullname
+      - mode
+      - endpoints
+      - input_schema
+      - output_schema
+      - models
+      title: SubfeatureDetailResponse
+      description: Detailed response for a specific subfeature.
+    SchemaFormat:
+      type: string
+      enum:
+      - simplified
+      - json_schema
+      title: SchemaFormat
+      description: Output format for schema information.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

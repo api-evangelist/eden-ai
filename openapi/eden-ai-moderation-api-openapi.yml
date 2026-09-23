@@ -1,0 +1,670 @@
+openapi: 3.2.0
+info:
+  title: Text Features Moderation API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Moderation
+paths:
+  /text/moderation/:
+    post:
+      operationId: text_moderation_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**microsoft**|-|`v1.0`|1.0 (per 1000 request)|1 request
+
+        |**openai**|-|`v3.0.0`|free|-
+
+        |**openai**|**text-moderation-stable**|`v3.0.0`|0.0 (per 1 token)|1 token
+
+        |**openai**|**text-moderation-007**|`v3.0.0`|0.0 (per 1 token)|1 token
+
+        |**openai**|**text-moderation-latest**|`v3.0.0`|0.0 (per 1 token)|1 token
+
+        |**google**|-|`v1`|5.0 (per 1000000 char)|100 char
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Assamese**|`as`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Breton**|`br`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Catalan**|`ca`|
+
+        |**Central Kurdish**|`ckb`|
+
+        |**Cherokee**|`chr`|
+
+        |**Chinese**|`zh`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Estonian**|`et`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Fulah**|`ff`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Hausa**|`ha`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Inuktitut**|`iu`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Konkani (macrolanguage)**|`kok`|
+
+        |**Korean**|`ko`|
+
+        |**Lao**|`lo`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Norwegian Nynorsk**|`nn`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Pedi**|`nso`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Quechua**|`qu`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Tigrinya**|`ti`|
+
+        |**Tswana**|`tn`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Wolof**|`wo`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yoruba**|`yo`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+
+        Supported Models'
+      summary: Moderation
+      tags:
+      - Moderation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,openai,microsoft
+                  language: en
+                  text: 'Is this a crap email abcdef@abcd.com, phone: 0617730730, IP: 255.255.255.255, 1 Microsoft Way, Redmond, WA 98052'
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textmoderationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      nsfw_likelihood: 2
+                      items:
+                      - label: Toxic
+                        likelihood: 2
+                        category: Toxic
+                        subcategory: Toxic
+                        likelihood_score: 0.2391817
+                      - label: Insult
+                        likelihood: 1
+                        category: Toxic
+                        subcategory: Insult
+                        likelihood_score: 0.052930057
+                      - label: Profanity
+                        likelihood: 2
+                        category: Toxic
+                        subcategory: Profanity
+                        likelihood_score: 0.28705063
+                      - label: Derogatory
+                        likelihood: 1
+                        category: Toxic
+                        subcategory: Derogatory
+                        likelihood_score: 0.0047925273
+                      - label: Sexual
+                        likelihood: 1
+                        category: Sexual
+                        subcategory: Sexual
+                        likelihood_score: 0.0024352302
+                      - label: Death, Harm & Tragedy
+                        likelihood: 1
+                        category: Violence
+                        subcategory: GraphicViolenceOrGore
+                        likelihood_score: 0.0005420054
+                      - label: Violent
+                        likelihood: 1
+                        category: Violence
+                        subcategory: Violence
+                        likelihood_score: 0.0025138261
+                      - label: Firearms & Weapons
+                        likelihood: 1
+                        category: Violence
+                        subcategory: WeaponViolence
+                        likelihood_score: 0.0
+                      - label: Public Safety
+                        likelihood: 1
+                        category: Content
+                        subcategory: PublicSafety
+                        likelihood_score: 0.010695187
+                      - label: Health
+                        likelihood: 1
+                        category: Content
+                        subcategory: Health
+                        likelihood_score: 0.004199916
+                      nsfw_likelihood_score: 0.28705063
+                      cost: 0.0
+                    openai:
+                      nsfw_likelihood: 1
+                      items:
+                      - label: sexual
+                        likelihood: 1
+                        category: Sexual
+                        subcategory: Sexual
+                        likelihood_score: 8.123514999169856e-05
+                      - label: hate
+                        likelihood: 1
+                        category: HateAndExtremism
+                        subcategory: Hate
+                        likelihood_score: 0.001375643303617835
+                      - label: harassment
+                        likelihood: 1
+                        category: HateAndExtremism
+                        subcategory: Harassment
+                        likelihood_score: 0.01840096339583397
+                      - label: self-harm
+                        likelihood: 1
+                        category: Violence
+                        subcategory: PhysicalViolence
+                        likelihood_score: 0.001366300624795258
+                      - label: sexual/minors
+                        likelihood: 1
+                        category: Other
+                        subcategory: Other
+                        likelihood_score: 0.00031155155738815665
+                      - label: hate/threatening
+                        likelihood: 1
+                        category: HateAndExtremism
+                        subcategory: Threatening
+                        likelihood_score: 7.793232362018898e-05
+                      - label: violence/graphic
+                        likelihood: 1
+                        category: Violence
+                        subcategory: GraphicViolenceOrGore
+                        likelihood_score: 0.0005688181845471263
+                      - label: self-harm/intent
+                        likelihood: 1
+                        category: Violence
+                        subcategory: PhysicalViolence
+                        likelihood_score: 0.00025184746482409537
+                      - label: self-harm/instructions
+                        likelihood: 1
+                        category: Violence
+                        subcategory: PhysicalViolence
+                        likelihood_score: 0.0005795329925604165
+                      - label: harassment/threatening
+                        likelihood: 1
+                        category: HateAndExtremism
+                        subcategory: Threatening
+                        likelihood_score: 9.946248610503972e-05
+                      nsfw_likelihood_score: 0.01840096339583397
+                      cost: 0.0
+                    microsoft:
+                      nsfw_likelihood: 5
+                      items:
+                      - label: sexually explicit
+                        likelihood: 1
+                        category: Sexual
+                        subcategory: Sexual
+                        likelihood_score: 0.00020882912212982774
+                      - label: sexually suggestive
+                        likelihood: 2
+                        category: Sexual
+                        subcategory: Suggestive
+                        likelihood_score: 0.2234508991241455
+                      - label: offensive
+                        likelihood: 5
+                        category: Other
+                        subcategory: Offensive
+                        likelihood_score: 0.9879999756813049
+                      nsfw_likelihood_score: 0.9879999756813049
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    SubCategoryType:
+      enum:
+      - CreditCard
+      - CardExpiry
+      - BankAccountNumber
+      - BankRoutingNumber
+      - SwiftCode
+      - TaxIdentificationNumber
+      - Name
+      - Age
+      - Email
+      - Phone
+      - PersonType
+      - Gender
+      - SocialSecurityNumber
+      - NationalIdentificationNumber
+      - NationalHealthService
+      - ResidentRegistrationNumber
+      - DriverLicenseNumber
+      - PassportNumber
+      - URL
+      - IP
+      - MAC
+      - VehicleIdentificationNumber
+      - LicensePlate
+      - VoterNumber
+      - AWSKeys
+      - AzureKeys
+      - Password
+      - CompanyName
+      - CompanyNumber
+      - BuisnessNumber
+      - Date
+      - Time
+      - DateTime
+      - Duration
+      - Address
+      - Location
+      - Other
+      - Anonymized
+      - Nerd
+      - Wsd
+      - Unknown
+      title: SubCategoryType
+      type: string
+    textmoderationModerationDataClass:
+      properties:
+        nsfw_likelihood:
+          title: Nsfw Likelihood
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/TextModerationItem'
+          title: Items
+          type: array
+        nsfw_likelihood_score:
+          title: Nsfw Likelihood Score
+          type: integer
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: textmoderationModerationDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textmoderationResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+      title: textmoderationResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    CategoryType:
+      description: This enum are used to categorize the entities extracted from the text.
+      enum:
+      - PersonalInformation
+      - FinancialInformation
+      - IdentificationNumbers
+      - Miscellaneous
+      - OrganizationInformation
+      - DateAndTime
+      - LocationInformation
+      - Other
+      title: CategoryType
+      type: string
+    TextModerationItem:
+      properties:
+        label:
+          title: Label
+          type: string
+        likelihood:
+          title: Likelihood
+          type: integer
+        category:
+          $ref: '#/components/schemas/CategoryType'
+        subcategory:
+          $ref: '#/components/schemas/SubCategoryType'
+        likelihood_score:
+          title: Likelihood Score
+          type: integer
+      required:
+      - label
+      - likelihood
+      - category
+      - subcategory
+      - likelihood_score
+      title: TextModerationItem
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
+    : type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

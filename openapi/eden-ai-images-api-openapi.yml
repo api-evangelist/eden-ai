@@ -1,81 +1,55 @@
 openapi: 3.2.0
 info:
-  title: Eden Ai Audio API
-  version: '1.0'
-  description: 'Operations tagged Audio across 2 of this provider''s published API definitions: eden-ai-openapi.yml, eden-ai-v3-openapi.json. Each path carries the servers of the definition it was published in.'
+  title: Eden AI API V3 Images API
+  version: 3.0.0
 servers:
-- url: https://api.edenai.run/v2
-  description: Production
 - url: https://api.edenai.run
   description: Production server
 tags:
-- name: Audio
+- name: Images
 paths:
-  /audio/speech_to_text_async:
+  /v3/images/generations:
     post:
-      summary: Submit async speech-to-text job
-      operationId: audioSpeechToTextAsyncCreate
       tags:
-      - Audio
+      - Images
+      summary: Image Generations
+      description: OpenAI-compatible image generation endpoint.
+      operationId: image_generations_v3_images_generations_post
       requestBody:
-        required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
-              type: object
-              required:
-              - providers
-              - file
-              properties:
-                providers:
-                  type: string
-                file:
-                  type: string
-                  format: binary
-                language:
-                  type: string
-      responses:
-        '200':
-          description: Job submitted
-      security:
-      - bearerAuth: []
-    servers:
-    - url: https://api.edenai.run/v2
-      description: Production
-  /audio/speech_to_text_async/{public_id}:
-    get:
-      summary: Get async speech-to-text job result
-      operationId: audioSpeechToTextAsyncGet
-      tags:
-      - Audio
-      parameters:
-      - in: path
-        name: public_id
+              $ref: '#/components/schemas/ImageGenerationBody'
         required: true
-        schema:
-          type: string
       responses:
         '200':
-          description: Job status / result
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
       security:
-      - bearerAuth: []
-    servers:
-    - url: https://api.edenai.run/v2
-      description: Production
-  /v3/audio/transcriptions:
+      - AuthBearer: []
+  /v3/images/edits:
     post:
       tags:
-      - Audio
-      summary: Audio Transcriptions
-      description: 'OpenAI-compatible speech-to-text endpoint.
+      - Images
+      summary: Image Edits
+      description: 'OpenAI-compatible image-edit endpoint.
 
 
-        Accepts either ``multipart/form-data`` (OpenAI SDK shape: a ``file`` upload
+        Accepts either ``application/json`` (gpt-image-style ``images: [{file_id|image_url}]``)
 
-        plus text fields) or ``application/json`` (``file_id`` / ``file_url`` plus
+        or ``multipart/form-data`` (OpenAI SDK classic shape: ``image[]`` UploadFile,
 
-        text fields). Content-Type drives dispatch.'
-      operationId: audio_transcriptions_v3_audio_transcriptions_post
+        optional ``mask`` UploadFile, plus text fields). Content-Type drives dispatch.'
+      operationId: image_edits_v3_images_edits_post
       requestBody:
         content:
           application/json:
@@ -89,69 +63,67 @@ paths:
                 model:
                   type: string
                   title: Model
-                  description: provider/model, e.g. 'openai/whisper-1'
-                language:
-                  anyOf:
-                  - type: string
-                  - type: 'null'
-                  title: Language
-                  description: ISO-639-1 language code of the input audio (e.g. 'en'). Omit to let the provider auto-detect where supported.
+                  description: provider/model, e.g. 'openai/gpt-image-2'
                 prompt:
-                  anyOf:
-                  - type: string
-                  - type: 'null'
+                  type: string
+                  maxLength: 32000
+                  minLength: 1
                   title: Prompt
-                  description: Optional text to guide the model's style or continue a prior audio segment's context.
-                response_format:
+                n:
+                  anyOf:
+                  - type: integer
+                    maximum: 10.0
+                    minimum: 1.0
+                  - type: 'null'
+                  title: N
+                size:
                   anyOf:
                   - type: string
                   - type: 'null'
-                  title: Response Format
-                  description: 'Transcript format: ''json'', ''text'', ''srt'', ''verbose_json'', or ''vtt''. Provider support varies; forwarded as-is.'
-                timestamp_granularities:
-                  anyOf:
-                  - items:
-                      type: string
-                    type: array
-                  - type: 'null'
-                  title: Timestamp Granularities
-                  description: Timestamp granularities to populate with 'verbose_json' (['word'] and/or ['segment']).
-                temperature:
-                  anyOf:
-                  - type: number
-                    maximum: 1.0
-                    minimum: 0.0
-                  - type: 'null'
-                  title: Temperature
-                  description: Sampling temperature between 0 and 1.
+                  title: Size
+                  description: Provider-specific size string. OpenAI accepts '1024x1024', '1536x1024', '1024x1536', 'auto'. Vertex Imagen accepts square or aspect-ratio strings. Validation is delegated to the provider.
                 user:
                   anyOf:
                   - type: string
                   - type: 'null'
                   title: User
                   description: End-user identifier for abuse tracking.
-                file_id:
+                metadata:
                   anyOf:
-                  - type: string
+                  - additionalProperties: true
+                    type: object
                   - type: 'null'
-                  title: File Id
-                  description: Id of a file previously uploaded to Eden AI.
-                file_url:
+                  title: Metadata
+                  description: Arbitrary metadata attached to the request.
+                extra_headers:
                   anyOf:
-                  - type: string
+                  - additionalProperties:
+                      type: string
+                    type: object
                   - type: 'null'
-                  title: File Url
-                  description: An https URL or a base64 data URL pointing at the audio.
+                  title: Extra Headers
+                  description: Additional HTTP headers forwarded to the provider API. Credential headers (Authorization, x-api-key, ...) are rejected.
+                images:
+                  items:
+                    $ref: '#/components/schemas/ImageRef'
+                  type: array
+                  maxItems: 16
+                  minItems: 1
+                  title: Images
+                  description: One or more input images. Each entry references one image via exactly one of `file_id` (an Eden upload id) or `image_url` (https URL or base64 data URL). The first image is the canvas; subsequent images are inpaint references.
+                mask:
+                  anyOf:
+                  - $ref: '#/components/schemas/ImageRef'
+                  - type: 'null'
+                  description: Optional mask image (PNG with transparent pixels marking the regions to edit). Same shape as an `images[]` entry.
+              additionalProperties: true
               type: object
               required:
               - model
-              title: TranscriptionJsonBody
-              description: 'JSON request body, references the audio by ``file_id`` or ``file_url``.
-
-
-                Exactly one of ``file_id`` (an Eden upload id) or ``file_url`` (an https URL
-
-                or a ``data:audio/...;base64,...`` URL) must be set.'
+              - prompt
+              - images
+              title: ImageEditJsonBody
+              description: "OpenAI-compatible ``POST /v1/images/edits`` JSON request body.\n\nReferences:\n- OpenAI's current /v1/images/edits JSON form for gpt-image-* takes\n  ``images: [{file_id | image_url}, ...]`` and an optional ``mask:\n  {file_id | image_url}``.\n- ``image_url`` accepts an https URL or a ``data:image/...;base64,...`` URL."
         required: true
       responses:
         '200':
@@ -159,19 +131,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TranscriptionResponse'
+                $ref: '#/components/schemas/ImageResponse'
       security:
       - AuthBearer: []
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
-  /v3/audio/transcriptions/models:
+  /v3/images/models:
     get:
       tags:
-      - Audio
-      summary: List Transcription Models
-      description: List speech-to-text models available in the caller's region.
-      operationId: list_transcription_models_v3_audio_transcriptions_models_get
+      - Images
+      summary: List Image Models
+      description: List image-generation / image-edit models available in the caller's region.
+      operationId: list_image_models_v3_images_models_get
       parameters:
       - name: view
         in: query
@@ -194,203 +163,15 @@ paths:
                 anyOf:
                 - $ref: '#/components/schemas/ListModelsResponse'
                 - $ref: '#/components/schemas/ListModelsWithEndpointsResponse'
-                title: Response List Transcription Models V3 Audio Transcriptions Models Get
+                title: Response List Image Models V3 Images Models Get
         '422':
           description: Validation Error
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
-  /v3/audio/speech:
-    post:
-      tags:
-      - Audio
-      summary: Audio Speech
-      description: 'OpenAI-compatible text-to-speech endpoint.
-
-
-        Accepts a JSON body (``model``, ``input``, ``voice`` plus optional
-
-        ``response_format`` / ``speed`` / ``instructions``) and returns raw audio
-
-        bytes; ``cost`` and ``provider`` are returned in the ``x-edenai-*`` response
-
-        headers.'
-      operationId: audio_speech_v3_audio_speech_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SpeechBody'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema: {}
-            audio/mpeg:
-              schema:
-                type: string
-                format: binary
-            audio/ogg:
-              schema:
-                type: string
-                format: binary
-            audio/aac:
-              schema:
-                type: string
-                format: binary
-            audio/flac:
-              schema:
-                type: string
-                format: binary
-            audio/wav:
-              schema:
-                type: string
-                format: binary
-            audio/pcm:
-              schema:
-                type: string
-                format: binary
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-      - AuthBearer: []
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
-  /v3/audio/speech/models:
-    get:
-      tags:
-      - Audio
-      summary: List Speech Models
-      description: List text-to-speech models available in the caller's region.
-      operationId: list_speech_models_v3_audio_speech_models_get
-      parameters:
-      - name: view
-        in: query
-        required: false
-        schema:
-          enum:
-          - endpoints
-          - models
-          type: string
-          description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
-          default: endpoints
-          title: View
-        description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                anyOf:
-                - $ref: '#/components/schemas/ListModelsResponse'
-                - $ref: '#/components/schemas/ListModelsWithEndpointsResponse'
-                title: Response List Speech Models V3 Audio Speech Models Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
 components:
   schemas:
-    SpeechBody:
-      properties:
-        routing:
-          anyOf:
-          - $ref: '#/components/schemas/ProviderRoutingPreferences'
-          - type: 'null'
-          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
-        model:
-          type: string
-          title: Model
-          description: provider/model, e.g. 'openai/tts-1'
-        input:
-          type: string
-          title: Input
-          description: The text to synthesize into audio.
-        voice:
-          type: string
-          title: Voice
-          description: Voice preset, e.g. 'alloy'.
-        response_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Response Format
-          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
-        speed:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Speed
-          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: Optional guidance for voice and delivery style.
-      type: object
-      required:
-      - model
-      - input
-      - voice
-      title: SpeechBody
-      description: 'OpenAI-compatible text-to-speech request.
-
-
-        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
-
-        top-level fields are dropped.'
-    TranscriptionResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Text
-        usage:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Usage
-      additionalProperties: true
-      type: object
-      title: TranscriptionResponse
-      description: 'OpenAI-compatible transcription response, plus Eden ``cost`` / ``provider``.
-
-
-        The provider''s full transcript payload passes through — ``text`` plus any
-
-        ``language``, ``duration``, ``words``, and ``segments`` the provider returns
-
-        — alongside the Eden-added ``cost`` and ``provider`` fields.'
     Capabilities:
       properties:
         input_modalities:
@@ -497,6 +278,75 @@ components:
       - msg
       - type
       title: ValidationError
+    ImageGenerationBody:
+      properties:
+        routing:
+          anyOf:
+          - $ref: '#/components/schemas/ProviderRoutingPreferences'
+          - type: 'null'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+        model:
+          type: string
+          title: Model
+          description: provider/model, e.g. 'openai/gpt-image-2'
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          title: Prompt
+        n:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 1.0
+          - type: 'null'
+          title: N
+        size:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Size
+          description: Provider-specific size string. OpenAI accepts '1024x1024', '1536x1024', '1024x1536', 'auto'. Vertex Imagen accepts square or aspect-ratio strings. Validation is delegated to the provider.
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+          description: End-user identifier for abuse tracking.
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Arbitrary metadata attached to the request.
+        extra_headers:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Extra Headers
+          description: Additional HTTP headers forwarded to the provider API. Credential headers (Authorization, x-api-key, ...) are rejected.
+        quality:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Quality
+          description: Provider-specific quality string (e.g. 'low', 'medium', 'high', 'standard', 'hd', 'auto'). Accepted values depend on the model.
+        response_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Format
+          description: Legacy DALL-E parameter. Ignored by gpt-image-* and forwarded to the provider for any model that still honors it.
+      additionalProperties: true
+      type: object
+      required:
+      - model
+      - prompt
+      title: ImageGenerationBody
+      description: OpenAI-compatible ``POST /v1/images/generations`` request body.
     ProviderRoutingPreferences:
       properties:
         sort:
@@ -613,6 +463,43 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    ImageResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        created:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Created
+        data:
+          items:
+            $ref: '#/components/schemas/ImageDataItem'
+          type: array
+          title: Data
+        usage:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Usage
+      additionalProperties: true
+      type: object
+      title: ImageResponse
+      description: 'OpenAI-compatible image response + Eden ``cost`` / ``provider`` fields.
+
+
+        Shared by ``POST /v3/images/generations`` and ``POST /v3/images/edits`` —
+
+        the wire shape is identical.'
     RegionObject:
       properties:
         code:
@@ -629,6 +516,25 @@ components:
       - name
       title: RegionObject
       description: Region where a model is available.
+    ImageRef:
+      properties:
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+      additionalProperties: false
+      type: object
+      title: ImageRef
+      description: 'One entry in ``images[]`` (or the ``mask`` value).
+
+
+        Exactly one of ``file_id`` or ``image_url`` must be set.'
     HTTPValidationError:
       properties:
         detail:
@@ -638,6 +544,32 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ImageDataItem:
+      properties:
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        b64_json:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: B64 Json
+        revised_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Revised Prompt
+      additionalProperties: true
+      type: object
+      title: ImageDataItem
+      description: 'Single image entry inside the OpenAI-shaped ``data: [...]`` array.
+
+
+        Providers return either ``url`` (most non-OpenAI providers) or
+
+        ``b64_json`` (gpt-image-*); ``revised_prompt`` is OpenAI-specific.'
     ModelObject:
       properties:
         id:
@@ -746,13 +678,6 @@ components:
 
         "canonical" -- to them these are simply models, and the rows behind them endpoints.'
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: API key
     AuthBearer:
       type: http
       scheme: bearer
-x-refined-from:
-- eden-ai-openapi.yml
-- eden-ai-v3-openapi.json

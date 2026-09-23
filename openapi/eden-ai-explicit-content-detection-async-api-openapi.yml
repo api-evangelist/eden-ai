@@ -1,0 +1,805 @@
+openapi: 3.2.0
+info:
+  title: Video Features Explicit Content Detection Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Explicit Content Detection Async
+paths:
+  /video/explicit_content_detection_async/:
+    get:
+      operationId: video_explicit_content_detection_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Video Explicit Content Detection List Jobs
+      tags:
+      - Explicit Content Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: abadc7eb-da00-4d8d-b1ca-ab16e690a4a5
+                      state: finished
+                      created_at: '2026-09-06T00:05:21.736897'
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: a66b1dec-05ab-4d0a-8bd7-12690c32fc1e
+                      state: finished
+                      created_at: '2026-09-05T23:05:21.736911'
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 3c8ea178-ff3c-4864-9fa5-7cdfa21cbc1a
+                      state: finished
+                      created_at: '2026-09-05T22:05:21.736917'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: video_explicit_content_detection_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3`|0.1 (per 60 seconde)|60 seconde
+
+        |**google**|`Video intelligence v1`|0.1 (per 60 seconde)|1 seconde'
+      summary: Video Explicit Content Detection Launch Job
+      tags:
+      - Explicit Content Detection Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon
+                  file: /edenai/edenai/features/video/samples/data/faces.mp4
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 6ee2b8e2-e441-47a0-bb69-ecc71aa266f2
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: video_explicit_content_detection_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Video Explicit Content delete Jobs
+      tags:
+      - Explicit Content Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /video/explicit_content_detection_async/{public_id}/:
+    get:
+      operationId: video_explicit_content_detection_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Video Explicit Content Detection Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Explicit Content Detection Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncvideoexplicit_content_detection_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 766509e1-ba8e-416e-85d5-5c9200338f9a
+                    status: finished
+                    error: null
+                    results:
+                      google:
+                        error: null
+                        id: ef4c7096-cfe7-482b-aff6-26777016db44
+                        final_status: finished
+                        moderation:
+                        - timestamp: 0.424126
+                          confidence: 0.4
+                          category: Explicit Nudity
+                        - timestamp: 1.262779
+                          confidence: 0.6
+                          category: Explicit Nudity
+                        - timestamp: 2.324652
+                          confidence: 0.8
+                          category: Explicit Nudity
+                        - timestamp: 3.442539
+                          confidence: 0.6
+                          category: Explicit Nudity
+                        - timestamp: 4.361987
+                          confidence: 0.6
+                          category: Explicit Nudity
+                        - timestamp: 5.271355
+                          confidence: 0.2
+                          category: Explicit Nudity
+                        - timestamp: 6.441619
+                          confidence: 0.2
+                          category: Explicit Nudity
+                        - timestamp: 7.478453
+                          confidence: 0.2
+                          category: Explicit Nudity
+                        - timestamp: 8.298241
+                          confidence: 0.2
+                          category: Explicit Nudity
+                      amazon:
+                        error: null
+                        id: 6504c0e8-ec8d-4d63-94fd-edacb8836036
+                        final_status: finished
+                        moderation:
+                        - timestamp: 1.5
+                          confidence: 83.73359680175781
+                          category: Suggestive
+                        - timestamp: 1.5
+                          confidence: 83.33741760253906
+                          category: Suggestive
+                        - timestamp: 1.5
+                          confidence: 87.09312438964844
+                          category: Suggestive
+                        - timestamp: 2.0
+                          confidence: 92.69827270507812
+                          category: Suggestive
+                        - timestamp: 2.0
+                          confidence: 95.10149383544922
+                          category: Suggestive
+                        - timestamp: 2.0
+                          confidence: 96.95561981201172
+                          category: Suggestive
+                        - timestamp: 2.5
+                          confidence: 96.74179077148438
+                          category: Suggestive
+                        - timestamp: 2.5
+                          confidence: 99.6903076171875
+                          category: Suggestive
+                        - timestamp: 2.5
+                          confidence: 99.6903076171875
+                          category: Suggestive
+                        - timestamp: 3.0
+                          confidence: 94.14319610595703
+                          category: Suggestive
+                        - timestamp: 3.0
+                          confidence: 99.88253784179688
+                          category: Suggestive
+                        - timestamp: 3.0
+                          confidence: 99.88253784179688
+                          category: Suggestive
+                        - timestamp: 3.5
+                          confidence: 94.3765869140625
+                          category: Suggestive
+                        - timestamp: 3.5
+                          confidence: 99.86701965332031
+                          category: Suggestive
+                        - timestamp: 3.5
+                          confidence: 99.86701965332031
+                          category: Suggestive
+                        - timestamp: 4.0
+                          confidence: 93.95862579345703
+                          category: Suggestive
+                        - timestamp: 4.0
+                          confidence: 99.88087463378906
+                          category: Suggestive
+                        - timestamp: 4.0
+                          confidence: 99.88087463378906
+                          category: Suggestive
+                        - timestamp: 4.5
+                          confidence: 96.59481811523438
+                          category: Suggestive
+                        - timestamp: 4.5
+                          confidence: 99.89370727539062
+                          category: Suggestive
+                        - timestamp: 4.5
+                          confidence: 99.89370727539062
+                          category: Suggestive
+                        - timestamp: 5.0
+                          confidence: 95.95069122314453
+                          category: Suggestive
+                        - timestamp: 5.0
+                          confidence: 99.90645599365234
+                          category: Suggestive
+                        - timestamp: 5.0
+                          confidence: 99.90645599365234
+                          category: Suggestive
+                        - timestamp: 5.5
+                          confidence: 95.40461730957031
+                          category: Suggestive
+                        - timestamp: 5.5
+                          confidence: 99.915283203125
+                          category: Suggestive
+                        - timestamp: 5.5
+                          confidence: 99.915283203125
+                          category: Suggestive
+                        - timestamp: 6.0
+                          confidence: 97.7041015625
+                          category: Suggestive
+                        - timestamp: 6.0
+                          confidence: 99.91437530517578
+                          category: Suggestive
+                        - timestamp: 6.0
+                          confidence: 99.91437530517578
+                          category: Suggestive
+                        - timestamp: 6.5
+                          confidence: 95.65144348144531
+                          category: Suggestive
+                        - timestamp: 6.5
+                          confidence: 99.9165267944336
+                          category: Suggestive
+                        - timestamp: 6.5
+                          confidence: 99.9165267944336
+                          category: Suggestive
+                        - timestamp: 7.0
+                          confidence: 95.19328308105469
+                          category: Suggestive
+                        - timestamp: 7.0
+                          confidence: 99.89256286621094
+                          category: Suggestive
+                        - timestamp: 7.0
+                          confidence: 99.89256286621094
+                          category: Suggestive
+                        - timestamp: 7.5
+                          confidence: 93.77266693115234
+                          category: Suggestive
+                        - timestamp: 7.5
+                          confidence: 99.87643432617188
+                          category: Suggestive
+                        - timestamp: 7.5
+                          confidence: 99.87643432617188
+                          category: Suggestive
+                        - timestamp: 8.0
+                          confidence: 94.1944351196289
+                          category: Suggestive
+                        - timestamp: 8.0
+                          confidence: 99.89852142333984
+                          category: Suggestive
+                        - timestamp: 8.0
+                          confidence: 99.89852142333984
+                          category: Suggestive
+                        - timestamp: 8.5
+                          confidence: 93.1624755859375
+                          category: Suggestive
+                        - timestamp: 8.5
+                          confidence: 99.88929748535156
+                          category: Suggestive
+                        - timestamp: 8.5
+                          confidence: 99.88929748535156
+                          category: Suggestive
+                        - timestamp: 9.0
+                          confidence: 92.73184967041016
+                          category: Suggestive
+                        - timestamp: 9.0
+                          confidence: 99.90873718261719
+                          category: Suggestive
+                        - timestamp: 9.0
+                          confidence: 99.90873718261719
+                          category: Suggestive
+                        - timestamp: 9.5
+                          confidence: 92.27255249023438
+                          category: Suggestive
+                        - timestamp: 9.5
+                          confidence: 99.88858032226562
+                          category: Suggestive
+                        - timestamp: 9.5
+                          confidence: 99.88858032226562
+                          category: Suggestive
+                        - timestamp: 10.0
+                          confidence: 91.15278625488281
+                          category: Suggestive
+                        - timestamp: 10.0
+                          confidence: 99.86214447021484
+                          category: Suggestive
+                        - timestamp: 10.0
+                          confidence: 99.86214447021484
+                          category: Suggestive
+                        - timestamp: 10.5
+                          confidence: 91.85436248779297
+                          category: Suggestive
+                        - timestamp: 10.5
+                          confidence: 99.89830780029297
+                          category: Suggestive
+                        - timestamp: 10.5
+                          confidence: 99.89830780029297
+                          category: Suggestive
+                        - timestamp: 11.0
+                          confidence: 91.7314682006836
+                          category: Suggestive
+                        - timestamp: 11.0
+                          confidence: 99.86576080322266
+                          category: Suggestive
+                        - timestamp: 11.0
+                          confidence: 99.86576080322266
+                          category: Suggestive
+                        - timestamp: 11.5
+                          confidence: 92.38634490966797
+                          category: Suggestive
+                        - timestamp: 11.5
+                          confidence: 99.89309692382812
+                          category: Suggestive
+                        - timestamp: 11.5
+                          confidence: 99.89309692382812
+                          category: Suggestive
+                        - timestamp: 12.0
+                          confidence: 91.83573150634766
+                          category: Suggestive
+                        - timestamp: 12.0
+                          confidence: 99.88577270507812
+                          category: Suggestive
+                        - timestamp: 12.0
+                          confidence: 99.88577270507812
+                          category: Suggestive
+                        - timestamp: 12.5
+                          confidence: 91.97298431396484
+                          category: Suggestive
+                        - timestamp: 12.5
+                          confidence: 99.89290618896484
+                          category: Suggestive
+                        - timestamp: 12.5
+                          confidence: 99.89290618896484
+                          category: Suggestive
+                        - timestamp: 13.0
+                          confidence: 93.71726989746094
+                          category: Suggestive
+                        - timestamp: 13.0
+                          confidence: 99.90536499023438
+                          category: Suggestive
+                        - timestamp: 13.0
+                          confidence: 99.90536499023438
+                          category: Suggestive
+                        - timestamp: 13.5
+                          confidence: 93.46395874023438
+                          category: Suggestive
+                        - timestamp: 13.5
+                          confidence: 99.89830780029297
+                          category: Suggestive
+                        - timestamp: 13.5
+                          confidence: 99.89830780029297
+                          category: Suggestive
+                        - timestamp: 14.0
+                          confidence: 95.58849334716797
+                          category: Suggestive
+                        - timestamp: 14.0
+                          confidence: 99.92097473144531
+                          category: Suggestive
+                        - timestamp: 14.0
+                          confidence: 99.92097473144531
+                          category: Suggestive
+                        - timestamp: 14.5
+                          confidence: 94.18795013427734
+                          category: Suggestive
+                        - timestamp: 14.5
+                          confidence: 99.9085922241211
+                          category: Suggestive
+                        - timestamp: 14.5
+                          confidence: 99.9085922241211
+                          category: Suggestive
+                        - timestamp: 15.0
+                          confidence: 94.89665985107422
+                          category: Suggestive
+                        - timestamp: 15.0
+                          confidence: 99.87569427490234
+                          category: Suggestive
+                        - timestamp: 15.0
+                          confidence: 99.87569427490234
+                          category: Suggestive
+                        - timestamp: 15.5
+                          confidence: 95.76138305664062
+                          category: Suggestive
+                        - timestamp: 15.5
+                          confidence: 99.89128112792969
+                          category: Suggestive
+                        - timestamp: 15.5
+                          confidence: 99.89128112792969
+                          category: Suggestive
+                        - timestamp: 16.0
+                          confidence: 95.64188385009766
+                          category: Suggestive
+                        - timestamp: 16.0
+                          confidence: 99.91383361816406
+                          category: Suggestive
+                        - timestamp: 16.0
+                          confidence: 99.91383361816406
+                          category: Suggestive
+                        - timestamp: 16.5
+                          confidence: 96.95024108886719
+                          category: Suggestive
+                        - timestamp: 16.5
+                          confidence: 99.9207763671875
+                          category: Suggestive
+                        - timestamp: 16.5
+                          confidence: 99.9207763671875
+                          category: Suggestive
+                        - timestamp: 17.0
+                          confidence: 97.06770324707031
+                          category: Suggestive
+                        - timestamp: 17.0
+                          confidence: 99.92668914794922
+                          category: Suggestive
+                        - timestamp: 17.0
+                          confidence: 99.92668914794922
+                          category: Suggestive
+                        - timestamp: 17.5
+                          confidence: 96.49564361572266
+                          category: Suggestive
+                        - timestamp: 17.5
+                          confidence: 99.9189453125
+                          category: Suggestive
+                        - timestamp: 17.5
+                          confidence: 99.9189453125
+                          category: Suggestive
+                        - timestamp: 18.0
+                          confidence: 98.39677429199219
+                          category: Suggestive
+                        - timestamp: 18.0
+                          confidence: 99.92993927001953
+                          category: Suggestive
+                        - timestamp: 18.0
+                          confidence: 99.92993927001953
+                          category: Suggestive
+                        - timestamp: 18.5
+                          confidence: 98.23118591308594
+                          category: Suggestive
+                        - timestamp: 18.5
+                          confidence: 99.91651916503906
+                          category: Suggestive
+                        - timestamp: 18.5
+                          confidence: 99.91651916503906
+                          category: Suggestive
+                        - timestamp: 19.0
+                          confidence: 94.63855743408203
+                          category: Suggestive
+                        - timestamp: 19.0
+                          confidence: 99.89356231689453
+                          category: Suggestive
+                        - timestamp: 19.0
+                          confidence: 99.89356231689453
+                          category: Suggestive
+                        - timestamp: 19.5
+                          confidence: 98.41044616699219
+                          category: Suggestive
+                        - timestamp: 19.5
+                          confidence: 99.8997573852539
+                          category: Suggestive
+                        - timestamp: 19.5
+                          confidence: 99.8997573852539
+                          category: Suggestive
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    videoexplicit_content_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+          default: null
+      title: videoexplicit_content_detection_asyncModel
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    AsyncVideoAnalysisRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mov|mp4|avi)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    ContentNSFW:
+      properties:
+        timestamp:
+          title: Timestamp
+          type: integer
+        confidence:
+          title: Confidence
+          type: integer
+        category:
+          title: Category
+          type: string
+      required:
+      - timestamp
+      - confidence
+      - category
+      title: ContentNSFW
+      type: object
+    videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass:
+      properties:
+        moderation:
+          items:
+            $ref: '#/components/schemas/ContentNSFW'
+          title: Moderation
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    asyncvideoexplicit_content_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoexplicit_content_detection_asyncResponseModel
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

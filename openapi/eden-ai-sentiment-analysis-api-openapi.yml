@@ -1,0 +1,461 @@
+openapi: 3.2.0
+info:
+  title: Text Features Sentiment Analysis API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Sentiment Analysis
+paths:
+  /text/sentiment_analysis/:
+    post:
+      operationId: text_sentiment_analysis_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|1.0 (per 1000000 char)|300 char
+
+        |**google**|**gemini-live-2.5-flash-preview-native-audio-09-2025**|`v1`|2e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-001**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-002**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-latest**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro**|`v1`|1.05e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro-latest**|`v1`|1.05e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-8b**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-8b-exp-0827**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-8b-exp-0924**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-flash-exp-0827**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro-001**|`v1`|1.05e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro-002**|`v1`|1.05e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro-exp-0801**|`v1`|1.05e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-1.5-pro-exp-0827**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-001**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-exp**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite-preview-02-05**|`v1`|3e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-live-001**|`v1`|1.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-preview-image-generation**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-thinking-exp**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash-thinking-exp-01-21**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-pro-exp-02-05**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash**|`v1`|2.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-lite**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-lite-preview-09-2025**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-preview-09-2025**|`v1`|2.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-flash-latest**|`v1`|2.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-flash-lite-latest**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-lite-preview-06-17**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-preview-04-17**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-preview-05-20**|`v1`|2.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-preview-tts**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-computer-use-preview-10-2025**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-3-pro-preview**|`v1`|1.2e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-3-flash-preview**|`v1`|3e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-exp-03-25**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-preview-03-25**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-preview-05-06**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-preview-06-05**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-preview-tts**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-exp-1114**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-exp-1206**|`v1`|0.0 (per 1 token)|1 token
+
+        |**google**|**gemini-gemma-2-27b-it**|`v1`|1.05e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-gemma-2-9b-it**|`v1`|1.05e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-pro**|`v1`|1.05e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-pro-vision**|`v1`|1.05e-06 (per 1 token)|1 token
+
+        |**google**|**gemma-3-27b-it**|`v1`|0.0 (per 1 token)|1…'
+      summary: Sentiment Analysis
+      tags:
+      - Sentiment Analysis
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: sapling,xai,microsoft,tenstorrent,openai,amazon,google
+                  language: en
+                  text: Overall I am satisfied with my experience at Amazon, but two areas of major improvement needed. First is the product reviews and pricing. There are thousands of positive reviews for so many items, and it's clear that the reviews are bogus or not really associated with that product. There needs to be a way to only view products sold by Amazon directly, because many market sellers way overprice items that can be purchased cheaper elsewhere (like Walmart, Target, etc). The second issue is they make it too difficult to get help when there's an issue with an order.
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textsentiment_analysisResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    sapling:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.51
+                      items:
+                      - segment: Overall I am satisfied with my experience at Amazon, but two areas of major improvement needed.
+                        sentiment: Positive
+                        sentiment_rate: 0.96
+                      - segment: First is the product reviews and pricing.
+                        sentiment: Neutral
+                        sentiment_rate: 1.0
+                      - segment: There are thousands of positive reviews for so many items, and it's clear that the reviews are bogus or not really associated with that product.
+                        sentiment: Positive
+                        sentiment_rate: 0.67
+                      - segment: There needs to be a way to only view products sold by Amazon directly, because many market sellers way overprice items that can be purchased cheaper elsewhere (like Walmart, Target, etc).
+                        sentiment: Neutral
+                        sentiment_rate: 0.61
+                      - segment: The second issue is they make it too difficult to get help when there's an issue with an order.
+                        sentiment: Negative
+                        sentiment_rate: 0.96
+                      cost: 0.0
+                    xai:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.3
+                      items: []
+                      cost: 0.0
+                    microsoft:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.67
+                      items:
+                      - segment: 'Overall I am satisfied with my experience at Amazon, but two areas of major improvement needed. '
+                        sentiment: Positive
+                        sentiment_rate: 0.98
+                      - segment: 'First is the product reviews and pricing. '
+                        sentiment: Neutral
+                        sentiment_rate: 0.99
+                      - segment: 'There are thousands of positive reviews for so many items, and it''s clear that the reviews are bogus or not really associated with that product. '
+                        sentiment: Negative
+                        sentiment_rate: 1.0
+                      - segment: 'There needs to be a way to only view products sold by Amazon directly, because many market sellers way overprice items that can be purchased cheaper elsewhere (like Walmart, Target, etc). '
+                        sentiment: Neutral
+                        sentiment_rate: 0.7
+                      - segment: The second issue is they make it too difficult to get help when there's an issue with an order.
+                        sentiment: Negative
+                        sentiment_rate: 1.0
+                      cost: 0.0
+                    tenstorrent:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.38
+                      items: []
+                      cost: 0.0
+                    openai:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.3
+                      items: []
+                      cost: 0.0
+                    amazon:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.4
+                      items: []
+                      cost: 0.0
+                    google:
+                      general_sentiment: Negative
+                      general_sentiment_rate: 0.4
+                      items:
+                      - segment: Overall I am satisfied with my experience at Amazon, but two areas of major improvement needed.
+                        sentiment: Neutral
+                        sentiment_rate: 0.0
+                      - segment: First is the product reviews and pricing.
+                        sentiment: Neutral
+                        sentiment_rate: 0.0
+                      - segment: There are thousands of positive reviews for so many items, and it's clear that the reviews are bogus or not really associated with that product.
+                        sentiment: Negative
+                        sentiment_rate: 0.5
+                      - segment: There needs to be a way to only view products sold by Amazon directly, because many market sellers way overprice items that can be purchased cheaper elsewhere (like Walmart, Target, etc).
+                        sentiment: Negative
+                        sentiment_rate: 0.6
+                      - segment: The second issue is they make it too difficult to get help when there's an issue with an order.
+                        sentiment: Negative
+                        sentiment_rate: 0.8
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    textsentiment_analysisResponseModel:
+      properties:
+        sapling:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        xai:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        ibm:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        emvista:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+        tenstorrent:
+          $ref: '#/components/schemas/textsentiment_analysisSentimentAnalysisDataClass'
+          default: null
+      title: textsentiment_analysisResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    SegmentSentimentAnalysisDataClass:
+      description: "This class is used in SentimentAnalysisDataClass to describe each segment analyzed.\n\nArgs:\n    - segment (str): The segment analyzed\n    - sentiment (Literal['Positve', 'Negative', 'Neutral']) (Case is ignore): Sentiment of segment\n    - sentiment_rate (float between 0 and 1): Rate of sentiment"
+      properties:
+        segment:
+          title: Segment
+          type: string
+        sentiment:
+          allOf:
+          - $ref: '#/components/schemas/SentimentEbfEnum'
+          title: Sentiment
+        sentiment_rate:
+          maximum: 1
+          minimum: 0
+          title: Sentiment Rate
+          type: integer
+      required:
+      - segment
+      - sentiment
+      - sentiment_rate
+      title: SegmentSentimentAnalysisDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    textsentiment_analysisSentimentAnalysisDataClass:
+      properties:
+        general_sentiment:
+          allOf:
+          - $ref: '#/components/schemas/GeneralSentimentEnum'
+          title: General Sentiment
+        general_sentiment_rate:
+          maximum: 1
+          minimum: 0
+          title: General Sentiment Rate
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/SegmentSentimentAnalysisDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - general_sentiment
+      - general_sentiment_rate
+      - status
+      title: textsentiment_analysisSentimentAnalysisDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    SentimentEbfEnum:
+      enum:
+      - Positive
+      - Negative
+      - Neutral
+      type: string
+    GeneralSentimentEnum:
+      enum:
+      - Positive
+      - Negative
+      - Neutral
+      type: string
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
+    : type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

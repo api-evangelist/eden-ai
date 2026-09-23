@@ -1,0 +1,459 @@
+openapi: 3.2.0
+info:
+  title: Text Features Named Entity Recognition API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Named Entity Recognition
+paths:
+  /text/named_entity_recognition/:
+    post:
+      operationId: text_named_entity_recognition_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|1.0 (per 1000000 char)|300 char
+
+        |**microsoft**|-|`v3.1`|1.0 (per 1000000 char)|1000 char
+
+        |**openai**|-|`v3.0.0`|10.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o**|`v3.0.0`|10.0 (per 1000000 token)|1 token
+
+        |**tenstorrent**|-|`v1.0.0`|1.0 (per 1000000 char)|1000 char
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Arabic**|`ar`|
+
+        |**Chinese**|`zh`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**German**|`de`|
+
+        |**Hindi**|`hi`|
+
+        |**Hungarian**|`hu`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Korean**|`ko`|
+
+        |**Norwegian**|`no`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Russian**|`ru`|
+
+        |**Spanish**|`es`|
+
+        |**Swedish**|`sv`|
+
+        |**Turkish**|`tr`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (Simplified)**|`zh-Hans`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|
+
+        |**Chinese (Traditional)**|`zh-Hant`|
+
+        |**Portuguese (Brazil)**|`pt-BR`|
+
+        |**Portuguese (Portugal)**|`pt-PT`|
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|'
+      summary: Named Entity Recognition
+      tags:
+      - Named Entity Recognition
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: microsoft,amazon,tenstorrent,openai
+                  language: en
+                  text: Barack Hussein Obama is an American politician who served as the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, Obama was the first African-American president of the United States. He previously served as a U.S. senator from Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textnamed_entity_recognitionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    microsoft:
+                      items:
+                      - entity: Barack Hussein Obama
+                        category: PERSON
+                        importance: 1.0
+                      - entity: American
+                        category: PERSONTYPE
+                        importance: 0.87
+                      - entity: politician
+                        category: PERSONTYPE
+                        importance: 0.57
+                      - entity: 44th
+                        category: QUANTITY
+                        importance: 0.8
+                      - entity: president
+                        category: PERSONTYPE
+                        importance: 0.94
+                      - entity: United States
+                        category: LOCATION
+                        importance: 0.97
+                      - entity: from 2009 to 2017
+                        category: DATE
+                        importance: 0.8
+                      - entity: member
+                        category: PERSONTYPE
+                        importance: 0.74
+                      - entity: Democratic Party
+                        category: ORGANIZATION
+                        importance: 0.98
+                      - entity: Obama
+                        category: PERSON
+                        importance: 1.0
+                      cost: 0.0
+                    amazon:
+                      items:
+                      - entity: Barack Hussein Obama
+                        category: PERSON
+                        importance: 0.9960151314735413
+                      - entity: American
+                        category: OTHER
+                        importance: 0.9943374991416931
+                      - entity: 44th president
+                        category: QUANTITY
+                        importance: 0.8183709383010864
+                      - entity: United States
+                        category: LOCATION
+                        importance: 0.8509750366210938
+                      - entity: '2009'
+                        category: DATE
+                        importance: 0.9990425705909729
+                      - entity: '2017'
+                        category: DATE
+                        importance: 0.994526207447052
+                      - entity: Democratic Party
+                        category: ORGANIZATION
+                        importance: 0.9991411566734314
+                      - entity: Obama
+                        category: PERSON
+                        importance: 0.99968421459198
+                      - entity: first
+                        category: QUANTITY
+                        importance: 0.9900199174880981
+                      - entity: African-American
+                        category: OTHER
+                        importance: 0.9452006220817566
+                      cost: 0.0
+                    tenstorrent:
+                      items:
+                      - entity: American
+                        category: OTHER
+                        importance: 0.53
+                      - entity: Barack Hussein Obama
+                        category: PERSON
+                        importance: 0.51
+                      - entity: African American
+                        category: OTHER
+                        importance: 0.48
+                      - entity: Democratic Party
+                        category: ORGANIZATION
+                        importance: 0.32
+                      - entity: United States
+                        category: LOCATION
+                        importance: 0.16
+                      - entity: Illinois
+                        category: LOCATION
+                        importance: 0.15
+                      - entity: United States
+                        category: LOCATION
+                        importance: 0.16
+                      - entity: U. S.
+                        category: LOCATION
+                        importance: 0.08
+                      - entity: Obama
+                        category: PERSON
+                        importance: 0.04
+                      cost: 0.0
+                    openai:
+                      items:
+                      - entity: Barack Hussein Obama
+                        category: Person
+                        importance: 0.98
+                      - entity: American
+                        category: Nationality
+                        importance: 0.85
+                      - entity: 44th president
+                        category: Position
+                        importance: 0.95
+                      - entity: United States
+                        category: Country
+                        importance: 0.99
+                      - entity: Democratic Party
+                        category: Organization
+                        importance: 0.9
+                      - entity: African-American
+                        category: Ethnicity
+                        importance: 0.85
+                      - entity: U.S. senator
+                        category: Position
+                        importance: 0.9
+                      - entity: Illinois
+                        category: State
+                        importance: 0.93
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    InfosNamedEntityRecognitionDataClass:
+      properties:
+        entity:
+          title: Entity
+          type: string
+        category:
+          title: Category
+          type: string
+        importance:
+          title: Importance
+          type: integer
+      required:
+      - entity
+      - category
+      - importance
+      title: InfosNamedEntityRecognitionDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textnamed_entity_recognitionNamedEntityRecognitionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosNamedEntityRecognitionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: textnamed_entity_recognitionNamedEntityRecognitionDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textnamed_entity_recognitionResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        tenstorrent:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+      title: textnamed_entity_recognitionResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
+    : type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

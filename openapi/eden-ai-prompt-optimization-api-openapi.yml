@@ -1,0 +1,330 @@
+openapi: 3.2.0
+info:
+  title: Text Features Prompt Optimization API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Prompt Optimization
+paths:
+  /text/prompt_optimization/:
+    post:
+      operationId: text_prompt_optimization_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**openai**|**gpt-4**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**chatgpt-4o-latest**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0125**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0301**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0613**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-1106**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k-0613**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0125-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0314**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0613**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0314**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0613**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-2024-04-09**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-2025-04-14**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini-2025-04-14**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano-2025-04-14**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview-2025-02-27**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-05-13**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-08-06**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-11-20**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-10-01**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-12-17**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2025-06-03**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-2024-07-18**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview-2024-12-17**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview-2024-12-17**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview-2025-03-11**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-10-01**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-12-17**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2025-06-03**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview-2025-03-11**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-5**|`v3.0.0`|1e-05 (per 1 token)|1…'
+      summary: Prompt Optimization
+      tags:
+      - Prompt Optimization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textprompt_optimizationPromptOptimizationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: openai
+                  text: Entity extractor, i give you an entity or multiple entities and a text and i want the entitites extracted from the text
+                  target_provider: google
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textprompt_optimizationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    openai:
+                      missing_information: What type of entities are you specifically looking to extract (names, locations, organizations, etc.)? Do you have any specific language or data format preferences for the text? Do you need this tool to handle any particular size, complexity, or other special characteristics of the texts?
+                      items:
+                      - text: Given the following text and a list of entities, please extract and list all occurrences of the specified entities in the text. The entities to be extracted are [entities]. The text for entity extraction is [text].
+                      - text: 'Given the following text, please identify and extract all instances of the specified entities. The entities to look for are [Entity1, Entity2, Entity3]. Here is the text: [Insert Text Here]. Please list the extracted entities in a clear and organized manner.'
+                      - text: 'Given the following text and a list of entities, please extract and list all instances of the provided entities within the text. The entities are [list of entities]. The text is as follows: [text]. Please format your response as a bulleted list, with each bullet representing an instance of an entity found in the text.'
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    textprompt_optimizationPromptOptimizationRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Description of the desired prompt.
+        target_provider:
+          type: string
+          minLength: 1
+          description: Select the provider for the prompt optimization
+      required:
+      - providers
+      - target_provider
+      - text
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    textprompt_optimizationPromptOptimizationDataClass:
+      properties:
+        missing_information:
+          title: Missing Information
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/PromptDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - missing_information
+      - status
+      title: textprompt_optimizationPromptOptimizationDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    PromptDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+      required:
+      - text
+      title: PromptDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    textprompt_optimizationResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/textprompt_optimizationPromptOptimizationDataClass'
+          default: null
+      title: textprompt_optimizationResponseModel
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

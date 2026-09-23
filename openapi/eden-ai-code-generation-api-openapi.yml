@@ -1,0 +1,359 @@
+openapi: 3.2.0
+info:
+  title: Text Features Code Generation API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Code Generation
+paths:
+  /text/code_generation/:
+    post:
+      operationId: text_code_generation_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**openai**|-|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o-2024-05-13**|`v1`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**o1-2024-12-17**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**o1**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**o3-mini**|`v1`|4.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**o1-preview**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**o1-mini**|`v1`|4.4e-06 (per 1 token)|1 token
+
+        |**openai**|**chatgpt-4o-latest**|`v1`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo**|`v1`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0125**|`v1`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0301**|`v1`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0613**|`v1`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-1106**|`v1`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k**|`v1`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k-0613**|`v1`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0125-preview**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0314**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0613**|`v1`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-preview**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-vision-preview**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k**|`v1`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0314**|`v1`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0613**|`v1`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-2024-04-09**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-preview**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-vision-preview**|`v1`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1**|`v1`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-2025-04-14**|`v1`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini**|`v1`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini-2025-04-14**|`v1`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano-2025-04-14**|`v1`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview**|`v1`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview-2025-02-27**|`v1`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-08-06**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-11-20**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-10-01**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-12-17**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2025-06-03**|`v1`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-2024-07-18**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview-2024-12-17**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview**|`v1`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview-2024-12-17**|`v1`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview-2025-03-11**|`v1`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview**|`v1`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-10-01**|`v1`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-12-17**|`v1`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2025-06-03**|`v1`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview**|`v1`|1e-05 (per 1 token)|1…'
+      summary: Code Generation
+      tags:
+      - Code Generation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textcode_generationCodeGenerationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: xai,openai,google
+                  instruction: Write a function in python that calculates fibonacci
+                  temperature: 0.1
+                  max_tokens: 100
+                  prompt: ''
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textcode_generationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    xai:
+                      generated_text: "Sure, here's a Python function that checks if a year is a leap year:\n\n```python\ndef is_leap_year(year):\n    \"\"\"\n    Returns True if the given year is a leap year, False otherwise.\n    \"\"\"\n    if year % 4 == 0:\n        if year % 100 == 0:\n            if year % 400 == 0:\n                return True\n            else:\n                return False\n        else:\n            return True\n    else:\n        return False\n```\n\nThis function takes a year as input and returns True if it is a leap year, and False otherwise. It uses the standard rules for determining leap years: a year is a leap year if it is divisible by 4, unless it is also divisible by 100, in which case it is only a leap year if it is also divisible by 400."
+                      cost: 0.0
+                    openai:
+                      generated_text: " a leap year, it must be divisible by 4. However, if the year is divisible by 100, it is not a leap year unless it is also divisible by 400.\n\nHere's a Python function to check if a year is a leap year:\n\n```python\ndef is_leap_year(year):\n    if year % 4 == 0:\n        if year % 100 == 0:\n            if year % 400 == 0:\n                return True\n            else:\n                return False\n        else:\n            return True\n    else:\n        return False\n```\n\nYou can use this function by passing a year as an argument, and it will return `True` if the year is a leap year and `False` otherwise. For example:\n\n```python\nprint(is_leap_year(2020))  # Output: True\nprint(is_leap_year(1900))  # Output: False\nprint(is_leap_year(2000))  # Output: True\n```"
+                      usage:
+                        completion_tokens: 227
+                        prompt_tokens: 275
+                        total_tokens: 502
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    google:
+                      generated_text: "```python\ndef is_leap_year(year):\n  \"\"\"\n  Determines whether a year is a leap year.\n\n  Args:\n    year: The year to check.\n\n  Returns:\n    True if the year is a leap year, False otherwise.\n  \"\"\"\n\n  # A year is a leap year if it is divisible by 4, unless it is divisible by 100\n  # unless it is also divisible by 400.\n\n  if year % 4 == 0:\n    if year % 100 == 0:\n      return year % 400 == 0\n    else:\n      return True\n  else:\n    return False\n```"
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    textcode_generationCodeGenerationDataClass:
+      properties:
+        generated_text:
+          title: Generated Text
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - generated_text
+      - status
+      title: textcode_generationCodeGenerationDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textcode_generationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+      title: textcode_generationResponseModel
+      type: object
+    textcode_generationCodeGenerationRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        prompt:
+          type:
+          - string
+          - 'null'
+          default: ''
+          description: Entrer the source code that will be used as a context.
+        instruction:
+          type: string
+          minLength: 1
+          description: Entrer the instruction you want to be followed.
+        temperature:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+          default: 0.0
+          description: Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer.
+        max_tokens:
+          type: integer
+          minimum: 1
+          default: 1000
+          description: The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length.
+      required:
+      - instruction
+      - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

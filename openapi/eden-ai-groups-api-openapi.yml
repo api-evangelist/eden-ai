@@ -1,0 +1,117 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Groups API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: Groups
+paths:
+  /manage/groups/:
+    get:
+      operationId: manage_groups_list
+      description: '``GET /v3/manage/groups`` -- the org''s IdP-synced directory groups and their members, ordered
+
+        by name for a stable page. ``manage:read``, org-scoped. Read-only in v1 (see module docstring).'
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - Groups
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedManageGroupList'
+          description: ''
+      summary: Manage groups list
+      x-summary-source: derived
+  /manage/groups/{external_group_id}/:
+    get:
+      operationId: manage_groups_retrieve
+      description: '``GET /v3/manage/groups/{external_group_id}`` -- one IdP-synced group and its members, for
+
+        list+detail parity with ``/keys``. ``manage:read``, org-scoped: a group id not in the calling key''s
+
+        org is a 404, never another org''s group. Addressed by ``external_group_id`` (the IdP id), like the
+
+        list; the internal PK is never exposed. ``external_group_id`` is unique per org
+
+        (``unique_together`` with ``organization`` on the model), so the org-scoped lookup matches at most
+
+        one row -- ``get_object`` cannot raise ``MultipleObjectsReturned``.'
+      parameters:
+      - in: path
+        name: external_group_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Groups
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManageGroup'
+          description: ''
+      summary: Manage groups retrieve
+      x-summary-source: derived
+components:
+  schemas:
+    PaginatedManageGroupList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManageGroup'
+    ManageGroup:
+      type: object
+      description: 'A directory-synced group as the management plane exposes it: the stable IdP identifiers plus
+
+        the member emails. The internal PK is not exposed; ``external_group_id`` is the addressable id.'
+      properties:
+        external_group_id:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 255
+        members:
+          type: string
+          readOnly: true
+      required:
+      - external_group_id
+      - members
+      - name

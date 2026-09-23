@@ -1,0 +1,538 @@
+openapi: 3.2.0
+info:
+  title: Image Features Explicit Content API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Explicit Content
+paths:
+  /image/explicit_content/:
+    post:
+      operationId: image_explicit_content_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|1.0 (per 1000 file)|1 file
+
+        |**google**|-|`v1`|1.5 (per 1000 file)|1 file
+
+        |**microsoft**|-|`v3.2`|1.0 (per 1000 file)|1 file
+
+        |**sentisight**|-|`v3.3.1`|0.75 (per 1000 file)|1 file
+
+        |**openai**|**gpt-4o**|`v1`|24.0 (per 1000 file)|1 file
+
+        |**openai**|-|`v1`|24.0 (per 1000 file)|1 file
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|'
+      summary: Explicit Content Detection
+      tags:
+      - Explicit Content
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google,microsoft,sentisight,openai
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google,microsoft,sentisight,openai
+                  file: /edenai/edenai/features/image/samples/data/explicit_content.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageexplicit_contentResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      nsfw_likelihood: 5
+                      nsfw_likelihood_score: 0.9282218933105468
+                      items:
+                      - label: Graphic Violence Or Gore
+                        likelihood: 5
+                        likelihood_score: 0.9282218933105468
+                        category: Violence
+                        subcategory: GraphicViolenceOrGore
+                      - label: Violence
+                        likelihood: 5
+                        likelihood_score: 0.9282218933105468
+                        category: Violence
+                        subcategory: Violence
+                      cost: 0.0
+                    google:
+                      nsfw_likelihood: 3
+                      nsfw_likelihood_score: 0.6
+                      items:
+                      - label: Adult
+                        likelihood: 1
+                        likelihood_score: 0.2
+                        category: Sexual
+                        subcategory: Sexual
+                      - label: Spoof
+                        likelihood: 1
+                        likelihood_score: 0.2
+                        category: Other
+                        subcategory: Spoof
+                      - label: Medical
+                        likelihood: 3
+                        likelihood_score: 0.6
+                        category: Content
+                        subcategory: Medical
+                      - label: Violence
+                        likelihood: 3
+                        likelihood_score: 0.6
+                        category: Violence
+                        subcategory: Violence
+                      - label: Racy
+                        likelihood: 1
+                        likelihood_score: 0.2
+                        category: HateAndExtremism
+                        subcategory: Racy
+                      cost: 0.0
+                    microsoft:
+                      nsfw_likelihood: 3
+                      nsfw_likelihood_score: 0.5288681387901306
+                      items:
+                      - label: Gore
+                        likelihood: 3
+                        likelihood_score: 0.5288681387901306
+                        category: Violence
+                        subcategory: GraphicViolenceOrGore
+                      - label: Adult
+                        likelihood: 1
+                        likelihood_score: 0.00892699882388115
+                        category: Sexual
+                        subcategory: Sexual
+                      - label: Racy
+                        likelihood: 1
+                        likelihood_score: 0.011913839727640152
+                        category: HateAndExtremism
+                        subcategory: Racy
+                      cost: 0.0
+                    sentisight:
+                      nsfw_likelihood: 0
+                      nsfw_likelihood_score: 0.0
+                      items:
+                      - label: nudity
+                        likelihood: 0
+                        likelihood_score: 0.0
+                        category: Sexual
+                        subcategory: Nudity
+                      cost: 0.0
+                    openai:
+                      nsfw_likelihood: 3
+                      nsfw_likelihood_score: 0.81
+                      items:
+                      - label: Gore
+                        likelihood: 4
+                        likelihood_score: 0.85
+                        category: Violence
+                        subcategory: null
+                      - label: Adult
+                        likelihood: 1
+                        likelihood_score: 0.05
+                        category: Sexual
+                        subcategory: null
+                      - label: Racy
+                        likelihood: 1
+                        likelihood_score: 0.02
+                        category: HateAndExtremism
+                        subcategory: null
+                      usage:
+                        completion_tokens: 147
+                        prompt_tokens: 1437
+                        total_tokens: 1584
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imageexplicit_contentExplicitContentDataClass:
+      properties:
+        nsfw_likelihood:
+          description: An integer representing the likelihood of NSFW content. Higher values indicate a higher likelihood.
+          title: Nsfw Likelihood
+          type: integer
+        nsfw_likelihood_score:
+          description: A floating-point score representing the confidence level of the NSFW likelihood assessment. This is typically a value between 0.0 and 1.0.
+          title: Nsfw Likelihood Score
+          type: integer
+        items:
+          description: A list of items identified as potentially explicit. Each item contains details of the explicit content detected.
+          items:
+            $ref: '#/components/schemas/ExplicitItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: imageexplicit_contentExplicitContentDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    imageexplicit_contentResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+      title: imageexplicit_contentResponseModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    ExplicitItem:
+      properties:
+        label:
+          description: ''
+          title: Label
+          type: string
+        likelihood:
+          description: ''
+          title: Likelihood
+          type: integer
+        likelihood_score:
+          description: ''
+          title: Likelihood Score
+          type: integer
+        category:
+          $ref: '#/components/schemas/CategoryType'
+          description: 'The category of the detected content. Possible values include: ''Toxic'', ''Content'', ''Sexual'', ''Violence'', ''DrugAndAlcohol'', ''Finance'', ''HateAndExtremism'', ''Safe'', ''Other''.'
+        subcategory:
+          description: 'The subcategory of content. Possible values:
+
+
+            Toxic Subcategories:
+
+            - Insult
+
+            - Obscene
+
+            - Derogatory
+
+            - Profanity
+
+            - Threat
+
+            - Toxic
+
+
+            Content Subcategories:
+
+            - MiddleFinger
+
+            - PublicSafety
+
+            - Health
+
+            - Explicit
+
+            - QRCode
+
+            - Medical
+
+            - Politics
+
+            - Legal
+
+
+            Sexual Subcategories:
+
+            - SexualActivity
+
+            - SexualSituations
+
+            - Nudity
+
+            - PartialNudity
+
+            - Suggestive
+
+            - AdultToys
+
+            - RevealingClothes
+
+            - Sexual
+
+
+            Violence Subcategories:
+
+            - GraphicViolenceOrGore
+
+            - PhysicalViolence
+
+            - WeaponViolence
+
+            - Violence
+
+
+            Drug and Alcohol Subcategories:
+
+            - DrugProducts
+
+            - DrugUse
+
+            - Tobacco
+
+            - Smoking
+
+            - Alcohol
+
+            - Drinking
+
+
+            Finance Subcategories:
+
+            - Gambling
+
+            - Finance
+
+            - MoneyContent
+
+
+            Hate and Extremism Subcategories:
+
+            - Hate
+
+            - Harassment
+
+            - Threatening
+
+            - Extremist
+
+            - Racy
+
+
+            Safe Subcategories:
+
+            - Safe
+
+            - NotSafe
+
+
+            Other Subcategories:
+
+            - Spoof
+
+            - Religion
+
+            - Offensive
+
+            - Other'
+          title: Subcategory
+          type: string
+      required:
+      - label
+      - likelihood
+      - likelihood_score
+      - category
+      - subcategory
+      title: ExplicitItem
+      type: object
+    CategoryType:
+      description: This enum are used to categorize the explicit content extracted from the text
+      enum:
+      - Toxic
+      - Content
+      - Sexual
+      - Violence
+      - DrugAndAlcohol
+      - Finance
+      - HateAndExtremism
+      - Safe
+      - Other
+      title: CategoryType
+      type: string
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

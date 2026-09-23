@@ -1,0 +1,1563 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Resume Parser API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Resume Parser
+paths:
+  /ocr/resume_parser/:
+    post:
+      operationId: ocr_resume_parser_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**affinda**|-|`v3`|0.07 (per 1 file)|1 file
+
+        |**klippa**|-|`v1`|0.1 (per 1 file)|1 file
+
+        |**senseloaf**|-|`v3`|0.045 (per 1 file)|1 file
+
+        |**extracta**|-|`v1`|0.1 (per 1 page)|1 page
+
+        |**openai**|-|`v1.0`|0.04 (per 1 page)|1 page
+
+        |**openai**|**gpt-4o**|`v1.0`|0.04 (per 1 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chinese**|`zh`|
+
+        |**Corsican**|`co`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong**|`hmn`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Kurdish**|`ku`|
+
+        |**Lao**|`lo`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Nyanja**|`ny`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Samoan**|`sm`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Shona**|`sn`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (China)**|`zh-cn`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|
+
+        |**Chinese (Taiwan)**|`zh-tw`|
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|'
+      summary: Resume Parser
+      tags:
+      - Resume Parser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ocrresume_parserResumeParserRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: senseloaf,openai,affinda,extracta,klippa
+                  file_url: http://edenai-resource-example.pdf
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ocrresume_parserResumeParserRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: senseloaf,openai,affinda,extracta,klippa
+                  file: /edenai/edenai/features/ocr/samples/data/resume.pdf
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ocrresume_parserResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    senseloaf:
+                      extracted_data:
+                        personal_infos:
+                          name:
+                            first_name: John
+                            last_name: Smith
+                            raw_name: John W. Smith
+                            middle: W.
+                            title: ''
+                            prefix: null
+                            sufix: null
+                          address:
+                            formatted_location: 2002 Front Range Way Fort Collins CO 80525
+                            postal_code: '80525'
+                            region: CO
+                            country: ''
+                            country_code: ''
+                            raw_input_location: null
+                            street: 2002 Front Range Way
+                            street_number: null
+                            appartment_number: null
+                            city: Fort Collins
+                          self_summary: Career Summary Four years experience in early childhood development with a diverse background in the care of special needs children and adults . Adult Care Experience • Determined work placement for 150 special needs adult clients . Maintained client databases and records . Coordinated client contact with local health care professionals on a monthly basis . Managed 25 volunteer workers .
+                          objective: ''
+                          date_of_birth: null
+                          place_of_birth: null
+                          phones: []
+                          mails:
+                          - jwsmith@colostate.edu
+                          urls: []
+                          fax: []
+                          current_profession: Counseling Supervisor
+                          gender: null
+                          nationality: null
+                          martial_status: null
+                          current_salary: null
+                          availability: null
+                        education:
+                          total_years_education: null
+                          entries:
+                          - title: BS
+                            start_date: null
+                            end_date: 01-11-1999
+                            location:
+                              formatted_location: Little Rock  Little Rock  AR
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            establishment: University of Arkansas
+                            description: null
+                            gpa: 4.03.83.5
+                            accreditation: Early Childhood Development
+                        work_experience:
+                          total_years_experience: '6.0'
+                          entries:
+                          - title: Counseling Supervisor
+                            start_date: 01-11-1999
+                            end_date: 01-11-2002
+                            company: The Wesley Center
+                            location:
+                              formatted_location: Little Rock , Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: ''
+                            industry: null
+                            type: null
+                          - title: Client Specialist
+                            start_date: 01-11-1997
+                            end_date: 01-11-1999
+                            company: Rainbow Special Care Center
+                            location:
+                              formatted_location: Little Rock , Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: ''
+                            industry: null
+                            type: null
+                          - title: Teacher s Assistant
+                            start_date: 01-11-1996
+                            end_date: 01-11-1997
+                            company: Cowell Elementary
+                            location:
+                              formatted_location: Conway , Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: ''
+                            industry: null
+                            type: null
+                        languages: []
+                        skills:
+                        - name: Developmental Psychology
+                          type: Hard Skills
+                        - name: Special Needs Children
+                          type: Hard Skills
+                        - name: Data Base User Interface And Query Software
+                          type: Hard Skills
+                        - name: Compliance Software
+                          type: Hard Skills
+                        - name: Planning
+                          type: Soft Skills
+                        - name: Research
+                          type: Soft Skills
+                        - name: Finance
+                          type: Hard Skills
+                        - name: Management
+                          type: Soft Skills
+                        certifications: []
+                        courses: []
+                        publications: []
+                        interests: []
+                      cost: 0.0
+                    openai:
+                      extracted_data:
+                        personal_infos:
+                          name:
+                            first_name: Amit
+                            last_name: Verma
+                            raw_name: Amit K. Verma
+                            middle: K.
+                            title: null
+                            prefix: null
+                            sufix: null
+                          address:
+                            formatted_location: 123 Business Rd, Mumbai, MH 400001, India
+                            postal_code: '400001'
+                            region: Maharashtra
+                            country: India
+                            country_code: IN
+                            raw_input_location: null
+                            street: Business Road
+                            street_number: '123'
+                            appartment_number: null
+                            city: Mumbai
+                          self_summary: Dynamic marketing professional with a robust background in digital marketing, SEO, and branding strategies. Over 8 years of experience in driving growth and managing online presence for top-tier companies.
+                          objective: Seeking a senior role in digital marketing to leverage my skills in a growth-focused environment.
+                          date_of_birth: null
+                          place_of_birth: null
+                          phones:
+                          - +91-9876543210
+                          mails:
+                          - amit.verma@mail.com
+                          urls:
+                          - https://www.linkedin.com/in/amitverma
+                          fax: []
+                          current_profession: Digital Marketing Expert
+                          gender: null
+                          nationality: null
+                          martial_status: null
+                          current_salary: INR 12,00,000 per annum
+                          availability: Immediate
+                        education:
+                          total_years_education: null
+                          entries:
+                          - title: Master of Business Administration (MBA)
+                            start_date: '2008-07-01'
+                            end_date: '2010-06-01'
+                            location:
+                              formatted_location: Mumbai, MH, India
+                              postal_code: '400001'
+                              region: Maharashtra
+                              country: India
+                              country_code: IN
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Mumbai
+                            establishment: University of Mumbai
+                            description: Specialized in Marketing
+                            gpa: null
+                            accreditation: null
+                          - title: Bachelor of Commerce (BCom)
+                            start_date: '2005-07-01'
+                            end_date: '2008-06-01'
+                            location:
+                              formatted_location: Mumbai, MH, India
+                              postal_code: '400001'
+                              region: Maharashtra
+                              country: India
+                              country_code: IN
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Mumbai
+                            establishment: St. Xavier's College
+                            description: Majored in Accounting
+                            gpa: null
+                            accreditation: null
+                        work_experience:
+                          total_years_experience: '8.0'
+                          entries:
+                          - title: Senior Digital Marketing Manager
+                            start_date: '2017-07-01'
+                            end_date: '2022-12-01'
+                            company: Techno Corp
+                            location:
+                              formatted_location: Mumbai, MH, India
+                              postal_code: '400001'
+                              region: Maharashtra
+                              country: India
+                              country_code: IN
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Mumbai
+                            description: Led a team of marketers to enhance online presence and drive growth. Managed SEO, PPC campaigns and social media strategies.
+                            type: Full time
+                            industry: IT & Services
+                          - title: Digital Marketing Specialist
+                            start_date: '2013-07-01'
+                            end_date: '2017-06-30'
+                            company: Creative Solutions
+                            location:
+                              formatted_location: Mumbai, MH, India
+                              postal_code: '400001'
+                              region: Maharashtra
+                              country: India
+                              country_code: IN
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Mumbai
+                            description: Implemented SEO and content marketing strategies for clients. Analyzed performance metrics and improved website rankings.
+                            type: Full time
+                            industry: Marketing & Advertising
+                        languages: []
+                        skills:
+                        - name: Digital Marketing
+                          type: Specialized Skill
+                        - name: SEO
+                          type: Specialized Skill
+                        - name: Branding
+                          type: Specialized Skill
+                        - name: PPC Campaigns
+                          type: Specialized Skill
+                        - name: Social Media Marketing
+                          type: Specialized Skill
+                        - name: Content Marketing
+                          type: Specialized Skill
+                        - name: Team Leadership
+                          type: Common Skill
+                        - name: Google Analytics
+                          type: Specialized Skill
+                        certifications: []
+                        courses: []
+                        publications: []
+                        interests: []
+                      cost: 0.0
+                    affinda:
+                      extracted_data:
+                        personal_infos:
+                          name:
+                            first_name: John
+                            last_name: Smith
+                            raw_name: John W. Smith
+                            middle: W.
+                            title: null
+                            prefix: null
+                            sufix: null
+                          address:
+                            formatted_location: 2716 S College Ave Suite A, Fort Collins, CO 80525, USA
+                            postal_code: '80525'
+                            region: Colorado
+                            country: United States
+                            country_code: US
+                            raw_input_location: null
+                            street: South College Avenue
+                            street_number: '2716'
+                            appartment_number: Suite A
+                            city: Fort Collins
+                          self_summary: "Four years experience in early childhood development with a diverse background in the care of \nspecial needs children and adults. \n\nAdult Care"
+                          objective: null
+                          date_of_birth: null
+                          place_of_birth: null
+                          phones: []
+                          mails:
+                          - jwsmith@colostate.edu
+                          urls: []
+                          fax: []
+                          current_profession: null
+                          gender: null
+                          nationality: null
+                          martial_status: null
+                          current_salary: null
+                          availability: null
+                        education:
+                          total_years_education: null
+                          entries:
+                          - title: Bachelor
+                            start_date: null
+                            end_date: null
+                            location:
+                              formatted_location: Little Rock, AR, USA
+                              postal_code: null
+                              region: Arkansas
+                              country: United States
+                              country_code: US
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            establishment: University of Arkansas at Little
+                            description: null
+                            gpa: null
+                            accreditation: null
+                          - title: Bachelor
+                            start_date: null
+                            end_date: '1999-01-01'
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            establishment: null
+                            description: null
+                            gpa: null
+                            accreditation: BS
+                          - title: Bachelor
+                            start_date: null
+                            end_date: '1998-01-01'
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            establishment: null
+                            description: null
+                            gpa: Overall
+                            accreditation: BA
+                        work_experience:
+                          total_years_experience: '6.0'
+                          entries:
+                          - title: Counseling Supervisor
+                            start_date: '1999-01-01'
+                            end_date: '2002-01-01'
+                            company: The Wesley Center,
+                            location:
+                              formatted_location: Little Rock, AR, USA
+                              postal_code: null
+                              region: Arkansas
+                              country: United States
+                              country_code: US
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            description: null
+                            type: Full time
+                            industry: null
+                          - title: Client Specialist
+                            start_date: '1997-01-01'
+                            end_date: '1999-01-01'
+                            company: Rainbow Special Care Center,
+                            location:
+                              formatted_location: Little Rock, AR, USA
+                              postal_code: null
+                              region: Arkansas
+                              country: United States
+                              country_code: US
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            description: null
+                            type: Full time
+                            industry: null
+                          - title: Teacher's Assistant
+                            start_date: '1996-01-01'
+                            end_date: '1997-01-01'
+                            company: Cowell Elementary,
+                            location:
+                              formatted_location: Conway, AR, USA
+                              postal_code: null
+                              region: Arkansas
+                              country: United States
+                              country_code: US
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Conway
+                            description: null
+                            type: Full time
+                            industry: null
+                        languages: []
+                        skills:
+                        - name: Planning
+                          type: Common Skill
+                        - name: Patient Financial Assistance
+                          type: Specialized Skill
+                        - name: Educational Technologies
+                          type: Specialized Skill
+                        - name: Consulting
+                          type: Common Skill
+                        - name: Compliance Management
+                          type: Specialized Skill
+                        - name: Early Childhood Education
+                          type: Specialized Skill
+                        - name: Primary Education
+                          type: Specialized Skill
+                        - name: Early Childhood Education
+                          type: Specialized Skill
+                        - name: Early Childhood Education
+                          type: Specialized Skill
+                        - name: Childcare Fundamentals
+                          type: Specialized Skill
+                        certifications:
+                        - name: Dean's List, Chancellor's List
+                          type: null
+                        courses: []
+                        publications: []
+                        interests: []
+                      cost: 0.0
+                    extracta:
+                      extracted_data:
+                        personal_infos:
+                          name:
+                            first_name: John
+                            last_name: Smith
+                            raw_name: John W. Smith
+                            middle: null
+                            title: null
+                            prefix: null
+                            sufix: null
+                          address:
+                            formatted_location: 2002 Front Range Way Fort Collins, CO 80525
+                            postal_code: null
+                            region: null
+                            country: null
+                            country_code: null
+                            raw_input_location: null
+                            street: null
+                            street_number: null
+                            appartment_number: null
+                            city: null
+                          self_summary: Four years experience in early childhood development with a diverse background in the care of special needs children and adults.
+                          objective: null
+                          date_of_birth: null
+                          place_of_birth: null
+                          phones: []
+                          mails:
+                          - jwsmith@colostate.edu
+                          urls: []
+                          fax: []
+                          current_profession: null
+                          gender: null
+                          nationality: null
+                          martial_status: null
+                          current_salary: null
+                          availability: null
+                        education:
+                          total_years_education: null
+                          entries:
+                          - title: BS in Early Childhood Development
+                            start_date: '1999-01-01'
+                            end_date: '1999-01-01'
+                            location:
+                              formatted_location: Little Rock, AR
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            establishment: University of Arkansas at Little Rock
+                            description: ''
+                            gpa: '3.8'
+                            accreditation: ''
+                          - title: BA in Elementary Education
+                            start_date: '1998-01-01'
+                            end_date: '1998-01-01'
+                            location:
+                              formatted_location: Little Rock, AR
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            establishment: University of Arkansas at Little Rock
+                            description: ''
+                            gpa: '3.5'
+                            accreditation: ''
+                        work_experience:
+                          total_years_experience: null
+                          entries:
+                          - title: Counseling Supervisor
+                            start_date: '1999-01-01'
+                            end_date: '2002-01-01'
+                            company: The Wesley Center
+                            location:
+                              formatted_location: Little Rock, Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: Client Specialist, Rainbow Special Care Center, Little Rock, Arkansas
+                            type: null
+                            industry: Early Childhood Development
+                          - title: Client Specialist
+                            start_date: '1996-01-01'
+                            end_date: '1997-01-01'
+                            company: Rainbow Special Care Center
+                            location:
+                              formatted_location: Little Rock, Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: ''
+                            type: null
+                            industry: Early Childhood Development
+                          - title: Teacher's Assistant
+                            start_date: '1997-01-01'
+                            end_date: '1999-01-01'
+                            company: Cowell Elementary
+                            location:
+                              formatted_location: Conway, Arkansas
+                              postal_code: null
+                              region: null
+                              country: null
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: null
+                            description: ''
+                            type: null
+                            industry: Early Childhood Development
+                        languages: []
+                        skills: []
+                        certifications: []
+                        courses: []
+                        publications: []
+                        interests: []
+                      cost: 0.0
+                    klippa:
+                      extracted_data:
+                        personal_infos:
+                          name:
+                            first_name: null
+                            last_name: null
+                            raw_name: John W. Smith
+                            middle: null
+                            title: null
+                            prefix: null
+                            sufix: null
+                          address:
+                            formatted_location: null
+                            postal_code: null
+                            region: null
+                            country: CO
+                            country_code: null
+                            raw_input_location: null
+                            street: null
+                            street_number: null
+                            appartment_number: null
+                            city: Fort Collins
+                          self_summary: null
+                          objective: null
+                          date_of_birth: null
+                          place_of_birth: null
+                          phones: []
+                          mails:
+                          - jwsmith@colostate.edu
+                          urls: []
+                          fax: []
+                          current_profession: null
+                          gender: null
+                          nationality: null
+                          martial_status: null
+                          current_salary: null
+                          availability: null
+                        education:
+                          total_years_education: null
+                          entries:
+                          - title: BS in Early Childhood Development
+                            start_date: '1998-01-01'
+                            end_date: '1999-12-31'
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: AR
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            establishment: University of Arkansas at Little Rock
+                            description: BS in Early Childhood Development
+                            gpa: null
+                            accreditation: null
+                          - title: BA in Elementary Education
+                            start_date: '1997-01-01'
+                            end_date: '1998-12-31'
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: AR
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            establishment: University of Arkansas at Little Rock
+                            description: BA in Elementary Education
+                            gpa: null
+                            accreditation: null
+                        work_experience:
+                          total_years_experience: null
+                          entries:
+                          - title: Counseling Supervisor
+                            start_date: '1999-01-01'
+                            end_date: '2002-12-31'
+                            company: The Wesley Center
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: AR
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            description: null
+                            type: null
+                            industry: null
+                          - title: Client Specialist
+                            start_date: '1997-01-01'
+                            end_date: '1999-12-31'
+                            company: Rainbow Special Care Center
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: AR
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Little Rock
+                            description: null
+                            type: null
+                            industry: null
+                          - title: Teacher's Assistant
+                            start_date: '1996-01-01'
+                            end_date: '1997-12-31'
+                            company: Cowell Elementary
+                            location:
+                              formatted_location: null
+                              postal_code: null
+                              region: null
+                              country: AR
+                              country_code: null
+                              raw_input_location: null
+                              street: null
+                              street_number: null
+                              appartment_number: null
+                              city: Conway
+                            description: null
+                            type: null
+                            industry: null
+                        languages: []
+                        skills: []
+                        certifications: []
+                        courses: []
+                        publications: []
+                        interests: []
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    ResumeEducation:
+      properties:
+        total_years_education:
+          title: Total Years Education
+          type: integer
+        entries:
+          items:
+            $ref: '#/components/schemas/ResumeEducationEntry'
+          title: Entries
+          type: array
+      required:
+      - total_years_education
+      title: ResumeEducation
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    ResumeLang:
+      properties:
+        name:
+          title: Name
+          type: string
+        code:
+          title: Code
+          type: string
+      required:
+      - name
+      - code
+      title: ResumeLang
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ocrresume_parserResumeParserDataClass:
+      properties:
+        extracted_data:
+          $ref: '#/components/schemas/ResumeExtractedData'
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - extracted_data
+      - status
+      title: ocrresume_parserResumeParserDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ResumeExtractedData:
+      properties:
+        personal_infos:
+          $ref: '#/components/schemas/ResumePersonalInfo'
+        education:
+          $ref: '#/components/schemas/ResumeEducation'
+        work_experience:
+          $ref: '#/components/schemas/ResumeWorkExp'
+        languages:
+          items:
+            $ref: '#/components/schemas/ResumeLang'
+          title: Languages
+          type: array
+        skills:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Skills
+          type: array
+        certifications:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Certifications
+          type: array
+        courses:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Courses
+          type: array
+        publications:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Publications
+          type: array
+        interests:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Interests
+          type: array
+      required:
+      - personal_infos
+      - education
+      - work_experience
+      title: ResumeExtractedData
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    ResumePersonalInfo:
+      properties:
+        name:
+          $ref: '#/components/schemas/ResumePersonalName'
+        address:
+          $ref: '#/components/schemas/ResumeLocation'
+        self_summary:
+          title: Self Summary
+          type: string
+        objective:
+          title: Objective
+          type: string
+        date_of_birth:
+          title: Date Of Birth
+          type: string
+        place_of_birth:
+          title: Place Of Birth
+          type: string
+        phones:
+          items:
+            type: string
+          title: Phones
+          type: array
+        mails:
+          items:
+            type: string
+          title: Mails
+          type: array
+        urls:
+          items:
+            type: string
+          title: Urls
+          type: array
+        fax:
+          items:
+            type: string
+          title: Fax
+          type: array
+        current_profession:
+          title: Current Profession
+          type: string
+        gender:
+          title: Gender
+          type: string
+        nationality:
+          title: Nationality
+          type: string
+        martial_status:
+          title: Martial Status
+          type: string
+        current_salary:
+          title: Current Salary
+          type: string
+        availability:
+          default: null
+          title: Availability
+          type: string
+      required:
+      - name
+      - address
+      - self_summary
+      - objective
+      - date_of_birth
+      - place_of_birth
+      - current_profession
+      - gender
+      - nationality
+      - martial_status
+      - current_salary
+      title: ResumePersonalInfo
+      type: object
+    ResumeEducationEntry:
+      properties:
+        title:
+          title: Title
+          type: string
+        start_date:
+          title: Start Date
+          type: string
+        end_date:
+          title: End Date
+          type: string
+        location:
+          $ref: '#/components/schemas/ResumeLocation'
+        establishment:
+          title: Establishment
+          type: string
+        description:
+          title: Description
+          type: string
+        gpa:
+          title: Gpa
+          type: string
+        accreditation:
+          title: Accreditation
+          type: string
+      required:
+      - title
+      - start_date
+      - end_date
+      - location
+      - establishment
+      - description
+      - gpa
+      - accreditation
+      title: ResumeEducationEntry
+      type: object
+    ResumeLocation:
+      properties:
+        formatted_location:
+          title: Formatted Location
+          type: string
+        postal_code:
+          title: Postal Code
+          type: string
+        region:
+          title: Region
+          type: string
+        country:
+          title: Country
+          type: string
+        country_code:
+          title: Country Code
+          type: string
+        raw_input_location:
+          title: Raw Input Location
+          type: string
+        street:
+          title: Street
+          type: string
+        street_number:
+          title: Street Number
+          type: string
+        appartment_number:
+          title: Appartment Number
+          type: string
+        city:
+          title: City
+          type: string
+      required:
+      - formatted_location
+      - postal_code
+      - region
+      - country
+      - country_code
+      - raw_input_location
+      - street
+      - street_number
+      - appartment_number
+      - city
+      title: ResumeLocation
+      type: object
+    ResumeWorkExp:
+      properties:
+        total_years_experience:
+          title: Total Years Experience
+          type: string
+        entries:
+          items:
+            $ref: '#/components/schemas/ResumeWorkExpEntry'
+          title: Entries
+          type: array
+      required:
+      - total_years_experience
+      title: ResumeWorkExp
+      type: object
+    ResumeSkill:
+      properties:
+        name:
+          title: Name
+          type: string
+        type:
+          title: Type
+          type: string
+      required:
+      - name
+      - type
+      title: ResumeSkill
+      type: object
+    ResumeWorkExpEntry:
+      properties:
+        title:
+          title: Title
+          type: string
+        start_date:
+          title: Start Date
+          type: string
+        end_date:
+          title: End Date
+          type: string
+        company:
+          title: Company
+          type: string
+        location:
+          $ref: '#/components/schemas/ResumeLocation'
+        description:
+          title: Description
+          type: string
+        type:
+          default: null
+          title: Type
+          type: string
+        industry:
+          title: Industry
+          type: string
+      required:
+      - title
+      - start_date
+      - end_date
+      - company
+      - location
+      - description
+      - industry
+      title: ResumeWorkExpEntry
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ResumePersonalName:
+      properties:
+        first_name:
+          title: First Name
+          type: string
+        last_name:
+          title: Last Name
+          type: string
+        raw_name:
+          title: Raw Name
+          type: string
+        middle:
+          title: Middle
+          type: string
+        title:
+          title: Title
+          type: string
+        prefix:
+          title: Prefix
+          type: string
+        sufix:
+          title: Sufix
+          type: string
+      required:
+      - first_name
+      - last_name
+      - raw_name
+      - middle
+      - title
+      - prefix
+      - sufix
+      title: ResumePersonalName
+      type: object
+    ocrresume_parserResumeParserRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
+    ocrresume_parserResponseModel:
+      properties:
+        senseloaf:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+        hireability:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+        affinda:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+        klippa:
+          $ref: '#/components/schemas/ocrresume_parserResumeParserDataClass'
+          default: null
+      title: ocrresume_parserResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

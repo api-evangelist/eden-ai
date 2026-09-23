@@ -1,0 +1,534 @@
+openapi: 3.2.0
+info:
+  title: Video Features Logo Detection Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Logo Detection Async
+paths:
+  /video/logo_detection_async/:
+    get:
+      operationId: video_logo_detection_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Video Logo Detection List Jobs
+      tags:
+      - Logo Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''twelvelabs'', ''google'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 607ce03e-49df-412a-bbac-522292361bae
+                      state: finished
+                      created_at: '2026-09-06T00:05:22.559784'
+                    - providers: '[''twelvelabs'', ''google'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 5852826d-f325-4f0a-9898-3c49e73223f6
+                      state: finished
+                      created_at: '2026-09-05T23:05:22.559797'
+                    - providers: '[''twelvelabs'', ''google'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 311b6efb-533a-4178-85e3-0a5785022730
+                      state: finished
+                      created_at: '2026-09-05T22:05:22.559804'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: video_logo_detection_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**google**|`Video intelligence v1`|0.15 (per 60 seconde)|1 seconde
+
+        |**twelvelabs**|`v1.1.2`|0.1 (per 60 seconde)|60 seconde'
+      summary: Video Logo Detection Launch Job
+      tags:
+      - Logo Detection Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: twelvelabs,google
+                  file: /edenai/edenai/features/video/samples/data/labels.mp4
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: twelvelabs,google
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 83001ed2-6914-4034-bbe9-16e1d607e9e8
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: video_logo_detection_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Video Logo Detection delete Jobs
+      tags:
+      - Logo Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /video/logo_detection_async/{public_id}/:
+    get:
+      operationId: video_logo_detection_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Video Logo Detection Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Logo Detection Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncvideologo_detection_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 46024357-845b-4552-a629-a67c839ef6d2
+                    status: finished
+                    error: null
+                    results:
+                      twelvelabs:
+                        error: null
+                        id: d5409d9e-6ae5-48ee-a0b2-2025a74e069a
+                        final_status: finished
+                        logos:
+                        - description: Aston Martin
+                          tracking:
+                          - timestamp: 1.0
+                            bounding_box:
+                              top: null
+                              left: null
+                              height: null
+                              width: null
+                            confidence: 0.9650607705116272
+                      google:
+                        error: null
+                        id: f30c7cf6-0134-4bff-9f48-1d05b57247dc
+                        final_status: finished
+                        logos:
+                        - description: Koh-i-Noor Hardtmuth
+                          tracking:
+                          - timestamp: 5.5055
+                            bounding_box:
+                              top: 0.9172453
+                              left: 0.45948356
+                              height: 0.0425953
+                              width: 0.0
+                            confidence: 0.8775759
+                          - timestamp: 5.630625
+                            bounding_box:
+                              top: 0.9357612
+                              left: 0.4651001
+                              height: 0.0425953
+                              width: 0.0
+                            confidence: 0.8775759
+                        - description: Wisconsin Badgers
+                          tracking:
+                          - timestamp: 0.0
+                            bounding_box:
+                              top: 0.44206923
+                              left: 0.5685801
+                              height: 0.05217099000000003
+                              width: 0.0
+                            confidence: 0.8602308
+                          - timestamp: 0.125125
+                            bounding_box:
+                              top: 0.4430714
+                              left: 0.5700027
+                              height: 0.05217099999999997
+                              width: 0.0
+                            confidence: 0.8602308
+                          - timestamp: 0.25025
+                            bounding_box:
+                              top: 0.4451254
+                              left: 0.56891847
+                              height: 0.05217099999999997
+                              width: 0.0
+                            confidence: 0.8602308
+                          - timestamp: 0.375375
+                            bounding_box:
+                              top: 0.44717023
+                              left: 0.56935227
+                              height: 0.05217099000000003
+                              width: 0.0
+                            confidence: 0.8602308
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    videologo_detection_asyncModel:
+      properties:
+        twelvelabs:
+          $ref: '#/components/schemas/videologo_detection_asyncLogoDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videologo_detection_asyncLogoDetectionAsyncDataClass'
+          default: null
+      title: videologo_detection_asyncModel
+      type: object
+    asyncvideologo_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videologo_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideologo_detection_asyncResponseModel
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    VideoLogoBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoLogoBoundingBox
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LogoTrack:
+      properties:
+        description:
+          title: Description
+          type: string
+        tracking:
+          items:
+            $ref: '#/components/schemas/VideoLogo'
+          title: Tracking
+          type: array
+      required:
+      - description
+      title: LogoTrack
+      type: object
+    videologo_detection_asyncLogoDetectionAsyncDataClass:
+      properties:
+        logos:
+          items:
+            $ref: '#/components/schemas/LogoTrack'
+          title: Logos
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videologo_detection_asyncLogoDetectionAsyncDataClass
+      type: object
+    AsyncVideoAnalysisRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mov|mp4|avi)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    VideoLogo:
+      properties:
+        timestamp:
+          title: Timestamp
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/VideoLogoBoundingBox'
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - timestamp
+      - bounding_box
+      - confidence
+      title: VideoLogo
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

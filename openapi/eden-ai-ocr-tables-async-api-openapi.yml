@@ -1,0 +1,3130 @@
+openapi: 3.2.0
+info:
+  title: OCR Features Ocr Tables Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Ocr Tables Async
+paths:
+  /ocr/ocr_tables_async/:
+    get:
+      operationId: ocr_ocr_tables_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: OCR Tables List Job
+      tags:
+      - Ocr Tables Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''microsoft'', ''google'', ''amazon'']'
+                      nb: 3
+                      nb_ok: 3
+                      public_id: 3344c163-f4cd-4655-a390-fb8172af34a6
+                      state: finished
+                      created_at: '2026-09-06T03:58:31.619077'
+                    - providers: '[''microsoft'', ''google'', ''amazon'']'
+                      nb: 3
+                      nb_ok: 3
+                      public_id: 4e250341-57de-4074-8a1b-455c83d6f6d9
+                      state: finished
+                      created_at: '2026-09-06T02:58:31.619087'
+                    - providers: '[''microsoft'', ''google'', ''amazon'']'
+                      nb: 3
+                      nb_ok: 3
+                      public_id: fef4726f-2b89-4dc9-9c4c-fd001bde5e5f
+                      state: finished
+                      created_at: '2026-09-06T01:58:31.619091'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: ocr_ocr_tables_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 (v1.15.18)`|15.0 (per 1000 page)|1 page
+
+        |**google**|`DocumentAI v1 beta3`|65.0 (per 1000 page)|1 page
+
+        |**microsoft**|`rest API 4.0 (2024-02-29-preview)`|10.0 (per 1000 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Angika**|`anp`|
+
+        |**Arabic**|`ar`|
+
+        |**Asturian**|`ast`|
+
+        |**Awadhi**|`awa`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Bagheli**|`bfy`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bhojpuri**|`bho`|
+
+        |**Bislama**|`bi`|
+
+        |**Bodo (India)**|`brx`|
+
+        |**Bosnian**|`bs`|
+
+        |**Braj**|`bra`|
+
+        |**Breton**|`br`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Bundeli**|`bns`|
+
+        |**Buriat**|`bua`|
+
+        |**Camling**|`rab`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chamorro**|`ch`|
+
+        |**Chhattisgarhi**|`hne`|
+
+        |**Chinese**|`zh`|
+
+        |**Cornish**|`kw`|
+
+        |**Corsican**|`co`|
+
+        |**Crimean Tatar**|`crh`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dari**|`prs`|
+
+        |**Dhimal**|`dhi`|
+
+        |**Dogri (macrolanguage)**|`doi`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Erzya**|`myv`|
+
+        |**Estonian**|`et`|
+
+        |**Faroese**|`fo`|
+
+        |**Fijian**|`fj`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Friulian**|`fur`|
+
+        |**Gagauz**|`gag`|
+
+        |**Galician**|`gl`|
+
+        |**German**|`de`|
+
+        |**Gilbertese**|`gil`|
+
+        |**Gondi**|`gon`|
+
+        |**Gurung**|`gvr`|
+
+        |**Haitian**|`ht`|
+
+        |**Halbi**|`hlb`|
+
+        |**Hani**|`hni`|
+
+        |**Haryanvi**|`bgc`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong Daw**|`mww`|
+
+        |**Ho**|`hoc`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Inari Sami**|`smn`|
+
+        |**Indonesian**|`id`|
+
+        |**Interlingua (International Auxiliary Language Association)**|`ia`|
+
+        |**Inuktitut**|`iu`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Jaunsari**|`jns`|
+
+        |**Javanese**|`jv`|
+
+        |**K''iche''**|`quc`|
+
+        |**Kabuverdianu**|`kea`|
+
+        |**Kachin**|`kac`|
+
+        |**Kalaallisut**|`kl`|
+
+        |**Kangri**|`xnr`|
+
+        |**Kara-Kalpak**|`kaa`|
+
+        |**Karachay-Balkar**|`krc`|
+
+        |**Kashubian**|`csb`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khaling**|`klr`|
+
+        |**Khasi**|`kha`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Korku**|`kfq`|
+
+        |**Koryak**|`kpy`|
+
+        |**Kosraean**|`kos`|
+
+        |**Kumarbhag Paharia**|`kmj`|
+
+        |**Kumyk**|`kum`|
+
+        |**Kurdish**|`ku`|
+
+        |**Kurukh**|`kru`|
+
+        |**Kölsch**|`ksh`|
+
+        |**Lakota**|`lkt`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Lower Sorbian**|`dsb`|
+
+        |**Lule Sami**|`smj`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Mahasu Pahari**|`bfz`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Maltese**|`mt`|
+
+        |**Manx**|`gv`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Mongolian**|`mn`|
+
+        |**Montenegrin**|`cnr`|
+
+        |**Neapolitan**|`nap`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Niuean**|`niu`|
+
+        |**Nogai**|`nog`|
+
+        |**Northern Sami**|`se`|
+
+        |**Norwegian**|`no`|
+
+        |**Occitan (post 1500)**|`oc`|
+
+        |**Ossetian**|`os`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Romansh**|`rm`|
+
+        |**Russian**|`ru`|
+
+        |**Sadri**|`sck`|
+
+        |**Samoan**|`sm`|
+
+        |**Sanskrit**|`sa`|
+
+        |**Santali**|`sat`|
+
+        |**Scots**|`sco`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Sherpa**|`xsr`|
+
+        |**Sirmauri**|`srx`|
+
+        |**Skolt Sami**|`sms`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sami**|`sma`|
+
+        |**Spanish**|`es`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tajik**|`tg`|
+
+        |**Tatar**|`tt`|
+
+        |**Tetum**|`tet`|
+
+        |**Thangmi**|`thf`|
+
+        |**Tonga (Tonga Islands)**|`to`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Tuvinian**|`tyv`|
+
+        |**Uighur**|`ug`|
+
+        |**Upper Sorbian**|`hsb`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Volapük**|`vo`|
+
+        |**Walser**|`wae`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Yucateco**|`yua`|
+
+        |**Zhuang**|`za`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Belarusian**|`be-Cyrl`|
+
+        |**Belarusian (Latin)**|`be-Latn`|
+
+        |**Chinese (Simplified)**|`zh-Hans`|
+
+        |**Chinese (Traditional)**|`zh-Hant`|
+
+        |**Kara-Kalpak (Cyrillic)**|`kaa-Cyrl`|
+
+        |**Kazakh**|`kk-Cyrl`|
+
+        |**Kazakh (Latin)**|`kk-Latn`|
+
+        |**Kurdish…'
+      summary: OCR Tables Launch Job
+      tags:
+      - Ocr Tables Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OcrTablesAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: microsoft,google,amazon
+                  file: /edenai/edenai/features/ocr/samples/data/tables.png
+                  language: en
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OcrTablesAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: microsoft,google,amazon
+                  language: en
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 5d6fdd83-9465-46b9-a346-a586357de57c
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: ocr_ocr_tables_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: OCR Tables delete Jobs
+      tags:
+      - Ocr Tables Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /ocr/ocr_tables_async/{public_id}/:
+    get:
+      operationId: ocr_ocr_tables_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: OCR Tables Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Ocr Tables Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncocrocr_tables_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 4d83b337-4516-42fb-9f00-af6cca105b6f
+                    status: finished
+                    error: null
+                    results:
+                      microsoft:
+                        error: null
+                        id: bf245f4c-f484-4482-a1e8-879b8dc85a37
+                        final_status: finished
+                        pages:
+                        - tables:
+                          - rows:
+                            - cells:
+                              - text: Station
+                                row_index: 0
+                                col_index: 0
+                                row_span: 2
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.12698412698412698
+                                is_header: true
+                              - text: Latitude
+                                row_index: 0
+                                col_index: 1
+                                row_span: 2
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.12698412698412698
+                                is_header: true
+                              - text: Longitude
+                                row_index: 0
+                                col_index: 2
+                                row_span: 2
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.12698412698412698
+                                is_header: true
+                              - text: Year
+                                row_index: 0
+                                col_index: 3
+                                row_span: 1
+                                col_span: 4
+                                confidence: 0.988
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.854875283446712
+                                  width: 0.45362318840579713
+                                  height: 0.049886621315192746
+                                is_header: true
+                            - cells:
+                              - text: '1993'
+                                row_index: 1
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.988
+                                bounding_box:
+                                  left: 0.03188405797101449
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.07709750566893424
+                                is_header: true
+                              - text: '1994'
+                                row_index: 1
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.992
+                                bounding_box:
+                                  left: 0.03188405797101449
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.07709750566893424
+                                is_header: true
+                              - text: '2012'
+                                row_index: 1
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.957
+                                bounding_box:
+                                  left: 0.03188405797101449
+                                  top: 1.2471655328798186
+                                  width: 0.11014492753623188
+                                  height: 0.07709750566893424
+                                is_header: true
+                              - text: '2013'
+                                row_index: 1
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.988
+                                bounding_box:
+                                  left: 0.03188405797101449
+                                  top: 1.4195011337868482
+                                  width: 0.0927536231884058
+                                  height: 0.07709750566893424
+                                is_header: true
+                            - cells:
+                              - text: Kishngarh
+                                row_index: 2
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.995
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '27.82'
+                                row_index: 2
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '76.72'
+                                row_index: 2
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '563.5'
+                                row_index: 2
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.991
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '563.5'
+                                row_index: 2
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '490'
+                                row_index: 2
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 1.2471655328798186
+                                  width: 0.11014492753623188
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '804'
+                                row_index: 2
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.08115942028985507
+                                  top: 1.4195011337868482
+                                  width: 0.0927536231884058
+                                  height: 0.10430839002267574
+                                is_header: false
+                            - cells:
+                              - text: Bansur
+                                row_index: 3
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.995
+                                bounding_box:
+                                  left: 0.1492753623188406
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '27.70'
+                                row_index: 3
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.1492753623188406
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '76.35'
+                                row_index: 3
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.1492753623188406
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '780.7'
+                                row_index: 3
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.14782608695652175
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '580'
+                                row_index: 3
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.14782608695652175
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '776'
+                                row_index: 3
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.14782608695652175
+                                  top: 1.2471655328798186
+                                  width: 0.11014492753623188
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '720'
+                                row_index: 3
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.14782608695652175
+                                  top: 1.4195011337868482
+                                  width: 0.0927536231884058
+                                  height: 0.10430839002267574
+                                is_header: false
+                            - cells:
+                              - text: Tijara
+                                row_index: 4
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.21594202898550724
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '27.95'
+                                row_index: 4
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.21594202898550724
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '76.85'
+                                row_index: 4
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.21594202898550724
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '590'
+                                row_index: 4
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.21594202898550724
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '645'
+                                row_index: 4
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.2144927536231884
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '633'
+                                row_index: 4
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.2144927536231884
+                                  top: 1.2471655328798186
+                                  width: 0.11159420289855072
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '653'
+                                row_index: 4
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.996
+                                bounding_box:
+                                  left: 0.2144927536231884
+                                  top: 1.4217687074829932
+                                  width: 0.09130434782608696
+                                  height: 0.10657596371882086
+                                is_header: false
+                            - cells:
+                              - text: Tapukara
+                                row_index: 5
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.996
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '28.05'
+                                row_index: 5
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '76.85'
+                                row_index: 5
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '658'
+                                row_index: 5
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '570'
+                                row_index: 5
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '485'
+                                row_index: 5
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.97
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 1.2471655328798186
+                                  width: 0.11159420289855072
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '342'
+                                row_index: 5
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.2826086956521739
+                                  top: 1.4217687074829932
+                                  width: 0.09130434782608696
+                                  height: 0.10657596371882086
+                                is_header: false
+                            - cells:
+                              - text: Behror
+                                row_index: 6
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.995
+                                bounding_box:
+                                  left: 0.3507246376811594
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '27.88'
+                                row_index: 6
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.3507246376811594
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '76.28'
+                                row_index: 6
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.3507246376811594
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '555'
+                                row_index: 6
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.3492753623188406
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '401.3'
+                                row_index: 6
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.3492753623188406
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '487'
+                                row_index: 6
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.3492753623188406
+                                  top: 1.2471655328798186
+                                  width: 0.11159420289855072
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '746'
+                                row_index: 6
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.3507246376811594
+                                  top: 1.4217687074829932
+                                  width: 0.09130434782608696
+                                  height: 0.10204081632653061
+                                is_header: false
+                            - cells:
+                              - text: Neemrana
+                                row_index: 7
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.996
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '28.00'
+                                row_index: 7
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 0.2698412698412698
+                                  width: 0.17391304347826086
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '76.38'
+                                row_index: 7
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 0.5419501133786848
+                                  width: 0.2
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '1008'
+                                row_index: 7
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '795'
+                                row_index: 7
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10430839002267574
+                                is_header: false
+                              - text: '566'
+                                row_index: 7
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.998
+                                bounding_box:
+                                  left: 0.41739130434782606
+                                  top: 1.2471655328798186
+                                  width: 0.11159420289855072
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '456'
+                                row_index: 7
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.41594202898550725
+                                  top: 1.4217687074829932
+                                  width: 0.09130434782608696
+                                  height: 0.10657596371882086
+                                is_header: false
+                            - cells:
+                              - text: Mundawar
+                                row_index: 8
+                                col_index: 0
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.996
+                                bounding_box:
+                                  left: 0.4855072463768116
+                                  top: 0.0
+                                  width: 0.17246376811594202
+                                  height: 0.10884353741496598
+                                is_header: false
+                              - text: '27.87'
+                                row_index: 8
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 0.2698412698412698
+                                  width: 0.17246376811594202
+                                  height: 0.10884353741496598
+                                is_header: false
+                              - text: '76.55'
+                                row_index: 8
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.993
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 0.5396825396825397
+                                  width: 0.20144927536231885
+                                  height: 0.10884353741496598
+                                is_header: false
+                              - text: '1010'
+                                row_index: 8
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 0.854875283446712
+                                  width: 0.12608695652173912
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '931'
+                                row_index: 8
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.995
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 1.0521541950113378
+                                  width: 0.1246376811594203
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '483'
+                                row_index: 8
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.997
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 1.2471655328798186
+                                  width: 0.11159420289855072
+                                  height: 0.10657596371882086
+                                is_header: false
+                              - text: '775'
+                                row_index: 8
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.994
+                                bounding_box:
+                                  left: 0.48405797101449277
+                                  top: 1.4217687074829932
+                                  width: 0.09130434782608696
+                                  height: 0.10884353741496598
+                                is_header: false
+                            num_rows: 9
+                            num_cols: 7
+                        num_pages: 1
+                      google:
+                        error: null
+                        id: d7043d8d-052b-43ef-a485-0162ad0bfa4e
+                        final_status: finished
+                        pages:
+                        - tables:
+                          - rows:
+                            - cells:
+                              - text: 'Station
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99963427
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.0
+                                  width: 0.16811594
+                                  height: 0.13151927
+                                is_header: true
+                              - text: 'Latitude
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99963331
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.0
+                                  width: 0.17971014999999999
+                                  height: 0.13151927
+                                is_header: true
+                              - text: 'Longitude
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99962723
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.0
+                                  width: 0.20000002000000006
+                                  height: 0.13151927
+                                is_header: true
+                              - text: '1993
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99959695
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.0
+                                  width: 0.12318837999999999
+                                  height: 0.13151927
+                                is_header: true
+                              - text: 'Year
+
+                                  1994 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99963415
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.0
+                                  width: 0.12463765999999998
+                                  height: 0.13151927
+                                is_header: true
+                              - text: '2012 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99962926
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.0
+                                  width: 0.11449277999999996
+                                  height: 0.13151927
+                                is_header: true
+                              - text: '2013
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99961746
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.0
+                                  width: 0.08260869000000004
+                                  height: 0.13151927
+                                is_header: true
+                            - cells:
+                              - text: 'Kishngarh
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999589
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.13151927
+                                  width: 0.16811594
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '27.82
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999493
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.13151927
+                                  width: 0.17971014999999999
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '76.72 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99998879
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.13151927
+                                  width: 0.20000002000000006
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '563.5
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99995857
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.13151927
+                                  width: 0.12318837999999999
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '563.5 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999577
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.13151927
+                                  width: 0.12463765999999998
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '490 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999088
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.13151927
+                                  width: 0.11449277999999996
+                                  height: 0.09750568000000001
+                                is_header: false
+                              - text: '804
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99997902
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.13151927
+                                  width: 0.08260869000000004
+                                  height: 0.09750568000000001
+                                is_header: false
+                            - cells:
+                              - text: 'Bansur
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999642
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.22902495
+                                  width: 0.16811594
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '27.70
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999547
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.22902495
+                                  width: 0.17971014999999999
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '76.35
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99998933
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.22902495
+                                  width: 0.20000002000000006
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '780.7
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99995911
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.22902495
+                                  width: 0.12318837999999999
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '580
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999963
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.22902495
+                                  width: 0.12463765999999998
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '776
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999142
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.22902495
+                                  width: 0.11449277999999996
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '720
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99997956
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.22902495
+                                  width: 0.08260869000000004
+                                  height: 0.10884353000000002
+                                is_header: false
+                            - cells:
+                              - text: 'Tijara
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999881
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.33786848
+                                  width: 0.16811594
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '27.95
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999785
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.33786848
+                                  width: 0.17971014999999999
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '76.85
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999171
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.33786848
+                                  width: 0.20000002000000006
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '590 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999615
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.33786848
+                                  width: 0.12318837999999999
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '645 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999869
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.33786848
+                                  width: 0.12463765999999998
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '633 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999938
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.33786848
+                                  width: 0.11449277999999996
+                                  height: 0.10657596999999996
+                                is_header: false
+                              - text: '653
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99998194
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.33786848
+                                  width: 0.08260869000000004
+                                  height: 0.10657596999999996
+                                is_header: false
+                            - cells:
+                              - text: 'Tapukara
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999827
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.44444445
+                                  width: 0.16811594
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '28.05
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999732
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.44444445
+                                  width: 0.17971014999999999
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '76.85
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999118
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.44444445
+                                  width: 0.20000002000000006
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '658 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99996096
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.44444445
+                                  width: 0.12318837999999999
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '570 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999815
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.44444445
+                                  width: 0.12463765999999998
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '485
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999326
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.44444445
+                                  width: 0.11449277999999996
+                                  height: 0.10884353000000002
+                                is_header: false
+                              - text: '342
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999814
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.44444445
+                                  width: 0.08260869000000004
+                                  height: 0.10884353000000002
+                                is_header: false
+                            - cells:
+                              - text: 'Behror
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999756
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.55328798
+                                  width: 0.16811594
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '27.88
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999966
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.55328798
+                                  width: 0.17971014999999999
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '76.28
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999046
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.55328798
+                                  width: 0.20000002000000006
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '555 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99996024
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.55328798
+                                  width: 0.12318837999999999
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '401.3 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999744
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.55328798
+                                  width: 0.12463765999999998
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '487
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999255
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.55328798
+                                  width: 0.11449277999999996
+                                  height: 0.09977322999999994
+                                is_header: false
+                              - text: '746
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99998069
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.55328798
+                                  width: 0.08260869000000004
+                                  height: 0.09977322999999994
+                                is_header: false
+                            - cells:
+                              - text: 'Neemrana
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99994749
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.65306121
+                                  width: 0.16811594
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '28.00
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99994653
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.65306121
+                                  width: 0.17971014999999999
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '76.38
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9999404
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.65306121
+                                  width: 0.20000002000000006
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '1008
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99991018
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.65306121
+                                  width: 0.12318837999999999
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '795 '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99994737
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.65306121
+                                  width: 0.12463765999999998
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '566
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99994248
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.65306121
+                                  width: 0.11449277999999996
+                                  height: 0.10657597000000008
+                                is_header: false
+                              - text: '456
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99993062
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.65306121
+                                  width: 0.08260869000000004
+                                  height: 0.10657597000000008
+                                is_header: false
+                            - cells:
+                              - text: 'Mundawar
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999958
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.75963718
+                                  width: 0.16811594
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '27.87
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999863
+                                bounding_box:
+                                  left: 0.16811594
+                                  top: 0.75963718
+                                  width: 0.17971014999999999
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '76.55
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999249
+                                bounding_box:
+                                  left: 0.34782609
+                                  top: 0.75963718
+                                  width: 0.20000002000000006
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '1010
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99996227
+                                bounding_box:
+                                  left: 0.54782611
+                                  top: 0.75963718
+                                  width: 0.12318837999999999
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '931
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999946
+                                bounding_box:
+                                  left: 0.67101449
+                                  top: 0.75963718
+                                  width: 0.12463765999999998
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '483
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99999458
+                                bounding_box:
+                                  left: 0.79565215
+                                  top: 0.75963718
+                                  width: 0.11449277999999996
+                                  height: 0.11111110000000002
+                                is_header: false
+                              - text: '775
+
+                                  '
+                                row_index: null
+                                col_index: null
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.99998271
+                                bounding_box:
+                                  left: 0.91014493
+                                  top: 0.75963718
+                                  width: 0.08260869000000004
+                                  height: 0.11111110000000002
+                                is_header: false
+                            num_rows: 8
+                            num_cols: 7
+                        num_pages: 1
+                      amazon:
+                        error: null
+                        id: dda715ba-fe93-4c90-8994-52103029f66b
+                        final_status: finished
+                        pages:
+                        - tables:
+                          - rows:
+                            - cells:
+                              - text: Station
+                                row_index: 1
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9658203125
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.00533616216853261
+                                  width: 0.1740567982196808
+                                  height: 0.043478116393089294
+                                is_header: true
+                              - text: Latitude
+                                row_index: 2
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.974609375
+                                bounding_box:
+                                  left: 0.17403732240200043
+                                  top: 0.005595823284238577
+                                  width: 0.17412427067756653
+                                  height: 0.043483756482601166
+                                is_header: true
+                              - text: Longitude
+                                row_index: 3
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.97216796875
+                                bounding_box:
+                                  left: 0.3481482267379761
+                                  top: 0.005855550989508629
+                                  width: 0.19883781671524048
+                                  height: 0.04352699592709541
+                                is_header: true
+                              - text: Year
+                                row_index: 4
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8818359375
+                                bounding_box:
+                                  left: 0.5469796061515808
+                                  top: 0.006152155343443155
+                                  width: 0.12629753351211548
+                                  height: 0.04342283308506012
+                                is_header: true
+                              - text: Year
+                                row_index: 5
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8818359375
+                                bounding_box:
+                                  left: 0.6732751727104187
+                                  top: 0.006340555381029844
+                                  width: 0.1248670443892479
+                                  height: 0.04342469573020935
+                                is_header: true
+                              - text: Year
+                                row_index: 6
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8818359375
+                                bounding_box:
+                                  left: 0.7981398105621338
+                                  top: 0.006526824086904526
+                                  width: 0.1118215024471283
+                                  height: 0.04340881109237671
+                                is_header: true
+                              - text: Year
+                                row_index: 7
+                                col_index: 1
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8818359375
+                                bounding_box:
+                                  left: 0.9099550247192383
+                                  top: 0.006693629082292318
+                                  width: 0.09004496783018112
+                                  height: 0.04337921738624573
+                                is_header: true
+                            - cells:
+                              - text: Station
+                                row_index: 1
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9658203125
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.048549048602581024
+                                  width: 0.17403732240200043
+                                  height: 0.07761107385158539
+                                is_header: true
+                              - text: Latitude
+                                row_index: 2
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.974609375
+                                bounding_box:
+                                  left: 0.1740024834871292
+                                  top: 0.04881427809596062
+                                  width: 0.17414574325084686
+                                  height: 0.07762111723423004
+                                is_header: true
+                              - text: Longitude
+                                row_index: 3
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.97216796875
+                                bounding_box:
+                                  left: 0.34812426567077637
+                                  top: 0.04907957836985588
+                                  width: 0.19885534048080444
+                                  height: 0.07767017185688019
+                                is_header: true
+                              - text: '1993'
+                                row_index: 4
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.93505859375
+                                bounding_box:
+                                  left: 0.5469681620597839
+                                  top: 0.04938254505395889
+                                  width: 0.12630702555179596
+                                  height: 0.07756687700748444
+                                is_header: true
+                              - text: '1994'
+                                row_index: 5
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92626953125
+                                bounding_box:
+                                  left: 0.6732715964317322
+                                  top: 0.04957498610019684
+                                  width: 0.12487487494945526
+                                  height: 0.07757185399532318
+                                is_header: true
+                              - text: '2012'
+                                row_index: 6
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92822265625
+                                bounding_box:
+                                  left: 0.7981421947479248
+                                  top: 0.04976525157690048
+                                  width: 0.11183039098978043
+                                  height: 0.07755837589502335
+                                is_header: true
+                              - text: '2013'
+                                row_index: 7
+                                col_index: 2
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.93994140625
+                                bounding_box:
+                                  left: 0.9099613428115845
+                                  top: 0.049935635179281235
+                                  width: 0.08991801738739014
+                                  height: 0.07753013074398041
+                                is_header: true
+                            - cells:
+                              - text: Kishngarh
+                                row_index: 1
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.91845703125
+                                bounding_box:
+                                  left: 0.0002619712904561311
+                                  top: 0.12588554620742798
+                                  width: 0.17374050617218018
+                                  height: 0.10720978677272797
+                                is_header: false
+                              - text: '27.82'
+                                row_index: 2
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90673828125
+                                bounding_box:
+                                  left: 0.1739543080329895
+                                  top: 0.12616011500358582
+                                  width: 0.17416997253894806
+                                  height: 0.10722427815198898
+                                is_header: false
+                              - text: '76.72'
+                                row_index: 3
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92724609375
+                                bounding_box:
+                                  left: 0.348091185092926
+                                  top: 0.12643539905548096
+                                  width: 0.19887696206569672
+                                  height: 0.10727910697460175
+                                is_header: false
+                              - text: '563.5'
+                                row_index: 4
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.916015625
+                                bounding_box:
+                                  left: 0.5469522476196289
+                                  top: 0.12674975395202637
+                                  width: 0.12631933391094208
+                                  height: 0.10717443376779556
+                                is_header: false
+                              - text: '563.5'
+                                row_index: 5
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9072265625
+                                bounding_box:
+                                  left: 0.6732666492462158
+                                  top: 0.12694942951202393
+                                  width: 0.124885693192482
+                                  height: 0.10718206316232681
+                                is_header: false
+                              - text: '490'
+                                row_index: 6
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90869140625
+                                bounding_box:
+                                  left: 0.7981464862823486
+                                  top: 0.12714684009552002
+                                  width: 0.11184171587228775
+                                  height: 0.10717029124498367
+                                is_header: false
+                              - text: '804'
+                                row_index: 7
+                                col_index: 3
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92041015625
+                                bounding_box:
+                                  left: 0.909972608089447
+                                  top: 0.12732362747192383
+                                  width: 0.08993012458086014
+                                  height: 0.10714275389909744
+                                is_header: false
+                            - cells:
+                              - text: Bansur
+                                row_index: 1
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.91455078125
+                                bounding_box:
+                                  left: 0.00020009603758808225
+                                  top: 0.2328070104122162
+                                  width: 0.17375421524047852
+                                  height: 0.10496626049280167
+                                is_header: false
+                              - text: '27.70'
+                                row_index: 2
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90283203125
+                                bounding_box:
+                                  left: 0.17390714585781097
+                                  top: 0.23309533298015594
+                                  width: 0.17418403923511505
+                                  height: 0.10498049855232239
+                                is_header: false
+                              - text: '76.35'
+                                row_index: 3
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92333984375
+                                bounding_box:
+                                  left: 0.3480587899684906
+                                  top: 0.2333844006061554
+                                  width: 0.1988934874534607
+                                  height: 0.10503695905208588
+                                is_header: false
+                              - text: '780.7'
+                                row_index: 4
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.912109375
+                                bounding_box:
+                                  left: 0.5469367504119873
+                                  top: 0.2337145060300827
+                                  width: 0.1263299435377121
+                                  height: 0.10492632538080215
+                                is_header: false
+                              - text: '580'
+                                row_index: 5
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9033203125
+                                bounding_box:
+                                  left: 0.6732618808746338
+                                  top: 0.23392418026924133
+                                  width: 0.12489628791809082
+                                  height: 0.10493364185094833
+                                is_header: false
+                              - text: '776'
+                                row_index: 6
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9052734375
+                                bounding_box:
+                                  left: 0.7981523871421814
+                                  top: 0.23413148522377014
+                                  width: 0.11185108125209808
+                                  height: 0.1049206480383873
+                                is_header: false
+                              - text: '720'
+                                row_index: 7
+                                col_index: 4
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9169921875
+                                bounding_box:
+                                  left: 0.9099881649017334
+                                  top: 0.2343171387910843
+                                  width: 0.08993742614984512
+                                  height: 0.10489123314619064
+                                is_header: false
+                            - cells:
+                              - text: Tijara
+                                row_index: 1
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.904296875
+                                bounding_box:
+                                  left: 0.0001382103218929842
+                                  top: 0.33747148513793945
+                                  width: 0.17376893758773804
+                                  height: 0.10499747842550278
+                                is_header: false
+                              - text: '27.95'
+                                row_index: 2
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.892578125
+                                bounding_box:
+                                  left: 0.17385998368263245
+                                  top: 0.33777326345443726
+                                  width: 0.17419880628585815
+                                  height: 0.10501176118850708
+                                is_header: false
+                              - text: '76.85'
+                                row_index: 3
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9130859375
+                                bounding_box:
+                                  left: 0.3480263948440552
+                                  top: 0.3380758464336395
+                                  width: 0.19891035556793213
+                                  height: 0.10507014393806458
+                                is_header: false
+                              - text: '590'
+                                row_index: 4
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90185546875
+                                bounding_box:
+                                  left: 0.5469211935997009
+                                  top: 0.3384213447570801
+                                  width: 0.12634065747261047
+                                  height: 0.10495388507843018
+                                is_header: false
+                              - text: '645'
+                                row_index: 5
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89306640625
+                                bounding_box:
+                                  left: 0.673257052898407
+                                  top: 0.33864083886146545
+                                  width: 0.12490688264369965
+                                  height: 0.1049610897898674
+                                is_header: false
+                              - text: '633'
+                                row_index: 6
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89501953125
+                                bounding_box:
+                                  left: 0.7981581687927246
+                                  top: 0.33885782957077026
+                                  width: 0.11186057329177856
+                                  height: 0.10494709014892578
+                                is_header: false
+                              - text: '653'
+                                row_index: 7
+                                col_index: 5
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90625
+                                bounding_box:
+                                  left: 0.9100034236907959
+                                  top: 0.33905214071273804
+                                  width: 0.08994506299495697
+                                  height: 0.10491597652435303
+                                is_header: false
+                            - cells:
+                              - text: Tapukara
+                                row_index: 1
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.916015625
+                                bounding_box:
+                                  left: 7.496840407839045e-05
+                                  top: 0.4421536922454834
+                                  width: 0.1737850159406662
+                                  height: 0.10730528831481934
+                                is_header: false
+                              - text: '28.05'
+                                row_index: 2
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.904296875
+                                bounding_box:
+                                  left: 0.17381179332733154
+                                  top: 0.4424689710140228
+                                  width: 0.17421460151672363
+                                  height: 0.1073198989033699
+                                is_header: false
+                              - text: '76.85'
+                                row_index: 3
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9248046875
+                                bounding_box:
+                                  left: 0.34799328446388245
+                                  top: 0.44278502464294434
+                                  width: 0.19892792403697968
+                                  height: 0.10738053917884827
+                                is_header: false
+                              - text: '658'
+                                row_index: 4
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.91357421875
+                                bounding_box:
+                                  left: 0.5469053387641907
+                                  top: 0.4431459903717041
+                                  width: 0.1263517141342163
+                                  height: 0.1072588711977005
+                                is_header: false
+                              - text: '570'
+                                row_index: 5
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90478515625
+                                bounding_box:
+                                  left: 0.6732521057128906
+                                  top: 0.44337525963783264
+                                  width: 0.12491770833730698
+                                  height: 0.10726618021726608
+                                is_header: false
+                              - text: '485'
+                                row_index: 6
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90673828125
+                                bounding_box:
+                                  left: 0.798163890838623
+                                  top: 0.44360193610191345
+                                  width: 0.11187039315700531
+                                  height: 0.1072513610124588
+                                is_header: false
+                              - text: '342'
+                                row_index: 7
+                                col_index: 6
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.91796875
+                                bounding_box:
+                                  left: 0.9100186824798584
+                                  top: 0.44380491971969604
+                                  width: 0.08995319157838821
+                                  height: 0.10721869766712189
+                                is_header: false
+                            - cells:
+                              - text: Behror
+                                row_index: 1
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90576171875
+                                bounding_box:
+                                  left: 1.3061456229479518e-05
+                                  top: 0.5491299629211426
+                                  width: 0.17379872500896454
+                                  height: 0.1050606220960617
+                                is_header: false
+                              - text: '27.88'
+                                row_index: 2
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89404296875
+                                bounding_box:
+                                  left: 0.17376460134983063
+                                  top: 0.5494589805603027
+                                  width: 0.17422866821289062
+                                  height: 0.10507497936487198
+                                is_header: false
+                              - text: '76.28'
+                                row_index: 3
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9140625
+                                bounding_box:
+                                  left: 0.34796085953712463
+                                  top: 0.5497888326644897
+                                  width: 0.19894446432590485
+                                  height: 0.10513725131750107
+                                is_header: false
+                              - text: '555'
+                                row_index: 4
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9033203125
+                                bounding_box:
+                                  left: 0.5468897819519043
+                                  top: 0.550165593624115
+                                  width: 0.12636232376098633
+                                  height: 0.10500963032245636
+                                is_header: false
+                              - text: '401.3'
+                                row_index: 5
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89453125
+                                bounding_box:
+                                  left: 0.6732472777366638
+                                  top: 0.5504048466682434
+                                  width: 0.1249283105134964
+                                  height: 0.10501661151647568
+                                is_header: false
+                              - text: '487'
+                                row_index: 6
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.896484375
+                                bounding_box:
+                                  left: 0.7981697916984558
+                                  top: 0.5506414175033569
+                                  width: 0.11187976598739624
+                                  height: 0.1050005704164505
+                                is_header: false
+                              - text: '746'
+                                row_index: 7
+                                col_index: 7
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90771484375
+                                bounding_box:
+                                  left: 0.9100342988967896
+                                  top: 0.5508532524108887
+                                  width: 0.0899604931473732
+                                  height: 0.10496602952480316
+                                is_header: false
+                            - cells:
+                              - text: Neemrana
+                                row_index: 1
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89697265625
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.6538480520248413
+                                  width: 0.17376460134983063
+                                  height: 0.10736922919750214
+                                is_header: false
+                              - text: '28.00'
+                                row_index: 2
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8857421875
+                                bounding_box:
+                                  left: 0.17371639609336853
+                                  top: 0.6541905999183655
+                                  width: 0.1742444634437561
+                                  height: 0.10738392174243927
+                                is_header: false
+                              - text: '76.38'
+                                row_index: 3
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90576171875
+                                bounding_box:
+                                  left: 0.3479277491569519
+                                  top: 0.6545339822769165
+                                  width: 0.1989620327949524
+                                  height: 0.10744845122098923
+                                is_header: false
+                              - text: '1008'
+                                row_index: 4
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.89501953125
+                                bounding_box:
+                                  left: 0.5468738675117493
+                                  top: 0.6549261212348938
+                                  width: 0.12637338042259216
+                                  height: 0.10731541365385056
+                                is_header: false
+                              - text: '795'
+                                row_index: 5
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.88623046875
+                                bounding_box:
+                                  left: 0.6732423305511475
+                                  top: 0.6551752090454102
+                                  width: 0.12493913620710373
+                                  height: 0.10732249915599823
+                                is_header: false
+                              - text: '566'
+                                row_index: 6
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.88818359375
+                                bounding_box:
+                                  left: 0.798175573348999
+                                  top: 0.6554214358329773
+                                  width: 0.11188959330320358
+                                  height: 0.10730563849210739
+                                is_header: false
+                              - text: '456'
+                                row_index: 7
+                                col_index: 8
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.8994140625
+                                bounding_box:
+                                  left: 0.910049557685852
+                                  top: 0.6556419730186462
+                                  width: 0.08995042741298676
+                                  height: 0.1072695404291153
+                                is_header: false
+                            - cells:
+                              - text: Mundawar
+                                row_index: 1
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.92138671875
+                                bounding_box:
+                                  left: 0.0
+                                  top: 0.7608609795570374
+                                  width: 0.17371639609336853
+                                  height: 0.10492730140686035
+                                is_header: false
+                              - text: '27.87'
+                                row_index: 2
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.90966796875
+                                bounding_box:
+                                  left: 0.17366927862167358
+                                  top: 0.7612172961235046
+                                  width: 0.17425845563411713
+                                  height: 0.1049417108297348
+                                is_header: false
+                              - text: '76.55'
+                                row_index: 3
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.93017578125
+                                bounding_box:
+                                  left: 0.34789538383483887
+                                  top: 0.7615745067596436
+                                  width: 0.1989785134792328
+                                  height: 0.1050078421831131
+                                is_header: false
+                              - text: '1010'
+                                row_index: 4
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.9189453125
+                                bounding_box:
+                                  left: 0.5468583703041077
+                                  top: 0.7619824409484863
+                                  width: 0.126383975148201
+                                  height: 0.1048688217997551
+                                is_header: false
+                              - text: '931'
+                                row_index: 5
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.91015625
+                                bounding_box:
+                                  left: 0.6732375025749207
+                                  top: 0.762241542339325
+                                  width: 0.12494972348213196
+                                  height: 0.10487557202577591
+                                is_header: false
+                              - text: '483'
+                                row_index: 6
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.912109375
+                                bounding_box:
+                                  left: 0.7981814742088318
+                                  top: 0.7624977231025696
+                                  width: 0.11189893633127213
+                                  height: 0.10485747456550598
+                                is_header: false
+                              - text: '775'
+                                row_index: 7
+                                col_index: 9
+                                row_span: 1
+                                col_span: 1
+                                confidence: 0.923828125
+                                bounding_box:
+                                  left: 0.9100651741027832
+                                  top: 0.7627270817756653
+                                  width: 0.0899348258972168
+                                  height: 0.10481947660446167
+                                is_header: false
+                            num_rows: 9
+                            num_cols: 7
+                        num_pages: 1
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    ocrocr_tables_asyncOcrTablesAsyncDataClass:
+      properties:
+        pages:
+          items:
+            $ref: '#/components/schemas/Page'
+          title: Pages
+          type: array
+        num_pages:
+          title: Num Pages
+          type: integer
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - num_pages
+      - id
+      - final_status
+      title: ocrocr_tables_asyncOcrTablesAsyncDataClass
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    asyncocrocr_tables_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/ocrocr_tables_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncocrocr_tables_asyncResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    OcrTablesAsyncRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
+      required:
+      - providers
+    ocrocr_tables_asyncModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/ocrocr_tables_asyncOcrTablesAsyncDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocrocr_tables_asyncOcrTablesAsyncDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrocr_tables_asyncOcrTablesAsyncDataClass'
+          default: null
+      title: ocrocr_tables_asyncModel
+      type: object
+    Page:
+      description: "Page of a document\n\nAttributes:\n    lines (Sequence[Line]): List of lines of the page"
+      properties:
+        lines:
+          description: List of lines
+          items:
+            $ref: '#/components/schemas/Line'
+          title: Lines
+          type: array
+      title: Page
+      type: object
+    Line:
+      description: "Line of a document\n\nAttributes:\n    text (str): Text detected in the line\n    bounding_boxes (Sequence[BoundingBox]): Bounding boxes of the words in the line\n    words (Sequence[Word]): List of words of the line\n    confidence (float): Confidence of the line"
+      properties:
+        text:
+          description: Text detected in the line
+          title: Text
+          type: string
+        words:
+          description: List of words
+          items:
+            $ref: '#/components/schemas/Word'
+          title: Words
+          type: array
+        bounding_box:
+          $ref: '#/components/schemas/BoundingBox'
+          default: null
+          description: Bounding box of the line, can be None
+        confidence:
+          description: Confidence of the line
+          title: Confidence
+          type: integer
+      required:
+      - text
+      - confidence
+      title: Line
+      type: object
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    Word:
+      description: "Word of a document\n\nAttributes:\n    text (str): Text detected in the word\n    bounding_boxes (Sequence[BoundingBox]): Bounding boxes of the words in the word\n    confidence (float): Confidence score of the word"
+      properties:
+        text:
+          description: Text detected in the word
+          title: Text
+          type: string
+        bounding_box:
+          $ref: '#/components/schemas/BoundingBox'
+          description: Bounding boxes of the words in the word
+        confidence:
+          description: Confidence score of the word
+          title: Confidence
+          type: integer
+      required:
+      - text
+      - bounding_box
+      - confidence
+      title: Word
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BoundingBox:
+      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
+      properties:
+        left:
+          description: Left coordinate of the bounding box
+          title: Left
+          type: integer
+        top:
+          description: Top coordinate of the bounding box
+          title: Top
+          type: integer
+        width:
+          description: Width of the bounding box
+          title: Width
+          type: integer
+        height:
+          description: Height of the bounding box
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: BoundingBox
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

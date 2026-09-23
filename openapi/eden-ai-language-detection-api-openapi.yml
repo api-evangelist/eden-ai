@@ -1,0 +1,318 @@
+openapi: 3.2.0
+info:
+  title: Translation Features Language Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Language Detection
+paths:
+  /translation/language_detection/:
+    post:
+      operationId: translation_language_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|1.0 (per 1000000 char)|300 char
+
+        |**google**|-|`v1`|20.0 (per 1000000 char)|1 char
+
+        |**microsoft**|-|`v3.1`|1.0 (per 1000000 char)|1000 char
+
+        |**modernmt**|-|`1.1.0`|8.0 (per 1000000 char)|1 char
+
+        |**openai**|-|`v1`|20.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**xai**|**grok-2-latest**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**xai**|**grok-2**|`v1`|10.0 (per 1000000 token)|1 token
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|
+
+        |**xai**|`grok-2-latest`|'
+      summary: Language Detection
+      tags:
+      - Language Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,xai,openai,microsoft,google,modernmt
+                  text: 'Ogni individuo ha diritto all''istruzione. L''istruzione deve essere gratuita almeno per quanto riguarda le classi elementari e fondamentali. L''istruzione elementare deve essere obbligatoria. L''istruzione tecnica e professionale deve essere messa alla portata di tutti e l''istruzione superiore deve essere egualmente accessibile a tutti sulla base del merito.
+
+                    L''istruzione deve essere indirizzata al pieno sviluppo della personalità umana ed al rafforzamento del rispetto dei diritti umani e delle libertà fondamentali. Essa deve promuovere la comprensione, la tolleranza, l''amicizia fra tutte le Nazioni, i gruppi razziali e religiosi, e deve favorire l''opera delle Nazioni Unite per il mantenimento della pace.
+
+                    I genitori hanno diritto di priorità nella scelta del genere di istruzione da impartire ai loro figli.'
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/translationlanguage_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: 1.0
+                      cost: 0.0
+                    xai:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: 1.0
+                      cost: 0.0
+                    openai:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: 1.0
+                      usage:
+                        completion_tokens: 38
+                        prompt_tokens: 471
+                        total_tokens: 509
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    microsoft:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: 1.0
+                      cost: 0.0
+                    google:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: 1.0
+                      cost: 0.0
+                    modernmt:
+                      items:
+                      - language: it
+                        display_name: Italian
+                        confidence: null
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    translationlanguage_detectionResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        modernmt:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+      title: translationlanguage_detectionResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    translationlanguage_detectionLanguageDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosLanguageDetectionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: translationlanguage_detectionLanguageDetectionDataClass
+      type: object
+    translationlanguage_detectionLanguageDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+      required:
+      - providers
+      - text
+    InfosLanguageDetectionDataClass:
+      properties:
+        language:
+          title: Language
+          type: string
+        display_name:
+          title: Display Name
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - language
+      - display_name
+      - confidence
+      title: InfosLanguageDetectionDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

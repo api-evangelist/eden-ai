@@ -1,0 +1,661 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Universal AI API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: universal-ai
+paths:
+  /v3/universal-ai:
+    post:
+      tags:
+      - universal-ai
+      summary: Universal Ai
+      description: 'Universal AI endpoint for synchronous non-LLM AI features.
+
+
+        Model format: feature/subfeature/provider[/model]
+
+
+        Supported features:
+
+        - text/ai_detection, text/moderation, etc.
+
+        - ocr/ocr, ocr/identity_parser, etc.
+
+        - image/generation, image/background_removal, etc.
+
+
+        For async features (e.g., audio/speech_to_text_async), use POST /v3/universal-ai/async.
+
+
+        Request body:
+
+        - model: Model string in format feature/subfeature/provider[/model]
+
+        - input: Feature-specific input parameters
+
+        - fallbacks: Optional list of fallback provider strings (max 3)
+
+        - provider_params: Optional provider-specific parameters
+
+        - show_original_response: Include raw provider response (default: false)
+
+
+        Example:
+
+        ```json
+
+        {
+
+        "model": "text/ai_detection/openai/gpt-4",
+
+        "input": {"text": "Analyze this text"}
+
+        }
+
+        ```'
+      operationId: universal_ai_v3_universal_ai_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversalAIBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalAIResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - AuthBearer: []
+  /v3/universal-ai/async:
+    post:
+      tags:
+      - universal-ai
+      summary: Create Async Job
+      description: 'Create an async job for long-running AI operations.
+
+
+        Model format: feature/subfeature/provider[/model]
+
+
+        Supported async features:
+
+        - audio/speech_to_text_async
+
+
+        Request body:
+
+        - model: Model string in format feature/subfeature/provider[/model]
+
+        - input: Feature-specific input parameters
+
+        - fallbacks: Optional list of fallback provider strings (max 3)
+
+        - webhook_receiver: Optional URL to receive job completion notification
+
+        - user_webhook_parameters: Optional custom parameters for webhook payload
+
+
+        Returns 202 Accepted with job info for polling.'
+      operationId: create_async_job_v3_universal_ai_async_post
+      security:
+      - AuthBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UniversalAIAsyncBody'
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalAIAsyncResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - universal-ai
+      summary: List Async Jobs
+      description: List async jobs for the authenticated user.
+      operationId: list_async_jobs_v3_universal_ai_async_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: feature
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by feature
+          title: Feature
+        description: Filter by feature
+      - name: subfeature
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by subfeature
+          title: Subfeature
+        description: Filter by subfeature
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by status
+          title: Status
+        description: Filter by status
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number (1-indexed)
+          default: 1
+          title: Page
+        description: Page number (1-indexed)
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          description: Maximum number of items per page
+          default: 100
+          title: Limit
+        description: Maximum number of items per page
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalAIAsyncJobListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/universal-ai/async/{job_id}:
+    get:
+      tags:
+      - universal-ai
+      summary: Get Async Job
+      description: Get details for a specific async job.
+      operationId: get_async_job_v3_universal_ai_async__job_id__get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniversalAIAsyncResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - universal-ai
+      summary: Delete Async Job
+      description: 'Delete an async job. Users can only delete their own jobs.
+
+
+        A job that is still ``processing`` cannot be deleted (409): it has a charged
+
+        provider job in flight that must complete — settling or refunding — first;
+
+        hard-deleting it would orphan that charge. Terminal jobs delete normally.'
+      operationId: delete_async_job_v3_universal_ai_async__job_id__delete
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Delete Async Job V3 Universal Ai Async  Job Id  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    UniversalAIAsyncBody:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: 'Model in format: feature/subfeature/provider[/model]'
+          examples:
+          - text/ai_detection/openai/gpt-4
+          - ocr/ocr/amazon
+          - image/generation/google/imagen-3
+        provider_params:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: Provider-specific parameters
+        input:
+          additionalProperties: true
+          type: object
+          title: Input
+          description: 'Feature-specific input parameters. Required fields depend on the feature/subfeature specified in provider. Examples:
+
+            - text/ai_detection: {''text'': ''content to analyze''}
+
+            - text/embeddings: {''texts'': [''text1'', ''text2'']}
+
+            - ocr/ocr: {''file_id'': ''abc123'', ''language'': ''en''}
+
+            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
+
+            - translation/document_translation: {''file_id'': ''abc123'', ''target_language'': ''fr''}'
+          examples:
+          - text: Analyze this text for AI detection
+          - dimensions: 512
+            texts:
+            - text1
+            - text2
+          - file_id: abc123
+            language: en
+        fallbacks:
+          items:
+            type: string
+          type: array
+          maxItems: 3
+          title: Fallbacks
+          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
+        show_original_response:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Show Original Response
+          description: Include raw provider response in the output
+          default: false
+        webhook_receiver:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          title: Webhook Receiver
+          description: Webhook URL to receive job completion notification
+        user_webhook_parameters:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: User Webhook Parameters
+          description: Custom parameters to include in webhook payload
+      type: object
+      required:
+      - model
+      - input
+      title: UniversalAIAsyncBody
+      description: 'Universal AI async request body.
+
+
+        Extends UniversalAIBody with webhook parameters for async notifications.'
+    UniversalAIAsyncJobListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/UniversalAIAsyncJobListItem'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: UniversalAIAsyncJobListResponse
+      description: Response for listing async jobs.
+    UniversalAIAsyncResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          - processing
+          title: Status
+          description: 'Request status: success, fail, or processing (async only)'
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID for polling status
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: Model name if specified in the request
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Job creation timestamp
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - public_id
+      - created_at
+      title: UniversalAIAsyncResponse
+      description: 'Async response from universal-ai/async endpoint.
+
+
+        Inherits base fields and adds job-specific fields for tracking async operations.
+
+        Used for both job creation (202 Accepted) and job detail (GET) responses.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UniversalAIBody:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: 'Model in format: feature/subfeature/provider[/model]'
+          examples:
+          - text/ai_detection/openai/gpt-4
+          - ocr/ocr/amazon
+          - image/generation/google/imagen-3
+        provider_params:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: Provider-specific parameters
+        input:
+          additionalProperties: true
+          type: object
+          title: Input
+          description: 'Feature-specific input parameters. Required fields depend on the feature/subfeature specified in provider. Examples:
+
+            - text/ai_detection: {''text'': ''content to analyze''}
+
+            - text/embeddings: {''texts'': [''text1'', ''text2'']}
+
+            - ocr/ocr: {''file_id'': ''abc123'', ''language'': ''en''}
+
+            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
+
+            - translation/document_translation: {''file_id'': ''abc123'', ''target_language'': ''fr''}'
+          examples:
+          - text: Analyze this text for AI detection
+          - dimensions: 512
+            texts:
+            - text1
+            - text2
+          - file_id: abc123
+            language: en
+        fallbacks:
+          items:
+            type: string
+          type: array
+          maxItems: 3
+          title: Fallbacks
+          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
+        show_original_response:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Show Original Response
+          description: Include raw provider response in the output
+          default: false
+      type: object
+      required:
+      - model
+      - input
+      title: UniversalAIBody
+      description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    UniversalAIAsyncJobListItem:
+      properties:
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          - processing
+          title: Status
+          description: Job status
+        feature:
+          type: string
+          title: Feature
+          description: Feature name
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Subfeature name
+        provider:
+          type: string
+          title: Provider
+          description: Provider name
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: Model name
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Job creation timestamp
+      type: object
+      required:
+      - public_id
+      - status
+      - feature
+      - subfeature
+      - provider
+      - created_at
+      title: UniversalAIAsyncJobListItem
+      description: Summary item for job list.
+    UniversalAIResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          title: Status
+          description: Whether the request succeeded or failed
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output:
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - output
+      title: UniversalAIResponse
+      description: 'Sync response from universal-ai endpoint.
+
+
+        Inherits all fields from base, with status restricted to success/fail.'
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

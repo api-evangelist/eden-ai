@@ -1,0 +1,458 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Collections API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: Collections
+paths:
+  /v3/universal-ai/collections:
+    post:
+      tags:
+      - Collections
+      summary: Create Collection
+      description: 'Create a collection on a provider.
+
+
+        The model string is fixed at creation: items added here and
+
+        /v3/universal-ai calls against this collection all run on its provider.
+
+        Returns the collection id to use in item operations and inference calls.'
+      operationId: create_collection_v3_universal_ai_collections_post
+      security:
+      - AuthBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollectionRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Collections
+      summary: List Collections
+      description: 'List the user''s collections.
+
+
+        Served from the gateway''s ownership store, never from a provider scan
+
+        (the provider listing is cross-tenant on shared accounts). Free, and —
+
+        like the other gateway resource reads — not registered in the request
+
+        history.'
+      operationId: list_collections_v3_universal_ai_collections_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: model
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Filter by 'feature/subfeature' or 'feature/subfeature/provider'
+          title: Model
+        description: Filter by 'feature/subfeature' or 'feature/subfeature/provider'
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number (1-indexed)
+          default: 1
+          title: Page
+        description: Page number (1-indexed)
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          description: Maximum number of items per page
+          default: 100
+          title: Limit
+        description: Maximum number of items per page
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCollectionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/universal-ai/collections/{collection_id}:
+    get:
+      tags:
+      - Collections
+      summary: Get Collection
+      description: 'Get one of the user''s collections. Free, gateway-side only, and — like
+
+        the other gateway resource reads — not registered in the request history.'
+      operationId: get_collection_v3_universal_ai_collections__collection_id__get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: collection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Collection Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Collections
+      summary: Delete Collection
+      description: 'Delete a collection.
+
+
+        Deletes it on the provider first, then removes the gateway ownership row.
+
+        A collection already gone on the provider still gets its row removed, so
+
+        delete is idempotent and half-failed deletes can always be cleaned up.'
+      operationId: delete_collection_v3_universal_ai_collections__collection_id__delete
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: collection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Collection Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCollectionResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/universal-ai/collections/{collection_id}/items:
+    post:
+      tags:
+      - Collections
+      summary: Add Item
+      description: 'Add an item to a collection.
+
+
+        The file runs on the collection''s provider. Returns the provider-side
+
+        ids of the indexed items (one image can yield several, e.g. faces).'
+      operationId: add_item_v3_universal_ai_collections__collection_id__items_post
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: collection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Collection Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Collections
+      summary: List Items
+      description: List the item ids stored in a collection (live from the provider).
+      operationId: list_items_v3_universal_ai_collections__collection_id__items_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: collection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Collection Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/universal-ai/collections/{collection_id}/items/{item_id}:
+    delete:
+      tags:
+      - Collections
+      summary: Delete Item
+      description: Delete one item from a collection (by its provider-side item id).
+      operationId: delete_item_v3_universal_ai_collections__collection_id__items__item_id__delete
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: collection_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Collection Id
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Item Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteItemResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    DeleteItemResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_id:
+          type: string
+          title: Item Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - item_id
+      - deleted
+      title: DeleteItemResponse
+      description: Result of deleting an item from a collection.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CollectionResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+          description: Client-facing collection id; use it in item operations and in /v3/universal-ai calls that take a collection_id input.
+        model:
+          type: string
+          title: Model
+          description: '''feature/subfeature/provider'' string the collection is bound to.'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+          description: Collection name, if any.
+      type: object
+      required:
+      - collection_id
+      - model
+      title: CollectionResponse
+      description: A collection owned by the authenticated user.
+    ItemsResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_ids:
+          items:
+            type: string
+          type: array
+          title: Item Ids
+          description: Provider-side item ids (face ids for image/face_recognition).
+      type: object
+      required:
+      - collection_id
+      - item_ids
+      title: ItemsResponse
+      description: Item ids stored in a collection (provider-side ids, passed through).
+    CreateCollectionRequest:
+      properties:
+        model:
+          type: string
+          minLength: 1
+          title: Model
+          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Name
+          description: Optional human-readable name for the collection.
+      type: object
+      required:
+      - model
+      title: CreateCollectionRequest
+      description: Body for creating a collection.
+    DeleteCollectionResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ListCollectionsResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CollectionResponse'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: ListCollectionsResponse
+      description: Paginated list of the user's collections.
+    AddItemRequest:
+      properties:
+        file:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: string
+          title: File
+          description: File to add, as a file id from /v3/upload or a URL. Accepted MIME types depend on the collection's subfeature (images for image/face_recognition).
+      type: object
+      required:
+      - file
+      title: AddItemRequest
+      description: Body for adding an item to a collection.
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

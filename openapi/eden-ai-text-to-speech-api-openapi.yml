@@ -1,0 +1,611 @@
+openapi: 3.2.0
+info:
+  title: Audio Features Text To Speech API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Text To Speech
+paths:
+  /audio/text_to_speech/:
+    post:
+      operationId: audio_text_to_speech_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|4.0 (per 1000000 char)|1 char
+
+        |**amazon**|**Neural**|`boto3 (v1.15.18)`|16.0 (per 1000000 char)|1 char
+
+        |**google**|-|`v1`|4.0 (per 1000000 char)|1 char
+
+        |**google**|**Standard**|`v1`|4.0 (per 1000000 char)|1 char
+
+        |**google**|**Neural**|`v1`|16.0 (per 1000000 char)|1 char
+
+        |**google**|**Wavenet**|`v1`|16.0 (per 1000000 char)|1 char
+
+        |**google**|**Studio**|`v1`|0.16 (per 1000 char)|1 char
+
+        |**google**|**gemini-2.5-flash-tts**|`v1`|10.0 (per 1000000 char)|1 char
+
+        |**google**|**gemini-2.5-pro-tts**|`v1`|20.0 (per 1000000 char)|None char
+
+        |**microsoft**|-|`v1.0`|16.0 (per 1000000 char)|1 char
+
+        |**lovoai**|-|`v1`|160.0 (per 1000000 char)|1000 char
+
+        |**elevenlabs**|-|`v1`|0.3 (per 1000 char)|1 char
+
+        |**openai**|-|`v1.0`|0.015 (per 1000 char)|1 char
+
+        |**deepgram**|-|`v1`|0.015 (per 1000 char)|1 char
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Chinese**|`zh`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Estonian**|`et`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Indonesian**|`id`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Korean**|`ko`|
+
+        |**Lao**|`lo`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Mandarin Chinese**|`cmn`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Serbian**|`sr`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Spanish**|`es`|
+
+        |**Standard Arabic**|`arb`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tamil**|`ta`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Wu Chinese**|`wuu`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yue Chinese**|`yue`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans (South Africa)**|`af-ZA`|
+
+        |**Albanian (Albania)**|`sq-AL`|
+
+        |**Amharic (Ethiopia)**|`am-ET`|
+
+        |**Arabic (Algeria)**|`ar-DZ`|
+
+        |**Arabic (Bahrain)**|`ar-BH`|
+
+        |**Arabic (Egypt)**|`ar-EG`|
+
+        |**Arabic (Iraq)**|`ar-IQ`|
+
+        |**Arabic (Jordan)**|`ar-JO`|
+
+        |**Arabic (Kuwait)**|`ar-KW`|
+
+        |**Arabic (Lebanon)**|`ar-LB`|
+
+        |**Arabic (Libya)**|`ar-LY`|
+
+        |**Arabic (Morocco)**|`ar-MA`|
+
+        |**Arabic (Oman)**|`ar-OM`|
+
+        |**Arabic (Pseudo-Accents)**|`ar-XA`|
+
+        |**Arabic (Qatar)**|`ar-QA`|
+
+        |**Arabic (Saudi Arabia)**|`ar-SA`|
+
+        |**Arabic (Syria)**|`ar-SY`|
+
+        |**Arabic (Tunisia)**|`ar-TN`|
+
+        |**Arabic (United Arab Emirates)**|`ar-AE`|
+
+        |**Arabic (Yemen)**|`ar-YE`|
+
+        |**Armenian (Armenia)**|`hy-AM`|
+
+        |**Azerbaijani (Azerbaijan)**|`az-AZ`|
+
+        |**Bangla (Bangladesh)**|`bn-BD`|
+
+        |**Bangla (India)**|`bn-IN`|
+
+        |**Basque (Spain)**|`eu-ES`|
+
+        |**Bosnian (Bosnia & Herzegovina)**|`bs-BA`|
+
+        |**Bulgarian (Bulgaria)**|`bg-BG`|
+
+        |**Burmese (Myanmar (Burma))**|`my-MM`|
+
+        |**Cantonese (China)**|`yue-CN`|
+
+        |**Cantonese (Hong Kong SAR China)**|`yue-HK`|
+
+        |**Catalan (Spain)**|`ca-ES`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (China)**|`zh-CN-henan`|
+
+        |**Chinese (China)**|`zh-CN-shandong`|
+
+        |**Chinese (China)**|`zh-CN-sichuan`|
+
+        |**Chinese (Hong Kong SAR…'
+      summary: Text to Speech
+      tags:
+      - Text To Speech
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/audiotext_to_speechTextToSpeechRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: openai,deepgram,elevenlabs,google,lovoai,microsoft,amazon
+                  language: en
+                  text: hello my name is Jane
+                  option: FEMALE
+                  settings: {}
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/audiotext_to_speechResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    openai:
+                      audio: //PkxABh5DnAA1rAAHnMkHAaGmLBwxGcw40yZczZ80p82Sw1yw1Sg0iAzRY...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/ad1e14c7-cb3f-4b75-85b5-099ccd6484fc_.mp3?Expires=1700491150&Signature=HV8sRBaVFhuY3pViSvaczJ3i9d6ORITBETPKxdvP25O5KDpkzvs2wTH00gCjAryRIvorKC6MTiehuJgxDz9flZcnEpVXo5kYqLY6giSQwfLLrV5up2hemY8mBzOeagrTbC0yx~By9H~ElERZmBB09pHE1-UIRDo~v0cReBFOcFezWPbRmRaVqdeeko0wxV~u-hWWScOPCcijk9fr9DRZWfhIih4dp2h9Xg8qJ7nPJ0mNb8RK5RZp7WtAwSCI3OKVokMuuHyVDy0kNOSUqdDTI4gggEOP7HAycKHGO57i6K7M~wRXhx3op5GoI6t17ogyW2zd8rnoMPp3s-dxzI5rmQ__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    deepgram:
+                      audio: //NgxAAb+cYwAnoSnAhgGQ6JWPWdavfq80FA8TiGGgECSDQwir59JvqBQx0...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/c7c9ef1f-89aa-40e2-8ee6-0d019acfc593_.?Expires=1714652657&Signature=QaOY4oYqE2E8BtSUG5l1nL-p5I1oYG-~AmMKW-CpzggNoMmK~gCCCInNI7peIqcv13W8bnqzN0iGrW8aiweYW6l9-J0wh5f5U1XJYh8OezWY2id9HSO7Yq-s4r1qcBY7e-n2xd7E4XbYd50SwBO0Y1mMvjxTRK~jqybi6YV7LkfgrcICGSbtlqJsTiLSxEFWkOT4CtTE-WgZQEo4XstExCdsoWiSX6~NrhxVdANuKTs-j0KNfzRBc8wZm58JtwOQg4aoaPzDjRmizwVKSpr0OsBB5gMYXtdsT48OsNREEUs8nrOsT4470mkCCrKD9TsgM9M4vqTwMaTrocwg3pQw5A__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    elevenlabs:
+                      audio: //uQxAAAEg2jA4SYzeIKKeL0ww9lAAASqQEzOfChhcVisVk6MkYxdGuTTsh...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/34646790-50e8-45eb-aa12-9a0f29a6ccfd_.wav?Expires=1721740369&Signature=kAl8YEjOyfip3ybnSIEcQVCuFt6SzfZOe14qAKqLgP2uJKx~p6rAszytHtq8Uar3HyNSge4LVyrV2DZlLxV9qprd7AAkWlKTdRXOACxWEWm50RSwuJITrntB6gjrKzcg3Jww7QCdEGgAGh7fdBHxZgJkDp7XNMduPSc5Wy4INOqo0yAFC6HJymR7Rz1S81aTLMVrrOidwdt1yg3wWLDbFmmyKBpzOOHyMBnIdwMrG-85DHIs2lUFhUaSHlbpKtYjazFnwlS5EpfI7zJI~8vg-H4B52SDjO7xHP-WGaGZqudMSw9f~c7mM9CbJVgGVw9M5iS2GeXukMDTCLKgPfUSsg__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    google:
+                      audio: //NExAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVV...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/ea1dced0-5ea6-4173-aca1-9b96157f5649_.mp3?Expires=1689855563&Signature=awBBVf-QnJgPv3ujwjnddpw-JdBkQH70owN4UZMoxtHWJo2oqrk-w5CRtuZdTDDw93hr2IfCKtkTDyOpVkCIykRoKPafTlsZ-S6IkD18NHki-9clqXKTGFnAXiJ7PwxrE9d~4dVMxbFvo0TpOaYhziLg4rXFSWK96ep-FttxQ53GF-cg9RK9x3zP88Tx2CF-S9mr7Ar7U9a~NUscB045pic9duQ-5rKUcQ4jdw9I~M21-Y~sR8vTWpq~DrlHV3Swpbq-uvWNeiFD--Tcf85wPg2LwWrP2WqRkcmda2pEuDhxCapHJArugpwQYc1N465-1KRT7YvhHwRn2H-7zFofpQ__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    lovoai:
+                      audio: UklGRr4mAwBXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YZomAwA...
+                      voice_type: 1
+                      audio_resource_url: https://voiceverse-prod.s3.us-west-2.amazonaws.com/team/64b7b3887dd25662022a4876/jobs/65805aaaa046bb0c4bf7b2f8/hoQLZBv5a3.wav?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=REDACTED_AWS_ACCESS_KEY_ID%2F20231218%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20231218T144358Z&X-Amz-Expires=86400&X-Amz-Signature=c25bf25c16efaee00d7e8caf12d1437f417fe693919faab5ec5f5a009b079095&X-Amz-SignedHeaders=host&x-id=GetObject
+                      cost: 0.0
+                    microsoft:
+                      audio: //NkxAAAAANIAAAAAAsohlsQIIJsYQIECBDDAAAAhDHxAgAACKBv6Iifoia...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/e1a0f019-b635-45be-9df2-cc2ff1abbde0_.mp3?Expires=1700491238&Signature=Jo-dbHZCSiAYpxKam28BCmFWrCiUpTeXVaDZeCFYp9d7iv47ZEy5sGiqdDyESkmntz9zyhJvXvwZZ04Q7aYJTsRS50haiZj9AmAEzz1Qn99~X~C7cavu9j4x1n36EcHzFyVdb2c65qUVLj2-ZDOARYnV-Xgt~OD2LOGmPMuMXNb3e3ys5OOKa87iB80ruG5oVNIX-RjJn~YrUzkxtvEDfOY77hR-E5ZBUb5w0zj4Ek7wSQkSm49Hvg1KTH6Kwu1PVQ~fPOJCnGjlxUJbvFDeN17Tf5eJncd11PSlTzAqq4JejnJvVQo7rdBP3AtqtJ3n9fdSLd5e5xp82ycZ5VTrWg__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    amazon:
+                      audio: SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAA...
+                      voice_type: 1
+                      audio_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/dbaaf653-d243-4ca6-9ad2-52a67e8a9e7a_.mp3?Expires=1700583326&Signature=G9ZctP~mBzmfzXl0rtjN0wDRUHHrKdYGc5-B9xh3Kbv~gYsRinqDiYYX3KMU8HrLbBOoIxm1CSt79V8pZ0yMsfT7nNaIWcCLh7ldbbWGaOYBO-O4Dg5Q~1MjrkecNbTXs1m07OxfMNHJvtczQ39KA5P~lEbIHPdHfypRWInyjzvi8Z3s4XWNGQY0tJTAkJ4YyF42UaZIV5LXLd~gMkXzim6x45plBRC7uM7H8mK3iHDqLoFtkT0Mjm2b5Br7g4bMf7F-kejJIP1k4cMy28TgJtMnPWAp9v~zUm4kpRArfW66J-yE3s9xeRGqRQUKky~mMCStcbLSePgKPULNEGPkdg__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    OptionEnum:
+      enum:
+      - FEMALE
+      - MALE
+      type: string
+      description: '* `FEMALE` - Female
+
+        * `MALE` - Male'
+    audiotext_to_speechResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        elevenlabs:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        lovoai:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        deepgram:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+      title: audiotext_to_speechResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    audiotext_to_speechTextToSpeechRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          default: ''
+          description: 'Language code expected (ex: en, fr)'
+        option:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/OptionEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        rate:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: -100
+          default: 0
+          description: Increase or decrease the speaking rate by expressing a positif or negatif number ranging between             100 and -100 (a relative value as percentage varying from -100% to 100%)
+        pitch:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: -100
+          default: 0
+          description: Increase or decrease the speaking pitch by expressing a positif or negatif number ranging between             100 and -100 (a relative value as percentage varying from -100% to 100%)
+        volume:
+          type:
+          - integer
+          - 'null'
+          maximum: 100
+          minimum: -100
+          default: 0
+          description: Increase or decrease the audio volume by expressing a positif or negatif number ranging between             100 and -100 (a relative value as percentage varying from -100% to 100%)
+        audio_format:
+          type:
+          - string
+          - 'null'
+          default: ''
+          description: Optional parameter to specify the audio format in which the audio will be generated. By default,             audios are encoded in MP3, except for lovoai which use the wav container.
+        sampling_rate:
+          type:
+          - integer
+          - 'null'
+          maximum: 200000
+          minimum: 0
+          default: 0
+          description: Optional. The synthesis sample rate (in hertz) for this audio. When this is specified, the audio will be converted             either to the right passed value, or to a the nearest value acceptable by the provider
+      required:
+      - providers
+      - text
+    BlankEnum:
+      enum:
+      - ''
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    audiotext_to_speechTextToSpeechDataClass:
+      properties:
+        audio:
+          title: Audio
+          type: string
+        voice_type:
+          title: Voice Type
+          type: integer
+        audio_resource_url:
+          title: Audio Resource Url
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - audio
+      - voice_type
+      - audio_resource_url
+      - status
+      title: audiotext_to_speechTextToSpeechDataClass
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

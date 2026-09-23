@@ -1,19 +1,619 @@
 openapi: 3.2.0
 info:
-  title: Eden AI Audio OCR API
+  title: Eden Ai Ocr API
   version: '2.0'
-  description: Eden AI is a unified AI gateway providing access to 500+ AI models from 50+ providers through a single API. Exposes LLM (chat completions, embeddings), Universal AI (OCR, image, video, audio, text analysis), file management, and async jobs with webhooks.
-  contact:
-    name: Eden AI
-    url: https://www.edenai.co
+  description: 'Operations tagged Ocr across 2 of this provider''s published API definitions: eden-ai-ocr-features-openapi.json, eden-ai-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.edenai.run/v2
-  description: Production
-security:
-- bearerAuth: []
 tags:
 - name: OCR
 paths:
+  /ocr/ocr/:
+    post:
+      operationId: ocr_ocr_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3 (v1.15.18)`|1.5 (per 1000 page)|1 page
+
+        |**google**|`v1`|1.5 (per 1000 page)|1 page
+
+        |**microsoft**|`v3.2`|1.0 (per 1000 page)|1 page
+
+        |**sentisight**|`v3.3.1`|0.75 (per 1000 file)|1 file
+
+        |**api4ai**|`v1.0.0`|3.0 (per 1000 request)|1 request
+
+        |**mistral**|`v1`|4.0 (per 1000 page)|1 page
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Abaza**|`abq`|
+
+        |**Adyghe**|`ady`|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Angika**|`anp`|
+
+        |**Arabic**|`ar`|
+
+        |**Assamese**|`as`|
+
+        |**Asturian**|`ast`|
+
+        |**Avaric**|`av`|
+
+        |**Awadhi**|`awa`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Bagheli**|`bfy`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bhojpuri**|`bho`|
+
+        |**Bihari languages**|`bh`|
+
+        |**Bislama**|`bi`|
+
+        |**Bodo (India)**|`brx`|
+
+        |**Bosnian**|`bs`|
+
+        |**Braj**|`bra`|
+
+        |**Breton**|`br`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Bundeli**|`bns`|
+
+        |**Buriat**|`bua`|
+
+        |**Camling**|`rab`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chamorro**|`ch`|
+
+        |**Chechen**|`ce`|
+
+        |**Chhattisgarhi**|`hne`|
+
+        |**Chinese**|`zh`|
+
+        |**Cornish**|`kw`|
+
+        |**Corsican**|`co`|
+
+        |**Crimean Tatar**|`crh`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dargwa**|`dar`|
+
+        |**Dari**|`prs`|
+
+        |**Dhimal**|`dhi`|
+
+        |**Dogri (macrolanguage)**|`doi`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Erzya**|`myv`|
+
+        |**Estonian**|`et`|
+
+        |**Faroese**|`fo`|
+
+        |**Fijian**|`fj`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Friulian**|`fur`|
+
+        |**Gagauz**|`gag`|
+
+        |**Galician**|`gl`|
+
+        |**German**|`de`|
+
+        |**Gilbertese**|`gil`|
+
+        |**Goan Konkani**|`gom`|
+
+        |**Gondi**|`gon`|
+
+        |**Gurung**|`gvr`|
+
+        |**Haitian**|`ht`|
+
+        |**Halbi**|`hlb`|
+
+        |**Hani**|`hni`|
+
+        |**Haryanvi**|`bgc`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong Daw**|`mww`|
+
+        |**Ho**|`hoc`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Inari Sami**|`smn`|
+
+        |**Indonesian**|`id`|
+
+        |**Ingush**|`inh`|
+
+        |**Interlingua (International Auxiliary Language Association)**|`ia`|
+
+        |**Inuktitut**|`iu`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Jaunsari**|`jns`|
+
+        |**Javanese**|`jv`|
+
+        |**K''iche''**|`quc`|
+
+        |**Kabardian**|`kbd`|
+
+        |**Kabuverdianu**|`kea`|
+
+        |**Kachin**|`kac`|
+
+        |**Kalaallisut**|`kl`|
+
+        |**Kangri**|`xnr`|
+
+        |**Kara-Kalpak**|`kaa`|
+
+        |**Karachay-Balkar**|`krc`|
+
+        |**Kashubian**|`csb`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khaling**|`klr`|
+
+        |**Khasi**|`kha`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Korku**|`kfq`|
+
+        |**Koryak**|`kpy`|
+
+        |**Kosraean**|`kos`|
+
+        |**Kumarbhag Paharia**|`kmj`|
+
+        |**Kumyk**|`kum`|
+
+        |**Kurdish**|`ku`|
+
+        |**Kurukh**|`kru`|
+
+        |**Kölsch**|`ksh`|
+
+        |**Lak**|`lbe`|
+
+        |**Lakota**|`lkt`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lezghian**|`lez`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Lower Sorbian**|`dsb`|
+
+        |**Lule Sami**|`smj`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Mahasu Pahari**|`bfz`|
+
+        |**Maithili**|`mai`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Maltese**|`mt`|
+
+        |**Manx**|`gv`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Marshallese**|`mh`|
+
+        |**Mongolian**|`mn`|
+
+        |**Montenegrin**|`cnr`|
+
+        |**Neapolitan**|`nap`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Newari**|`new`|
+
+        |**Niuean**|`niu`|
+
+        |**Nogai**|`nog`|
+
+        |**Northern Sami**|`se`|
+
+        |**Norwegian**|`no`|
+
+        |**Occitan (post 1500)**|`oc`|
+
+        |**Old English (ca.'
+      summary: OCR
+      tags:
+      - OCR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ocrocrOcrRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,mistral,sentisight,microsoft,api4ai,amazon
+                  language: en
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ocrocrOcrRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,mistral,sentisight,microsoft,api4ai,amazon
+                  file: /edenai/edenai/features/ocr/samples/data/ocr_en.png
+                  language: en
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ocrocrResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      text: 'I 福州科技馆 福州科技馆空调线路改造项目工程 施工招标公告 招标项目福州科技馆空调线路改造项目工程已批准建设, 招标人为福州科技馆,建设资金来源自筹。项目已具备 招标条件,现对该项目的施工进行公开招标。 1.项目概况与招标范围 建设地点: 福州市仓山区橘园洲桥下公园内 工程招标控 制价: 29135 元;计划工期: 15日历天质量要求:合 按招标范围:详见工程量清单为准, 2. 投标人资格要求 2.1 投标人须具备人员,设备,资金等方面具有相应的设 计经验及施工能力。 2. 2 本次招标不接受联合体投标。 3. 投标报名、开标时间 投标报名截止时间至2018年12月4日12时00分,开标'
+                      bounding_boxes:
+                      - text: I
+                        left: 0.5178571428571429
+                        top: -0.004132231404958678
+                        width: 0.0
+                        height: 0.012396694214876033
+                      - text: 福州
+                        left: 0.13095238095238096
+                        top: 0.13429752066115702
+                        width: 0.22321428571428573
+                        height: 0.04338842975206612
+                      - text: 科技
+                        left: 0.46726190476190477
+                        top: 0.13429752066115702
+                        width: 0.2261904761904762
+                        height: 0.04338842975206612
+                      - text: 馆
+                        left: 0.8065476190476191
+                        top: 0.13429752066115702
+                        width: 0.05357142857142857
+                        height: 0.04338842975206612
+                      - text: 福州
+                        left: 0.20535714285714285
+                        top: 0.25413223140495866
+                        width: 0.0744047619047619
+                        height: 0.024793388429752067
+                      - text: 科技
+                        left: 0.28273809523809523
+                        top: 0.25413223140495866
+                        width: 0.0744047619047619
+                        height: 0.024793388429752067
+                      - text: 馆
+                        left: 0.3601190476190476
+                        top: 0.25413223140495866
+                        width: 0.03571428571428571
+                        height: 0.024793388429752067
+                      - text: 空调
+                        left: 0.39880952380952384
+                        top: 0.25413223140495866
+                        width: 0.07142857142857142
+                        height: 0.024793388429752067
+                      - text: 线路
+                        left: 0.47619047619047616
+                        top: 0.25413223140495866
+                        width: 0.07142857142857142
+                        height: 0.024793388429752067
+                      - text: 改造
+                        left: 0.5535714285714286
+                        top: 0.25413223140495866
+                        width: 0.07142857142857142
+                        height: 0.024793388429752067
+                      cost: 0.0
+                    mistral:
+                      text: "# 福州科技馆空调线路改造项目工程 \n\n## 施工招标公告\n\n招标项日福州科技馆空调线路改造项目工程已批准建设，招标人为：福州科技馆，建设资金来源——互惠。项目已具备招标条件，现对该项目的施工进行公开招标。\n\n## 1. 项目概况与招标范围\n\n建设地点：福州市仓山区横溢洲桥下公园内 工程招标控制价：29135元/ 计划工期：15日历天 质量要求：企络 㫮标范围：涉及工程量请来为准。\n\n## 2. 授标人资格要求\n\n2.1 授标人须具备人员、设备、资金等方面具有相应的设计经验及施工能力。\n2.2 本次招标不接受联合体授标。\n\n## 3. 授标报名、开标时间\n\n授标报名截止时间至2018年12月4日12时00分，开标"
+                      bounding_boxes: []
+                      usage: null
+                      cost: 0.0
+                    sentisight:
+                      text: '#   M  # # @ 4 {042547.E 14171 UM: 223SIL; ##IM: JLEA 0464 #rMh 12# 00 9.#7'
+                      bounding_boxes:
+                      - text: '#   M  # # @'
+                        left: 0.13095238095238096
+                        top: 0.19008264462809918
+                        width: 0.761904761904762
+                        height: 0.06611570247933884
+                      - text: '4'
+                        left: 0.6160714285714286
+                        top: 0.4731404958677686
+                        width: 0.07738095238095233
+                        height: 0.028925619834710703
+                      - text: '{042547.E'
+                        left: 0.1636904761904762
+                        top: 0.5475206611570248
+                        width: 0.26190476190476186
+                        height: 0.02892561983471076
+                      - text: '14171'
+                        left: 0.7232142857142857
+                        top: 0.5929752066115702
+                        width: 0.15476190476190477
+                        height: 0.03305785123966942
+                      - text: 'UM:'
+                        left: 0.12202380952380952
+                        top: 0.6301652892561983
+                        width: 0.0773809523809524
+                        height: 0.028925619834710647
+                      - text: '223SIL; ##IM:'
+                        left: 0.2113095238095238
+                        top: 0.6301652892561983
+                        width: 0.2678571428571429
+                        height: 0.028925619834710647
+                      - text: JLEA
+                        left: 0.49107142857142855
+                        top: 0.6301652892561983
+                        width: 0.15476190476190482
+                        height: 0.028925619834710647
+                      - text: '0464'
+                        left: 0.15178571428571427
+                        top: 0.8657024793388429
+                        width: 0.11904761904761904
+                        height: 0.028925619834710647
+                      - text: '#rMh'
+                        left: 0.28869047619047616
+                        top: 0.8657024793388429
+                        width: 0.125
+                        height: 0.028925619834710647
+                      - text: 12# 00 9.#7
+                        left: 0.6577380952380952
+                        top: 0.9028925619834711
+                        width: 0.22023809523809523
+                        height: 0.02892561983471076
+                      cost: 0.0
+                    microsoft:
+                      text: 2. 2.2
+                      bounding_boxes:
+                      - text: '2.'
+                        left: 0.12797619047619047
+                        top: 0.6838842975206612
+                        width: 0.017857142857142856
+                        height: 0.01652892561983471
+                      - text: '2.2'
+                        left: 0.18154761904761904
+                        top: 0.8016528925619835
+                        width: 0.041666666666666664
+                        height: 0.01652892561983471
+                      cost: 0.0
+                    api4ai:
+                      text: 'I
+
+                        福州科技馆
+
+                        福州科技馆空调线路改造项目工程
+
+                        施工招标公告
+
+                        招标项目福州科技馆空调线路改造项目工程已批准建设,
+
+                        招标人为福州科技馆,建设资金来源自筹。项目已具备
+
+                        招标条件,现对该项目的施工进行公开招标。
+
+                        1.项目概况与招标范围
+
+                        建设地点: 福州市仓山区橘园洲桥下公园内 工程招标控
+
+                        制价: 29135 元;计划工期: 15日历天质量要求:合
+
+                        按招标范围:详见工程量清单为准,
+
+                        2. 投标人资格要求
+
+                        2.1 投标人须具备人员,设备,资金等方面具有相应的设
+
+                        计经验及施工能力。
+
+                        2. 2 本次招标不接受联合体投标。
+
+                        3. 投标报名、开标时间
+
+                        投标报名截止时间至2018年12月4日12时00分,开标'
+                      bounding_boxes:
+                      - text: 'I
+
+                          福州科技馆
+
+                          福州科技馆空调线路改造项目工程
+
+                          施工招标公告
+
+                          招标项目福州科技馆空调线路改造项目工程已批准建设,
+
+                          招标人为福州科技馆,建设资金来源自筹。项目已具备
+
+                          招标条件,现对该项目的施工进行公开招标。
+
+                          1.项目概况与招标范围
+
+                          建设地点: 福州市仓山区橘园洲桥下公园内 工程招标控
+
+                          制价: 29135 元;计划工期: 15日历天质量要求:合
+
+                          按招标范围:详见工程量清单为准,
+
+                          2. 投标人资格要求
+
+                          2.1 投标人须具备人员,设备,资金等方面具有相应的设
+
+                          计经验及施工能力。
+
+                          2. 2 本次招标不接受联合体投标。
+
+                          3. 投标报名、开标时间
+
+                          投标报名截止时间至2018年12月4日12时00分,开标'
+                        left: -0.004132231404958678
+                        top: 0.12202380952380952
+                        width: 0.7440476190476191
+                        height: 0.8987603305785123
+                      cost: 0.0
+                    amazon:
+                      text: 'JH # . ****** are ***** . 1. ********* IN## : 29135  #RIM: **** $ # : ######### 2. ####### 2.1 . RE. *********** . 3. **** ######### 2018 *'
+                      bounding_boxes:
+                      - text: JH
+                        left: 0.3082338869571686
+                        top: 0.13518710434436798
+                        width: 0.04629765450954437
+                        height: 0.04273286834359169
+                      - text: '#'
+                        left: 0.6437202095985413
+                        top: 0.13354769349098206
+                        width: 0.04994326829910278
+                        height: 0.044661857187747955
+                      - text: .
+                        left: 0.250115305185318
+                        top: 0.44582700729370117
+                        width: 0.15961581468582153
+                        height: 0.023941639810800552
+                      - text: '******'
+                        left: 0.4236774146556854
+                        top: 0.4461418688297272
+                        width: 0.16829903423786163
+                        height: 0.02276456542313099
+                      - text: are
+                        left: 0.6215114593505859
+                        top: 0.44597354531288147
+                        width: 0.05179109424352646
+                        height: 0.02195529267191887
+                      - text: '*****'
+                        left: 0.7265733480453491
+                        top: 0.4462999105453491
+                        width: 0.14002187550067902
+                        height: 0.021753868088126183
+                      - text: .
+                        left: 0.12542514503002167
+                        top: 0.48515304923057556
+                        width: 0.12193533033132553
+                        height: 0.022544588893651962
+                      - text: '1.'
+                        left: 0.12524548172950745
+                        top: 0.5207677483558655
+                        width: 0.022567208856344223
+                        height: 0.019478561356663704
+                      - text: '*********'
+                        left: 0.16472700238227844
+                        top: 0.5190067887306213
+                        width: 0.2541719079017639
+                        height: 0.023697713389992714
+                      - text: IN##
+                        left: 0.7296434044837952
+                        top: 0.5625028610229492
+                        width: 0.1382470726966858
+                        height: 0.022239895537495613
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
   /ocr/ocr:
     post:
       summary: OCR
@@ -41,9 +641,210 @@ paths:
       responses:
         '200':
           description: OCR results
+      security:
+      - bearerAuth: []
+    servers:
+    - url: https://api.edenai.run/v2
+      description: Production
 components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ocrocrResponseModel:
+      properties:
+        api4ai:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        mistral:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+      title: ocrocrResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ocrocrOcrDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        bounding_boxes:
+          items:
+            $ref: '#/components/schemas/Bounding_box'
+          title: Bounding Boxes
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: ocrocrOcrDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    Bounding_box:
+      properties:
+        text:
+          title: Text
+          type: string
+        left:
+          title: Left
+          type: integer
+        top:
+          title: Top
+          type: integer
+        width:
+          title: Width
+          type: integer
+        height:
+          title: Height
+          type: integer
+      required:
+      - text
+      - left
+      - top
+      - width
+      - height
+      title: Bounding_box
+      type: object
+    ocrocrOcrRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
+      required:
+      - providers
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
   securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: API key
+x-refined-from:
+- eden-ai-ocr-features-openapi.json
+- eden-ai-openapi.yml

@@ -1,0 +1,412 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 files management API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: files management
+paths:
+  /v3/upload:
+    post:
+      tags:
+      - files management
+      summary: Upload File
+      description: 'Upload a file for persistent storage.
+
+
+        Returns a file_id that can be used in subsequent API calls to /v3/universal-ai.
+
+
+        Files are stored securely and only accessible by the file owner.
+
+        Default expiration is 30 days, maximum 30 days.'
+      operationId: upload_file_v3_upload_post
+      security:
+      - AuthBearer: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_file_v3_upload_post'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - files management
+      summary: List Files
+      description: 'List uploaded files for the authenticated user.
+
+
+        Optionally filter by purpose. Only returns non-expired files.
+
+        Results are ordered by creation date (newest first).'
+      operationId: list_files_v3_upload_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: purpose
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            maxLength: 50
+          - type: 'null'
+          description: Filter by purpose
+          title: Purpose
+        description: Filter by purpose
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          description: Page number (1-indexed)
+          default: 1
+          title: Page
+        description: Page number (1-indexed)
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 1000
+          minimum: 1
+          description: Maximum number of items per page
+          default: 100
+          title: Limit
+        description: Maximum number of items per page
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFilesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - files management
+      summary: Delete All Files
+      description: 'Delete all uploaded files for the authenticated user.
+
+
+        This permanently deletes all files from storage.
+
+        This action cannot be undone.'
+      operationId: delete_all_files_v3_upload_delete
+      security:
+      - AuthBearer: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFilesResponse'
+  /v3/upload/delete:
+    post:
+      tags:
+      - files management
+      summary: Delete Files By Ids
+      description: 'Delete specific files by their IDs.
+
+
+        Only files owned by the authenticated user will be deleted.
+
+        Files that don''t exist or aren''t owned by the user are silently ignored.
+
+        This action cannot be undone.'
+      operationId: delete_files_by_ids_v3_upload_delete_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteFilesRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteFilesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - AuthBearer: []
+components:
+  schemas:
+    DeleteFilesResponse:
+      properties:
+        deleted_count:
+          type: integer
+          title: Deleted Count
+          description: Number of files deleted
+      type: object
+      required:
+      - deleted_count
+      title: DeleteFilesResponse
+      description: Response for file deletion.
+      example:
+        deleted_count: 5
+    FileResponse:
+      properties:
+        file_id:
+          type: string
+          format: uuid
+          title: File Id
+          description: Unique file identifier for use in API calls
+        file_name:
+          type: string
+          title: File Name
+          description: Original filename
+        file_size:
+          type: integer
+          title: File Size
+          description: File size in bytes
+        file_mimetype:
+          type: string
+          title: File Mimetype
+          description: Detected MIME type
+        purpose:
+          type: string
+          title: Purpose
+          description: Purpose of the file (e.g., 'general', 'assistants')
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          description: File metadata (e.g., page_count for PDFs/documents)
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Upload timestamp
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+          description: Expiration timestamp
+      type: object
+      required:
+      - file_id
+      - file_name
+      - file_size
+      - file_mimetype
+      - purpose
+      - created_at
+      title: FileResponse
+      description: Response for a file.
+    DeleteFilesRequest:
+      properties:
+        file_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: File Ids
+          description: List of file IDs to delete (1-100)
+      type: object
+      required:
+      - file_ids
+      title: DeleteFilesRequest
+      description: Request body for deleting multiple files.
+      example:
+        file_ids:
+        - 550e8400-e29b-41d4-a716-446655440000
+        - 550e8400-e29b-41d4-a716-446655440001
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Body_upload_file_v3_upload_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+          description: File to upload
+        expires_in_days:
+          type: integer
+          maximum: 30.0
+          minimum: 1.0
+          title: Expires In Days
+          description: Expiration in days (1-30)
+          default: 30
+        purpose:
+          type: string
+          maxLength: 50
+          minLength: 1
+          title: Purpose
+          description: Purpose of the file
+          default: general
+      type: object
+      required:
+      - file
+      title: Body_upload_file_v3_upload_post
+    UploadResponse:
+      properties:
+        file_id:
+          type: string
+          format: uuid
+          title: File Id
+          description: Unique file identifier for use in API calls
+        file_name:
+          type: string
+          title: File Name
+          description: Original filename
+        file_size:
+          type: integer
+          title: File Size
+          description: File size in bytes
+        file_mimetype:
+          type: string
+          title: File Mimetype
+          description: Detected MIME type
+        purpose:
+          type: string
+          title: Purpose
+          description: Purpose of the file (e.g., 'general', 'assistants')
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          description: File metadata (e.g., page_count for PDFs/documents)
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Upload timestamp
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+          description: Expiration timestamp
+      type: object
+      required:
+      - file_id
+      - file_name
+      - file_size
+      - file_mimetype
+      - purpose
+      - created_at
+      title: UploadResponse
+      description: Response for a successful file upload.
+      example:
+        created_at: '2025-12-08T10:30:00Z'
+        expires_at: '2026-01-07T10:30:00Z'
+        file_id: 550e8400-e29b-41d4-a716-446655440000
+        file_mimetype: application/pdf
+        file_name: invoice.pdf
+        file_size: 1048576
+        metadata:
+          page_count: 5
+        purpose: general
+    ListFilesResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FileResponse'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: ListFilesResponse
+      description: Response for listing files with pagination.
+      example:
+        items:
+        - created_at: '2025-12-08T10:30:00Z'
+          expires_at: '2026-01-07T10:30:00Z'
+          file_id: 550e8400-e29b-41d4-a716-446655440000
+          file_mimetype: application/pdf
+          file_name: invoice.pdf
+          file_size: 1048576
+          metadata:
+            page_count: 5
+          purpose: general
+        limit: 100
+        page: 1
+        total: 25
+        total_pages: 1
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

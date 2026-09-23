@@ -1,0 +1,567 @@
+openapi: 3.2.0
+info:
+  title: Eden Ai Question Answer API
+  version: '2.0'
+  description: 'Operations tagged Question Answer across 2 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-video-features-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Question Answer
+paths:
+  /image/question_answer/:
+    post:
+      operationId: image_question_answer_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**openai**|**gpt-4-turbo**|`v1`|30.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o-2024-08-06**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4.1-2025-04-14**|`v1`|8.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-5**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**openai**|**o1**|`v1`|60.0 (per 1000000 token)|1 token
+
+        |**openai**|**o1-mini**|`v1`|12.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o-mini**|`v1`|0.6 (per 1000000 token)|1 token
+
+        |**google**|**gemini-1.5-pro**|`v1`|10.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-flash**|`v1`|2.5 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-pro**|`v1`|15.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash**|`v1`|0.4 (per 1000000 token)|1 token
+
+        |**google**|**gemini-1.5-flash**|`v1`|0.6 (per 1000000 token)|1 token
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**English**|`en`|
+
+        |**French**|`fr`|
+
+        |**German**|`de`|
+
+        |**Italian**|`it`|
+
+        |**Spanish**|`es`|
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**openai**|`gpt-4o`|
+
+        |**google**|`gemini-2.5-pro`|'
+      summary: Question Answer
+      tags:
+      - Question Answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imagequestion_answerQuestionAnswerRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: openai,google
+                  question: What are the logos on the image ?
+                  temperature: 0
+                  max_tokens: 64
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagequestion_answerQuestionAnswerRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: openai,google
+                  file: /edenai/edenai/features/image/samples/data/logo_detection.jpeg
+                  question: What are the logos on the image ?
+                  temperature: 0
+                  max_tokens: 64
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imagequestion_answerResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    openai:
+                      answers:
+                      - Logos - Facebook, Apple, Amazon, Netflix, Google
+                      usage:
+                        completion_tokens: 19
+                        prompt_tokens: 1659
+                        total_tokens: 1678
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    google:
+                      answers:
+                      - Logo - Facebook, Apple, Amazon, Netflix, and Google
+                      usage:
+                        completion_tokens: 17
+                        prompt_tokens: 770
+                        total_tokens: 787
+                        completion_tokens_details: null
+                        prompt_tokens_details: null
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+  /video/question_answer/:
+    post:
+      operationId: video_question_answer_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**google**|**gemini-3-flash-preview**|`v1Beta`|3e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-3-pro-preview**|`v1Beta`|1.2e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.0-flash**|`v1Beta`|0.4 (per 1000000 token)|1 token
+
+        |**google**|-|`v1Beta`|0.6 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite-preview**|`v1Beta`|0.3 (per 1000000 token)|1 token
+
+        |**google**|**gemini-3.1-pro-preview**|`v1Beta`|1.2e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-flash-lite**|`v1Beta`|0.4 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-pro**|`v1Beta`|15.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-flash**|`v1Beta`|2.5 (per 1000000 token)|1 token
+
+        |**google**|**gemini-3.1-flash-lite-preview**|`v1Beta`|1.5e-06 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro-preview-03-25**|`v1Beta`|15.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite**|`v1Beta`|0.3 (per 1000000 token)|1 token
+
+        |**amazon**|-|`boto3 (v1.29.6)`|3.2 (per 1000000 token)|1 token
+
+        |**amazon**|**amazon.nova-pro-v1:0**|`boto3 (v1.29.6)`|3.2 (per 1000000 token)|1 token
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**google**|`gemini-2.5-flash`|
+
+        |**amazon**|`amazon.nova-pro-v1:0`|'
+      summary: Question Answer
+      tags:
+      - Question Answer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/videoquestion_answerQuestionAnswerRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google
+                  text: describe this video
+                  max_tokens: 6500
+                  temperature: 1
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/videoquestion_answerQuestionAnswerRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: amazon,google
+                  file: /edenai/edenai/features/video/samples/data/faces.mp4
+                  text: describe this video
+                  max_tokens: 6500
+                  temperature: 1
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/videoquestion_answerResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    amazon:
+                      answer: The video starts with a person holding a smartphone and showing a picture of a room with a table, a chair, and a potted plant. The table has a glass and a skull-shaped object on it. The room has a checkered floor and a window with a curtain. The person then shows a picture of a building with a tower and a statue on top. The building has a clock tower and a tower with a statue of a person on top. The building is surrounded by trees and has a fence around it. The person then shows a picture of a man sitting in front of a desk with two monitors, a keyboard, and a mouse. He is holding a bottle and a pen in his hands. He is looking at the monitor on the right. The desk has a keyboard, a mouse, and a bottle. Behind him is a chair. The room is illuminated by a neon light.
+                      usage:
+                        completion_tokens: 180
+                        prompt_tokens: 3461
+                        total_tokens: 3641
+                      cost: 0.0
+                    google:
+                      answer: 'Here is a description of the video.
+
+
+                        The video is a tutorial on how to create AI hyperlapses. The video opens with a shot of a phone displaying a short video of a table with a glass of water and a small skull on it. The narrator then explains that AI hyperlapses are currently going viral on YouTube and Instagram. The video then shows several examples of AI hyperlapses, including a statue of a woman and a lion, a church dome, and a statue of a woman and child. The narrator then shows how to create these videos using a phone and computer.'
+                      finish_reason: STOP
+                      usage: null
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imagequestion_answerResponseModel:
+      properties:
+        alephalpha:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+      title: imagequestion_answerResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    imagequestion_answerQuestionAnswerRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        temperature:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+          default: 0.0
+          description: Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer.
+        question:
+          type: string
+          minLength: 1
+          description: Question about the image
+        max_tokens:
+          type: integer
+          maximum: 2048
+          minimum: 1
+          default: 1000
+          description: The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length.
+      required:
+      - providers
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imagequestion_answerQuestionAnswerDataClass:
+      properties:
+        answers:
+          items:
+            type: string
+          title: Answers
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagequestion_answerQuestionAnswerDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    videoquestion_answerResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+      title: videoquestion_answerResponseModel
+      type: object
+    videoquestion_answerQuestionAnswerRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mp4|mpeg|mov|avi|x\-flx|mpg|webm|wmv|3gpp)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        temperature:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+          default: 0.0
+          description: Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer.
+        max_tokens:
+          type: integer
+          maximum: 3000000
+          minimum: 1
+          description: The maximum number of tokens to generate in the completion. This value, combined with the token count of your prompt, cannot exceed the model's context length.
+        text:
+          type: string
+          minLength: 1
+          description: Question about the video
+      required:
+      - providers
+      - text
+    videoquestion_answerQuestionAnswerDataClass:
+      properties:
+        answer:
+          title: Answer
+          type: string
+        finish_reason:
+          default: null
+          title: Finish Reason
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - answer
+      - status
+      title: videoquestion_answerQuestionAnswerDataClass
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- eden-ai-image-features-openapi.json
+- eden-ai-video-features-openapi.json

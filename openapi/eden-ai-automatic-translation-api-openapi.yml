@@ -1,0 +1,593 @@
+openapi: 3.2.0
+info:
+  title: Translation Features Automatic Translation API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Automatic Translation
+paths:
+  /translation/automatic_translation/:
+    post:
+      operationId: translation_automatic_translation_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**amazon**|-|`boto3 (v1.15.18)`|15.0 (per 1000000 char)|1 char
+
+        |**google**|-|`v3`|20.0 (per 1000000 char)|1 char
+
+        |**microsoft**|-|`v3.0`|10.0 (per 1000000 char)|1 char
+
+        |**deepl**|-|`v2`|20.0 (per 1000000 char)|1 char
+
+        |**modernmt**|-|`1.2.8`|8.0 (per 1000000 char)|1 char
+
+        |**openai**|-|`v1`|20.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4o**|`v1`|20.0 (per 1000000 token)|1 token
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Assamese**|`as`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Bashkir**|`ba`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chinese**|`zh`|
+
+        |**Corsican**|`co`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dari**|`prs`|
+
+        |**Dhivehi**|`dv`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Faroese**|`fo`|
+
+        |**Fijian**|`fj`|
+
+        |**Filipino**|`fil`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong**|`hmn`|
+
+        |**Hmong Daw**|`mww`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Inuinnaqtun**|`ikt`|
+
+        |**Inuktitut**|`iu`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Klingon**|`tlh`|
+
+        |**Korean**|`ko`|
+
+        |**Kurdish**|`ku`|
+
+        |**Lao**|`lo`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Literary Chinese**|`lzh`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Northern Kurdish**|`kmr`|
+
+        |**Norwegian**|`no`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Norwegian Nynorsk**|`nn`|
+
+        |**Nyanja**|`ny`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Querétaro Otomi**|`otq`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Samoan**|`sm`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Shona**|`sn`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tahitian**|`ty`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Tibetan**|`bo`|
+
+        |**Tigrinya**|`ti`|
+
+        |**Tonga (Tonga Islands)**|`to`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Upper Sorbian**|`hsb`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Yucateco**|`yua`|
+
+        |**Yue Chinese**|`yue`|
+
+        |**Zulu**|`zu`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (Simplified)**|`zh-Hans`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|
+
+        |**Chinese (Traditional)**|`zh-Hant`|
+
+        |**English (United Kingdom)**|`en-GB`|
+
+        |**English (United States)**|`en-US`|
+
+        |**French (Canada)**|`fr-CA`|
+
+        |**Inuktitut (Latin)**|`iu-Latn`|
+
+        |**Klingon (Klingon (KLI pIqaD))**|`tlh-Piqd`|
+
+        |**Klingon (Latin)**|`tlh-Latn`|
+
+        |**Mongolian (Cyrillic)**|`mn-Cyrl`|
+
+        |**Mongolian (Mongolian)**|`mn-Mong`|
+
+        |**Persian (Afghanistan)**|`fa-AF`|
+
+        |**Portuguese (Brazil)**|`pt-BR`|
+
+        |**Portuguese (Portugal)**|`pt-PT`|
+
+        |**Serbian (Cyrillic)**|`sr-Cyrl`|
+
+        |**Serbian (Latin)**|`sr-Latn`|
+
+        |**Spanish (Latin America)**|`es-419`|
+
+        |**Spanish (Mexico)**|`es-MX`|
+
+        |**Spanish…'
+      summary: Automatic Translation
+      tags:
+      - Automatic Translation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: microsoft,openai,google,modernmt,amazon,deepl
+                  text: 人工智能 亦稱智械、機器智能，指由人製造出來的機器所表現出來的智慧。通常人工智能是指通过普通電腦程式來呈現人類智能的技術。該詞也指出研究這樣的智能系統是否能夠實現，以及如何實現。同时，通過醫學、神經科學、機器人學及統計學等的進步，常態預測則認為人類的很多職業也逐漸被其取代。
+                  source_language: zh
+                  target_language: en
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/translationautomatic_translationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    microsoft:
+                      text: Artificial intelligence, also known as intelligent weapons, machine intelligence, refers to the wisdom expressed by machines made by people. Usually artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether such intelligent systems can be achieved, and how. At the same time, through advances in medicine, neuroscience, robotics, and statistics, normal forecasts believe that many human occupations are gradually being replaced by them
+                      cost: 0.0
+                    openai:
+                      text: Artificial intelligence, also known as intelligent machines and machine intelligence, refers to the wisdom demonstrated by machines created by humans. Typically, artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether and how such intelligent systems can be implemented. At the same time, through advances in medicine, neuroscience, robotics, and statistics, the common prediction is that many human occupations are gradually being replaced by them.
+                      usage:
+                        completion_tokens: 96
+                        prompt_tokens: 361
+                        total_tokens: 457
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    google:
+                      text: Artificial intelligence, also known as omniscient, machine intelligence, refers to the wisdom expressed by machines made by humans. Usually artificial intelligence refers to the technology that presents human intelligence through ordinary computer programs. The term also points to research into whether and how such intelligent systems can be realized. At the same time, through advances in medicine, neuroscience, robotics, and statistics, the norm predicts that many human occupations are gradually being replaced by them.
+                      cost: 0.0
+                    modernmt:
+                      text: Artificial intelligence, also known as intelligent machines, refers to the intelligence exhibited by machines manufactured by humans. Generally, artificial intelligence refers to technology that presents human intelligence through ordinary computer programs. The term also points to the study of whether and how such an intelligent system can be achieved. At the same time, through advances in medicine, neuroscience, robotics and statistics, it is usually predicted that many human professions will gradually be replaced by them.
+                      cost: 0.0
+                    amazon:
+                      text: Artificial intelligence, also known as intelligent devices and equipment intelligence, refers to the wisdom expressed by devices manufactured by humans. Generally, artificial intelligence refers to technology that presents human intelligence through ordinary computer programs. This phrase also indicates whether research such an intelligent system can be realized and how it can be implemented. At the same time, through advances in medicine, neuroscience, robot science, statistics, etc., many occupations recognized as human by the Normal Predictive Rules have gradually been replaced by them
+                      cost: 0.0
+                    deepl:
+                      text: Artificial intelligence, also known as robotics and machine intelligence, refers to the intelligence expressed by human-made machines. Usually artificial intelligence refers to the technology of presenting human intelligence through ordinary computer programs. The term also refers to the study of whether and how such an intelligent system can be realized. At the same time, through advances in medicine, neuroscience, robotics and statistics, the norm is predicted that many human occupations are gradually being replaced by them.
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    translationautomatic_translationAutomaticTranslationDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: translationautomatic_translationAutomaticTranslationDataClass
+      type: object
+    translationautomatic_translationAutomaticTranslationRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        source_language:
+          type:
+          - string
+          - 'null'
+          description: 'Source language code (ex: en, fr)'
+        target_language:
+          type: string
+          minLength: 1
+          description: 'Target language code (ex: en, fr)'
+      required:
+      - providers
+      - target_language
+      - text
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    translationautomatic_translationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        modernmt:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        deepl:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+      title: translationautomatic_translationResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,739 @@
+openapi: 3.2.0
+info:
+  title: Eden Ai Anonymization API
+  version: '2.0'
+  description: 'Operations tagged Anonymization across 2 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-text-features-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Anonymization
+paths:
+  /image/anonymization/:
+    post:
+      operationId: image_anonymization_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**api4ai**|`v1.0.0`|25.0 (per 1000 file)|1 file'
+      summary: Anonymization
+      tags:
+      - Anonymization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: api4ai
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: api4ai
+                  file: /edenai/edenai/features/image/samples/data/face.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageanonymizationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    api4ai:
+                      image: /9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAs...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/e54ff525-de32-486e-aaee-76985aab66ca_.jpeg?Expires=1685362962&Signature=MwURcHrGRk9tdMS06qz-VH~ia9txNZgcbkjXwuLk7uw6yVpl2GRNdj1hwuedJWONL7mNYYdmNHQwLR1NtiIRHqEQtKPWIRU1T7cLnkhPd~Cw5Br7sPBWxUbCBybRwMA6hjxUV4ovOXDcnJwqCr6QNkwvCm7TUdMI8wOgLahnlD9I449vwPCjLKXJeqomc789HQCL-yQ3RdTkMWI0bxKQ9F6IdIJt0l~8KZTkivS9x84HYGHG2GJnCe4pppmu47nYV4cXR~CBAPUpvucz9dHIjUjndiDVvlVmza5cCRtMrtZCZwgEXSP90WDtWGw6LiX65Z1GYbHBBHJMDd8DwdR5~w__&Key-Pair-Id=K1F55BTI9AHGIK
+                      items:
+                      - kind: Face
+                        confidence: 0.84765625
+                        bounding_boxes:
+                          x_min: 0.2311111111111111
+                          x_max: 0.0
+                          y_min: 0.7066666666666667
+                          y_max: 0.7866666666666666
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+  /text/anonymization/:
+    post:
+      operationId: text_anonymization_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**openai**|-|`v3.0.0`|20.0 (per 1000000 token)|1 token
+
+        |**openai**|**gpt-4**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**chatgpt-4o-latest**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0125**|`v3.0.0`|1.5e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0301**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-0613**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-1106**|`v3.0.0`|2e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-3.5-turbo-16k-0613**|`v3.0.0`|4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0125-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0314**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-0613**|`v3.0.0`|6e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-1106-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0314**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-32k-0613**|`v3.0.0`|0.00012 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-2024-04-09**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-turbo-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4-vision-preview**|`v3.0.0`|3e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-2025-04-14**|`v3.0.0`|8e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-mini-2025-04-14**|`v3.0.0`|1.6e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.1-nano-2025-04-14**|`v3.0.0`|4e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4.5-preview-2025-02-27**|`v3.0.0`|0.00015 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-05-13**|`v3.0.0`|1.5e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-08-06**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-2024-11-20**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-10-01**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2024-12-17**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-audio-preview-2025-06-03**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-2024-07-18**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-audio-preview-2024-12-17**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-realtime-preview-2024-12-17**|`v3.0.0`|2.4e-06 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-mini-search-preview-2025-03-11**|`v3.0.0`|6e-07 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-10-01**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2024-12-17**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-realtime-preview-2025-06-03**|`v3.0.0`|2e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview**|`v3.0.0`|1e-05 (per 1 token)|1 token
+
+        |**openai**|**gpt-4o-search-preview-2025-03-11**|`v3.0.0`|1e-05 (per 1 token)|1…'
+      summary: Anonymization
+      tags:
+      - Anonymization
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: xai,privateai,amazon,openai,microsoft
+                  language: en
+                  text: Overall I am satisfied with my experience at Amazon, but two areas of major improvement needed. First is the product reviews and pricing. There are thousands of positive reviews for so many items, and it's clear that the reviews are bogus or not really associated with that product. There needs to be a way to only view products sold by Amazon directly, because many market sellers way overprice items that can be purchased cheaper elsewhere (like Walmart, Target, etc). The second issue is they make it too difficult to get help when there's an issue with an order.
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textanonymizationResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    xai:
+                      result: The phone number of *** is the **************.
+                      entities:
+                      - offset: 20
+                        length: 3
+                        category: PersonalInformation
+                        subcategory: Name
+                        original_label: name
+                        content: Luc
+                        confidence_score: 0.9
+                      - offset: 31
+                        length: 14
+                        category: PersonalInformation
+                        subcategory: Phone
+                        original_label: phonenumber
+                        content: 06 21 32 43 54
+                        confidence_score: 0.95
+                      cost: 0.0
+                    privateai:
+                      result: The phone number of *** is the **************.
+                      entities:
+                      - offset: 20
+                        length: 3
+                        category: PersonalInformation
+                        subcategory: Name
+                        original_label: NAME_GIVEN
+                        content: Luc
+                        confidence_score: 0.912
+                      - offset: 31
+                        length: 14
+                        category: PersonalInformation
+                        subcategory: Phone
+                        original_label: PHONE_NUMBER
+                        content: 06 21 32 43 54
+                        confidence_score: 0.904
+                      cost: 0.0
+                    amazon:
+                      result: The phone number of *** is the **************.
+                      entities:
+                      - offset: 20
+                        length: 3
+                        category: PersonalInformation
+                        subcategory: Name
+                        original_label: NAME
+                        content: Luc
+                        confidence_score: 1.0
+                      - offset: 31
+                        length: 14
+                        category: DateAndTime
+                        subcategory: DateTime
+                        original_label: DATE_TIME
+                        content: 06 21 32 43 54
+                        confidence_score: 0.877
+                      cost: 0.0
+                    openai:
+                      result: The phone number of *** is the ** ** ** ** **.
+                      entities:
+                      - offset: 20
+                        length: 3
+                        category: PersonalInformation
+                        subcategory: Name
+                        original_label: NAME
+                        content: Luc
+                        confidence_score: 1.0
+                      - offset: 31
+                        length: 14
+                        category: PersonalInformation
+                        subcategory: Phone
+                        original_label: PHONE_NUMBER
+                        content: 06 21 32 43 54
+                        confidence_score: 1.0
+                      usage:
+                        completion_tokens: 125
+                        prompt_tokens: 946
+                        total_tokens: 1071
+                        completion_tokens_details:
+                          accepted_prediction_tokens: 0
+                          audio_tokens: 0
+                          reasoning_tokens: 0
+                          rejected_prediction_tokens: 0
+                        prompt_tokens_details:
+                          audio_tokens: 0
+                          cached_tokens: 0
+                      cost: 0.0
+                    microsoft:
+                      result: The phone number of *** is the **************.
+                      entities:
+                      - offset: 20
+                        length: 3
+                        category: PersonalInformation
+                        subcategory: Name
+                        original_label: Person
+                        content: Luc
+                        confidence_score: 0.99
+                      - offset: 31
+                        length: 14
+                        category: PersonalInformation
+                        subcategory: Phone
+                        original_label: PhoneNumber
+                        content: 06 21 32 43 54
+                        confidence_score: 0.8
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    AnonymizationItem:
+      properties:
+        kind:
+          title: Kind
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_boxes:
+          $ref: '#/components/schemas/AnonymizationBoundingBox'
+      required:
+      - kind
+      - confidence
+      - bounding_boxes
+      title: AnonymizationItem
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    AnonymizationBoundingBox:
+      properties:
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: AnonymizationBoundingBox
+      type: object
+    imageanonymizationResponseModel:
+      properties:
+        api4ai:
+          $ref: '#/components/schemas/imageanonymizationAnonymizationDataClass'
+          default: null
+      title: imageanonymizationResponseModel
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    imageanonymizationAnonymizationDataClass:
+      properties:
+        image:
+          title: Image
+          type: string
+        image_resource_url:
+          title: Image Resource Url
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/AnonymizationItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - image
+      - image_resource_url
+      - status
+      title: imageanonymizationAnonymizationDataClass
+      type: object
+    SubCategoryType:
+      enum:
+      - CreditCard
+      - CardExpiry
+      - BankAccountNumber
+      - BankRoutingNumber
+      - SwiftCode
+      - TaxIdentificationNumber
+      - Name
+      - Age
+      - Email
+      - Phone
+      - PersonType
+      - Gender
+      - SocialSecurityNumber
+      - NationalIdentificationNumber
+      - NationalHealthService
+      - ResidentRegistrationNumber
+      - DriverLicenseNumber
+      - PassportNumber
+      - URL
+      - IP
+      - MAC
+      - VehicleIdentificationNumber
+      - LicensePlate
+      - VoterNumber
+      - AWSKeys
+      - AzureKeys
+      - Password
+      - CompanyName
+      - CompanyNumber
+      - BuisnessNumber
+      - Date
+      - Time
+      - DateTime
+      - Duration
+      - Address
+      - Location
+      - Other
+      - Anonymized
+      - Nerd
+      - Wsd
+      - Unknown
+      title: SubCategoryType
+      type: string
+    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
+    : type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+    AnonymizationEntity:
+      description: "This model represents an entity extracted from the text.\n\nAttributes:\n    offset (int): The offset of the entity in the text.\n    length (int): The lenght of the entity in the text.\n    category (CategoryType): The category of the entity.\n    subcategory (SubCategoryType): The subcategory of the entity.\n    original_label (str): The original label of the entity.\n    content (str): The content of the entity."
+      properties:
+        offset:
+          minimum: 0
+          title: Offset
+          type: integer
+        length:
+          title: Length
+          type: integer
+        category:
+          $ref: '#/components/schemas/CategoryType'
+        subcategory:
+          $ref: '#/components/schemas/SubCategoryType'
+        original_label:
+          minLength: 1
+          title: Original Label
+          type: string
+        content:
+          minLength: 1
+          title: Content
+          type: string
+        confidence_score:
+          maximum: 1
+          minimum: 0
+          title: Confidence Score
+          type: integer
+      required:
+      - offset
+      - length
+      - category
+      - subcategory
+      - original_label
+      - content
+      - confidence_score
+      title: AnonymizationEntity
+      type: object
+    textanonymizationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        privateai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        emvista:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+      title: textanonymizationResponseModel
+      type: object
+    CategoryType:
+      description: This enum are used to categorize the entities extracted from the text.
+      enum:
+      - PersonalInformation
+      - FinancialInformation
+      - IdentificationNumbers
+      - Miscellaneous
+      - OrganizationInformation
+      - DateAndTime
+      - LocationInformation
+      - Other
+      title: CategoryType
+      type: string
+    textanonymizationAnonymizationDataClass:
+      properties:
+        result:
+          title: Result
+          type: string
+        entities:
+          items:
+            $ref: '#/components/schemas/AnonymizationEntity'
+          title: Entities
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - result
+      - status
+      title: textanonymizationAnonymizationDataClass
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- eden-ai-image-features-openapi.json
+- eden-ai-text-features-openapi.json

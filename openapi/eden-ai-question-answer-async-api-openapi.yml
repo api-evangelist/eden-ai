@@ -1,0 +1,483 @@
+openapi: 3.2.0
+info:
+  title: Video Features Question Answer Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Question Answer Async
+paths:
+  /video/question_answer_async/:
+    get:
+      operationId: video_question_answer_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Question Answer List Jobs
+      tags:
+      - Question Answer Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''google'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 3f523d48-63ad-4cda-81a9-a63bd783e506
+                      state: finished
+                      created_at: '2026-09-06T00:05:24.569905'
+                    - providers: '[''google'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 2810ce41-e46e-4931-b28c-13e4a79eb329
+                      state: finished
+                      created_at: '2026-09-05T23:05:24.569919'
+                    - providers: '[''google'']'
+                      nb: 1
+                      nb_ok: 1
+                      public_id: 751241cb-2a5b-4bf3-94b7-f558e0c9731b
+                      state: finished
+                      created_at: '2026-09-05T22:05:24.569926'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: video_question_answer_async_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**google**|**gemini-3-pro-preview**|`v1Beta`|1.2e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-3-flash-preview**|`v1Beta`|3e-06 (per 1 token)|1 token
+
+        |**google**|-|`v1Beta`|0.6 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash**|`v1Beta`|0.4 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite-preview**|`v1Beta`|0.3 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-flash-lite**|`v1Beta`|0.4 (per 1000000 token)|1 token
+
+        |**google**|**gemini-3.1-pro-preview**|`v1Beta`|1.2e-05 (per 1 token)|1 token
+
+        |**google**|**gemini-2.5-pro**|`v1Beta`|15.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.5-flash**|`v1Beta`|2.5 (per 1000000 token)|1 token
+
+        |**google**|**gemini-3.1-flash-lite-preview**|`v1Beta`|1.5e-06 (per 1 token)|None token
+
+        |**google**|**gemini-2.5-pro-preview-03-25**|`v1Beta`|15.0 (per 1000000 token)|1 token
+
+        |**google**|**gemini-2.0-flash-lite**|`v1Beta`|0.3 (per 1000000 token)|1 token
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**google**|`gemini-2.5-flash`|'
+      summary: Question Answer Launch Job
+      tags:
+      - Question Answer Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionAnswerAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google
+                  file: /edenai/edenai/features/video/samples/data/faces.mp4
+                  text: describe this video
+                  max_tokens: 6500
+                  temperature: 1
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionAnswerAsyncRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google
+                  text: describe this video
+                  max_tokens: 6500
+                  temperature: 1
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 4f218162-9e1f-4245-b1e4-ecf8d41dfb4a
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: video_question_answer_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Question Answer delete Jobs
+      tags:
+      - Question Answer Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /video/question_answer_async/{public_id}/:
+    get:
+      operationId: video_question_answer_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Question Answer Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Question Answer Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncvideoquestion_answer_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 53ae0bdf-3471-4f1a-bf32-0e9fc84dcf7b
+                    status: finished
+                    error: null
+                    results:
+                      google:
+                        error: null
+                        id: 69931144-6eef-4ba6-9d23-6bd99aef1b5d
+                        final_status: finished
+                        answer: 'Here is a description of the video.
+
+
+                          The video is a tutorial on how to create AI hyperlapses. The video opens with a shot of a phone displaying a short video of a table with a glass of water and a small skull on it. The narrator then explains that AI hyperlapses are currently going viral on YouTube and Instagram. The video then shows several examples of AI hyperlapses, including a statue of a woman and a lion, a church dome, and a statue of a woman and child. The narrator then shows how to create these videos using a phone and computer.'
+                        finish_reason: STOP
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    QuestionAnswerAsyncRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mp4|mpeg|mov|avi|x\-flx|mpg|webm|wmv|3gpp)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        temperature:
+          type: number
+          format: double
+          maximum: 1
+          minimum: 0
+          default: 0.0
+          description: Higher values mean the model will take more risks and value 0 (argmax sampling) works better for scenarios with a well-defined answer.
+        max_tokens:
+          type: integer
+          maximum: 3000000
+          minimum: 1
+          description: The maximum number of tokens to generate in the completion. This value, combined with the token count of your prompt, cannot exceed the model's context length.
+        text:
+          type: string
+          minLength: 1
+          description: Question about the video
+      required:
+      - providers
+      - text
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    videoquestion_answer_asyncQuestionAnswerAsyncDataClass:
+      properties:
+        answer:
+          title: Answer
+          type: string
+        finish_reason:
+          default: null
+          title: Finish Reason
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - answer
+      - id
+      - final_status
+      title: videoquestion_answer_asyncQuestionAnswerAsyncDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    asyncvideoquestion_answer_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoquestion_answer_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoquestion_answer_asyncResponseModel
+      type: object
+    videoquestion_answer_asyncModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/videoquestion_answer_asyncQuestionAnswerAsyncDataClass'
+          default: null
+      title: videoquestion_answer_asyncModel
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

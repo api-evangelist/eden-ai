@@ -1,0 +1,518 @@
+openapi: 3.2.0
+info:
+  title: Eden Ai Ai Detection API
+  version: '2.0'
+  description: 'Operations tagged Ai Detection across 2 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-text-features-openapi.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Ai Detection
+paths:
+  /image/ai_detection/:
+    post:
+      operationId: image_ai_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**winstonai**|`v1`|0.0145 (per 1 image)|1 image
+
+        |**resemble**|`v2`|0.04 (per 1 request)|1 request'
+      summary: AI Detection
+      tags:
+      - Ai Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imageai_detectionAiDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: resemble,winstonai
+                  file_url: http://edenai-resource-example.png
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imageai_detectionAiDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: resemble,winstonai
+                  file: /edenai/edenai/features/image/samples/data/objects.png
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imageai_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    resemble:
+                      ai_score: 0.03
+                      prediction: original
+                      cost: 0.0
+                    winstonai:
+                      ai_score: 0.02950000000000008
+                      prediction: original
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+  /text/ai_detection/:
+    post:
+      operationId: text_ai_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**sapling**|`v1`|5.0 (per 1000000 char)|1000 char
+
+        |**winstonai**|`v2`|14.0 (per 1000000 char)|1 char
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Chinese**|`zh`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**French**|`fr`|
+
+        |**German**|`de`|
+
+        |**Spanish**|`es`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (China)**|`zh-CN`|'
+      summary: AI Content Detection
+      tags:
+      - Ai Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textai_detectionAiDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: sapling,winstonai
+                  text: The panther, also known as the black panther, is a magnificent and enigmatic creature that captivates the imagination of many. It is not a distinct species itself, but rather a melanistic variant of leopards and jaguars. The mesmerizing black coat of the panther is a result of a genetic mutation that increases the production of dark pigment, melanin.         Panthers are highly adaptable predators, found primarily in dense forests and jungles across Africa, Asia, and the Americas. Their stealthy nature and exceptional agility make them formidable hunters. They are solitary creatures, preferring to roam alone in their vast territories, which can span over a hundred square miles.         Equipped with incredible strength and sharp retractable claws, panthers are skilled climbers and swimmers. Their keen senses, including sharp vision and acute hearing, aid them in locating prey, often stalking their victims from the cover of trees or thick underbrush before launching a precise and powerful attack.         The diet of a panther consists mainly of deer, wild boar, and smaller mammals. However, they are opportunistic hunters and can also target livestock and domestic animals in areas where their habitats overlap with human settlements. Unfortunately, this sometimes leads to conflicts with humans, resulting in the panther being perceived as a threat.         Despite their association with darkness and mystery, panthers play a vital role in maintaining the balance of ecosystems. As apex predators, they help control populations of herbivores, preventing overgrazing and maintaining healthy prey dynamics.         Conservation efforts are crucial to the survival of panther populations worldwide. Habitat loss, poaching, and illegal wildlife trade pose significant threats to their existence. Various organizations and governments are working tirelessly to protect these magnificent creatures through initiatives such as establishing protected areas, promoting sustainable land use practices, and raising awareness about their importance in the natural world.
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textai_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    sapling:
+                      ai_score: 0.970070276931997
+                      items:
+                      - text: The panther, also known as the black panther, is a magnificent and enigmatic creature that captivates the imagination of many.
+                        prediction: ai-generated
+                        ai_score: 0.9990817176020741
+                        ai_score_detail: 0.9990817176020741
+                      - text: It is not a distinct species itself, but rather a melanistic variant of leopards and jaguars.
+                        prediction: ai-generated
+                        ai_score: 0.7623477056593153
+                        ai_score_detail: 0.7623477056593153
+                      - text: The mesmerizing black coat of the panther is a result of a genetic mutation that increases the production of dark pigment, melanin.
+                        prediction: original
+                        ai_score: 0.012890975241315883
+                        ai_score_detail: 0.012890975241315883
+                      - text: Panthers are highly adaptable predators, found primarily in dense forests and jungles across Africa, Asia, and the Americas.
+                        prediction: ai-generated
+                        ai_score: 0.9241208913655489
+                        ai_score_detail: 0.9241208913655489
+                      - text: Their stealthy nature and exceptional agility make them formidable hunters.
+                        prediction: original
+                        ai_score: 3.0645117310434955e-07
+                        ai_score_detail: 3.0645117310434955e-07
+                      - text: They are solitary creatures, preferring to roam alone in their vast territories, which can span over a hundred square miles.
+                        prediction: ai-generated
+                        ai_score: 0.98354284228347
+                        ai_score_detail: 0.98354284228347
+                      - text: Equipped with incredible strength and sharp retractable claws, panthers are skilled climbers and swimmers.
+                        prediction: original
+                        ai_score: 0.2026922923822072
+                        ai_score_detail: 0.2026922923822072
+                      - text: Their keen senses, including sharp vision and acute hearing, aid them in locating prey, often stalking their victims from the cover of trees or thick underbrush before launching a precise and powerful attack.
+                        prediction: original
+                        ai_score: 0.2140626025123451
+                        ai_score_detail: 0.2140626025123451
+                      - text: The diet of a panther consists mainly of deer, wild boar, and smaller mammals.
+                        prediction: original
+                        ai_score: 0.37921425697733424
+                        ai_score_detail: 0.37921425697733424
+                      - text: However, they are opportunistic hunters and can also target livestock and domestic animals in areas where their habitats overlap with human settlements.
+                        prediction: ai-generated
+                        ai_score: 0.5961050762132343
+                        ai_score_detail: 0.5961050762132343
+                      cost: 0.0
+                    winstonai:
+                      ai_score: 0.9999
+                      items:
+                      - text: The panther, also known as the black panther, is a magnificent and enigmatic creature that captivates the imagination of many. It is not a distinct species itself, but rather a melanistic variant of leopards and jaguars. The mesmerizing black coat of the panther is a result of a genetic mutation that increases the production of dark pigment, melanin.
+                        prediction: ai-generated
+                        ai_score: 0.9968
+                        ai_score_detail: 0.9968
+                      - text: Panthers are highly adaptable predators, found primarily in dense forests and jungles across Africa, Asia, and the Americas. Their stealthy nature and exceptional agility make them formidable hunters. They are solitary creatures, preferring to roam alone in their vast territories, which can span over a hundred square miles.
+                        prediction: ai-generated
+                        ai_score: 0.9997
+                        ai_score_detail: 0.9997
+                      - text: Equipped with incredible strength and sharp retractable claws, panthers are skilled climbers and swimmers. Their keen senses, including sharp vision and acute hearing, aid them in locating prey, often stalking their victims from the cover of trees or thick underbrush before launching a precise and powerful attack. The diet of a panther consists mainly of deer, wild boar, and smaller mammals.
+                        prediction: ai-generated
+                        ai_score: 0.9998
+                        ai_score_detail: 0.9998
+                      - text: However, they are opportunistic hunters and can also target livestock and domestic animals in areas where their habitats overlap with human settlements. Unfortunately, this sometimes leads to conflicts with humans, resulting in the panther being perceived as a threat.
+                        prediction: ai-generated
+                        ai_score: 0.9994
+                        ai_score_detail: 0.9994
+                      - text: Despite their association with darkness and mystery, panthers play a vital role in maintaining the balance of ecosystems. As apex predators, they help control populations of herbivores, preventing overgrazing and maintaining healthy prey dynamics. Conservation efforts are crucial to the survival of panther populations worldwide.
+                        prediction: ai-generated
+                        ai_score: 0.9999
+                        ai_score_detail: 0.9999
+                      - text: Habitat loss, poaching, and illegal wildlife trade pose significant threats to their existence. Various organizations and governments are working tirelessly to protect these magnificent creatures through initiatives such as establishing protected areas, promoting sustainable land use practices, and raising awareness about their importance in the natural world.
+                        prediction: ai-generated
+                        ai_score: 0.9999
+                        ai_score_detail: 0.9999
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+components:
+  schemas:
+    ImageaiDetectionAiDetectionDataClassPredictionEnum:
+      enum:
+      - ai-generated
+      - original
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    imageai_detectionResponseModel:
+      properties:
+        resemble:
+          $ref: '#/components/schemas/imageai_detectionAiDetectionDataClass'
+          default: null
+        winstonai:
+          $ref: '#/components/schemas/imageai_detectionAiDetectionDataClass'
+          default: null
+      title: imageai_detectionResponseModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageai_detectionAiDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    imageai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          maximum: 1
+          minimum: 0
+          title: Ai Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/ImageaiDetectionAiDetectionDataClassPredictionEnum'
+          title: Prediction
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - prediction
+      - status
+      title: imageai_detectionAiDetectionDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    textai_detectionResponseModel:
+      properties:
+        sapling:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+        originalityai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+        winstonai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+      title: textai_detectionResponseModel
+      type: object
+    AiDetectionItem:
+      properties:
+        text:
+          title: Text
+          type: string
+        prediction:
+          title: Prediction
+          type: string
+        ai_score:
+          title: Ai Score
+          type: integer
+        ai_score_detail:
+          title: Ai Score Detail
+          type: integer
+      required:
+      - text
+      - prediction
+      - ai_score
+      - ai_score_detail
+      title: AiDetectionItem
+      type: object
+    textai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          title: Ai Score
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/AiDetectionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - status
+      title: textai_detectionAiDetectionDataClass
+      type: object
+    textai_detectionAiDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        provider_params:
+          type: string
+          description: "\nParameters specific to the provider that you want to send along the request.\n\nit should take a *provider* name as key and an object of parameters as value.\n\nExample:\n\n    {\n      \"deepgram\": {\n        \"filler_words\": true,\n        \"smart_format\": true,\n        \"callback\": \"https://webhook.site/0000\"\n      },\n      \"assembly\": {\n        \"webhook_url\": \"https://webhook.site/0000\"\n      }\n    }\n\nPlease refer to the documentation of each provider to see which parameters to send.\n"
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+      required:
+      - providers
+      - text
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- eden-ai-image-features-openapi.json
+- eden-ai-text-features-openapi.json

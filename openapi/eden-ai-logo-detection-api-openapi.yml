@@ -1,0 +1,417 @@
+openapi: 3.2.0
+info:
+  title: Image Features Logo Detection API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Logo Detection
+paths:
+  /image/logo_detection/:
+    post:
+      operationId: image_logo_detection_create
+      description: 'Available Providers
+
+
+        |Provider|Model|Version|Price|Billing unit|
+
+        |----|----|-------|-----|------------|
+
+        |**google**|-|`v1`|1.5 (per 1000 file)|1 file
+
+        |**microsoft**|-|`v3.2`|1.0 (per 1000 file)|1 file
+
+        |**api4ai**|-|`v1.0.0`|0.25 (per 1000 file)|1 file
+
+        |**api4ai**|**v1**|`v1.0.0`|0.25 (per 1000 file)|1 file
+
+        |**api4ai**|**v2**|`v1.0.0`|0.25 (per 1000 file)|1 file
+
+        |**openai**|-|`v1`|24.0 (per 1000 file)|1 file
+
+        |**openai**|**gpt-4o**|`v1`|24.0 (per 1000 file)|1 file
+
+        |**openai**|**gpt-4-turbo**|`v1`|48.0 (per 1000 file)|1 file
+
+
+        Supported Models
+
+
+        Default Models
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**api4ai**|`v2`|
+
+        |**openai**|`gpt-4o`|'
+      summary: Logo Detection
+      tags:
+      - Logo Detection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imagelogo_detectionLogoDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,microsoft,api4ai,openai
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagelogo_detectionLogoDetectionRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,microsoft,api4ai,openai
+                  file: /edenai/edenai/features/image/samples/data/logo_detection.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imagelogo_detectionResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    google:
+                      items: []
+                      cost: 0.0
+                    microsoft:
+                      items:
+                      - bounding_poly:
+                          vertices:
+                          - x: 301.0
+                            y: 124.0
+                          - x: 543.0
+                            y: 124.0
+                          - x: 543.0
+                            y: 400.0
+                          - x: 301.0
+                            y: 400.0
+                        description: Apple
+                        score: 0.891
+                      cost: 0.0
+                    api4ai:
+                      items:
+                      - bounding_poly:
+                          vertices:
+                          - x: 0.0
+                            y: 0.11240538954734802
+                          - x: 0.997164249420166
+                            y: 0.11240538954734802
+                          - x: 0.997164249420166
+                            y: 0.6311928331851959
+                          - x: 0.0
+                            y: 0.6311928331851959
+                        description: Yahoo
+                        score: 0.8487341403961182
+                      - bounding_poly:
+                          vertices:
+                          - x: 0.0
+                            y: 0.10130736231803894
+                          - x: 1.0
+                            y: 0.10130736231803894
+                          - x: 1.0
+                            y: 0.6678279936313629
+                          - x: 0.0
+                            y: 0.6678279936313629
+                        description: Unicef
+                        score: 0.1362941861152649
+                      cost: 0.0
+                    openai:
+                      items:
+                      - bounding_poly:
+                          vertices:
+                          - x: 0.0
+                            y: 0.0
+                          - x: 40.0
+                            y: 0.0
+                          - x: 40.0
+                            y: 40.0
+                          - x: 0.0
+                            y: 40.0
+                        description: Facebook
+                        score: 0.99
+                      - bounding_poly:
+                          vertices:
+                          - x: 60.0
+                            y: 0.0
+                          - x: 100.0
+                            y: 0.0
+                          - x: 100.0
+                            y: 40.0
+                          - x: 60.0
+                            y: 40.0
+                        description: Apple
+                        score: 0.99
+                      - bounding_poly:
+                          vertices:
+                          - x: 120.0
+                            y: 0.0
+                          - x: 160.0
+                            y: 0.0
+                          - x: 160.0
+                            y: 40.0
+                          - x: 120.0
+                            y: 40.0
+                        description: Amazon
+                        score: 0.99
+                      - bounding_poly:
+                          vertices:
+                          - x: 180.0
+                            y: 0.0
+                          - x: 220.0
+                            y: 0.0
+                          - x: 220.0
+                            y: 40.0
+                          - x: 180.0
+                            y: 40.0
+                        description: Netflix
+                        score: 0.99
+                      - bounding_poly:
+                          vertices:
+                          - x: 240.0
+                            y: 0.0
+                          - x: 280.0
+                            y: 0.0
+                          - x: 280.0
+                            y: 40.0
+                          - x: 240.0
+                            y: 40.0
+                        description: Google
+                        score: 0.99
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imagelogo_detectionLogoDetectionDataClass:
+      properties:
+        items:
+          description: List of the detected brands logo from the image.
+          items:
+            $ref: '#/components/schemas/LogoItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagelogo_detectionLogoDetectionDataClass
+      type: object
+    LogoBoundingPoly:
+      properties:
+        vertices:
+          description: Vertices of the logos in the image
+          items:
+            $ref: '#/components/schemas/LogoVertice'
+          title: Vertices
+          type: array
+      title: LogoBoundingPoly
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LogoVertice:
+      properties:
+        x:
+          description: The x-coordinate of the vertex.
+          title: X
+          type: integer
+        y:
+          description: The y-coordinate of the vertex.
+          title: Y
+          type: integer
+      required:
+      - x
+      - y
+      title: LogoVertice
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imagelogo_detectionResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        smartclick:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+      title: imagelogo_detectionResponseModel
+      type: object
+    imagelogo_detectionLogoDetectionRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LogoItem:
+      properties:
+        bounding_poly:
+          $ref: '#/components/schemas/LogoBoundingPoly'
+          default:
+            vertices: []
+        description:
+          description: Name of the logo
+          title: Description
+          type: string
+        score:
+          description: Confidence score how sure it's this is a real logo.
+          title: Score
+          type: integer
+      required:
+      - description
+      - score
+      title: LogoItem
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

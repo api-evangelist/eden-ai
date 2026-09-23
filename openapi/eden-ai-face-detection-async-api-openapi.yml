@@ -1,0 +1,3788 @@
+openapi: 3.2.0
+info:
+  title: Video Features Face Detection Async API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Face Detection Async
+paths:
+  /video/face_detection_async/:
+    get:
+      operationId: video_face_detection_async_retrieve
+      description: 'Get a list of all jobs launched for this feature. You''ll then be able to use the ID of each one to get its status and results.
+
+
+        Please note that a **job status doesn''t get updated until a get request** is sent.'
+      summary: Face Detection List Jobs
+      tags:
+      - Face Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    jobs:
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 187c32b2-c545-4799-a531-ca563950a4ba
+                      state: finished
+                      created_at: '2026-09-06T00:05:19.620813'
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: ad2fee92-9380-4d17-a66c-5f4b1e5da89b
+                      state: finished
+                      created_at: '2026-09-05T23:05:19.620827'
+                    - providers: '[''google'', ''amazon'']'
+                      nb: 2
+                      nb_ok: 2
+                      public_id: 31370c2c-3543-4622-8593-3e904358c74c
+                      state: finished
+                      created_at: '2026-09-05T22:05:19.620834'
+                  summary: Response Example
+          description: ''
+    post:
+      operationId: video_face_detection_async_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**amazon**|`boto3`|0.1 (per 60 seconde)|60 seconde
+
+        |**google**|`Video intelligence v1`|0.1 (per 60 seconde)|1 seconde'
+      summary: Face Detection Launch Job
+      tags:
+      - Face Detection Async
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon
+                  file: /edenai/edenai/features/video/samples/data/faces.mp4
+                summary: Request Example
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AsyncVideoAnalysisRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: google,amazon
+                  file_url: http://edenai-resource-example.mp4
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LaunchAsyncJobResponse'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 9fb49584-1f04-482a-9095-a0777562ac6c
+                  summary: Response Example
+          description: ''
+    delete:
+      operationId: video_face_detection_async_destroy
+      description: 'Generic class to handle method GET all async job for user
+
+
+        Attributes:
+
+        feature (str): EdenAI feature
+
+        subfeature (str): EdenAI subfeature'
+      summary: Face Detection delete Jobs
+      tags:
+      - Face Detection Async
+      security:
+      - FeatureApiAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /video/face_detection_async/{public_id}/:
+    get:
+      operationId: video_face_detection_async_retrieve_2
+      description: Get the status and results of an async job given its ID.
+      summary: Face Detection Get Job Results
+      parameters:
+      - in: path
+        name: public_id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: response_as_dict
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_base_64
+        schema:
+          type: boolean
+          default: true
+      - in: query
+        name: show_original_response
+        schema:
+          type: boolean
+          default: false
+      tags:
+      - Face Detection Async
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/asyncvideoface_detection_asyncResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    public_id: 18adaa0a-5001-488f-aa1c-781536365c47
+                    status: finished
+                    error: null
+                    results:
+                      google:
+                        error: null
+                        id: 284fec9e-afac-4065-a3fa-93af38438174
+                        final_status: finished
+                        faces:
+                        - offset: 13.913913
+                          bounding_box:
+                            top: 0.1361
+                            left: 0.5031
+                            height: 0.14449999999999996
+                            width: 0.07030000000000003
+                          attributes:
+                            headwear: 0.03838578
+                            frontal_gaze: 0.0034457974
+                            eyes_visible: 0.025488779
+                            glasses: 0.04155526
+                            mouth_open: 0.029833443
+                            smiling: 0.12223822
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 13.313313
+                          bounding_box:
+                            top: 0.2417
+                            left: 0.4938
+                            height: 0.16389999999999993
+                            width: 0.0796
+                          attributes:
+                            headwear: 0.05889566
+                            frontal_gaze: 0.009465863
+                            eyes_visible: 0.06542817
+                            glasses: 0.019892093
+                            mouth_open: 0.032424375
+                            smiling: 0.07588194
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 13.113113
+                          bounding_box:
+                            top: 0.2583
+                            left: 0.4047
+                            height: 0.16110000000000002
+                            width: 0.07810000000000006
+                          attributes:
+                            headwear: 0.018332532
+                            frontal_gaze: 0.019168885
+                            eyes_visible: 0.03755694
+                            glasses: 0.0072018
+                            mouth_open: 0.025600197
+                            smiling: 0.4485456
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 9.409409
+                          bounding_box:
+                            top: 0.2667
+                            left: 0.625
+                            height: 0.1583000000000001
+                            width: 0.0766
+                          attributes:
+                            headwear: 0.0824737
+                            frontal_gaze: 0.0037976685
+                            eyes_visible: 0.04032786
+                            glasses: 0.03795566
+                            mouth_open: 0.03625917
+                            smiling: 0.073833965
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 4.904904
+                          bounding_box:
+                            top: 0.2194
+                            left: 0.6562
+                            height: 0.13059999999999994
+                            width: 0.06410000000000005
+                          attributes:
+                            headwear: 0.06838982
+                            frontal_gaze: 0.0025200215
+                            eyes_visible: 0.03176412
+                            glasses: 0.02724113
+                            mouth_open: 0.030663162
+                            smiling: 0.054266043
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 3.803803
+                          bounding_box:
+                            top: 0.4444
+                            left: 0.2266
+                            height: 0.13059999999999994
+                            width: 0.06399999999999995
+                          attributes:
+                            headwear: 0.074621975
+                            frontal_gaze: 0.00941331
+                            eyes_visible: 0.057561494
+                            glasses: 0.04538096
+                            mouth_open: 0.024297033
+                            smiling: 0.0994726
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.5278
+                            left: 0.2359
+                            height: 0.14439999999999997
+                            width: 0.07030000000000003
+                          attributes:
+                            headwear: 0.02528641
+                            frontal_gaze: 0.0014492692
+                            eyes_visible: 0.006023698
+                            glasses: 0.047199726
+                            mouth_open: 0.016622607
+                            smiling: 0.091800384
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.1694
+                            left: 0.5484
+                            height: 0.19999999999999996
+                            width: 0.09689999999999999
+                          attributes:
+                            headwear: 0.06057389
+                            frontal_gaze: 0.008985922
+                            eyes_visible: 0.33887628
+                            glasses: 0.013402387
+                            mouth_open: 0.9839536
+                            smiling: 0.061919898
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.1944
+                            left: 0.3031
+                            height: 0.22230000000000005
+                            width: 0.10470000000000002
+                          attributes:
+                            headwear: 0.0037947888
+                            frontal_gaze: 0.0022836116
+                            eyes_visible: 0.028041847
+                            glasses: 0.021305878
+                            mouth_open: 0.058450453
+                            smiling: 0.9214829
+                            brightness: null
+                            sharpness: null
+                            pose:
+                              pitch: null
+                              roll: null
+                              yawn: null
+                          landmarks:
+                            eye_left: []
+                            eye_right: []
+                            nose: []
+                            mouth_left: []
+                            mouth_right: []
+                      amazon:
+                        error: null
+                        id: 6225fec4-6b31-45c1-92c0-315ad3b20f89
+                        final_status: finished
+                        faces:
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.2482253462076187
+                            left: 0.3207817077636719
+                            height: 0.16308921575546265
+                            width: 0.08372516930103302
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7382650756835938
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.4773397445678711
+                              roll: -0.10794975280761719
+                              yawn: 0.30112924575805666
+                          landmarks:
+                            eye_left:
+                            - 0.3614456057548523
+                            - 0.32598286867141724
+                            eye_right:
+                            - 0.3878452479839325
+                            - 0.3203766942024231
+                            nose:
+                            - 0.38039281964302063
+                            - 0.3649798035621643
+                            mouth_left:
+                            - 0.35520246624946594
+                            - 0.3744484484195709
+                            mouth_right:
+                            - 0.37745556235313416
+                            - 0.36920058727264404
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.20581381022930145
+                            left: 0.5739896893501282
+                            height: 0.17640389502048492
+                            width: 0.062253713607788086
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6099150848388671
+                            sharpness: 0.1649492073059082
+                            pose:
+                              pitch: 0.22759347915649414
+                              roll: 0.19723281860351563
+                              yawn: 0.2834208679199219
+                          landmarks:
+                            eye_left:
+                            - 0.6027644276618958
+                            - 0.25605544447898865
+                            eye_right:
+                            - 0.624937891960144
+                            - 0.2680785357952118
+                            nose:
+                            - 0.6226898431777954
+                            - 0.2850388288497925
+                            mouth_left:
+                            - 0.60139000415802
+                            - 0.3189718723297119
+                            mouth_right:
+                            - 0.6196901202201843
+                            - 0.3287646174430847
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.5568276047706604
+                            left: 0.24548324942588806
+                            height: 0.10295359045267105
+                            width: 0.07366683334112167
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7270581817626953
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.23707159042358397
+                              roll: -0.3917021560668945
+                              yawn: 0.7216594696044922
+                          landmarks:
+                            eye_left:
+                            - 0.2801307141780853
+                            - 0.5856233239173889
+                            eye_right:
+                            - 0.2832094728946686
+                            - 0.5747376084327698
+                            nose:
+                            - 0.2961735129356384
+                            - 0.5650503635406494
+                            mouth_left:
+                            - 0.2978937029838562
+                            - 0.5993649959564209
+                            mouth_right:
+                            - 0.30007731914520264
+                            - 0.590384304523468
+                        - offset: 0.0
+                          bounding_box:
+                            top: 0.16891653835773468
+                            left: 0.6557871103286743
+                            height: 0.13050910830497742
+                            width: 0.026932334527373314
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7019806671142578
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.15090816497802734
+                              roll: 0.19113454818725586
+                              yawn: -0.7477842712402344
+                          landmarks:
+                            eye_left:
+                            - 0.6574704051017761
+                            - 0.19500111043453217
+                            eye_right:
+                            - 0.6598822474479675
+                            - 0.19899167120456696
+                            nose:
+                            - 0.6461970210075378
+                            - 0.20388925075531006
+                            mouth_left:
+                            - 0.6525963544845581
+                            - 0.2228042334318161
+                            mouth_right:
+                            - 0.6543674468994141
+                            - 0.22658151388168335
+                        - offset: 0.467
+                          bounding_box:
+                            top: 0.23900972306728363
+                            left: 0.3068747818470001
+                            height: 0.1742333322763443
+                            width: 0.07678725570440292
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.710799560546875
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.3365254592895508
+                              roll: -0.07526155471801758
+                              yawn: 0.09421463012695312
+                          landmarks:
+                            eye_left:
+                            - 0.3353230655193329
+                            - 0.3214784264564514
+                            eye_right:
+                            - 0.3675922155380249
+                            - 0.31333351135253906
+                            nose:
+                            - 0.35599833726882935
+                            - 0.35702604055404663
+                            mouth_left:
+                            - 0.33787697553634644
+                            - 0.3704887330532074
+                            mouth_right:
+                            - 0.3650642931461334
+                            - 0.3635382652282715
+                        - offset: 0.467
+                          bounding_box:
+                            top: 0.21153275668621063
+                            left: 0.5614747405052185
+                            height: 0.16006986796855927
+                            width: 0.06248955801129341
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6641445922851562
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: 0.22983747482299804
+                              roll: 0.1875120544433594
+                              yawn: 0.3085787773132324
+                          landmarks:
+                            eye_left:
+                            - 0.5912485122680664
+                            - 0.2685014307498932
+                            eye_right:
+                            - 0.6132656335830688
+                            - 0.27813658118247986
+                            nose:
+                            - 0.6120043396949768
+                            - 0.2970026135444641
+                            mouth_left:
+                            - 0.5910750031471252
+                            - 0.3296396732330322
+                            mouth_right:
+                            - 0.6092085838317871
+                            - 0.33727797865867615
+                        - offset: 0.967
+                          bounding_box:
+                            top: 0.2624270021915436
+                            left: 0.33634644746780396
+                            height: 0.16271178424358368
+                            width: 0.07856769859790802
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7122397613525391
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.3782940292358398
+                              roll: -0.016047968864440917
+                              yawn: -0.04008260726928711
+                          landmarks:
+                            eye_left:
+                            - 0.3567984998226166
+                            - 0.3363436758518219
+                            eye_right:
+                            - 0.3893800675868988
+                            - 0.3327811360359192
+                            nose:
+                            - 0.37387576699256897
+                            - 0.37398427724838257
+                            mouth_left:
+                            - 0.3633836507797241
+                            - 0.3830031454563141
+                            mouth_right:
+                            - 0.3909211754798889
+                            - 0.3802117109298706
+                        - offset: 0.967
+                          bounding_box:
+                            top: 0.2197563201189041
+                            left: 0.5439249277114868
+                            height: 0.15629111230373383
+                            width: 0.05846848338842392
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.3406288528442383
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.16494979858398437
+                              roll: 0.12304269790649414
+                              yawn: 0.17253198623657226
+                          landmarks:
+                            eye_left:
+                            - 0.5705849528312683
+                            - 0.2811462879180908
+                            eye_right:
+                            - 0.5847407579421997
+                            - 0.27993884682655334
+                            nose:
+                            - 0.588218092918396
+                            - 0.2956677973270416
+                            mouth_left:
+                            - 0.5720670223236084
+                            - 0.33149486780166626
+                            mouth_right:
+                            - 0.5834769010543823
+                            - 0.3298807442188263
+                        - offset: 1.468
+                          bounding_box:
+                            top: 0.22829708456993103
+                            left: 0.5142980813980103
+                            height: 0.16610179841518402
+                            width: 0.06518764793872833
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.5502687072753907
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.16134654998779296
+                              roll: -0.019574230909347533
+                              yawn: 0.21404800415039063
+                          landmarks:
+                            eye_left:
+                            - 0.5391582250595093
+                            - 0.2900879383087158
+                            eye_right:
+                            - 0.5645768046379089
+                            - 0.28386855125427246
+                            nose:
+                            - 0.5623643398284912
+                            - 0.309365451335907
+                            mouth_left:
+                            - 0.546422004699707
+                            - 0.34633108973503113
+                            mouth_right:
+                            - 0.5675109028816223
+                            - 0.34087738394737244
+                        - offset: 1.468
+                          bounding_box:
+                            top: 0.2582591474056244
+                            left: 0.3656918406486511
+                            height: 0.17084762454032898
+                            width: 0.07564325630664825
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7128793334960938
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.29456472396850586
+                              roll: 0.043649296760559085
+                              yawn: -0.05091113090515137
+                          landmarks:
+                            eye_left:
+                            - 0.3839375972747803
+                            - 0.3298777639865875
+                            eye_right:
+                            - 0.41602951288223267
+                            - 0.3328210711479187
+                            nose:
+                            - 0.39778217673301697
+                            - 0.37006640434265137
+                            mouth_left:
+                            - 0.3871428668498993
+                            - 0.38002273440361023
+                            mouth_right:
+                            - 0.4141921103000641
+                            - 0.3827017843723297
+                        - offset: 1.968
+                          bounding_box:
+                            top: 0.24285827577114105
+                            left: 0.4890768527984619
+                            height: 0.14681750535964966
+                            width: 0.0719146728515625
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.691504135131836
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.21001726150512695
+                              roll: -0.22833114624023437
+                              yawn: 0.14202193260192872
+                          landmarks:
+                            eye_left:
+                            - 0.5120893120765686
+                            - 0.3048352301120758
+                            eye_right:
+                            - 0.5359270572662354
+                            - 0.28409242630004883
+                            nose:
+                            - 0.5366584658622742
+                            - 0.30745357275009155
+                            mouth_left:
+                            - 0.5293897986412048
+                            - 0.35068169236183167
+                            mouth_right:
+                            - 0.5491586327552795
+                            - 0.3331648111343384
+                        - offset: 1.968
+                          bounding_box:
+                            top: 0.269928514957428
+                            left: 0.35373300313949585
+                            height: 0.1706061065196991
+                            width: 0.07528109848499298
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7066082000732422
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.29128150939941405
+                              roll: 0.04428085327148437
+                              yawn: -0.041585960388183595
+                          landmarks:
+                            eye_left:
+                            - 0.37197810411453247
+                            - 0.34051966667175293
+                            eye_right:
+                            - 0.4041566848754883
+                            - 0.3436434864997864
+                            nose:
+                            - 0.38590943813323975
+                            - 0.38056933879852295
+                            mouth_left:
+                            - 0.37436121702194214
+                            - 0.39053913950920105
+                            mouth_right:
+                            - 0.40148481726646423
+                            - 0.3933355510234833
+                        - offset: 2.469
+                          bounding_box:
+                            top: 0.2770231068134308
+                            left: 0.4600149691104889
+                            height: 0.13326013088226318
+                            width: 0.07522072643041611
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.5638811492919922
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.39575096130371096
+                              roll: -0.35020965576171875
+                              yawn: 0.11719594955444336
+                          landmarks:
+                            eye_left:
+                            - 0.4798644185066223
+                            - 0.3309122622013092
+                            eye_right:
+                            - 0.5030348300933838
+                            - 0.3018454909324646
+                            nose:
+                            - 0.499004065990448
+                            - 0.3166872262954712
+                            mouth_left:
+                            - 0.5005382299423218
+                            - 0.3628467917442322
+                            mouth_right:
+                            - 0.5198382139205933
+                            - 0.33861759305000305
+                        - offset: 2.469
+                          bounding_box:
+                            top: 0.289128839969635
+                            left: 0.3444349765777588
+                            height: 0.15765585005283356
+                            width: 0.07150392234325409
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6991831970214843
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.4089455032348633
+                              roll: 0.0746841287612915
+                              yawn: -0.09615306854248047
+                          landmarks:
+                            eye_left:
+                            - 0.35834842920303345
+                            - 0.35199540853500366
+                            eye_right:
+                            - 0.3895372152328491
+                            - 0.3566133677959442
+                            nose:
+                            - 0.3702610433101654
+                            - 0.3945773243904114
+                            mouth_left:
+                            - 0.36244910955429077
+                            - 0.40005937218666077
+                            mouth_right:
+                            - 0.38884732127189636
+                            - 0.40430232882499695
+                        - offset: 2.969
+                          bounding_box:
+                            top: 0.2809487581253052
+                            left: 0.3254140615463257
+                            height: 0.1667991280555725
+                            width: 0.0777169018983841
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7149951171875
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.47822879791259765
+                              roll: 0.12746990203857422
+                              yawn: -0.19659982681274413
+                          landmarks:
+                            eye_left:
+                            - 0.33976876735687256
+                            - 0.3473586142063141
+                            eye_right:
+                            - 0.3685714900493622
+                            - 0.35316893458366394
+                            nose:
+                            - 0.3493102192878723
+                            - 0.39305004477500916
+                            mouth_left:
+                            - 0.34725046157836914
+                            - 0.3947656452655792
+                            mouth_right:
+                            - 0.37168997526168823
+                            - 0.4002373516559601
+                        - offset: 2.969
+                          bounding_box:
+                            top: 0.2924427092075348
+                            left: 0.4448201656341553
+                            height: 0.12998268008232117
+                            width: 0.07778482139110565
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.568074836730957
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.386623649597168
+                              roll: -0.4118740463256836
+                              yawn: 0.11062746047973633
+                          landmarks:
+                            eye_left:
+                            - 0.4657980799674988
+                            - 0.3500027060508728
+                            eye_right:
+                            - 0.4871078133583069
+                            - 0.3158942759037018
+                            nose:
+                            - 0.4837109446525574
+                            - 0.3317519426345825
+                            mouth_left:
+                            - 0.4885455071926117
+                            - 0.37746161222457886
+                            mouth_right:
+                            - 0.5062900185585022
+                            - 0.3490559160709381
+                        - offset: 3.47
+                          bounding_box:
+                            top: 0.2791826128959656
+                            left: 0.442953884601593
+                            height: 0.14874199032783508
+                            width: 0.0778512954711914
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6073491668701172
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.27446971893310546
+                              roll: -0.42252857208251954
+                              yawn: 0.10013623237609863
+                          landmarks:
+                            eye_left:
+                            - 0.46515196561813354
+                            - 0.3508029878139496
+                            eye_right:
+                            - 0.4860917925834656
+                            - 0.3141777813434601
+                            nose:
+                            - 0.4853251874446869
+                            - 0.3375622034072876
+                            mouth_left:
+                            - 0.4892212748527527
+                            - 0.3828539550304413
+                            mouth_right:
+                            - 0.5066384673118591
+                            - 0.3522855043411255
+                        - offset: 3.47
+                          bounding_box:
+                            top: 0.31366077065467834
+                            left: 0.31748253107070923
+                            height: 0.15680593252182007
+                            width: 0.0772925391793251
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6421357727050782
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.6067398071289063
+                              roll: 0.24997613906860353
+                              yawn: -0.3029631042480469
+                          landmarks:
+                            eye_left:
+                            - 0.33083492517471313
+                            - 0.3745585083961487
+                            eye_right:
+                            - 0.3494393527507782
+                            - 0.38669466972351074
+                            nose:
+                            - 0.332939088344574
+                            - 0.4188810884952545
+                            mouth_left:
+                            - 0.3410674035549164
+                            - 0.4147099256515503
+                            mouth_right:
+                            - 0.3569055199623108
+                            - 0.42576852440834045
+                        - offset: 3.97
+                          bounding_box:
+                            top: 0.2469833344221115
+                            left: 0.4701120853424072
+                            height: 0.1535707265138626
+                            width: 0.0779091864824295
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6885219573974609
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: 0.12408408164978027
+                              roll: -0.303157844543457
+                              yawn: 0.13979065895080567
+                          landmarks:
+                            eye_left:
+                            - 0.4957032799720764
+                            - 0.318835586309433
+                            eye_right:
+                            - 0.5197170376777649
+                            - 0.29117193818092346
+                            nose:
+                            - 0.5217894315719604
+                            - 0.3210897743701935
+                            mouth_left:
+                            - 0.5150320529937744
+                            - 0.3643539547920227
+                            mouth_right:
+                            - 0.5349773168563843
+                            - 0.34098705649375916
+                        - offset: 3.97
+                          bounding_box:
+                            top: 0.31287723779678345
+                            left: 0.3512497842311859
+                            height: 0.15755170583724976
+                            width: 0.07038531452417374
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6059975051879882
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.6843618011474609
+                              roll: 0.5244950485229493
+                              yawn: -0.2533672142028809
+                          landmarks:
+                            eye_left:
+                            - 0.36502063274383545
+                            - 0.37883177399635315
+                            eye_right:
+                            - 0.37924742698669434
+                            - 0.3942195773124695
+                            nose:
+                            - 0.3547930419445038
+                            - 0.41244134306907654
+                            mouth_left:
+                            - 0.36356955766677856
+                            - 0.3999451994895935
+                            mouth_right:
+                            - 0.3757188618183136
+                            - 0.41373270750045776
+                        - offset: 4.471
+                          bounding_box:
+                            top: 0.24121233820915222
+                            left: 0.5111948847770691
+                            height: 0.1621367633342743
+                            width: 0.06453900039196014
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7548524475097657
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: -0.10425830841064453
+                              roll: -0.17497610092163085
+                              yawn: 0.3512944030761719
+                          landmarks:
+                            eye_left:
+                            - 0.5414785146713257
+                            - 0.3112136423587799
+                            eye_right:
+                            - 0.5624946355819702
+                            - 0.29711291193962097
+                            nose:
+                            - 0.5659894347190857
+                            - 0.33062097430229187
+                            mouth_left:
+                            - 0.5475658178329468
+                            - 0.3624161183834076
+                            mouth_right:
+                            - 0.5650150775909424
+                            - 0.3500843346118927
+                        - offset: 4.471
+                          bounding_box:
+                            top: 0.30734044313430786
+                            left: 0.37382060289382935
+                            height: 0.1618364155292511
+                            width: 0.07396884262561798
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.5818547439575196
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.5946860504150391
+                              roll: 0.4310526657104492
+                              yawn: -0.06075949668884277
+                          landmarks:
+                            eye_left:
+                            - 0.3913421332836151
+                            - 0.3923816382884979
+                            eye_right:
+                            - 0.3973156809806824
+                            - 0.4039766490459442
+                            nose:
+                            - 0.3757980763912201
+                            - 0.4043136537075043
+                            mouth_left:
+                            - 0.3859426975250244
+                            - 0.37756165862083435
+                            mouth_right:
+                            - 0.3912580609321594
+                            - 0.3879739046096802
+                        - offset: 4.471
+                          bounding_box:
+                            top: 0.43308988213539124
+                            left: 0.24856619536876678
+                            height: 0.12205725908279419
+                            width: 0.05301518365740776
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6343801498413086
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: 1.5091635131835937
+                              roll: 1.763344268798828
+                              yawn: 0.6762984466552734
+                          landmarks:
+                            eye_left:
+                            - 0.297524631023407
+                            - 0.47611066699028015
+                            eye_right:
+                            - 0.30191007256507874
+                            - 0.4825507402420044
+                            nose:
+                            - 0.31583109498023987
+                            - 0.48958033323287964
+                            mouth_left:
+                            - 0.29868096113204956
+                            - 0.5129603743553162
+                            mouth_right:
+                            - 0.3020774722099304
+                            - 0.518137514591217
+                        - offset: 4.971
+                          bounding_box:
+                            top: 0.2183266282081604
+                            left: 0.5514860153198242
+                            height: 0.1721893548965454
+                            width: 0.06078972667455673
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6046248626708984
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.04108395099639892
+                              roll: 0.07093077182769775
+                              yawn: 0.4071604156494141
+                          landmarks:
+                            eye_left:
+                            - 0.5846532583236694
+                            - 0.2851668894290924
+                            eye_right:
+                            - 0.6055759787559509
+                            - 0.2880695164203644
+                            nose:
+                            - 0.6055920720100403
+                            - 0.31518125534057617
+                            mouth_left:
+                            - 0.5837544798851013
+                            - 0.3415589928627014
+                            mouth_right:
+                            - 0.6011171936988831
+                            - 0.34356406331062317
+                        - offset: 4.971
+                          bounding_box:
+                            top: 0.27933400869369507
+                            left: 0.36891239881515503
+                            height: 0.16769231855869293
+                            width: 0.07290570437908173
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.576660041809082
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.5364440536499023
+                              roll: 0.4570199584960937
+                              yawn: -0.11573976516723633
+                          landmarks:
+                            eye_left:
+                            - 0.3798009157180786
+                            - 0.33616724610328674
+                            eye_right:
+                            - 0.3981250822544098
+                            - 0.3674319088459015
+                            nose:
+                            - 0.3700191378593445
+                            - 0.3836427330970764
+                            mouth_left:
+                            - 0.37787169218063354
+                            - 0.3832106292247772
+                            mouth_right:
+                            - 0.39324676990509033
+                            - 0.41030260920524597
+                        - offset: 4.971
+                          bounding_box:
+                            top: 0.22334875166416168
+                            left: 0.6664133667945862
+                            height: 0.11823064833879471
+                            width: 0.028342152014374733
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6559632873535156
+                            sharpness: 0.024851987361907957
+                            pose:
+                              pitch: -0.32341617584228516
+                              roll: 0.2385350799560547
+                              yawn: -0.7058424377441406
+                          landmarks:
+                            eye_left:
+                            - 0.6721857786178589
+                            - 0.2647370398044586
+                            eye_right:
+                            - 0.675355851650238
+                            - 0.2628328204154968
+                            nose:
+                            - 0.6615116000175476
+                            - 0.27600815892219543
+                            mouth_left:
+                            - 0.6729434728622437
+                            - 0.28609803318977356
+                            mouth_right:
+                            - 0.6754983067512512
+                            - 0.2852035462856293
+                        - offset: 4.971
+                          bounding_box:
+                            top: 0.37664341926574707
+                            left: 0.2827480733394623
+                            height: 0.09067133069038391
+                            width: 0.03532824665307999
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6635029602050782
+                            sharpness: 0.01866628050804138
+                            pose:
+                              pitch: -0.20957277297973634
+                              roll: 1.011887664794922
+                              yawn: -0.03568403005599976
+                          landmarks:
+                            eye_left:
+                            - 0.3147760033607483
+                            - 0.43541669845581055
+                            eye_right:
+                            - 0.31699252128601074
+                            - 0.45309174060821533
+                            nose:
+                            - 0.3137425184249878
+                            - 0.4725840985774994
+                            mouth_left:
+                            - 0.2980801463127136
+                            - 0.4582129716873169
+                            mouth_right:
+                            - 0.2999395728111267
+                            - 0.47254425287246704
+                        - offset: 5.472
+                          bounding_box:
+                            top: 0.1947600543498993
+                            left: 0.5873342752456665
+                            height: 0.1644253134727478
+                            width: 0.061267852783203125
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6334624862670899
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: 0.35974586486816407
+                              roll: 0.36272605895996096
+                              yawn: 0.4672608947753906
+                          landmarks:
+                            eye_left:
+                            - 0.6240096092224121
+                            - 0.2514769732952118
+                            eye_right:
+                            - 0.6382266283035278
+                            - 0.26588425040245056
+                            nose:
+                            - 0.64444899559021
+                            - 0.2815685570240021
+                            mouth_left:
+                            - 0.6242258548736572
+                            - 0.3077460825443268
+                            mouth_right:
+                            - 0.635798990726471
+                            - 0.31942832469940186
+                        - offset: 5.472
+                          bounding_box:
+                            top: 0.1120854914188385
+                            left: 0.7004586458206177
+                            height: 0.13731500506401062
+                            width: 0.04772648960351944
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6199575805664063
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.2034913444519043
+                              roll: -0.0076824182271957395
+                              yawn: -0.7507686614990234
+                          landmarks:
+                            eye_left:
+                            - 0.7118396162986755
+                            - 0.17796093225479126
+                            eye_right:
+                            - 0.7128856778144836
+                            - 0.17336131632328033
+                            nose:
+                            - 0.7043442726135254
+                            - 0.2040601521730423
+                            mouth_left:
+                            - 0.7218648195266724
+                            - 0.21963390707969666
+                            mouth_right:
+                            - 0.7224749326705933
+                            - 0.21654284000396729
+                        - offset: 5.472
+                          bounding_box:
+                            top: 0.23715652525424957
+                            left: 0.38455629348754883
+                            height: 0.18247412145137787
+                            width: 0.0714743584394455
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6430512237548828
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.5944841003417969
+                              roll: 0.502596321105957
+                              yawn: -0.2567878150939941
+                          landmarks:
+                            eye_left:
+                            - 0.39606234431266785
+                            - 0.2959534823894501
+                            eye_right:
+                            - 0.41577595472335815
+                            - 0.3248012363910675
+                            nose:
+                            - 0.3892117440700531
+                            - 0.3443005383014679
+                            mouth_left:
+                            - 0.39505308866500854
+                            - 0.3477559983730316
+                            mouth_right:
+                            - 0.4115857481956482
+                            - 0.37281328439712524
+                        - offset: 5.472
+                          bounding_box:
+                            top: 0.345314621925354
+                            left: 0.29657116532325745
+                            height: 0.10963185876607895
+                            width: 0.03467423841357231
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8033388519287109
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: 0.7952771759033204
+                              roll: 1.2277076721191407
+                              yawn: 0.8633406829833984
+                          landmarks:
+                            eye_left:
+                            - 0.3242136538028717
+                            - 0.39862000942230225
+                            eye_right:
+                            - 0.32537487149238586
+                            - 0.42244288325309753
+                            nose:
+                            - 0.3167957663536072
+                            - 0.41100361943244934
+                            mouth_left:
+                            - 0.3088822662830353
+                            - 0.39753854274749756
+                            mouth_right:
+                            - 0.30990344285964966
+                            - 0.4174231290817261
+                        - offset: 5.972
+                          bounding_box:
+                            top: 0.16409112513065338
+                            left: 0.7118709087371826
+                            height: 0.12102968245744705
+                            width: 0.054574109613895416
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6136443710327149
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: -0.36784969329833983
+                              roll: 0.06475648403167725
+                              yawn: -0.7646678924560547
+                          landmarks:
+                            eye_left:
+                            - 0.7255262136459351
+                            - 0.22184425592422485
+                            eye_right:
+                            - 0.7284246683120728
+                            - 0.22169309854507446
+                            nose:
+                            - 0.7203433513641357
+                            - 0.24992646276950836
+                            mouth_left:
+                            - 0.7376403212547302
+                            - 0.25935953855514526
+                            mouth_right:
+                            - 0.7399121522903442
+                            - 0.26004886627197266
+                        - offset: 5.972
+                          bounding_box:
+                            top: 0.21220934391021729
+                            left: 0.3813124895095825
+                            height: 0.1876174658536911
+                            width: 0.07107551395893097
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6647689819335938
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.5234045028686524
+                              roll: 0.4292229461669922
+                              yawn: -0.4490299606323242
+                          landmarks:
+                            eye_left:
+                            - 0.3920207619667053
+                            - 0.27375710010528564
+                            eye_right:
+                            - 0.4072175920009613
+                            - 0.29662662744522095
+                            nose:
+                            - 0.38306599855422974
+                            - 0.3207997977733612
+                            mouth_left:
+                            - 0.3949469029903412
+                            - 0.33318957686424255
+                            mouth_right:
+                            - 0.40751615166664124
+                            - 0.3533211350440979
+                        - offset: 5.972
+                          bounding_box:
+                            top: 0.19070027768611908
+                            left: 0.5779880285263062
+                            height: 0.16962386667728424
+                            width: 0.0577029213309288
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.770445556640625
+                            sharpness: 0.1649492073059082
+                            pose:
+                              pitch: 0.4986775970458984
+                              roll: 0.49143035888671877
+                              yawn: 0.47395011901855466
+                          landmarks:
+                            eye_left:
+                            - 0.6119840741157532
+                            - 0.24125510454177856
+                            eye_right:
+                            - 0.6230839490890503
+                            - 0.2607482373714447
+                            nose:
+                            - 0.6323407888412476
+                            - 0.27316543459892273
+                            mouth_left:
+                            - 0.6119384765625
+                            - 0.3003334105014801
+                            mouth_right:
+                            - 0.6207718849182129
+                            - 0.3162219524383545
+                        - offset: 5.972
+                          bounding_box:
+                            top: 0.35138940811157227
+                            left: 0.30132442712783813
+                            height: 0.12510812282562256
+                            width: 0.03788185119628906
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7478917694091797
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.178173828125
+                              roll: 0.15719203948974608
+                              yawn: 0.796867446899414
+                          landmarks:
+                            eye_left:
+                            - 0.3282037079334259
+                            - 0.4109742343425751
+                            eye_right:
+                            - 0.3314482569694519
+                            - 0.4345632791519165
+                            nose:
+                            - 0.3149496614933014
+                            - 0.43252822756767273
+                            mouth_left:
+                            - 0.30650871992111206
+                            - 0.4132651090621948
+                            mouth_right:
+                            - 0.3093511164188385
+                            - 0.4329800009727478
+                        - offset: 6.473
+                          bounding_box:
+                            top: 0.15877820551395416
+                            left: 0.6938343048095703
+                            height: 0.12931828200817108
+                            width: 0.05404844135046005
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.639637336730957
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.5372547531127929
+                              roll: 0.3478340530395508
+                              yawn: -0.625114631652832
+                          landmarks:
+                            eye_left:
+                            - 0.7028049230575562
+                            - 0.20793934166431427
+                            eye_right:
+                            - 0.7107017636299133
+                            - 0.21400149166584015
+                            nose:
+                            - 0.6971379518508911
+                            - 0.23774859309196472
+                            mouth_left:
+                            - 0.7099348306655884
+                            - 0.25075381994247437
+                            mouth_right:
+                            - 0.7163801789283752
+                            - 0.2565526068210602
+                        - offset: 6.473
+                          bounding_box:
+                            top: 0.2249777466058731
+                            left: 0.37434032559394836
+                            height: 0.1785527616739273
+                            width: 0.07099650055170059
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6110932159423829
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.6274467086791993
+                              roll: 0.5050553131103516
+                              yawn: -0.4816922760009766
+                          landmarks:
+                            eye_left:
+                            - 0.3860169053077698
+                            - 0.28427228331565857
+                            eye_right:
+                            - 0.3959977328777313
+                            - 0.3013972043991089
+                            nose:
+                            - 0.37579649686813354
+                            - 0.3290688097476959
+                            mouth_left:
+                            - 0.3927331566810608
+                            - 0.34438517689704895
+                            mouth_right:
+                            - 0.40083441138267517
+                            - 0.35977885127067566
+                        - offset: 6.473
+                          bounding_box:
+                            top: 0.1851387917995453
+                            left: 0.578524649143219
+                            height: 0.17188848555088043
+                            width: 0.06115899235010147
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8241294860839844
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: 0.6064627838134765
+                              roll: 0.5894875717163086
+                              yawn: 0.45230926513671876
+                          landmarks:
+                            eye_left:
+                            - 0.6160550117492676
+                            - 0.23675361275672913
+                            eye_right:
+                            - 0.6242116689682007
+                            - 0.25503870844841003
+                            nose:
+                            - 0.6376401782035828
+                            - 0.26663416624069214
+                            mouth_left:
+                            - 0.6182875037193298
+                            - 0.2965768575668335
+                            mouth_right:
+                            - 0.6245545744895935
+                            - 0.31145063042640686
+                        - offset: 6.473
+                          bounding_box:
+                            top: 0.34759780764579773
+                            left: 0.2969802916049957
+                            height: 0.12464667111635208
+                            width: 0.03982729837298393
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6660501098632813
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: 1.3948872375488282
+                              roll: 1.4878352355957032
+                              yawn: 0.8358543395996094
+                          landmarks:
+                            eye_left:
+                            - 0.32595574855804443
+                            - 0.4066956043243408
+                            eye_right:
+                            - 0.32895153760910034
+                            - 0.41852110624313354
+                            nose:
+                            - 0.32572394609451294
+                            - 0.43501198291778564
+                            mouth_left:
+                            - 0.3116171956062317
+                            - 0.42790359258651733
+                            mouth_right:
+                            - 0.31412824988365173
+                            - 0.4374520182609558
+                        - offset: 6.973
+                          bounding_box:
+                            top: 0.16854612529277802
+                            left: 0.6740738153457642
+                            height: 0.13725721836090088
+                            width: 0.05331831052899361
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.692323989868164
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.16991539001464845
+                              roll: -0.09056486129760742
+                              yawn: -0.7503435516357422
+                          landmarks:
+                            eye_left:
+                            - 0.6876050233840942
+                            - 0.2307276427745819
+                            eye_right:
+                            - 0.6911380887031555
+                            - 0.2280966192483902
+                            nose:
+                            - 0.6826364398002625
+                            - 0.2587248980998993
+                            mouth_left:
+                            - 0.6989673972129822
+                            - 0.2720809578895569
+                            mouth_right:
+                            - 0.7017608284950256
+                            - 0.2706610858440399
+                        - offset: 6.973
+                          bounding_box:
+                            top: 0.2109716683626175
+                            left: 0.36068224906921387
+                            height: 0.18202386796474457
+                            width: 0.06898832321166992
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6164716339111328
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.6277908706665039
+                              roll: 0.5241615295410156
+                              yawn: -0.4347029113769531
+                          landmarks:
+                            eye_left:
+                            - 0.3714662194252014
+                            - 0.27182480692863464
+                            eye_right:
+                            - 0.3831002712249756
+                            - 0.2931964099407196
+                            nose:
+                            - 0.3610827922821045
+                            - 0.31833893060684204
+                            mouth_left:
+                            - 0.3762931525707245
+                            - 0.3306487202644348
+                            mouth_right:
+                            - 0.385824978351593
+                            - 0.34958791732788086
+                        - offset: 6.973
+                          bounding_box:
+                            top: 0.18559497594833374
+                            left: 0.5933566093444824
+                            height: 0.16547545790672302
+                            width: 0.0590968132019043
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8252858734130859
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: 0.6236291122436524
+                              roll: 0.6255385208129883
+                              yawn: 0.3724923324584961
+                          landmarks:
+                            eye_left:
+                            - 0.6285364031791687
+                            - 0.23697131872177124
+                            eye_right:
+                            - 0.637109637260437
+                            - 0.25740811228752136
+                            nose:
+                            - 0.6491132378578186
+                            - 0.2663288414478302
+                            mouth_left:
+                            - 0.6299086809158325
+                            - 0.2934691905975342
+                            mouth_right:
+                            - 0.6365289688110352
+                            - 0.3101311922073364
+                        - offset: 6.973
+                          bounding_box:
+                            top: 0.3377749025821686
+                            left: 0.2804248332977295
+                            height: 0.13312454521656036
+                            width: 0.039553284645080566
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6161178970336914
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 1.3151068115234374
+                              roll: 1.3471939086914062
+                              yawn: 0.8233958435058594
+                          landmarks:
+                            eye_left:
+                            - 0.313118040561676
+                            - 0.3940662741661072
+                            eye_right:
+                            - 0.3183443248271942
+                            - 0.39675042033195496
+                            nose:
+                            - 0.32576584815979004
+                            - 0.4222268760204315
+                            mouth_left:
+                            - 0.30775052309036255
+                            - 0.4366942048072815
+                            mouth_right:
+                            - 0.3119455873966217
+                            - 0.4384099245071411
+                        - offset: 7.474
+                          bounding_box:
+                            top: 0.21616367995738983
+                            left: 0.3288160264492035
+                            height: 0.18494050204753876
+                            width: 0.06871678680181503
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6153944778442383
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.6259669494628907
+                              roll: 0.5416992950439453
+                              yawn: -0.401964111328125
+                          landmarks:
+                            eye_left:
+                            - 0.34088021516799927
+                            - 0.27728164196014404
+                            eye_right:
+                            - 0.3518523573875427
+                            - 0.2995389401912689
+                            nose:
+                            - 0.32876157760620117
+                            - 0.3243967294692993
+                            mouth_left:
+                            - 0.345327764749527
+                            - 0.3369895815849304
+                            mouth_right:
+                            - 0.35428717732429504
+                            - 0.3567747473716736
+                        - offset: 7.474
+                          bounding_box:
+                            top: 0.1928536593914032
+                            left: 0.5954114198684692
+                            height: 0.163480743765831
+                            width: 0.057108066976070404
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7978258514404297
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.5831228256225586
+                              roll: 0.606581916809082
+                              yawn: 0.44563968658447267
+                          landmarks:
+                            eye_left:
+                            - 0.6307655572891235
+                            - 0.2444240003824234
+                            eye_right:
+                            - 0.6398667693138123
+                            - 0.2664547562599182
+                            nose:
+                            - 0.6501497626304626
+                            - 0.27602440118789673
+                            mouth_left:
+                            - 0.6303831338882446
+                            - 0.2999403476715088
+                            mouth_right:
+                            - 0.6375088095664978
+                            - 0.3179551064968109
+                        - offset: 7.474
+                          bounding_box:
+                            top: 0.16546279191970825
+                            left: 0.6768275499343872
+                            height: 0.14147797226905823
+                            width: 0.045705556869506836
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7192690277099609
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: 0.2807354545593262
+                              roll: -0.4120305633544922
+                              yawn: -0.7555253601074219
+                          landmarks:
+                            eye_left:
+                            - 0.6878955960273743
+                            - 0.23490460216999054
+                            eye_right:
+                            - 0.688019871711731
+                            - 0.21800346672534943
+                            nose:
+                            - 0.6773132085800171
+                            - 0.2541307508945465
+                            mouth_left:
+                            - 0.69553142786026
+                            - 0.27873754501342773
+                            mouth_right:
+                            - 0.6953075528144836
+                            - 0.26527658104896545
+                        - offset: 7.474
+                          bounding_box:
+                            top: 0.3659723401069641
+                            left: 0.24582889676094055
+                            height: 0.10993461310863495
+                            width: 0.0342973954975605
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7507518768310547
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: -0.08064810752868652
+                              roll: -0.3217228698730469
+                              yawn: 0.8680576324462891
+                          landmarks:
+                            eye_left:
+                            - 0.2671293616294861
+                            - 0.4054774045944214
+                            eye_right:
+                            - 0.2680374085903168
+                            - 0.40612754225730896
+                            nose:
+                            - 0.28012269735336304
+                            - 0.41066017746925354
+                            mouth_left:
+                            - 0.2728666067123413
+                            - 0.4349111318588257
+                            mouth_right:
+                            - 0.27321258187294006
+                            - 0.43521127104759216
+                        - offset: 7.974
+                          bounding_box:
+                            top: 0.2605838179588318
+                            left: 0.27067339420318604
+                            height: 0.14663580060005188
+                            width: 0.07635350525379181
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.5769867324829101
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.7174626922607422
+                              roll: 0.3782356262207031
+                              yawn: -0.46548053741455075
+                          landmarks:
+                            eye_left:
+                            - 0.2846810221672058
+                            - 0.3152616024017334
+                            eye_right:
+                            - 0.2992647886276245
+                            - 0.3298577070236206
+                            nose:
+                            - 0.2825472950935364
+                            - 0.36040136218070984
+                            mouth_left:
+                            - 0.29712480306625366
+                            - 0.3601101040840149
+                            mouth_right:
+                            - 0.30950456857681274
+                            - 0.3734228014945984
+                        - offset: 7.974
+                          bounding_box:
+                            top: 0.19347722828388214
+                            left: 0.5972191691398621
+                            height: 0.17112191021442413
+                            width: 0.05697502940893173
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.797369384765625
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: 0.5642288589477539
+                              roll: 0.5886643600463867
+                              yawn: 0.5122715377807617
+                          landmarks:
+                            eye_left:
+                            - 0.6333751678466797
+                            - 0.24955745041370392
+                            eye_right:
+                            - 0.6430341601371765
+                            - 0.2676023244857788
+                            nose:
+                            - 0.6514124274253845
+                            - 0.2826905846595764
+                            mouth_left:
+                            - 0.6309030652046204
+                            - 0.30601048469543457
+                            mouth_right:
+                            - 0.6386024355888367
+                            - 0.3206915855407715
+                        - offset: 7.974
+                          bounding_box:
+                            top: 0.22866863012313843
+                            left: 0.6726239919662476
+                            height: 0.13427692651748657
+                            width: 0.039292335510253906
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7034915161132812
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: 0.5745171737670899
+                              roll: -0.5441442489624023
+                              yawn: -0.7286224365234375
+                          landmarks:
+                            eye_left:
+                            - 0.6848875284194946
+                            - 0.31938937306404114
+                            eye_right:
+                            - 0.6802067160606384
+                            - 0.3194197118282318
+                            nose:
+                            - 0.6676188707351685
+                            - 0.30372804403305054
+                            mouth_left:
+                            - 0.6834843754768372
+                            - 0.28472110629081726
+                            mouth_right:
+                            - 0.6796398758888245
+                            - 0.2853599488735199
+                        - offset: 8.475
+                          bounding_box:
+                            top: 0.2656606137752533
+                            left: 0.25488215684890747
+                            height: 0.15458934009075165
+                            width: 0.08712279796600342
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.689755630493164
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.43765140533447267
+                              roll: -0.18007701873779297
+                              yawn: -0.07843775749206543
+                          landmarks:
+                            eye_left:
+                            - 0.28423458337783813
+                            - 0.35112008452415466
+                            eye_right:
+                            - 0.31507983803749084
+                            - 0.33264854550361633
+                            nose:
+                            - 0.3061763346195221
+                            - 0.38231706619262695
+                            mouth_left:
+                            - 0.2965448200702667
+                            - 0.39129677414894104
+                            mouth_right:
+                            - 0.32269224524497986
+                            - 0.37589913606643677
+                        - offset: 8.475
+                          bounding_box:
+                            top: 0.18940407037734985
+                            left: 0.582525372505188
+                            height: 0.1363411545753479
+                            width: 0.06262264400720596
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.855660171508789
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: 0.5181226348876953
+                              roll: 0.36456310272216796
+                              yawn: 0.3939292526245117
+                          landmarks:
+                            eye_left:
+                            - 0.6152724027633667
+                            - 0.23359337449073792
+                            eye_right:
+                            - 0.6281262636184692
+                            - 0.24815116822719574
+                            nose:
+                            - 0.6377602815628052
+                            - 0.25160273909568787
+                            mouth_left:
+                            - 0.6218495965003967
+                            - 0.2797809839248657
+                            mouth_right:
+                            - 0.6321472525596619
+                            - 0.29161056876182556
+                        - offset: 8.475
+                          bounding_box:
+                            top: 0.3140973746776581
+                            left: 0.667000412940979
+                            height: 0.12396693974733353
+                            width: 0.03685341030359268
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6196278381347656
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: 0.2175193214416504
+                              roll: 0.14556970596313476
+                              yawn: -0.7367794799804688
+                          landmarks:
+                            eye_left:
+                            - 0.6623971462249756
+                            - 0.39045995473861694
+                            eye_right:
+                            - 0.6595281362533569
+                            - 0.3710910379886627
+                            nose:
+                            - 0.6613625884056091
+                            - 0.35530155897140503
+                            mouth_left:
+                            - 0.6838669180870056
+                            - 0.3626600503921509
+                            mouth_right:
+                            - 0.6814044713973999
+                            - 0.3471188247203827
+                        - offset: 8.975
+                          bounding_box:
+                            top: 0.25043290853500366
+                            left: 0.30363696813583374
+                            height: 0.15962815284729004
+                            width: 0.0775461196899414
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.668992919921875
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.5875995635986329
+                              roll: -0.32186466217041015
+                              yawn: 0.32003677368164063
+                          landmarks:
+                            eye_left:
+                            - 0.3486241400241852
+                            - 0.33882585167884827
+                            eye_right:
+                            - 0.36898136138916016
+                            - 0.3159659802913666
+                            nose:
+                            - 0.37200167775154114
+                            - 0.36453506350517273
+                            mouth_left:
+                            - 0.34688398241996765
+                            - 0.38139134645462036
+                            mouth_right:
+                            - 0.3640091121196747
+                            - 0.36137351393699646
+                        - offset: 8.975
+                          bounding_box:
+                            top: 0.167531356215477
+                            left: 0.5601381063461304
+                            height: 0.12565326690673828
+                            width: 0.06999330222606659
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7298236846923828
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.503293228149414
+                              roll: 0.10691774368286133
+                              yawn: 0.3220851516723633
+                          landmarks:
+                            eye_left:
+                            - 0.5887131094932556
+                            - 0.20606587827205658
+                            eye_right:
+                            - 0.6097250580787659
+                            - 0.2108115702867508
+                            nose:
+                            - 0.6131923794746399
+                            - 0.21032960712909698
+                            mouth_left:
+                            - 0.600749135017395
+                            - 0.24824026226997375
+                            mouth_right:
+                            - 0.6179900765419006
+                            - 0.2520487606525421
+                        - offset: 8.975
+                          bounding_box:
+                            top: 0.4909549355506897
+                            left: 0.14459271728992462
+                            height: 0.07585585117340088
+                            width: 0.06990186870098114
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.738402099609375
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: 0.1436693000793457
+                              roll: -0.5565933990478515
+                              yawn: 0.8722773742675781
+                          landmarks:
+                            eye_left:
+                            - 0.17540553212165833
+                            - 0.5081385970115662
+                            eye_right:
+                            - 0.16915038228034973
+                            - 0.49554070830345154
+                            nose:
+                            - 0.1808558702468872
+                            - 0.4775190055370331
+                            mouth_left:
+                            - 0.19275668263435364
+                            - 0.5024634003639221
+                            mouth_right:
+                            - 0.18721243739128113
+                            - 0.4923481345176697
+                        - offset: 9.476
+                          bounding_box:
+                            top: 0.29251372814178467
+                            left: 0.30508407950401306
+                            height: 0.14127634465694427
+                            width: 0.08366306126117706
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6623092651367187
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: -0.5150413513183594
+                              roll: 0.08177520751953125
+                              yawn: 0.10022147178649903
+                          landmarks:
+                            eye_left:
+                            - 0.3316022455692291
+                            - 0.35413455963134766
+                            eye_right:
+                            - 0.36492419242858887
+                            - 0.36055824160575867
+                            nose:
+                            - 0.34623485803604126
+                            - 0.40304282307624817
+                            mouth_left:
+                            - 0.32754847407341003
+                            - 0.39747217297554016
+                            mouth_right:
+                            - 0.35584303736686707
+                            - 0.4028925895690918
+                        - offset: 9.476
+                          bounding_box:
+                            top: 0.18255674839019775
+                            left: 0.5268136262893677
+                            height: 0.12943848967552185
+                            width: 0.07669711112976074
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8127347564697266
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: 0.37014522552490237
+                              roll: -0.13090292930603029
+                              yawn: 0.41035396575927735
+                          landmarks:
+                            eye_left:
+                            - 0.5526546239852905
+                            - 0.22581972181797028
+                            eye_right:
+                            - 0.5708280801773071
+                            - 0.21612432599067688
+                            nose:
+                            - 0.5798979997634888
+                            - 0.22199465334415436
+                            mouth_left:
+                            - 0.574126124382019
+                            - 0.26736611127853394
+                            mouth_right:
+                            - 0.5889437198638916
+                            - 0.259075403213501
+                        - offset: 9.476
+                          bounding_box:
+                            top: 0.29307684302330017
+                            left: 0.6310604810714722
+                            height: 0.14261792600154877
+                            width: 0.04312419891357422
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.5564959716796875
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: 0.5952254486083984
+                              roll: -1.1473959350585938
+                              yawn: 0.534617919921875
+                          landmarks:
+                            eye_left:
+                            - 0.641370415687561
+                            - 0.4044479429721832
+                            eye_right:
+                            - 0.6375857591629028
+                            - 0.40216687321662903
+                            nose:
+                            - 0.6249740123748779
+                            - 0.3776688873767853
+                            mouth_left:
+                            - 0.6436029672622681
+                            - 0.35245588421821594
+                            mouth_right:
+                            - 0.6406106948852539
+                            - 0.3512675166130066
+                        - offset: 9.476
+                          bounding_box:
+                            top: 0.5252577066421509
+                            left: 0.15745672583580017
+                            height: 0.07470567524433136
+                            width: 0.07089988142251968
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7735030364990234
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: -0.6793679046630859
+                              roll: -1.6264935302734376
+                              yawn: 0.6428011322021484
+                          landmarks:
+                            eye_left:
+                            - 0.1929246187210083
+                            - 0.5485783219337463
+                            eye_right:
+                            - 0.18656399846076965
+                            - 0.5450391173362732
+                            nose:
+                            - 0.20127196609973907
+                            - 0.5172482132911682
+                            mouth_left:
+                            - 0.2144591510295868
+                            - 0.5419771075248718
+                            mouth_right:
+                            - 0.20867657661437988
+                            - 0.5396350622177124
+                        - offset: 9.976
+                          bounding_box:
+                            top: 0.236397385597229
+                            left: 0.32294708490371704
+                            height: 0.17684385180473328
+                            width: 0.0763343796133995
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6566839599609375
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.46362991333007814
+                              roll: 0.2220933723449707
+                              yawn: -0.11825970649719238
+                          landmarks:
+                            eye_left:
+                            - 0.33745020627975464
+                            - 0.30405011773109436
+                            eye_right:
+                            - 0.367633193731308
+                            - 0.32297924160957336
+                            nose:
+                            - 0.3425997793674469
+                            - 0.35365062952041626
+                            mouth_left:
+                            - 0.33603113889694214
+                            - 0.35446691513061523
+                            mouth_right:
+                            - 0.3615012466907501
+                            - 0.3708130717277527
+                        - offset: 9.976
+                          bounding_box:
+                            top: 0.29640641808509827
+                            left: 0.6514797806739807
+                            height: 0.14912071824073792
+                            width: 0.052344512194395065
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6746133422851562
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.10908012390136719
+                              roll: 0.12624432563781737
+                              yawn: -0.7358920288085937
+                          landmarks:
+                            eye_left:
+                            - 0.6669437885284424
+                            - 0.35083115100860596
+                            eye_right:
+                            - 0.6706874370574951
+                            - 0.35958945751190186
+                            nose:
+                            - 0.6541363000869751
+                            - 0.3758818209171295
+                            mouth_left:
+                            - 0.6660780310630798
+                            - 0.39836010336875916
+                            mouth_right:
+                            - 0.6688315272331238
+                            - 0.4063686430454254
+                        - offset: 9.976
+                          bounding_box:
+                            top: 0.20210064947605133
+                            left: 0.5078783631324768
+                            height: 0.13584978878498077
+                            width: 0.07626590877771378
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7951656341552734
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: 0.2960796737670898
+                              roll: -0.17894441604614258
+                              yawn: 0.3519326782226562
+                          landmarks:
+                            eye_left:
+                            - 0.5320679545402527
+                            - 0.2506662607192993
+                            eye_right:
+                            - 0.5529219508171082
+                            - 0.23280860483646393
+                            nose:
+                            - 0.5591180920600891
+                            - 0.2459462434053421
+                            mouth_left:
+                            - 0.5535642504692078
+                            - 0.2947733700275421
+                            mouth_right:
+                            - 0.5707126259803772
+                            - 0.279632031917572
+                        - offset: 9.976
+                          bounding_box:
+                            top: 0.5107031464576721
+                            left: 0.18999925255775452
+                            height: 0.07608900964260101
+                            width: 0.07344983518123627
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8436985778808593
+                            sharpness: 0.033018569946289066
+                            pose:
+                              pitch: -0.6345602416992188
+                              roll: -1.4918458557128906
+                              yawn: 0.4797710418701172
+                          landmarks:
+                            eye_left:
+                            - 0.23152783513069153
+                            - 0.5341065526008606
+                            eye_right:
+                            - 0.22944016754627228
+                            - 0.5372661352157593
+                            nose:
+                            - 0.2317250519990921
+                            - 0.5070024728775024
+                            mouth_left:
+                            - 0.22706881165504456
+                            - 0.5319766402244568
+                            mouth_right:
+                            - 0.22482964396476746
+                            - 0.5344158411026001
+                        - offset: 10.477
+                          bounding_box:
+                            top: 0.2048330456018448
+                            left: 0.34907639026641846
+                            height: 0.19138547778129578
+                            width: 0.07899153232574463
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7543869018554688
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.21104543685913085
+                              roll: 0.18326932907104493
+                              yawn: -0.11871440887451172
+                          landmarks:
+                            eye_left:
+                            - 0.36719298362731934
+                            - 0.27755478024482727
+                            eye_right:
+                            - 0.3975711166858673
+                            - 0.29559651017189026
+                            nose:
+                            - 0.3724835515022278
+                            - 0.3230530619621277
+                            mouth_left:
+                            - 0.3633154332637787
+                            - 0.3328609764575958
+                            mouth_right:
+                            - 0.38876116275787354
+                            - 0.3483092486858368
+                        - offset: 10.477
+                          bounding_box:
+                            top: 0.21104492247104645
+                            left: 0.5019911527633667
+                            height: 0.15191927552223206
+                            width: 0.07720289379358292
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7993482971191406
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: 0.14026544570922853
+                              roll: -0.25404800415039064
+                              yawn: 0.3583926010131836
+                          landmarks:
+                            eye_left:
+                            - 0.53206866979599
+                            - 0.2734454572200775
+                            eye_right:
+                            - 0.5520208477973938
+                            - 0.2523362338542938
+                            nose:
+                            - 0.5591896176338196
+                            - 0.27157890796661377
+                            mouth_left:
+                            - 0.5522129535675049
+                            - 0.3201455771923065
+                            mouth_right:
+                            - 0.5686265826225281
+                            - 0.3022935390472412
+                        - offset: 10.477
+                          bounding_box:
+                            top: 0.30570122599601746
+                            left: 0.6422040462493896
+                            height: 0.14675262570381165
+                            width: 0.052742768079042435
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7340235137939453
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.010746679306030273
+                              roll: -0.0004034500941634178
+                              yawn: -0.6349742889404297
+                          landmarks:
+                            eye_left:
+                            - 0.6520843505859375
+                            - 0.3610873222351074
+                            eye_right:
+                            - 0.6623761653900146
+                            - 0.3663848340511322
+                            nose:
+                            - 0.6446847915649414
+                            - 0.3877546489238739
+                            mouth_left:
+                            - 0.654417872428894
+                            - 0.4103517234325409
+                            mouth_right:
+                            - 0.6627546548843384
+                            - 0.4153718650341034
+                        - offset: 10.477
+                          bounding_box:
+                            top: 0.479002982378006
+                            left: 0.23356184363365173
+                            height: 0.08706101030111313
+                            width: 0.06854820251464844
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8455039215087891
+                            sharpness: 0.024851987361907957
+                            pose:
+                              pitch: -0.7426654815673828
+                              roll: -1.5958511352539062
+                              yawn: 0.6870778656005859
+                          landmarks:
+                            eye_left:
+                            - 0.27014777064323425
+                            - 0.4899863302707672
+                            eye_right:
+                            - 0.26832836866378784
+                            - 0.49534353613853455
+                            nose:
+                            - 0.266973614692688
+                            - 0.47008252143859863
+                            mouth_left:
+                            - 0.26341280341148376
+                            - 0.4939742088317871
+                            mouth_right:
+                            - 0.261506050825119
+                            - 0.4983888268470764
+                        - offset: 10.977
+                          bounding_box:
+                            top: 0.20087669789791107
+                            left: 0.35357195138931274
+                            height: 0.1899712085723877
+                            width: 0.0786849707365036
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7539628601074219
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.3226202392578125
+                              roll: 0.1921772003173828
+                              yawn: -0.1431863021850586
+                          landmarks:
+                            eye_left:
+                            - 0.3693927228450775
+                            - 0.27197566628456116
+                            eye_right:
+                            - 0.3996308445930481
+                            - 0.28789687156677246
+                            nose:
+                            - 0.3749728202819824
+                            - 0.3180447816848755
+                            mouth_left:
+                            - 0.36833715438842773
+                            - 0.3270706534385681
+                            mouth_right:
+                            - 0.39372754096984863
+                            - 0.3408331871032715
+                        - offset: 10.977
+                          bounding_box:
+                            top: 0.3390805423259735
+                            left: 0.616990864276886
+                            height: 0.15080112218856812
+                            width: 0.058675430715084076
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7577287292480469
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.027238900661468505
+                              roll: -0.11666982650756835
+                              yawn: -0.4383515167236328
+                          landmarks:
+                            eye_left:
+                            - 0.6259974837303162
+                            - 0.399882048368454
+                            eye_right:
+                            - 0.641564667224884
+                            - 0.3919350206851959
+                            nose:
+                            - 0.6246007084846497
+                            - 0.4204902648925781
+                            mouth_left:
+                            - 0.6319241523742676
+                            - 0.44547340273857117
+                            mouth_right:
+                            - 0.6448073983192444
+                            - 0.43926674127578735
+                        - offset: 10.977
+                          bounding_box:
+                            top: 0.24571745097637177
+                            left: 0.49395471811294556
+                            height: 0.15874023735523224
+                            width: 0.07132210582494736
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7528594970703125
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.29908109664916993
+                              roll: -0.34867584228515625
+                              yawn: 0.24871490478515626
+                          landmarks:
+                            eye_left:
+                            - 0.5258235335350037
+                            - 0.3215329349040985
+                            eye_right:
+                            - 0.5480349063873291
+                            - 0.2972393035888672
+                            nose:
+                            - 0.5526622533798218
+                            - 0.3395538628101349
+                            mouth_left:
+                            - 0.5365143418312073
+                            - 0.36844030022621155
+                            mouth_right:
+                            - 0.5550883412361145
+                            - 0.3476182818412781
+                        - offset: 11.478
+                          bounding_box:
+                            top: 0.2445932775735855
+                            left: 0.3547603487968445
+                            height: 0.1691914200782776
+                            width: 0.07603058964014053
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6593028259277344
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.506467399597168
+                              roll: 0.23194654464721678
+                              yawn: -0.16492391586303712
+                          landmarks:
+                            eye_left:
+                            - 0.3673180639743805
+                            - 0.31180450320243835
+                            eye_right:
+                            - 0.3961263597011566
+                            - 0.3270502984523773
+                            nose:
+                            - 0.37229520082473755
+                            - 0.3598974049091339
+                            mouth_left:
+                            - 0.3691346049308777
+                            - 0.3601451516151428
+                            mouth_right:
+                            - 0.3934937119483948
+                            - 0.37347841262817383
+                        - offset: 11.478
+                          bounding_box:
+                            top: 0.316500186920166
+                            left: 0.5864246487617493
+                            height: 0.1477212756872177
+                            width: 0.05777883529663086
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7142793273925782
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.08252290725708007
+                              roll: -0.22307687759399414
+                              yawn: -0.510014762878418
+                          landmarks:
+                            eye_left:
+                            - 0.5931407809257507
+                            - 0.3815958797931671
+                            eye_right:
+                            - 0.6057509183883667
+                            - 0.370820015668869
+                            nose:
+                            - 0.5912740230560303
+                            - 0.4020320475101471
+                            mouth_left:
+                            - 0.6010993719100952
+                            - 0.4263962507247925
+                            mouth_right:
+                            - 0.6114362478256226
+                            - 0.41778114438056946
+                        - offset: 11.478
+                          bounding_box:
+                            top: 0.3260887861251831
+                            left: 0.45261675119400024
+                            height: 0.13488532602787018
+                            width: 0.0724676102399826
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.8496299743652344
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.4211099624633789
+                              roll: -0.248732852935791
+                              yawn: -0.05912953853607178
+                          landmarks:
+                            eye_left:
+                            - 0.4786864221096039
+                            - 0.3987002968788147
+                            eye_right:
+                            - 0.5008828043937683
+                            - 0.3737882077693939
+                            nose:
+                            - 0.49941807985305786
+                            - 0.4192548394203186
+                            mouth_left:
+                            - 0.4946945607662201
+                            - 0.4286896884441376
+                            mouth_right:
+                            - 0.5135895013809204
+                            - 0.407927930355072
+                        - offset: 11.978
+                          bounding_box:
+                            top: 0.30411773920059204
+                            left: 0.561555027961731
+                            height: 0.13452860713005066
+                            width: 0.05745844915509224
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6546599578857422
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.06783530712127686
+                              roll: -0.09115431785583496
+                              yawn: -0.567819938659668
+                          landmarks:
+                            eye_left:
+                            - 0.5688632130622864
+                            - 0.35934948921203613
+                            eye_right:
+                            - 0.5804769992828369
+                            - 0.3600582182407379
+                            nose:
+                            - 0.5640721321105957
+                            - 0.3885059058666229
+                            mouth_left:
+                            - 0.5766621232032776
+                            - 0.4060535132884979
+                            mouth_right:
+                            - 0.5862312316894531
+                            - 0.4073261320590973
+                        - offset: 11.978
+                          bounding_box:
+                            top: 0.260742723941803
+                            left: 0.3582918345928192
+                            height: 0.15923264622688293
+                            width: 0.08095433562994003
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6779241943359375
+                            sharpness: 0.07589449882507324
+                            pose:
+                              pitch: -0.49063663482666015
+                              roll: 0.15790664672851562
+                              yawn: -0.0491895055770874
+                          landmarks:
+                            eye_left:
+                            - 0.3775908946990967
+                            - 0.3220546841621399
+                            eye_right:
+                            - 0.4093256890773773
+                            - 0.33819320797920227
+                            nose:
+                            - 0.38641124963760376
+                            - 0.37193435430526733
+                            mouth_left:
+                            - 0.37566131353378296
+                            - 0.3684752285480499
+                            mouth_right:
+                            - 0.40257468819618225
+                            - 0.38238999247550964
+                        - offset: 12.479
+                          bounding_box:
+                            top: 0.23761293292045593
+                            left: 0.3468279242515564
+                            height: 0.14377562701702118
+                            width: 0.08584773540496826
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7260469818115234
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.5445503234863281
+                              roll: -0.04675606727600098
+                              yawn: 0.23029436111450197
+                          landmarks:
+                            eye_left:
+                            - 0.3844965696334839
+                            - 0.30874574184417725
+                            eye_right:
+                            - 0.4127078652381897
+                            - 0.30807608366012573
+                            nose:
+                            - 0.40028196573257446
+                            - 0.3520326614379883
+                            mouth_left:
+                            - 0.37528425455093384
+                            - 0.35004833340644836
+                            mouth_right:
+                            - 0.3991476893424988
+                            - 0.349048912525177
+                        - offset: 12.479
+                          bounding_box:
+                            top: 0.3577738404273987
+                            left: 0.5352267622947693
+                            height: 0.16336721181869507
+                            width: 0.06075754016637802
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6534645080566406
+                            sharpness: 0.12848764419555664
+                            pose:
+                              pitch: -0.5313656997680664
+                              roll: 0.3099535942077637
+                              yawn: -0.6794786834716797
+                          landmarks:
+                            eye_left:
+                            - 0.5476894974708557
+                            - 0.4722539782524109
+                            eye_right:
+                            - 0.5437382459640503
+                            - 0.44741401076316833
+                            nose:
+                            - 0.546463131904602
+                            - 0.45928576588630676
+                            mouth_left:
+                            - 0.5681443810462952
+                            - 0.4496493935585022
+                            mouth_right:
+                            - 0.5649259686470032
+                            - 0.42937541007995605
+                        - offset: 12.979
+                          bounding_box:
+                            top: 0.2539544701576233
+                            left: 0.3317617177963257
+                            height: 0.13891460001468658
+                            width: 0.0786789208650589
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7093013000488281
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.6392324447631836
+                              roll: -0.2372705841064453
+                              yawn: 0.41899364471435546
+                          landmarks:
+                            eye_left:
+                            - 0.37615516781806946
+                            - 0.3229368031024933
+                            eye_right:
+                            - 0.3945372700691223
+                            - 0.3139350116252899
+                            nose:
+                            - 0.3924485743045807
+                            - 0.35624000430107117
+                            mouth_left:
+                            - 0.36574700474739075
+                            - 0.3619616627693176
+                            mouth_right:
+                            - 0.38125258684158325
+                            - 0.3536418378353119
+                        - offset: 13.48
+                          bounding_box:
+                            top: 0.25614964962005615
+                            left: 0.35486263036727905
+                            height: 0.1275862604379654
+                            width: 0.07066027820110321
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6838735961914062
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -1.0405747985839844
+                              roll: -0.6571669006347656
+                              yawn: 0.5855879211425781
+                          landmarks:
+                            eye_left:
+                            - 0.40173444151878357
+                            - 0.3296395540237427
+                            eye_right:
+                            - 0.40827926993370056
+                            - 0.31856754422187805
+                            nose:
+                            - 0.41177716851234436
+                            - 0.3550303280353546
+                            mouth_left:
+                            - 0.3944559097290039
+                            - 0.35224613547325134
+                            mouth_right:
+                            - 0.40010160207748413
+                            - 0.3423660099506378
+                        - offset: 13.48
+                          bounding_box:
+                            top: 0.2258707880973816
+                            left: 0.438291072845459
+                            height: 0.1591854691505432
+                            width: 0.061013124883174896
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.3162029075622559
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: 0.06221282482147217
+                              roll: -0.16097736358642578
+                              yawn: 0.09882977485656738
+                          landmarks:
+                            eye_left:
+                            - 0.4617324769496918
+                            - 0.2950538396835327
+                            eye_right:
+                            - 0.48516082763671875
+                            - 0.28155553340911865
+                            nose:
+                            - 0.48376011848449707
+                            - 0.3117826581001282
+                            mouth_left:
+                            - 0.4703262746334076
+                            - 0.34328192472457886
+                            mouth_right:
+                            - 0.4898161292076111
+                            - 0.3317307233810425
+                        - offset: 13.98
+                          bounding_box:
+                            top: 0.23832623660564423
+                            left: 0.3363484740257263
+                            height: 0.14078541100025177
+                            width: 0.08698241412639618
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7101451873779296
+                            sharpness: 0.057756686210632326
+                            pose:
+                              pitch: -0.4649413299560547
+                              roll: 0.14279417037963868
+                              yawn: 0.2202740478515625
+                          landmarks:
+                            eye_left:
+                            - 0.3727310597896576
+                            - 0.3025323152542114
+                            eye_right:
+                            - 0.4001469612121582
+                            - 0.3168674409389496
+                            nose:
+                            - 0.38060009479522705
+                            - 0.353053480386734
+                            mouth_left:
+                            - 0.3577515780925751
+                            - 0.3405819833278656
+                            mouth_right:
+                            - 0.38100719451904297
+                            - 0.35239002108573914
+                        - offset: 13.98
+                          bounding_box:
+                            top: 0.21411073207855225
+                            left: 0.4389990270137787
+                            height: 0.13249817490577698
+                            width: 0.0681639164686203
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.6825818634033203
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: 0.4151375961303711
+                              roll: -0.021704661846160888
+                              yawn: 0.1702326774597168
+                          landmarks:
+                            eye_left:
+                            - 0.4631568491458893
+                            - 0.25938913226127625
+                            eye_right:
+                            - 0.48841729760169983
+                            - 0.2577347755432129
+                            nose:
+                            - 0.4864809513092041
+                            - 0.2602881193161011
+                            mouth_left:
+                            - 0.47497478127479553
+                            - 0.30196642875671387
+                            mouth_right:
+                            - 0.49583539366722107
+                            - 0.300493061542511
+                        - offset: 13.98
+                          bounding_box:
+                            top: 0.1389966905117035
+                            left: 0.5056558847427368
+                            height: 0.15001332759857178
+                            width: 0.041938018053770065
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7218522644042968
+                            sharpness: 0.09912903785705567
+                            pose:
+                              pitch: -0.04731866836547852
+                              roll: -0.10763541221618653
+                              yawn: -0.766193618774414
+                          landmarks:
+                            eye_left:
+                            - 0.5174739360809326
+                            - 0.23037013411521912
+                            eye_right:
+                            - 0.5193023085594177
+                            - 0.23133544623851776
+                            nose:
+                            - 0.49948829412460327
+                            - 0.24617482721805573
+                            mouth_left:
+                            - 0.5163272023200989
+                            - 0.23626886308193207
+                            mouth_right:
+                            - 0.5178714990615845
+                            - 0.2379273921251297
+                        - offset: 14.481
+                          bounding_box:
+                            top: 0.23859846591949463
+                            left: 0.3216480612754822
+                            height: 0.1447013020515442
+                            width: 0.08565008640289307
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7240332794189454
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.4097434616088867
+                              roll: 0.20534135818481444
+                              yawn: 0.13713459968566893
+                          landmarks:
+                            eye_left:
+                            - 0.353244811296463
+                            - 0.29764488339424133
+                            eye_right:
+                            - 0.3816046714782715
+                            - 0.31669414043426514
+                            nose:
+                            - 0.3603477478027344
+                            - 0.3470472991466522
+                            mouth_left:
+                            - 0.3411455452442169
+                            - 0.33773720264434814
+                            mouth_right:
+                            - 0.3651633858680725
+                            - 0.35367316007614136
+                        - offset: 14.481
+                          bounding_box:
+                            top: 0.09513121843338013
+                            left: 0.5377917885780334
+                            height: 0.1386154443025589
+                            width: 0.047226715832948685
+                          attributes:
+                            headwear: null
+                            frontal_gaze: null
+                            eyes_visible: null
+                            glasses: null
+                            mouth_open: null
+                            smiling: null
+                            brightness: 0.7452859497070312
+                            sharpness: 0.04374836921691894
+                            pose:
+                              pitch: -0.21563554763793946
+                              roll: 0.04588217258453369
+                              yawn: -0.7602508544921875
+                          landmarks:
+                            eye_left:
+                            - 0.5529460310935974
+                            - 0.17076057195663452
+                            eye_right:
+                            - 0.5539919137954712
+                            - 0.16528122127056122
+                            nose:
+                            - 0.5414773225784302
+                            - 0.18724407255649567
+                            mouth_left:
+                            - 0.5583419799804688
+                            - 0.19037990272045135
+                            mouth_right:
+                            - 0.5591304898262024
+                            - 0.186604306101799
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    asyncvideoface_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoface_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoface_detection_asyncResponseModel
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    videoface_detection_asyncFaceDetectionAsyncDataClass:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/VideoFace'
+          title: Faces
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videoface_detection_asyncFaceDetectionAsyncDataClass
+      type: object
+    VideoFace:
+      properties:
+        offset:
+          title: Offset
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/VideoBoundingBox'
+        attributes:
+          $ref: '#/components/schemas/FaceAttributes'
+        landmarks:
+          $ref: '#/components/schemas/LandmarksVideo'
+      required:
+      - offset
+      - bounding_box
+      - attributes
+      - landmarks
+      title: VideoFace
+      type: object
+    AsyncVideoAnalysisRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mov|mp4|avi)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    FaceAttributes:
+      properties:
+        headwear:
+          title: Headwear
+          type: integer
+        frontal_gaze:
+          title: Frontal Gaze
+          type: integer
+        eyes_visible:
+          title: Eyes Visible
+          type: integer
+        glasses:
+          title: Glasses
+          type: integer
+        mouth_open:
+          title: Mouth Open
+          type: integer
+        smiling:
+          title: Smiling
+          type: integer
+        brightness:
+          title: Brightness
+          type: integer
+        sharpness:
+          title: Sharpness
+          type: integer
+        pose:
+          $ref: '#/components/schemas/VideoFacePoses'
+      required:
+      - headwear
+      - frontal_gaze
+      - eyes_visible
+      - glasses
+      - mouth_open
+      - smiling
+      - brightness
+      - sharpness
+      - pose
+      title: FaceAttributes
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    LandmarksVideo:
+      properties:
+        eye_left:
+          items:
+            type: integer
+          title: Eye Left
+          type: array
+        eye_right:
+          items:
+            type: integer
+          title: Eye Right
+          type: array
+        nose:
+          items:
+            type: integer
+          title: Nose
+          type: array
+        mouth_left:
+          items:
+            type: integer
+          title: Mouth Left
+          type: array
+        mouth_right:
+          items:
+            type: integer
+          title: Mouth Right
+          type: array
+      title: LandmarksVideo
+      type: object
+    videoface_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
+          default: null
+      title: videoface_detection_asyncModel
+      type: object
+    VideoFacePoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yawn:
+          title: Yawn
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yawn
+      title: VideoFacePoses
+      type: object
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    VideoBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoBoundingBox
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

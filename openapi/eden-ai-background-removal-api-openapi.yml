@@ -1,0 +1,278 @@
+openapi: 3.2.0
+info:
+  title: Image Features Background Removal API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Background Removal
+paths:
+  /image/background_removal/:
+    post:
+      operationId: image_background_removal_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**api4ai**|`v1.0.0`|50.0 (per 1000 file)|1 file
+
+        |**photoroom**|`v1`|20.0 (per 1000 file)|1 file
+
+        |**sentisight**|`v3.3.1`|0.75 (per 1000 file)|1 file
+
+        |**stabilityai**|`v2Beta`|0.02 (per 1 request)|1 request
+
+        |**clipdrop**|`v1Beta`|0.5 (per 1 request)|1 request
+
+        |**picsart**|`1.0`|0.04 (per 1 image)|1 image'
+      summary: Background Removal
+      tags:
+      - Background Removal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: api4ai,photoroom,sentisight,stabilityai,clipdrop,picsart
+                  file_url: http://edenai-resource-example.jpg
+                summary: Request Example
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: api4ai,photoroom,sentisight,stabilityai,clipdrop,picsart
+                  file: /edenai/edenai/features/image/samples/data/logo_detection.jpeg
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/imagebackground_removalResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    api4ai:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AADOEUlEQVR4nOz...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/16746f4d-36f8-41d6-b056-7b2e7f8f4594_59a186e7-7611-4824-95bf-668383829eae.PNG?Expires=1700137150&Signature=NUMLwuS6VTsEfGPw6meizQVCk64MgfLuc3YTDds1dEXSwmuF9UC5DyDmlWwE9OFTYjEAetBMfF38kQM7MJRe5Uc8lM7-IABQEeRf9Sk81YE-N7w~X6NGR8evWaWHsyc3rKtmPMoIn14XlnLL~ivFhcFNgi0KTyVWUUg7grunMRczvsnWCrapvxmN-kaiwtCmQ-53rGgdlAJ3ZKsVhfG5aBDCSmgYFBM7E4TyAhjH-gh135mbT6YfsLZJdpkcVS26JUlLlynh-BIMY4hQMu0QM-pUJPsdvuCA0Ydm5BwyXttZYHb7sCQwaVv4XKRAUCs8-EI1YNpje5KPllDRL5GwQA__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    photoroom:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AAEeV0lEQVQIHe3...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/d3a218bd-b4a4-459f-876b-b04281a3d43d_eb1ebd9b-2793-466e-8ce7-fc43b92b8d3e.png?Expires=1700137026&Signature=usE~pIC~nsQ~iK27SBv7FMP4gAbj~~oqhIiHImdNKnQap~vP5g6rEdJaQeXlgE8g~jp4VlqVz26JpfPGGP-bRKxiXPs2ghLNHpPeOGhnuhW7Sd0YGGoradhkW-MWHI6trE08pjd02hMFjCqWEIg0EDpZuVkEVoFHwan~5FNaFAkupLdJihHHECOU8-MIn5-ULcLkkeJD2isDcPB1f0dnuka~pSUXnTcKzddobvmQ5GLuNkdqMONZbWMxv8gOlDpZ-uDyzC4F1cuSNuRMr4rIzSMQBmWExWe-BNb20YWpArJo7ZtGqNo4HFt3AJ-lUcEPAFoPw5VRu0pR9VN8Y9VJfA__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    sentisight:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AAEAAElEQVR4nOz...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/cc59d81c-6714-476d-8c41-2a0ec484194c_aa532fd1-f836-48a1-98de-80beae4ef82a.png?Expires=1700137310&Signature=k4nu7XUFDogMeKI865B-Oo5YUEaIoDq5dZ2DMEwyi3-DhBuEHMpJJcmWG7VVqL5lA2zA0d0cryNiiMtIcgkknUPmpuxMaZFe715JZ1Hj2MJIB3ezdhQUL1lyX7M~OD52e~rFYOu14NCpWlKof-UECH-v3DxVgJcGs5AsF2ZTyUCWF9itlKhhHDbS2M9rPAqbIT9Ng-MBZ8avLlJINCLN9myxe7AO8up5EV~kDrT0jiqR3WC~nzIw82tKxgAf7ADqUAZwIoN7J6XybTiwTm1cUq0bj8ZOs1WcEnVrbmhYGKoUKc-3lLWaXKJBgYA8Tok~vXxaeSYS7tavDulVszFUyw__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    stabilityai:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AAEAAElEQVR4Xpz...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/8108c0b3-2d78-425a-9cde-d65e1d60addb_e5eb2acb-d519-4f51-8817-6caddf681cfc.png?Expires=1700818353&Signature=T2K26YQETMFBLClnAc9wY9PrxC-lm7--YpOUmD6VEqXT6hOokq~WJ4jyU85ibvq~IkFzPjrhIv2hb06-N6frPxrtlm8JC133qfR3Qho9JVvGTbKOUXP465uugw0sG8tavTcnm00o31DlYQwY2zl~XfHxRRmnThJmYaRVXqgJgmgIUKFgSrRiqD2DCFAqAWKZeQ2a6r5TLWN4reNrOBXQLW0CO80FJznIVQwdhPIup5DnCFrgbh~4i3P6cdVodD3Icn1zbXNzBvBqBlTF1aDQ3qfS3Nv81EZqEU-kzYoHGaHgAcLHOfMR0cmIyP6zKN7tGnpNJd9gTpkSUqvpk8TDwQ__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    clipdrop:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AAEAAElEQVR4Xpz...
+                      image_resource_url: https://d14uq1pz7dzsdq.cloudfront.net/e1c478ea-e05f-45c2-86b7-8289bb316680_961bc47a-5b6d-4985-8b98-89714a739323.png?Expires=1714577029&Signature=df2rY23WXTP9FvMTbs~S5Sh5I9PZ62T9g5IDTDBSI7CGkowdpjARrgjcoZ2HmyvUiU9t8LuJJqfK1RVh4as4CKpuSxUG1K52rhi~Sr9rOfCvzosQ5lbPs2vM0y6AhbqEwAYccKRs~BXf2SdfacwUpRzhQRPakE7Q43YPFPff75gFFvcFOuFHVIElKFAUpWqJBigjZP2pTDqUMiawisvWCU2V5HpYzmc-Cf5zDeysVLhU7e4lbvQnyVDfEIwJrsEJZGAin1sLpNRB~iaSQ5Tx0cdj0oYzs-r7AgpoAvKA4G6A8meclG8WaD2r5N7XSZdRE~4OnoOi9H4Nqt4X7m9HaA__&Key-Pair-Id=K1F55BTI9AHGIK
+                      cost: 0.0
+                    picsart:
+                      image_b64: iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAAA+s9J6AAAACXBIWXMAAAs...
+                      image_resource_url: https://cdn.picsart.io/af8ff289-cf65-4fb7-83e9-4e3ac351e7bd.png?type=PNG&to=max&r=0
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imagebackground_removalBackgroundRemovalRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        provider_params:
+          type: string
+          default: {}
+          description: Provider specific parameters
+      required:
+      - providers
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imagebackground_removalResponseModel:
+      properties:
+        photoroom:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        stabilityai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        picsart:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        clipdrop:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+      title: imagebackground_removalResponseModel
+      type: object
+    imagebackground_removalBackgroundRemovalDataClass:
+      properties:
+        image_b64:
+          description: The image in base64 format.
+          title: Image B64
+          type: string
+        image_resource_url:
+          description: The image url.
+          title: Image Resource Url
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - image_b64
+      - image_resource_url
+      - status
+      title: imagebackground_removalBackgroundRemovalDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

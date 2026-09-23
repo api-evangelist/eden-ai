@@ -1,0 +1,805 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Responses API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: Responses
+paths:
+  /v3/responses:
+    post:
+      tags:
+      - Responses
+      summary: Create Response
+      description: Create a model response.
+      operationId: create_response_v3_responses_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponsesBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMResponseObject'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - AuthBearer: []
+  /v3/responses/{response_id}:
+    get:
+      tags:
+      - Responses
+      summary: Retrieve Response
+      description: Retrieve a stored model response by ID.
+      operationId: retrieve_response_v3_responses__response_id__get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: response_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Response Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMResponseObject'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Responses
+      summary: Delete Response
+      description: Delete a stored model response by ID.
+      operationId: delete_response_v3_responses__response_id__delete
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: response_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Response Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponseObject'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ResponseOutputMessage:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          type: string
+          const: message
+          title: Type
+        role:
+          type: string
+          const: assistant
+          title: Role
+        status:
+          type: string
+          title: Status
+        content:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ResponseOutputText'
+            - $ref: '#/components/schemas/ResponseOutputRefusal'
+            - additionalProperties: true
+              type: object
+          type: array
+          title: Content
+      type: object
+      required:
+      - id
+      - type
+      - role
+      - status
+      - content
+      title: ResponseOutputMessage
+    PromptCacheBreakpoint:
+      properties:
+        mode:
+          anyOf:
+          - type: string
+            const: explicit
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: Breakpoint mode. Currently only "explicit" is defined; the known value is advertised in the schema but not enforced, so a new provider value works without an Eden AI release. Leave unset for the provider default.
+      additionalProperties: true
+      type: object
+      title: PromptCacheBreakpoint
+      description: 'Marks the end of a reusable prompt prefix (OpenAI GPT-5.6 and newer).
+
+
+        Set it on the last content part of the stable prefix you want cached: the prompt
+
+        up to and including that part is stored and reused on later requests that share it,
+
+        reducing latency and cost. Providers enforce a minimum token count below which
+
+        caching is skipped. Ignored by models that don''t support explicit cache breakpoints.'
+    DeleteResponseObject:
+      properties:
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: response.deleted
+          title: Object
+          default: response.deleted
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - id
+      - deleted
+      title: DeleteResponseObject
+    ResponseInputImage:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_image
+          title: Type
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        detail:
+          type: string
+          enum:
+          - low
+          - high
+          - auto
+          title: Detail
+          default: auto
+      type: object
+      required:
+      - type
+      title: ResponseInputImage
+    CacheControl:
+      properties:
+        type:
+          type: string
+          const: ephemeral
+          title: Type
+          description: Cache type. Currently only 'ephemeral' is supported.
+        ttl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
+      type: object
+      required:
+      - type
+      title: CacheControl
+      description: 'Prompt-cache marker.
+
+
+        Marks a message (or content part) as a cache boundary so that the prefix
+
+        up to that point is stored and reused on subsequent requests, reducing
+
+        latency and cost. Only a single contiguous cache-marked block is stored
+
+        per request, and providers enforce a minimum token count below which
+
+        caching is silently skipped. Silently ignored by providers that don''t
+
+        support prompt caching.'
+    EasyInputMessage:
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          - developer
+          title: Role
+        content:
+          anyOf:
+          - type: string
+          - items:
+              anyOf:
+              - $ref: '#/components/schemas/ResponseInputText'
+              - $ref: '#/components/schemas/ResponseInputImage'
+              - $ref: '#/components/schemas/ResponseInputFile'
+              - additionalProperties: true
+                type: object
+            type: array
+          title: Content
+        type:
+          type: string
+          const: message
+          title: Type
+          default: message
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+      additionalProperties: true
+      type: object
+      required:
+      - role
+      - content
+      title: EasyInputMessage
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    LLMResponseObject:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: response
+          title: Object
+          default: response
+        created_at:
+          type: integer
+          title: Created At
+        model:
+          type: string
+          title: Model
+        status:
+          type: string
+          title: Status
+        output:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ResponseOutputMessage'
+            - additionalProperties: true
+              type: object
+          type: array
+          title: Output
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+        previous_response_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Response Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/ResponseUsage'
+          - type: 'null'
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      type: object
+      required:
+      - id
+      - created_at
+      - model
+      - status
+      - output
+      title: LLMResponseObject
+    ResponseUsage:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+        output_tokens:
+          type: integer
+          title: Output Tokens
+        total_tokens:
+          type: integer
+          title: Total Tokens
+        input_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input Tokens Details
+        output_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Tokens Details
+      type: object
+      required:
+      - input_tokens
+      - output_tokens
+      - total_tokens
+      title: ResponseUsage
+    ResponseInputFile:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_file
+          title: Type
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        file_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Url
+        file_data:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Data
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - type
+      title: ResponseInputFile
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
+        allow_fallbacks:
+          type: boolean
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+          default: true
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
+    ResponseInputText:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_text
+          title: Type
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
+      - type
+      - text
+      title: ResponseInputText
+    ResponseInputItem:
+      properties:
+        type:
+          type: string
+          title: Type
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: ResponseInputItem
+      description: Non-message input item forwarded to the provider as-is (reasoning, function_call, etc.).
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResponseOutputRefusal:
+      properties:
+        type:
+          type: string
+          const: refusal
+          title: Type
+        refusal:
+          type: string
+          title: Refusal
+      type: object
+      required:
+      - type
+      - refusal
+      title: ResponseOutputRefusal
+    ResponsesBody:
+      properties:
+        routing:
+          anyOf:
+          - $ref: '#/components/schemas/ProviderRoutingPreferences'
+          - type: 'null'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+        fallbacks:
+          anyOf:
+          - items:
+              type: string
+            type: array
+            maxItems: 3
+          - type: 'null'
+          title: Fallbacks
+          description: 'List of fallback model IDs to try if the primary model fails. Models are tried in order. Example: [''anthropic/claude-3-opus'', ''openai/gpt-4o'']'
+        session_id:
+          anyOf:
+          - type: string
+            maxLength: 256
+          - type: 'null'
+          title: Session Id
+          description: Identifies a conversation, so its requests keep reaching the provider that holds its prompt cache. Any stable string you choose — a thread id, a ticket number, an agent run. Also accepted as the `x-session-id` header, for clients that cannot add body fields; the body field wins if both are sent. Without one, a conversation is recognised from its opening messages instead.
+        router_candidates:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 128
+            type: array
+            maxItems: 64
+          - type: 'null'
+          title: Router Candidates
+          description: Models the '@edenai' router may choose BETWEEN — it picks the model, whereas `routing` picks the provider for a model you already named. Used only when model='@edenai'. Each entry is a bare model name (e.g. 'gpt-5.5' — the winner's provider is then picked like any provider-less request) or a 'provider/model' id (e.g. 'openai/gpt-5-nano' — the winner is served by that exact provider). Entries the router cannot rank are skipped and listed under `edenai_metadata.routing.auto.dropped`; entries naming a model already in the list collapse into its earliest spelling, which decides how the winner is returned. The request fails only when no entry is left. If not provided, the router chooses from a default pool of eligible catalog models. At most 64 entries of up to 128 characters each.
+        model:
+          type: string
+          title: Model
+          description: Model identifier, e.g. 'openai/gpt-4o'
+        input:
+          anyOf:
+          - type: string
+          - items:
+              anyOf:
+              - $ref: '#/components/schemas/EasyInputMessage'
+              - $ref: '#/components/schemas/ResponseInputItem'
+            type: array
+          - type: 'null'
+          title: Input
+          description: Text, image, or file inputs to the model. Optional when continuing a conversation via previous_response_id.
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: System/developer instructions prepended to input. Not carried over when using previous_response_id.
+        previous_response_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Response Id
+          description: ID of a prior response to continue a multi-turn conversation. The provider manages conversation state server-side.
+        stream:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Stream
+          description: Whether to stream the response via server-sent events.
+          default: false
+        tools:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Tools
+          description: List of tools the model may call (function, web_search, file_search, etc.).
+        tool_choice:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Tool Choice
+          description: Controls which tool is called. 'auto', 'required', 'none', or a specific tool object.
+        temperature:
+          anyOf:
+          - type: number
+            maximum: 2.0
+            minimum: 0.0
+          - type: 'null'
+          title: Temperature
+        top_p:
+          anyOf:
+          - type: number
+            maximum: 1.0
+            minimum: 0.0
+          - type: 'null'
+          title: Top P
+        max_output_tokens:
+          anyOf:
+          - type: integer
+            minimum: 1.0
+          - type: 'null'
+          title: Max Output Tokens
+        reasoning:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Reasoning
+          description: 'Reasoning configuration, e.g. {''effort'': ''low''|''medium''|''high''}.'
+        truncation:
+          anyOf:
+          - type: string
+            enum:
+            - auto
+            - disabled
+          - type: 'null'
+          title: Truncation
+          description: How to handle context that exceeds the model's context window.
+        store:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Store
+          description: Whether the provider should store the response server-side for later retrieval.
+          default: true
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Up to 16 key-value pairs for tagging.
+        user:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: User
+          description: Stable end-user identifier for abuse detection.
+        prompt_cache_key:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Prompt Cache Key
+          description: 'Prompt-cache routing hint (OpenAI): requests sharing a key and a common prompt prefix are routed to the same cache shard, improving hit rates for high-volume shared prefixes. Forwarded to providers that support it, dropped elsewhere. Also read for provider stickiness when no `session_id` or `x-session-id` is given.'
+        prompt_cache_retention:
+          anyOf:
+          - type: string
+            enum:
+            - in_memory
+            - 24h
+          - type: string
+          - type: 'null'
+          title: Prompt Cache Retention
+          description: 'How long the provider retains the prompt cache — OpenAI currently accepts "in_memory" (provider default, typically 5-10 minutes) and "24h" (extended retention, supported on gpt-5.x and gpt-4.1). The known values are advertised in the schema but not enforced: the value is passed through verbatim for the provider to validate, so new provider values work without an Eden AI release. Dropped for providers that don''t support it.'
+        prompt_cache_options:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheOptions'
+          - type: 'null'
+          description: Request-level prompt-cache settings (mode and ttl) for OpenAI GPT-5.6 and newer models. Ignored by models that don't support prompt caching.
+        parallel_tool_calls:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Parallel Tool Calls
+        text:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Text
+          description: 'Text output configuration, e.g. {''format'': {''type'': ''json_schema'', ...}}.'
+        include:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Include
+          description: Additional output data to include, e.g. 'file_search_call.results'.
+        background:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Background
+          description: Whether to run the model response in the background.
+      type: object
+      required:
+      - model
+      title: ResponsesBody
+    ResponseOutputText:
+      properties:
+        type:
+          type: string
+          const: output_text
+          title: Type
+        text:
+          type: string
+          title: Text
+        annotations:
+          items: {}
+          type: array
+          title: Annotations
+          default: []
+      type: object
+      required:
+      - type
+      - text
+      title: ResponseOutputText
+    PromptCacheOptions:
+      properties:
+        mode:
+          anyOf:
+          - type: string
+            enum:
+            - implicit
+            - explicit
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: '"implicit" (default) caches automatically and also honors any prompt_cache_breakpoint you set; "explicit" caches only the blocks you mark with prompt_cache_breakpoint. Known values are advertised in the schema but not enforced.'
+        ttl:
+          anyOf:
+          - type: string
+            const: 30m
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: How long to keep the prompt cache, e.g. "30m". Leave unset for the provider default. Known values are advertised in the schema but not enforced.
+      additionalProperties: true
+      type: object
+      title: PromptCacheOptions
+      description: 'Request-level prompt-cache settings (OpenAI GPT-5.6 and newer).
+
+
+        Controls how this request''s prompt cache behaves — whether caching happens
+
+        automatically or only on the blocks you mark with ``prompt_cache_breakpoint``, and
+
+        how long the cache is kept. Ignored by models that don''t support prompt caching.'
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

@@ -1,0 +1,574 @@
+openapi: 3.2.0
+info:
+  title: Text Features Spell Check API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: Spell Check
+paths:
+  /text/spell_check/:
+    post:
+      operationId: text_spell_check_create
+      description: 'Available Providers
+
+
+        |Provider|Version|Price|Billing unit|
+
+        |----|-------|-----|------------|
+
+        |**prowritingaid**|`v2`|10.0 (per 1000 request)|1 request
+
+        |**sapling**|`v1`|2.0 (per 1000000 char)|1 char
+
+
+        Supported Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Afrikaans**|`af`|
+
+        |**Albanian**|`sq`|
+
+        |**Amharic**|`am`|
+
+        |**Arabic**|`ar`|
+
+        |**Armenian**|`hy`|
+
+        |**Azerbaijani**|`az`|
+
+        |**Basque**|`eu`|
+
+        |**Belarusian**|`be`|
+
+        |**Bengali**|`bn`|
+
+        |**Bosnian**|`bs`|
+
+        |**Bulgarian**|`bg`|
+
+        |**Burmese**|`my`|
+
+        |**Catalan**|`ca`|
+
+        |**Cebuano**|`ceb`|
+
+        |**Chinese**|`zh`|
+
+        |**Corsican**|`co`|
+
+        |**Croatian**|`hr`|
+
+        |**Czech**|`cs`|
+
+        |**Danish**|`da`|
+
+        |**Dutch**|`nl`|
+
+        |**English**|`en`|
+
+        |**Esperanto**|`eo`|
+
+        |**Estonian**|`et`|
+
+        |**Finnish**|`fi`|
+
+        |**French**|`fr`|
+
+        |**Galician**|`gl`|
+
+        |**Georgian**|`ka`|
+
+        |**German**|`de`|
+
+        |**Gujarati**|`gu`|
+
+        |**Haitian**|`ht`|
+
+        |**Hausa**|`ha`|
+
+        |**Hawaiian**|`haw`|
+
+        |**Hebrew**|`he`|
+
+        |**Hindi**|`hi`|
+
+        |**Hmong**|`hmn`|
+
+        |**Hungarian**|`hu`|
+
+        |**Icelandic**|`is`|
+
+        |**Igbo**|`ig`|
+
+        |**Indonesian**|`id`|
+
+        |**Irish**|`ga`|
+
+        |**Italian**|`it`|
+
+        |**Japanese**|`ja`|
+
+        |**Javanese**|`jv`|
+
+        |**Kannada**|`kn`|
+
+        |**Kazakh**|`kk`|
+
+        |**Khmer**|`km`|
+
+        |**Kinyarwanda**|`rw`|
+
+        |**Kirghiz**|`ky`|
+
+        |**Korean**|`ko`|
+
+        |**Kurdish**|`ku`|
+
+        |**Lao**|`lo`|
+
+        |**Latin**|`la`|
+
+        |**Latvian**|`lv`|
+
+        |**Lithuanian**|`lt`|
+
+        |**Luxembourgish**|`lb`|
+
+        |**Macedonian**|`mk`|
+
+        |**Malagasy**|`mg`|
+
+        |**Malay (macrolanguage)**|`ms`|
+
+        |**Malayalam**|`ml`|
+
+        |**Maltese**|`mt`|
+
+        |**Maori**|`mi`|
+
+        |**Marathi**|`mr`|
+
+        |**Modern Greek (1453-)**|`el`|
+
+        |**Mongolian**|`mn`|
+
+        |**Nepali (macrolanguage)**|`ne`|
+
+        |**Norwegian**|`no`|
+
+        |**Norwegian Bokmål**|`nb`|
+
+        |**Nyanja**|`ny`|
+
+        |**Oriya (macrolanguage)**|`or`|
+
+        |**Panjabi**|`pa`|
+
+        |**Persian**|`fa`|
+
+        |**Polish**|`pl`|
+
+        |**Portuguese**|`pt`|
+
+        |**Pushto**|`ps`|
+
+        |**Romanian**|`ro`|
+
+        |**Russian**|`ru`|
+
+        |**Samoan**|`sm`|
+
+        |**Scottish Gaelic**|`gd`|
+
+        |**Serbian**|`sr`|
+
+        |**Shona**|`sn`|
+
+        |**Sindhi**|`sd`|
+
+        |**Sinhala**|`si`|
+
+        |**Slovak**|`sk`|
+
+        |**Slovenian**|`sl`|
+
+        |**Somali**|`so`|
+
+        |**Southern Sotho**|`st`|
+
+        |**Spanish**|`es`|
+
+        |**Sundanese**|`su`|
+
+        |**Swahili (macrolanguage)**|`sw`|
+
+        |**Swedish**|`sv`|
+
+        |**Tagalog**|`tl`|
+
+        |**Tajik**|`tg`|
+
+        |**Tamil**|`ta`|
+
+        |**Tatar**|`tt`|
+
+        |**Telugu**|`te`|
+
+        |**Thai**|`th`|
+
+        |**Turkish**|`tr`|
+
+        |**Turkmen**|`tk`|
+
+        |**Uighur**|`ug`|
+
+        |**Ukrainian**|`uk`|
+
+        |**Urdu**|`ur`|
+
+        |**Uzbek**|`uz`|
+
+        |**Vietnamese**|`vi`|
+
+        |**Welsh**|`cy`|
+
+        |**Western Frisian**|`fy`|
+
+        |**Xhosa**|`xh`|
+
+        |**Yiddish**|`yi`|
+
+        |**Yoruba**|`yo`|
+
+        |**Zulu**|`zu`|
+
+        |**jp**|`jp`|
+
+
+        Supported Detailed Languages
+
+
+        |Name|Value|
+
+        |----|-----|
+
+        |**Auto detection**|`auto-detect`|
+
+        |**Chinese (China)**|`zh-CN`|
+
+        |**Chinese (Simplified)**|`zh-hans`|
+
+        |**Chinese (Taiwan)**|`zh-TW`|
+
+        |**Chinese (Traditional)**|`zh-hant`|
+
+        |**English (United Kingdom)**|`en-gb`|
+
+        |**Portuguese (Brazil)**|`pt-br`|
+
+        |**Portuguese (Portugal)**|`pt-pt`|'
+      summary: Spell Check
+      tags:
+      - Spell Check
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/textspell_checkSpellCheckRequest'
+            examples:
+              RequestExample:
+                value:
+                  providers: sapling,prowritingaid
+                  language: en
+                  text: Hollo, wrld! How re yu?
+                summary: Request Example
+        required: true
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/textspell_checkResponseModel'
+              examples:
+                ResponseExample:
+                  value:
+                    sapling:
+                      text: Hollo, wrld! How r yu?
+                      items:
+                      - text: Hollo
+                        type: null
+                        offset: 0
+                        length: 5
+                        suggestions:
+                        - suggestion: Hello
+                          score: null
+                      - text: wrld
+                        type: null
+                        offset: 7
+                        length: 4
+                        suggestions:
+                        - suggestion: world
+                          score: null
+                      cost: 0.0
+                    prowritingaid:
+                      text: Hollo, wrld! How r yu?
+                      items:
+                      - text: wrld
+                        type: 'Unknown word: wrld'
+                        offset: 7
+                        length: 4
+                        suggestions:
+                        - suggestion: WRLD
+                          score: null
+                        - suggestion: wild
+                          score: null
+                        - suggestion: weld
+                          score: null
+                      - text: yu
+                        type: 'Unknown word: yu'
+                        offset: 19
+                        length: 2
+                        suggestions:
+                        - suggestion: you
+                          score: null
+                        - suggestion: ye
+                          score: null
+                        - suggestion: ya
+                          score: null
+                        - suggestion: mu
+                          score: null
+                        - suggestion: nu
+                          score: null
+                      cost: 0.0
+                  summary: Response Example
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+          description: ''
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+          description: ''
+components:
+  schemas:
+    SuggestionItem:
+      description: "Represents a suggestion for a misspelled word.\n\nArgs:\n    suggestion (str): The suggested text.\n    score (float, optional): The score of the suggested text (between 0 and 1).\n\nRaises:\n    ValueError: If the score is not between 0 and 1.\n\nReturns:\n    SuggestionItem: An instance of the SuggestionItem class."
+      properties:
+        suggestion:
+          title: Suggestion
+          type: string
+        score:
+          maximum: 1
+          minimum: 0
+          title: Score
+          type: integer
+      required:
+      - suggestion
+      - score
+      title: SuggestionItem
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    textspell_checkResponseModel:
+      properties:
+        sapling:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        xai:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        prowritingaid:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        cohere:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+      title: textspell_checkResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textspell_checkSpellCheckDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/SpellCheckItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: textspell_checkSpellCheckDataClass
+      type: object
+    textspell_checkSpellCheckRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    SpellCheckItem:
+      description: "Represents a spell check item with suggestions.\n\nArgs:\n    text (str): The text to spell check.\n    type (str, optional): The type of the text.\n    offset (int): The offset of the text.\n    length (int): The length of the text.\n    suggestions (Sequence[SuggestionItem], optional): The list of suggestions for the misspelled text.\n\nRaises:\n    ValueError: If the offset or length is not positive.\n\nReturns:\n    SpellCheckItem: An instance of the SpellCheckItem class."
+      properties:
+        text:
+          title: Text
+          type: string
+        type:
+          title: Type
+          type: string
+        offset:
+          minimum: 0
+          title: Offset
+          type: integer
+        length:
+          minimum: 0
+          title: Length
+          type: integer
+        suggestions:
+          items:
+            $ref: '#/components/schemas/SuggestionItem'
+          title: Suggestions
+          type: array
+      required:
+      - text
+      - type
+      - offset
+      - length
+      title: SpellCheckItem
+      type: object
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

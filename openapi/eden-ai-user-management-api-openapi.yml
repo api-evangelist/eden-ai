@@ -1,0 +1,476 @@
+openapi: 3.2.0
+info:
+  title: User Management API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v2
+tags:
+- name: User Management
+paths:
+  /user/custom_token/:
+    get:
+      operationId: user_root_list
+      summary: List Tokens
+      tags:
+      - User Management
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomTokensList'
+          description: ''
+    post:
+      operationId: user_root_create
+      summary: Create new Token
+      tags:
+      - User Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTokensCreateRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTokensCreate'
+          description: ''
+  /user/custom_token/{name}/:
+    get:
+      operationId: user_root_retrieve
+      summary: Retrieve Token
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - User Management
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTokensList'
+          description: ''
+    patch:
+      operationId: user_root_partial_update
+      summary: Update Token
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - User Management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCustomTokenUpdateRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTokenUpdate'
+          description: ''
+    delete:
+      operationId: user_root_destroy
+      summary: Delete Token
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - User Management
+      responses:
+        '204':
+          description: No response body
+  /user/custom_token/{name}/rotate/:
+    post:
+      operationId: user_rotate_create
+      description: 'Rotate a key''s secret in place: same key (name, id, budget, guardrail),
+
+        brand-new ``sk-eden`` value. The old value stops working immediately; the new
+
+        one is returned exactly once. Operates on real ``Token`` rows only — a legacy
+
+        primary/sandbox key (a JWT in a ``User`` column) is regenerated via
+
+        MigrateLegacyKey instead. Mutating, so the session access token is required —
+
+        no API key can rotate itself or others.'
+      summary: Rotate a Token's secret
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        required: true
+      tags:
+      - User Management
+      responses:
+        '200':
+          description: No response body
+  /user/custom_token/legacy/{legacy_type}/regenerate/:
+    post:
+      operationId: user_legacy_regenerate_create
+      description: 'Regenerate a legacy primary/sandbox key — a JWT stored in a ``User`` column,
+
+        not a ``Token`` row — as a real hashed ``sk-eden`` custom key.
+
+
+        Nulls the ``User`` column, which revokes the old JWT immediately in BOTH
+
+        services (edenai-back matches the column in ``auth.py``; aifeatures re-checks
+
+        it against the column on every request), and mints a new key returned exactly
+
+        once. The new key''s name defaults to "Production"/"Sandbox" (auto-suffixed to
+
+        "Production 2" etc. if that name is already taken) and may be overridden in the
+
+        body. Session-only and NOT quota-gated — migrating an existing key is never
+
+        blocked, even at the custom-key cap. The old key can''t authorize its own
+
+        replacement.'
+      summary: Regenerate a legacy primary/sandbox key
+      parameters:
+      - in: path
+        name: legacy_type
+        schema:
+          type: string
+        required: true
+      tags:
+      - User Management
+      responses:
+        '200':
+          description: No response body
+  /user/custom_token/me/:
+    get:
+      operationId: user_me_retrieve
+      description: 'Return info about the API key used to authenticate *this* request — its
+
+        label, masking, budget and remaining balance. The introspection counterpart
+
+        to OpenRouter''s ``GET /key``: authenticated BY the key itself (FeatureAuth),
+
+        never by a session, and it can only ever see its own row. Key management
+
+        (list/create/rotate/delete) lives on the session-only endpoints.'
+      summary: Inspect the calling API key
+      tags:
+      - User Management
+      security:
+      - FeatureApiAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    PatchedCustomTokenUpdateRequest:
+      type: object
+      properties:
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+    CustomTokensCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        balance:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+      required:
+      - name
+    CustomTokenUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+          description: The token name
+        token_type:
+          allOf:
+          - $ref: '#/components/schemas/TokenTypeEnum'
+          readOnly: true
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+      required:
+      - name
+      - token_type
+    CustomTokensList:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The token name
+          maxLength: 200
+        label:
+          type: string
+          readOnly: true
+        masked:
+          type: string
+          description: 'Non-secret display value, e.g. ``sk-eden-live…c5d6``. Owns the
+
+            legacy-JWT vs hash-row duality so every surface (API, admin, shell) masks
+
+            the same way. Falls back to the last 4 of a legacy row''s stored token.'
+          readOnly: true
+        key_prefix:
+          type:
+          - string
+          - 'null'
+          maxLength: 32
+        last4:
+          type:
+          - string
+          - 'null'
+          maxLength: 4
+        revoked:
+          type: boolean
+          readOnly: true
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        balance_reset_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+        legacy:
+          type: boolean
+          readOnly: true
+        synthesized:
+          type: boolean
+          readOnly: true
+      required:
+      - label
+      - legacy
+      - masked
+      - name
+      - revoked
+      - synthesized
+    TokenTypeEnum:
+      enum:
+      - sandbox_api_token
+      - api_token
+      type: string
+      description: '* `sandbox_api_token` - Sandbox
+
+        * `api_token` - Back'
+    CustomTokensCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        balance:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+      required:
+      - name
+    BalanceResetPeriodEnum:
+      enum:
+      - none
+      - daily
+      - weekly
+      - monthly
+      type: string
+      description: '* `none` - None
+
+        * `daily` - Daily
+
+        * `weekly` - Weekly
+
+        * `monthly` - Monthly'
+  securitySchemes:
+    FeatureApiAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

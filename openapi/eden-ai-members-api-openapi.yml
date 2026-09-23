@@ -1,0 +1,135 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Members API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: Members
+paths:
+  /manage/members/:
+    get:
+      operationId: manage_members_list
+      description: '``GET /v3/manage/members`` — the org''s active members and owner. Reuses the
+
+        dashboard''s ``OrganisationUsersSerializer`` and the one ``principals_in_org``
+
+        definition, so the management plane and the dashboard cannot disagree on who is a
+
+        member. Ordered by email for a stable page across requests.'
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - Members
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrganisationUsersList'
+          description: ''
+      summary: Manage members list
+      x-summary-source: derived
+  /manage/members/{email}/role/:
+    patch:
+      operationId: manage_members_role_partial_update
+      description: '``PATCH /v3/manage/members/{email}/role`` -- set a member''s RBAC role. ``manage:write``,
+
+        org-scoped: the member must be a principal of the calling key''s org (else 404). The org owner''s
+
+        role is immutable. Audited (actor = the management key). Returns the updated member in the same
+
+        representation as GET /manage/members.'
+      parameters:
+      - in: path
+        name: email
+        schema:
+          type: string
+        required: true
+      tags:
+      - Members
+      responses:
+        '200':
+          description: No response body
+      summary: Manage members role partial update
+      x-summary-source: derived
+components:
+  schemas:
+    OrganisationUsers:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+          maxLength: 500
+        fullname:
+          type: string
+          pattern: ^[a-zA-Z\'\- ]+$
+          maxLength: 60
+        is_confirmed:
+          type: boolean
+        role:
+          type: string
+          readOnly: true
+        guardrail:
+          type: string
+          readOnly: true
+        effective_rate_limit:
+          type: string
+          readOnly: true
+        tokens:
+          type: string
+          readOnly: true
+        is_org_owner:
+          type: boolean
+          readOnly: true
+        directory_groups:
+          type: string
+          readOnly: true
+      required:
+      - directory_groups
+      - effective_rate_limit
+      - fullname
+      - guardrail
+      - is_org_owner
+      - role
+      - tokens
+    PaginatedOrganisationUsersList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganisationUsers'

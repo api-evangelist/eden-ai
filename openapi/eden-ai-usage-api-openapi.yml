@@ -1,0 +1,25 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Usage API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: Usage
+paths:
+  /manage/usage/:
+    get:
+      operationId: manage_usage_retrieve
+      description: '``GET /v3/manage/usage`` -- organization usage aggregated over History, scoped to the calling
+
+        key''s org (``principals_in_org``). ``manage:read``. ``end`` is exclusive at day granularity; see the
+
+        module docstring for the parameter and envelope contract.'
+      tags:
+      - Usage
+      responses:
+        '200':
+          description: No response body
+      summary: Manage usage retrieve
+      x-summary-source: derived
