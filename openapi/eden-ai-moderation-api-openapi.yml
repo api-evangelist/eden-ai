@@ -441,13 +441,46 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    textmoderationModerationDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        nsfw_likelihood:
+          title: Nsfw Likelihood
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/TextModerationItem'
+          title: Items
+          type: array
+        nsfw_likelihood_score:
+          title: Nsfw Likelihood Score
+          type: integer
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - error
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: textmoderationModerationDataClass
+      type: object
+    textmoderationResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+      title: textmoderationResponseModel
+      type: object
     SubCategoryType:
       enum:
       - CreditCard
@@ -493,73 +526,6 @@ components:
       - Unknown
       title: SubCategoryType
       type: string
-    textmoderationModerationDataClass:
-      properties:
-        nsfw_likelihood:
-          title: Nsfw Likelihood
-          type: integer
-        items:
-          items:
-            $ref: '#/components/schemas/TextModerationItem'
-          title: Items
-          type: array
-        nsfw_likelihood_score:
-          title: Nsfw Likelihood Score
-          type: integer
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - nsfw_likelihood
-      - nsfw_likelihood_score
-      - status
-      title: textmoderationModerationDataClass
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    textmoderationResponseModel:
-      properties:
-        microsoft:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-      title: textmoderationResponseModel
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     CategoryType:
       description: This enum are used to categorize the entities extracted from the text.
       enum:
@@ -573,6 +539,26 @@ components:
       - Other
       title: CategoryType
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     TextModerationItem:
       properties:
         label:
@@ -596,16 +582,6 @@ components:
       - likelihood_score
       title: TextModerationItem
       type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     NestedError:
       type: object
       properties:
@@ -616,6 +592,30 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:

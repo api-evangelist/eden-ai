@@ -172,95 +172,24 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    ocrbank_check_parsingBankCheckParsingDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        extracted_data:
+          items:
+            $ref: '#/components/schemas/ItemBankCheckParsingDataClass'
+          title: Extracted Data
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - error
-    ItemBankCheckParsingDataClass:
-      properties:
-        amount:
-          title: Amount
-          type: integer
-        amount_text:
-          title: Amount Text
-          type: string
-        bank_address:
-          title: Bank Address
-          type: string
-        bank_name:
-          title: Bank Name
-          type: string
-        date:
-          title: Date
-          type: string
-        memo:
-          title: Memo
-          type: string
-        payer_address:
-          title: Payer Address
-          type: string
-        payer_name:
-          title: Payer Name
-          type: string
-        receiver_address:
-          title: Receiver Address
-          type: string
-        receiver_name:
-          title: Receiver Name
-          type: string
-        currency:
-          title: Currency
-          type: string
-        micr:
-          $ref: '#/components/schemas/MicrModel'
-      required:
-      - amount
-      - amount_text
-      - bank_address
-      - bank_name
-      - date
-      - memo
-      - payer_address
-      - payer_name
-      - receiver_address
-      - receiver_name
-      - currency
-      - micr
-      title: ItemBankCheckParsingDataClass
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    MicrModel:
-      properties:
-        raw:
-          title: Raw
-          type: string
-        account_number:
-          title: Account Number
-          type: string
-        routing_number:
-          title: Routing Number
-          type: string
-        serial_number:
-          title: Serial Number
-          type: string
-        check_number:
-          title: Check Number
-          type: string
-      required:
-      - raw
-      - account_number
-      - routing_number
-      - serial_number
-      - check_number
-      title: MicrModel
+      - status
+      title: ocrbank_check_parsingBankCheckParsingDataClass
       type: object
     ocrbank_check_parsingBankCheckParsingRequest:
       type: object
@@ -321,6 +250,11 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FieldError:
       type: object
       properties:
@@ -330,37 +264,64 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ocrbank_check_parsingBankCheckParsingDataClass:
+        details:
+          type: string
+          default: Not Found
+    ItemBankCheckParsingDataClass:
       properties:
-        extracted_data:
-          items:
-            $ref: '#/components/schemas/ItemBankCheckParsingDataClass'
-          title: Extracted Data
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
+        amount:
+          title: Amount
+          type: integer
+        amount_text:
+          title: Amount Text
+          type: string
+        bank_address:
+          title: Bank Address
+          type: string
+        bank_name:
+          title: Bank Name
+          type: string
+        date:
+          title: Date
+          type: string
+        memo:
+          title: Memo
+          type: string
+        payer_address:
+          title: Payer Address
+          type: string
+        payer_name:
+          title: Payer Name
+          type: string
+        receiver_address:
+          title: Receiver Address
+          type: string
+        receiver_name:
+          title: Receiver Name
+          type: string
+        currency:
+          title: Currency
+          type: string
+        micr:
+          $ref: '#/components/schemas/MicrModel'
       required:
-      - status
-      title: ocrbank_check_parsingBankCheckParsingDataClass
+      - amount
+      - amount_text
+      - bank_address
+      - bank_name
+      - date
+      - memo
+      - payer_address
+      - payer_name
+      - receiver_address
+      - receiver_name
+      - currency
+      - micr
+      title: ItemBankCheckParsingDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     NestedError:
       type: object
       properties:
@@ -371,6 +332,13 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -381,6 +349,13 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     ocrbank_check_parsingResponseModel:
       properties:
         mindee:
@@ -396,6 +371,31 @@ components:
           $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
           default: null
       title: ocrbank_check_parsingResponseModel
+      type: object
+    MicrModel:
+      properties:
+        raw:
+          title: Raw
+          type: string
+        account_number:
+          title: Account Number
+          type: string
+        routing_number:
+          title: Routing Number
+          type: string
+        serial_number:
+          title: Serial Number
+          type: string
+        check_number:
+          title: Check Number
+          type: string
+      required:
+      - raw
+      - account_number
+      - routing_number
+      - serial_number
+      - check_number
+      title: MicrModel
       type: object
   securitySchemes:
     FeatureApiAuth:

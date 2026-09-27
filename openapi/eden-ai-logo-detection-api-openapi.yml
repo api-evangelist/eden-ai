@@ -219,6 +219,31 @@ paths:
           description: ''
 components:
   schemas:
+    LogoVertice:
+      properties:
+        x:
+          description: The x-coordinate of the vertex.
+          title: X
+          type: integer
+        y:
+          description: The y-coordinate of the vertex.
+          title: Y
+          type: integer
+      required:
+      - x
+      - y
+      title: LogoVertice
+      type: object
+    LogoBoundingPoly:
+      properties:
+        vertices:
+          description: Vertices of the logos in the image
+          items:
+            $ref: '#/components/schemas/LogoVertice'
+          title: Vertices
+          type: array
+      title: LogoBoundingPoly
+      type: object
     BadRequest:
       type: object
       properties:
@@ -226,6 +251,26 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imagelogo_detectionLogoDetectionDataClass:
       properties:
         items:
@@ -246,46 +291,16 @@ components:
       - status
       title: imagelogo_detectionLogoDetectionDataClass
       type: object
-    LogoBoundingPoly:
-      properties:
-        vertices:
-          description: Vertices of the logos in the image
-          items:
-            $ref: '#/components/schemas/LogoVertice'
-          title: Vertices
-          type: array
-      title: LogoBoundingPoly
-      type: object
-    NotFoundResponse:
+    NestedError:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
-    LogoVertice:
-      properties:
-        x:
-          description: The x-coordinate of the vertex.
-          title: X
-          type: integer
-        y:
-          description: The y-coordinate of the vertex.
-          title: Y
-          type: integer
+        message:
+          type: string
       required:
-      - x
-      - y
-      title: LogoVertice
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
+      - message
+      - type
     Error:
       type: object
       properties:
@@ -293,31 +308,6 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    imagelogo_detectionResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        anthropic:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        smartclick:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-      title: imagelogo_detectionResponseModel
-      type: object
     imagelogo_detectionLogoDetectionRequest:
       type: object
       properties:
@@ -366,11 +356,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     LogoItem:
       properties:
         bounding_poly:
@@ -390,16 +375,6 @@ components:
       - score
       title: LogoItem
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     NestedBadRequest:
       type: object
       properties:
@@ -410,6 +385,31 @@ components:
       required:
       - message
       - type
+    imagelogo_detectionResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        smartclick:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+      title: imagelogo_detectionResponseModel
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

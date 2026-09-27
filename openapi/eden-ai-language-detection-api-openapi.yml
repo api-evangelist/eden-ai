@@ -154,11 +154,67 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    InfosLanguageDetectionDataClass:
+      properties:
+        language:
+          title: Language
+          type: string
+        display_name:
+          title: Display Name
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - language
+      - display_name
+      - confidence
+      title: InfosLanguageDetectionDataClass
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    translationlanguage_detectionLanguageDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosLanguageDetectionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: translationlanguage_detectionLanguageDetectionDataClass
+      type: object
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
     translationlanguage_detectionResponseModel:
@@ -186,52 +242,16 @@ components:
           default: null
       title: translationlanguage_detectionResponseModel
       type: object
-    NotFoundResponse:
+    NestedError:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        message:
+          type: string
       required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    translationlanguage_detectionLanguageDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/InfosLanguageDetectionDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: translationlanguage_detectionLanguageDetectionDataClass
-      type: object
+      - message
+      - type
     translationlanguage_detectionLanguageDetectionRequest:
       type: object
       properties:
@@ -274,33 +294,6 @@ components:
       required:
       - providers
       - text
-    InfosLanguageDetectionDataClass:
-      properties:
-        language:
-          title: Language
-          type: string
-        display_name:
-          title: Display Name
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - language
-      - display_name
-      - confidence
-      title: InfosLanguageDetectionDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     NestedBadRequest:
       type: object
       properties:
@@ -311,6 +304,13 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

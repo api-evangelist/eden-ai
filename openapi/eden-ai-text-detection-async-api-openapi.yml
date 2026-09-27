@@ -5999,13 +5999,6 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     VideoTextFrames:
       properties:
         confidence:
@@ -6022,35 +6015,6 @@ components:
       - bounding_box
       title: VideoTextFrames
       type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     VideoTextBoundingBox:
       properties:
         top:
@@ -6072,6 +6036,191 @@ components:
       - width
       title: VideoTextBoundingBox
       type: object
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    VideoText:
+      properties:
+        text:
+          title: Text
+          type: string
+        frames:
+          items:
+            $ref: '#/components/schemas/VideoTextFrames'
+          title: Frames
+          type: array
+      required:
+      - text
+      title: VideoText
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    videotext_detection_asyncTextDetectionAsyncDataClass:
+      properties:
+        texts:
+          items:
+            $ref: '#/components/schemas/VideoText'
+          title: Texts
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videotext_detection_asyncTextDetectionAsyncDataClass
+      type: object
+    videotext_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+        twelvelabs:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+      title: videotext_detection_asyncModel
+      type: object
+    asyncvideotext_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videotext_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideotext_detection_asyncResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -6123,155 +6272,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    videotext_detection_asyncTextDetectionAsyncDataClass:
-      properties:
-        texts:
-          items:
-            $ref: '#/components/schemas/VideoText'
-          title: Texts
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - id
-      - final_status
-      title: videotext_detection_asyncTextDetectionAsyncDataClass
-      type: object
-    videotext_detection_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-        twelvelabs:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-      title: videotext_detection_asyncModel
-      type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    asyncvideotext_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videotext_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideotext_detection_asyncResponseModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    VideoText:
-      properties:
-        text:
-          title: Text
-          type: string
-        frames:
-          items:
-            $ref: '#/components/schemas/VideoTextFrames'
-          title: Frames
-          type: array
-      required:
-      - text
-      title: VideoText
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

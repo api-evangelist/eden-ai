@@ -281,25 +281,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    DeleteItemResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        item_id:
-          type: string
-          title: Item Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - item_id
-      - deleted
-      title: DeleteItemResponse
-      description: Result of deleting an item from a collection.
     ValidationError:
       properties:
         loc:
@@ -344,6 +325,29 @@ components:
       - model
       title: CollectionResponse
       description: A collection owned by the authenticated user.
+    AddItemRequest:
+      properties:
+        file:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: string
+          title: File
+          description: File to add, as a file id from /v3/upload or a URL. Accepted MIME types depend on the collection's subfeature (images for image/face_recognition).
+      type: object
+      required:
+      - file
+      title: AddItemRequest
+      description: Body for adding an item to a collection.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ItemsResponse:
       properties:
         collection_id:
@@ -362,49 +366,6 @@ components:
       - item_ids
       title: ItemsResponse
       description: Item ids stored in a collection (provider-side ids, passed through).
-    CreateCollectionRequest:
-      properties:
-        model:
-          type: string
-          minLength: 1
-          title: Model
-          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
-        name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Name
-          description: Optional human-readable name for the collection.
-      type: object
-      required:
-      - model
-      title: CreateCollectionRequest
-      description: Body for creating a collection.
-    DeleteCollectionResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - deleted
-      title: DeleteCollectionResponse
-      description: Result of deleting a collection.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ListCollectionsResponse:
       properties:
         items:
@@ -438,20 +399,59 @@ components:
       - total_pages
       title: ListCollectionsResponse
       description: Paginated list of the user's collections.
-    AddItemRequest:
+    DeleteCollectionResponse:
       properties:
-        file:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: string
-          title: File
-          description: File to add, as a file id from /v3/upload or a URL. Accepted MIME types depend on the collection's subfeature (images for image/face_recognition).
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
       type: object
       required:
-      - file
-      title: AddItemRequest
-      description: Body for adding an item to a collection.
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
+    CreateCollectionRequest:
+      properties:
+        model:
+          type: string
+          minLength: 1
+          title: Model
+          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Name
+          description: Optional human-readable name for the collection.
+      type: object
+      required:
+      - model
+      title: CreateCollectionRequest
+      description: Body for creating a collection.
+    DeleteItemResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_id:
+          type: string
+          title: Item Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - item_id
+      - deleted
+      title: DeleteItemResponse
+      description: Result of deleting an item from a collection.
   securitySchemes:
     AuthBearer:
       type: http

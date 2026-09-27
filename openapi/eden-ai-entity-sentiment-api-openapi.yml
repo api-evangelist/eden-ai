@@ -282,39 +282,81 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    Entity:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    textentity_sentimentEntitySentimentDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Entity'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
+        type:
+          description: Recognized Entity type
+          title: Type
+          type: string
+        text:
+          description: Text corresponding to the entity
+          title: Text
+          type: string
+        sentiment:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
+          - $ref: '#/components/schemas/EntitySentimentEnum'
+          title: Sentiment
+        begin_offset:
+          default: null
+          title: Begin Offset
+          type: integer
+        end_offset:
+          default: null
+          title: End Offset
+          type: integer
       required:
-      - items
-      - status
-      title: textentity_sentimentEntitySentimentDataClass
+      - type
+      - text
+      - sentiment
+      title: Entity
       type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textentity_sentimentResponseModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/textentity_sentimentEntitySentimentDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textentity_sentimentEntitySentimentDataClass'
+          default: null
+      title: textentity_sentimentResponseModel
+      type: object
     textentity_sentimentEntitySentimentRequest:
       type: object
       properties:
@@ -362,22 +404,6 @@ components:
       required:
       - providers
       - text
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     EntitySentimentEnum:
       enum:
       - Positive
@@ -385,49 +411,26 @@ components:
       - Neutral
       - Mixed
       type: string
-    Entity:
+    textentity_sentimentEntitySentimentDataClass:
       properties:
-        type:
-          description: Recognized Entity type
-          title: Type
-          type: string
-        text:
-          description: Text corresponding to the entity
-          title: Text
-          type: string
-        sentiment:
+        items:
+          items:
+            $ref: '#/components/schemas/Entity'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
           allOf:
-          - $ref: '#/components/schemas/EntitySentimentEnum'
-          title: Sentiment
-        begin_offset:
-          default: null
-          title: Begin Offset
-          type: integer
-        end_offset:
-          default: null
-          title: End Offset
-          type: integer
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - type
-      - text
-      - sentiment
-      title: Entity
+      - items
+      - status
+      title: textentity_sentimentEntitySentimentDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     NestedBadRequest:
       type: object
       properties:
@@ -438,16 +441,13 @@ components:
       required:
       - message
       - type
-    textentity_sentimentResponseModel:
-      properties:
-        google:
-          $ref: '#/components/schemas/textentity_sentimentEntitySentimentDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/textentity_sentimentEntitySentimentDataClass'
-          default: null
-      title: textentity_sentimentResponseModel
+    BadRequest:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

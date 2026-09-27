@@ -85,34 +85,12 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    textemotion_detectionResponseModel:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    EmotionItem:
-      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
-      properties:
-        emotion:
-          title: Emotion
-          type: string
-        emotion_score:
-          maximum: 100
-          minimum: 0
-          title: Emotion Score
-          type: integer
-      required:
-      - emotion
-      - emotion_score
-      title: EmotionItem
+        vernai:
+          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
+          default: null
+      title: textemotion_detectionResponseModel
       type: object
     FieldError:
       type: object
@@ -123,13 +101,6 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     textemotion_detectionEmotionDetectionRequest:
       type: object
       properties:
@@ -172,38 +143,17 @@ components:
       required:
       - providers
       - text
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    NestedBadRequest:
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    textemotion_detectionResponseModel:
-      properties:
-        vernai:
-          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
-          default: null
-      title: textemotion_detectionResponseModel
-      type: object
+          default: Not Found
     textemotion_detectionEmotionDetectionDataClass:
       properties:
         text:
@@ -227,6 +177,56 @@ components:
       - status
       title: textemotion_detectionEmotionDetectionDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    EmotionItem:
+      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
+      properties:
+        emotion:
+          title: Emotion
+          type: string
+        emotion_score:
+          maximum: 100
+          minimum: 0
+          title: Emotion Score
+          type: integer
+      required:
+      - emotion
+      - emotion_score
+      title: EmotionItem
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

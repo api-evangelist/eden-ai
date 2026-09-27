@@ -303,32 +303,6 @@ paths:
           description: ''
 components:
   schemas:
-    imageobject_detectionObjectDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ObjectItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imageobject_detectionObjectDetectionDataClass
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     imageobject_detectionResponseModel:
       properties:
         clarifai:
@@ -351,6 +325,20 @@ components:
           default: null
       title: imageobject_detectionResponseModel
       type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     imageobject_detectionObjectDetectionRequest:
       type: object
       properties:
@@ -405,27 +393,6 @@ components:
         details:
           type: string
           default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     ObjectItem:
       properties:
         label:
@@ -455,6 +422,25 @@ components:
       - y_max
       title: ObjectItem
       type: object
+    imageobject_detectionObjectDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ObjectItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageobject_detectionObjectDetectionDataClass
+      type: object
     NestedError:
       type: object
       properties:
@@ -465,6 +451,13 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -475,6 +468,13 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

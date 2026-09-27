@@ -127,18 +127,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    FeaturesListResponse:
-      properties:
-        features:
-          items:
-            $ref: '#/components/schemas/FeatureInfo'
-          type: array
-          title: Features
-      type: object
-      required:
-      - features
-      title: FeaturesListResponse
-      description: Response for listing all features.
     ValidationError:
       properties:
         loc:
@@ -160,64 +148,15 @@ components:
       - msg
       - type
       title: ValidationError
-    FeatureInfo:
+    HTTPValidationError:
       properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        subfeatures:
+        detail:
           items:
-            $ref: '#/components/schemas/SubfeatureInfo'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Subfeatures
+          title: Detail
       type: object
-      required:
-      - name
-      - fullname
-      - subfeatures
-      title: FeatureInfo
-      description: Info about a feature and its subfeatures.
-    SubfeatureInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        mode:
-          type: string
-          enum:
-          - sync
-          - async
-          title: Mode
-        models:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Models
-          default: []
-      type: object
-      required:
-      - name
-      - fullname
-      - mode
-      title: SubfeatureInfo
-      description: Info about a subfeature.
+      title: HTTPValidationError
     SubfeatureDetailResponse:
       properties:
         feature:
@@ -274,6 +213,43 @@ components:
       - models
       title: SubfeatureDetailResponse
       description: Detailed response for a specific subfeature.
+    FeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        subfeatures:
+          items:
+            $ref: '#/components/schemas/SubfeatureInfo'
+          type: array
+          title: Subfeatures
+      type: object
+      required:
+      - name
+      - fullname
+      - subfeatures
+      title: FeatureInfo
+      description: Info about a feature and its subfeatures.
+    FeaturesListResponse:
+      properties:
+        features:
+          items:
+            $ref: '#/components/schemas/FeatureInfo'
+          type: array
+          title: Features
+      type: object
+      required:
+      - features
+      title: FeaturesListResponse
+      description: Response for listing all features.
     SchemaFormat:
       type: string
       enum:
@@ -281,15 +257,39 @@ components:
       - json_schema
       title: SchemaFormat
       description: Output format for schema information.
-    HTTPValidationError:
+    SubfeatureInfo:
       properties:
-        detail:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        mode:
+          type: string
+          enum:
+          - sync
+          - async
+          title: Mode
+        models:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            additionalProperties: true
+            type: object
           type: array
-          title: Detail
+          title: Models
+          default: []
       type: object
-      title: HTTPValidationError
+      required:
+      - name
+      - fullname
+      - mode
+      title: SubfeatureInfo
+      description: Info about a subfeature.
   securitySchemes:
     AuthBearer:
       type: http

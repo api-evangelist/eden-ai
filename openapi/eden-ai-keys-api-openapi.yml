@@ -226,7 +226,7 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ManagementKey:
+    ManagementKeyRequest:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
 
@@ -254,49 +254,28 @@ components:
 
         it is regenerated onto the hashed scheme.'
       properties:
-        id:
-          type: string
-          format: uuid
-          readOnly: true
         name:
           type: string
+          minLength: 1
           description: The token name
           maxLength: 200
         token_type:
           $ref: '#/components/schemas/TokenTypeEnum'
-        member:
-          type: string
-          format: email
-          readOnly: true
-        masked:
-          type: string
-          readOnly: true
         active_balance:
           type: boolean
           description: Weither to use the balance field or not.
-        balance:
-          type: string
-          readOnly: true
         expire_time:
           type:
           - string
           - 'null'
           format: date-time
-        revoked:
-          type: boolean
-          readOnly: true
         revoked_at:
           type:
           - string
           - 'null'
           format: date-time
       required:
-      - balance
-      - id
-      - masked
-      - member
       - name
-      - revoked
     TokenTypeEnum:
       enum:
       - sandbox_api_token
@@ -378,7 +357,7 @@ components:
           - string
           - 'null'
           format: date-time
-    ManagementKeyRequest:
+    ManagementKey:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
 
@@ -406,25 +385,46 @@ components:
 
         it is regenerated onto the hashed scheme.'
       properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
         name:
           type: string
-          minLength: 1
           description: The token name
           maxLength: 200
         token_type:
           $ref: '#/components/schemas/TokenTypeEnum'
+        member:
+          type: string
+          format: email
+          readOnly: true
+        masked:
+          type: string
+          readOnly: true
         active_balance:
           type: boolean
           description: Weither to use the balance field or not.
+        balance:
+          type: string
+          readOnly: true
         expire_time:
           type:
           - string
           - 'null'
           format: date-time
+        revoked:
+          type: boolean
+          readOnly: true
         revoked_at:
           type:
           - string
           - 'null'
           format: date-time
       required:
+      - balance
+      - id
+      - masked
+      - member
       - name
+      - revoked

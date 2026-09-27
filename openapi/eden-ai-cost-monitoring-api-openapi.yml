@@ -203,7 +203,7 @@ paths:
           description: ''
   /cost_management/credits/:
     get:
-      operationId: cost_management_<Display Name of your Subfeature>
+      operationId: cost_management_<DisplayNameOfYourSubfeature>
       description: Get you current credits
       summary: My Credits
       tags:
@@ -215,15 +215,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/credits_serializer'
           description: ''
+      x-operation-id-source: normalized
+      x-operation-id-original: cost_management_<Display Name of your Subfeature>
 components:
   schemas:
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     CostMonitoringResponse:
       properties:
         response:
@@ -235,20 +230,25 @@ components:
       - response
       title: CostMonitoringResponse
       type: object
-    credits_serializer:
-      type: object
+    Details:
       properties:
-        credits:
-          type: number
-          format: double
-      required:
-      - credits
-    NotFoundResponse:
-      type: object
-      properties:
+        total_cost:
+          title: Total Cost
+          type: integer
         details:
-          type: string
-          default: Not Found
+          title: Details
+          type: integer
+        cost_per_provider:
+          additionalProperties:
+            type: integer
+          title: Cost Per Provider
+          type: object
+      required:
+      - total_cost
+      - details
+      - cost_per_provider
+      title: Details
+      type: object
     FieldError:
       type: object
       properties:
@@ -258,13 +258,12 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
+        details:
+          type: string
+          default: Not Found
     TokenData:
       properties:
         token:
@@ -292,6 +291,13 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -302,22 +308,18 @@ components:
       required:
       - message
       - type
-    Details:
-      properties:
-        total_cost:
-          title: Total Cost
-          type: integer
-        details:
-          title: Details
-          type: integer
-        cost_per_provider:
-          additionalProperties:
-            type: integer
-          title: Cost Per Provider
-          type: object
-      required:
-      - total_cost
-      - details
-      - cost_per_provider
-      title: Details
+    BadRequest:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    credits_serializer:
+      type: object
+      properties:
+        credits:
+          type: number
+          format: double
+      required:
+      - credits

@@ -115,25 +115,15 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
-    FaceMatch:
-      properties:
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_box:
-          $ref: '#/components/schemas/FaceCompareBoundingBox'
-      required:
-      - confidence
-      - bounding_box
-      title: FaceMatch
-      type: object
+      - <parameter_name>
     StatusEnum:
       enum:
       - sucess
@@ -145,15 +135,16 @@ components:
         details:
           type: string
           default: Not Found
-    FieldError:
+    NestedError:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - <parameter_name>
+      - message
+      - type
     Error:
       type: object
       properties:
@@ -174,45 +165,34 @@ components:
           default: null
       title: imageface_compareResponseModel
       type: object
-    imageface_compareFaceCompareDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/FaceMatch'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imageface_compareFaceCompareDataClass
+    NestedBadRequest:
       type: object
-    FaceCompareBoundingBox:
       properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - top
-      - left
-      - height
-      - width
-      title: FaceCompareBoundingBox
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FaceMatch:
+      properties:
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/FaceCompareBoundingBox'
+      required:
+      - confidence
+      - bounding_box
+      title: FaceMatch
       type: object
     imageface_compareFaceCompareRequest:
       type: object
@@ -273,26 +253,46 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
-      type: object
+    imageface_compareFaceCompareDataClass:
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/FaceMatch'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - message
-      - type
-    NestedBadRequest:
+      - status
+      title: imageface_compareFaceCompareDataClass
       type: object
+    FaceCompareBoundingBox:
       properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
       required:
-      - message
-      - type
+      - top
+      - left
+      - height
+      - width
+      title: FaceCompareBoundingBox
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

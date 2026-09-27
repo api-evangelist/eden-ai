@@ -270,19 +270,51 @@ components:
       - ai-generated
       - original
       type: string
-    BadRequest:
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    imageai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          maximum: 1
+          minimum: 0
+          title: Ai Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/ImageaiDetectionAiDetectionDataClassPredictionEnum'
+          title: Prediction
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - prediction
+      - status
+      title: imageai_detectionAiDetectionDataClass
+      type: object
     imageai_detectionResponseModel:
       properties:
         resemble:
@@ -293,20 +325,38 @@ components:
           default: null
       title: imageai_detectionResponseModel
       type: object
-    FieldError:
+    NestedError:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - <parameter_name>
+      - message
+      - type
     Error:
       type: object
       properties:
         error:
           $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imageai_detectionAiDetectionRequest:
@@ -356,69 +406,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    imageai_detectionAiDetectionDataClass:
-      properties:
-        ai_score:
-          maximum: 1
-          minimum: 0
-          title: Ai Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/ImageaiDetectionAiDetectionDataClassPredictionEnum'
-          title: Prediction
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - ai_score
-      - prediction
-      - status
-      title: imageai_detectionAiDetectionDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    textai_detectionResponseModel:
-      properties:
-        sapling:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-        originalityai:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-        winstonai:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-      title: textai_detectionResponseModel
-      type: object
     AiDetectionItem:
       properties:
         text:
@@ -440,28 +427,18 @@ components:
       - ai_score_detail
       title: AiDetectionItem
       type: object
-    textai_detectionAiDetectionDataClass:
+    textai_detectionResponseModel:
       properties:
-        ai_score:
-          title: Ai Score
-          type: integer
-        items:
-          items:
-            $ref: '#/components/schemas/AiDetectionItem'
-          title: Items
-          type: array
-        original_response:
+        sapling:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
           default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - ai_score
-      - status
-      title: textai_detectionAiDetectionDataClass
+        originalityai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+        winstonai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+      title: textai_detectionResponseModel
       type: object
     textai_detectionAiDetectionRequest:
       type: object
@@ -508,6 +485,29 @@ components:
       required:
       - providers
       - text
+    textai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          title: Ai Score
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/AiDetectionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - status
+      title: textai_detectionAiDetectionDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

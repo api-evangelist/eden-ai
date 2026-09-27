@@ -562,22 +562,119 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
+    asyncvideoexplicit_content_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoexplicit_content_detection_asyncResponseModel
+      type: object
+    AsyncJobList:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
-      - error
-    videoexplicit_content_detection_asyncModel:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    ContentNSFW:
       properties:
-        amazon:
-          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+        timestamp:
+          title: Timestamp
+          type: integer
+        confidence:
+          title: Confidence
+          type: integer
+        category:
+          title: Category
+          type: string
+      required:
+      - timestamp
+      - confidence
+      - category
+      title: ContentNSFW
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass:
+      properties:
+        moderation:
+          items:
+            $ref: '#/components/schemas/ContentNSFW'
+          title: Moderation
+          type: array
+        original_response:
           default: null
-        google:
-          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
           default: null
-      title: videoexplicit_content_detection_asyncModel
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass
       type: object
     StateEnum:
       enum:
@@ -593,12 +690,38 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    NotFoundResponse:
+    NestedError:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    videoexplicit_content_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass'
+          default: null
+      title: videoexplicit_content_detection_asyncModel
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     NestedBadRequest:
       type: object
       properties:
@@ -609,15 +732,21 @@ components:
       required:
       - message
       - type
-    FieldError:
+    BadRequest:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - <parameter_name>
+      - error
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -669,135 +798,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    ContentNSFW:
-      properties:
-        timestamp:
-          title: Timestamp
-          type: integer
-        confidence:
-          title: Confidence
-          type: integer
-        category:
-          title: Category
-          type: string
-      required:
-      - timestamp
-      - confidence
-      - category
-      title: ContentNSFW
-      type: object
-    videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass:
-      properties:
-        moderation:
-          items:
-            $ref: '#/components/schemas/ContentNSFW'
-          title: Moderation
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - id
-      - final_status
-      title: videoexplicit_content_detection_asyncExplicitContentDetectionAsyncDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    asyncvideoexplicit_content_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videoexplicit_content_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideoexplicit_content_detection_asyncResponseModel
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

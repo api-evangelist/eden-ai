@@ -1744,11 +1744,11 @@ tags:
 - Artificial Intelligence
 - AI Gateway
 - LLM
-- Machine-Learning
+- Machine Learning
 - OCR
 - Translation
 - Speech
-- Computer-Vision
+- Computer Vision
 - MCP
 - Emotion Detection
 tags_raw:
@@ -1762,6 +1762,8 @@ tags_raw:
 - Computer Vision
 - Model Context Protocol
 - Emotion Detection
+- Machine-Learning
+- Computer-Vision
 type: Index
 deliveryModel:
   model: saas

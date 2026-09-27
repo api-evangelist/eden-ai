@@ -309,32 +309,62 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    BadRequest:
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
-    imagequestion_answerResponseModel:
-      properties:
-        alephalpha:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-      title: imagequestion_answerResponseModel
-      type: object
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imagequestion_answerQuestionAnswerDataClass:
+      properties:
+        answers:
+          items:
+            type: string
+          title: Answers
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagequestion_answerQuestionAnswerDataClass
+      type: object
     imagequestion_answerQuestionAnswerRequest:
       type: object
       properties:
@@ -400,56 +430,6 @@ components:
           description: The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length.
       required:
       - providers
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imagequestion_answerQuestionAnswerDataClass:
-      properties:
-        answers:
-          items:
-            type: string
-          title: Answers
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imagequestion_answerQuestionAnswerDataClass
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     NestedBadRequest:
       type: object
       properties:
@@ -460,15 +440,25 @@ components:
       required:
       - message
       - type
-    videoquestion_answerResponseModel:
+    BadRequest:
+      type: object
       properties:
-        amazon:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imagequestion_answerResponseModel:
+      properties:
+        alephalpha:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
           default: null
         google:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
           default: null
-      title: videoquestion_answerResponseModel
+      title: imagequestion_answerResponseModel
       type: object
     videoquestion_answerQuestionAnswerRequest:
       type: object
@@ -556,6 +546,16 @@ components:
       - answer
       - status
       title: videoquestion_answerQuestionAnswerDataClass
+      type: object
+    videoquestion_answerResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+      title: videoquestion_answerResponseModel
       type: object
   securitySchemes:
     FeatureApiAuth:

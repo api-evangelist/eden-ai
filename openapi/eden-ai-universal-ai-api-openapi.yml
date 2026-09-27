@@ -274,6 +274,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     UniversalAIAsyncBody:
       properties:
         model:
@@ -386,6 +407,15 @@ components:
       - total_pages
       title: UniversalAIAsyncJobListResponse
       description: Response for listing async jobs.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     UniversalAIAsyncResponse:
       properties:
         status:
@@ -463,27 +493,6 @@ components:
         Inherits base fields and adds job-specific fields for tracking async operations.
 
         Used for both job creation (202 Accepted) and job detail (GET) responses.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     UniversalAIBody:
       properties:
         model:
@@ -544,15 +553,6 @@ components:
       - input
       title: UniversalAIBody
       description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     UniversalAIAsyncJobListItem:
       properties:
         public_id:

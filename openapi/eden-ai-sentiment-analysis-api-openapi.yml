@@ -256,6 +256,83 @@ paths:
           description: ''
 components:
   schemas:
+    textsentiment_analysisSentimentAnalysisDataClass:
+      properties:
+        general_sentiment:
+          allOf:
+          - $ref: '#/components/schemas/GeneralSentimentEnum'
+          title: General Sentiment
+        general_sentiment_rate:
+          maximum: 1
+          minimum: 0
+          title: General Sentiment Rate
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/SegmentSentimentAnalysisDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - general_sentiment
+      - general_sentiment_rate
+      - status
+      title: textsentiment_analysisSentimentAnalysisDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    SegmentSentimentAnalysisDataClass:
+      description: "This class is used in SentimentAnalysisDataClass to describe each segment analyzed.\n\nArgs:\n    - segment (str): The segment analyzed\n    - sentiment (Literal['Positve', 'Negative', 'Neutral']) (Case is ignore): Sentiment of segment\n    - sentiment_rate (float between 0 and 1): Rate of sentiment"
+      properties:
+        segment:
+          title: Segment
+          type: string
+        sentiment:
+          allOf:
+          - $ref: '#/components/schemas/SentimentEbfEnum'
+          title: Sentiment
+        sentiment_rate:
+          maximum: 1
+          minimum: 0
+          title: Sentiment Rate
+          type: integer
+      required:
+      - segment
+      - sentiment
+      - sentiment_rate
+      title: SegmentSentimentAnalysisDataClass
+      type: object
+    SentimentEbfEnum:
+      enum:
+      - Positive
+      - Negative
+      - Neutral
+      type: string
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     textsentiment_analysisResponseModel:
       properties:
         sapling:
@@ -290,79 +367,16 @@ components:
           default: null
       title: textsentiment_analysisResponseModel
       type: object
-    BadRequest:
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    SegmentSentimentAnalysisDataClass:
-      description: "This class is used in SentimentAnalysisDataClass to describe each segment analyzed.\n\nArgs:\n    - segment (str): The segment analyzed\n    - sentiment (Literal['Positve', 'Negative', 'Neutral']) (Case is ignore): Sentiment of segment\n    - sentiment_rate (float between 0 and 1): Rate of sentiment"
-      properties:
-        segment:
-          title: Segment
+        type:
           type: string
-        sentiment:
-          allOf:
-          - $ref: '#/components/schemas/SentimentEbfEnum'
-          title: Sentiment
-        sentiment_rate:
-          maximum: 1
-          minimum: 0
-          title: Sentiment Rate
-          type: integer
-      required:
-      - segment
-      - sentiment
-      - sentiment_rate
-      title: SegmentSentimentAnalysisDataClass
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
+        message:
           type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
       required:
-      - <parameter_name>
-    textsentiment_analysisSentimentAnalysisDataClass:
-      properties:
-        general_sentiment:
-          allOf:
-          - $ref: '#/components/schemas/GeneralSentimentEnum'
-          title: General Sentiment
-        general_sentiment_rate:
-          maximum: 1
-          minimum: 0
-          title: General Sentiment Rate
-          type: integer
-        items:
-          items:
-            $ref: '#/components/schemas/SegmentSentimentAnalysisDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - general_sentiment
-      - general_sentiment_rate
-      - status
-      title: textsentiment_analysisSentimentAnalysisDataClass
-      type: object
+      - message
+      - type
     Error:
       type: object
       properties:
@@ -370,22 +384,11 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    SentimentEbfEnum:
-      enum:
-      - Positive
-      - Negative
-      - Neutral
-      type: string
     GeneralSentimentEnum:
       enum:
       - Positive
       - Negative
       - Neutral
-      type: string
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
       type: string
     NestedBadRequest:
       type: object
@@ -397,16 +400,13 @@ components:
       required:
       - message
       - type
-    NestedError:
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
+      - error
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:

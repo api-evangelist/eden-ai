@@ -206,13 +206,51 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
+    asyncvideodeepfake_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideodeepfake_detection_asyncResponseModel
+      type: object
+    AsyncJobList:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
-      - error
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
     videodeepfake_detection_asyncModel:
       properties:
         resemble:
@@ -222,6 +260,94 @@ components:
           $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
           default: null
       title: videodeepfake_detection_asyncModel
+      type: object
+    videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass:
+      properties:
+        average_score:
+          maximum: 1
+          minimum: 0
+          title: Average Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/PredictionEnum'
+          title: Prediction
+        details_per_frame:
+          items:
+            $ref: '#/components/schemas/DetailPerFrame'
+          title: Details Per Frame
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - average_score
+      - prediction
+      - id
+      - final_status
+      title: videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    PredictionEnum:
+      enum:
+      - deepfake
+      - original
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    DetailPerFrame:
+      properties:
+        position:
+          title: Position
+          type: integer
+        score:
+          maximum: 1
+          minimum: 0
+          title: Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/PredictionEnum'
+          title: Prediction
+      required:
+      - position
+      - score
+      - prediction
+      title: DetailPerFrame
       type: object
     StateEnum:
       enum:
@@ -237,12 +363,28 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    NotFoundResponse:
+    NestedError:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     NestedBadRequest:
       type: object
       properties:
@@ -253,15 +395,21 @@ components:
       required:
       - message
       - type
-    FieldError:
+    BadRequest:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - <parameter_name>
+      - error
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -313,154 +461,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    DetailPerFrame:
-      properties:
-        position:
-          title: Position
-          type: integer
-        score:
-          maximum: 1
-          minimum: 0
-          title: Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/PredictionEnum'
-          title: Prediction
-      required:
-      - position
-      - score
-      - prediction
-      title: DetailPerFrame
-      type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    asyncvideodeepfake_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videodeepfake_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideodeepfake_detection_asyncResponseModel
-      type: object
-    videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass:
-      properties:
-        average_score:
-          maximum: 1
-          minimum: 0
-          title: Average Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/PredictionEnum'
-          title: Prediction
-        details_per_frame:
-          items:
-            $ref: '#/components/schemas/DetailPerFrame'
-          title: Details Per Frame
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - average_score
-      - prediction
-      - id
-      - final_status
-      title: videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    PredictionEnum:
-      enum:
-      - deepfake
-      - original
-      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

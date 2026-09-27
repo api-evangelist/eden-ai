@@ -3458,105 +3458,45 @@ components:
       - status
       title: asyncvideoface_detection_asyncResponseModel
       type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    FieldError:
+    ListAsyncJobResponse:
       type: object
       properties:
-        <parameter_name>:
+        jobs:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - <parameter_name>
-    Error:
+      - jobs
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - error
-    AsyncJobList:
-      type: object
+      - message
+      - type
+    VideoBoundingBox:
       properties:
-        providers:
-          type: string
-        nb:
+        top:
+          title: Top
           type: integer
-        nb_ok:
+        left:
+          title: Left
           type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    videoface_detection_asyncFaceDetectionAsyncDataClass:
-      properties:
-        faces:
-          items:
-            $ref: '#/components/schemas/VideoFace'
-          title: Faces
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - id
-      - final_status
-      title: videoface_detection_asyncFaceDetectionAsyncDataClass
-      type: object
-    VideoFace:
-      properties:
-        offset:
-          title: Offset
+        height:
+          title: Height
           type: integer
-        bounding_box:
-          $ref: '#/components/schemas/VideoBoundingBox'
-        attributes:
-          $ref: '#/components/schemas/FaceAttributes'
-        landmarks:
-          $ref: '#/components/schemas/LandmarksVideo'
+        width:
+          title: Width
+          type: integer
       required:
-      - offset
-      - bounding_box
-      - attributes
-      - landmarks
-      title: VideoFace
+      - top
+      - left
+      - height
+      - width
+      title: VideoBoundingBox
       type: object
     AsyncVideoAnalysisRequest:
       type: object
@@ -3609,6 +3549,112 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    VideoFace:
+      properties:
+        offset:
+          title: Offset
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/VideoBoundingBox'
+        attributes:
+          $ref: '#/components/schemas/FaceAttributes'
+        landmarks:
+          $ref: '#/components/schemas/LandmarksVideo'
+      required:
+      - offset
+      - bounding_box
+      - attributes
+      - landmarks
+      title: VideoFace
+      type: object
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    LandmarksVideo:
+      properties:
+        eye_left:
+          items:
+            type: integer
+          title: Eye Left
+          type: array
+        eye_right:
+          items:
+            type: integer
+          title: Eye Right
+          type: array
+        nose:
+          items:
+            type: integer
+          title: Nose
+          type: array
+        mouth_left:
+          items:
+            type: integer
+          title: Mouth Left
+          type: array
+        mouth_right:
+          items:
+            type: integer
+          title: Mouth Right
+          type: array
+      title: LandmarksVideo
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    videoface_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
+          default: null
+      title: videoface_detection_asyncModel
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -3619,6 +3665,23 @@ components:
       required:
       - message
       - type
+    VideoFacePoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yawn:
+          title: Yawn
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yawn
+      title: VideoFacePoses
+      type: object
     FaceAttributes:
       properties:
         headwear:
@@ -3659,69 +3722,6 @@ components:
       - pose
       title: FaceAttributes
       type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    LandmarksVideo:
-      properties:
-        eye_left:
-          items:
-            type: integer
-          title: Eye Left
-          type: array
-        eye_right:
-          items:
-            type: integer
-          title: Eye Right
-          type: array
-        nose:
-          items:
-            type: integer
-          title: Nose
-          type: array
-        mouth_left:
-          items:
-            type: integer
-          title: Mouth Left
-          type: array
-        mouth_right:
-          items:
-            type: integer
-          title: Mouth Right
-          type: array
-      title: LandmarksVideo
-      type: object
-    videoface_detection_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videoface_detection_asyncFaceDetectionAsyncDataClass'
-          default: null
-      title: videoface_detection_asyncModel
-      type: object
-    VideoFacePoses:
-      properties:
-        pitch:
-          title: Pitch
-          type: integer
-        roll:
-          title: Roll
-          type: integer
-        yawn:
-          title: Yawn
-          type: integer
-      required:
-      - pitch
-      - roll
-      - yawn
-      title: VideoFacePoses
-      type: object
     LaunchAsyncJobResponse:
       type: object
       properties:
@@ -3730,57 +3730,57 @@ components:
           format: uuid
       required:
       - public_id
-    NotFoundResponse:
+    FieldError:
       type: object
       properties:
-        details:
-          type: string
-          default: Not Found
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
+        <parameter_name>:
           type: array
           items:
-            $ref: '#/components/schemas/AsyncJobList'
+            type: string
       required:
-      - jobs
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    VideoBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoBoundingBox
-      type: object
-    NestedError:
+      - <parameter_name>
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    videoface_detection_asyncFaceDetectionAsyncDataClass:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/VideoFace'
+          title: Faces
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videoface_detection_asyncFaceDetectionAsyncDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

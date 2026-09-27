@@ -183,6 +183,92 @@ paths:
           description: ''
 components:
   schemas:
+    textprompt_optimizationResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/textprompt_optimizationPromptOptimizationDataClass'
+          default: null
+      title: textprompt_optimizationResponseModel
+      type: object
+    textprompt_optimizationPromptOptimizationDataClass:
+      properties:
+        missing_information:
+          title: Missing Information
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/PromptDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - missing_information
+      - status
+      title: textprompt_optimizationPromptOptimizationDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    PromptDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+      required:
+      - text
+      title: PromptDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     BadRequest:
       type: object
       properties:
@@ -237,92 +323,6 @@ components:
       - providers
       - target_provider
       - text
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    textprompt_optimizationPromptOptimizationDataClass:
-      properties:
-        missing_information:
-          title: Missing Information
-          type: string
-        items:
-          items:
-            $ref: '#/components/schemas/PromptDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - missing_information
-      - status
-      title: textprompt_optimizationPromptOptimizationDataClass
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    PromptDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-      required:
-      - text
-      title: PromptDataClass
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    textprompt_optimizationResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/textprompt_optimizationPromptOptimizationDataClass'
-          default: null
-      title: textprompt_optimizationResponseModel
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

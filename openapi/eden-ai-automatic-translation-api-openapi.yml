@@ -437,13 +437,31 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    translationautomatic_translationResponseModel:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+        xai:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        modernmt:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        deepl:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
+          default: null
+      title: translationautomatic_translationResponseModel
+      type: object
     translationautomatic_translationAutomaticTranslationDataClass:
       properties:
         text:
@@ -462,6 +480,26 @@ components:
       - status
       title: translationautomatic_translationAutomaticTranslationDataClass
       type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     translationautomatic_translationAutomaticTranslationRequest:
       type: object
       properties:
@@ -514,58 +552,6 @@ components:
       - providers
       - target_language
       - text
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    translationautomatic_translationResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        modernmt:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        deepl:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/translationautomatic_translationAutomaticTranslationDataClass'
-          default: null
-      title: translationautomatic_translationResponseModel
-      type: object
     NestedError:
       type: object
       properties:
@@ -576,6 +562,13 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -586,6 +579,13 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

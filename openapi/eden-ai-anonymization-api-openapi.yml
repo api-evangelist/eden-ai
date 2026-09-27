@@ -366,11 +366,96 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    BadRequest:
+    imageanonymizationResponseModel:
+      properties:
+        api4ai:
+          $ref: '#/components/schemas/imageanonymizationAnonymizationDataClass'
+          default: null
+      title: imageanonymizationResponseModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imageanonymizationAnonymizationDataClass:
+      properties:
+        image:
+          title: Image
+          type: string
+        image_resource_url:
+          title: Image Resource Url
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/AnonymizationItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - image
+      - image_resource_url
+      - status
+      title: imageanonymizationAnonymizationDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    AnonymizationBoundingBox:
+      properties:
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: AnonymizationBoundingBox
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
     AnonymizationItem:
@@ -389,26 +474,21 @@ components:
       - bounding_boxes
       title: AnonymizationItem
       type: object
-    NotFoundResponse:
+    NestedBadRequest:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - <parameter_name>
-    Error:
+      - message
+      - type
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
@@ -459,86 +539,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    AnonymizationBoundingBox:
-      properties:
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: AnonymizationBoundingBox
-      type: object
-    imageanonymizationResponseModel:
-      properties:
-        api4ai:
-          $ref: '#/components/schemas/imageanonymizationAnonymizationDataClass'
-          default: null
-      title: imageanonymizationResponseModel
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    imageanonymizationAnonymizationDataClass:
-      properties:
-        image:
-          title: Image
-          type: string
-        image_resource_url:
-          title: Image Resource Url
-          type: string
-        items:
-          items:
-            $ref: '#/components/schemas/AnonymizationItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - image
-      - image_resource_url
-      - status
-      title: imageanonymizationAnonymizationDataClass
-      type: object
     SubCategoryType:
       enum:
       - CreditCard
@@ -584,6 +584,104 @@ components:
       - Unknown
       title: SubCategoryType
       type: string
+    AnonymizationEntity:
+      description: "This model represents an entity extracted from the text.\n\nAttributes:\n    offset (int): The offset of the entity in the text.\n    length (int): The lenght of the entity in the text.\n    category (CategoryType): The category of the entity.\n    subcategory (SubCategoryType): The subcategory of the entity.\n    original_label (str): The original label of the entity.\n    content (str): The content of the entity."
+      properties:
+        offset:
+          minimum: 0
+          title: Offset
+          type: integer
+        length:
+          title: Length
+          type: integer
+        category:
+          $ref: '#/components/schemas/CategoryType'
+        subcategory:
+          $ref: '#/components/schemas/SubCategoryType'
+        original_label:
+          minLength: 1
+          title: Original Label
+          type: string
+        content:
+          minLength: 1
+          title: Content
+          type: string
+        confidence_score:
+          maximum: 1
+          minimum: 0
+          title: Confidence Score
+          type: integer
+      required:
+      - offset
+      - length
+      - category
+      - subcategory
+      - original_label
+      - content
+      - confidence_score
+      title: AnonymizationEntity
+      type: object
+    CategoryType:
+      description: This enum are used to categorize the entities extracted from the text.
+      enum:
+      - PersonalInformation
+      - FinancialInformation
+      - IdentificationNumbers
+      - Miscellaneous
+      - OrganizationInformation
+      - DateAndTime
+      - LocationInformation
+      - Other
+      title: CategoryType
+      type: string
+    textanonymizationAnonymizationDataClass:
+      properties:
+        result:
+          title: Result
+          type: string
+        entities:
+          items:
+            $ref: '#/components/schemas/AnonymizationEntity'
+          title: Entities
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - result
+      - status
+      title: textanonymizationAnonymizationDataClass
+      type: object
+    textanonymizationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        privateai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        emvista:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+      title: textanonymizationResponseModel
+      type: object
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:
@@ -631,104 +729,6 @@ components:
       required:
       - providers
       - text
-    AnonymizationEntity:
-      description: "This model represents an entity extracted from the text.\n\nAttributes:\n    offset (int): The offset of the entity in the text.\n    length (int): The lenght of the entity in the text.\n    category (CategoryType): The category of the entity.\n    subcategory (SubCategoryType): The subcategory of the entity.\n    original_label (str): The original label of the entity.\n    content (str): The content of the entity."
-      properties:
-        offset:
-          minimum: 0
-          title: Offset
-          type: integer
-        length:
-          title: Length
-          type: integer
-        category:
-          $ref: '#/components/schemas/CategoryType'
-        subcategory:
-          $ref: '#/components/schemas/SubCategoryType'
-        original_label:
-          minLength: 1
-          title: Original Label
-          type: string
-        content:
-          minLength: 1
-          title: Content
-          type: string
-        confidence_score:
-          maximum: 1
-          minimum: 0
-          title: Confidence Score
-          type: integer
-      required:
-      - offset
-      - length
-      - category
-      - subcategory
-      - original_label
-      - content
-      - confidence_score
-      title: AnonymizationEntity
-      type: object
-    textanonymizationResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        privateai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        emvista:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-      title: textanonymizationResponseModel
-      type: object
-    CategoryType:
-      description: This enum are used to categorize the entities extracted from the text.
-      enum:
-      - PersonalInformation
-      - FinancialInformation
-      - IdentificationNumbers
-      - Miscellaneous
-      - OrganizationInformation
-      - DateAndTime
-      - LocationInformation
-      - Other
-      title: CategoryType
-      type: string
-    textanonymizationAnonymizationDataClass:
-      properties:
-        result:
-          title: Result
-          type: string
-        entities:
-          items:
-            $ref: '#/components/schemas/AnonymizationEntity'
-          title: Entities
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - result
-      - status
-      title: textanonymizationAnonymizationDataClass
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

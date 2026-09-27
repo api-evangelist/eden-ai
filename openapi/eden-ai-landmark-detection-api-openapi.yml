@@ -124,13 +124,14 @@ paths:
           description: ''
 components:
   schemas:
-    BadRequest:
-      type: object
+    LandmarkLocation:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        lat_lng:
+          $ref: '#/components/schemas/LandmarkLatLng'
       required:
-      - error
+      - lat_lng
+      title: LandmarkLocation
+      type: object
     LandmarkVertice:
       properties:
         x:
@@ -144,12 +145,19 @@ components:
       - y
       title: LandmarkVertice
       type: object
-    NotFoundResponse:
-      type: object
+    LandmarkLatLng:
       properties:
-        details:
-          type: string
-          default: Not Found
+        latitude:
+          title: Latitude
+          type: integer
+        longitude:
+          title: Longitude
+          type: integer
+      required:
+      - latitude
+      - longitude
+      title: LandmarkLatLng
+      type: object
     FieldError:
       type: object
       properties:
@@ -159,11 +167,101 @@ components:
             type: string
       required:
       - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    imagelandmark_detectionResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+      title: imagelandmark_detectionResponseModel
+      type: object
+    imagelandmark_detectionLandmarkDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/LandmarkItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagelandmark_detectionLandmarkDetectionDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     Error:
       type: object
       properties:
         error:
           $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    LandmarkItem:
+      properties:
+        description:
+          title: Description
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          items:
+            $ref: '#/components/schemas/LandmarkVertice'
+          title: Bounding Box
+          type: array
+        locations:
+          items:
+            $ref: '#/components/schemas/LandmarkLocation'
+          title: Locations
+          type: array
+      required:
+      - description
+      - confidence
+      title: LandmarkItem
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
@@ -214,104 +312,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    LandmarkItem:
-      properties:
-        description:
-          title: Description
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_box:
-          items:
-            $ref: '#/components/schemas/LandmarkVertice'
-          title: Bounding Box
-          type: array
-        locations:
-          items:
-            $ref: '#/components/schemas/LandmarkLocation'
-          title: Locations
-          type: array
-      required:
-      - description
-      - confidence
-      title: LandmarkItem
-      type: object
-    imagelandmark_detectionLandmarkDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/LandmarkItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imagelandmark_detectionLandmarkDetectionDataClass
-      type: object
-    LandmarkLocation:
-      properties:
-        lat_lng:
-          $ref: '#/components/schemas/LandmarkLatLng'
-      required:
-      - lat_lng
-      title: LandmarkLocation
-      type: object
-    LandmarkLatLng:
-      properties:
-        latitude:
-          title: Latitude
-          type: integer
-        longitude:
-          title: Longitude
-          type: integer
-      required:
-      - latitude
-      - longitude
-      title: LandmarkLatLng
-      type: object
-    imagelandmark_detectionResponseModel:
-      properties:
-        microsoft:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-      title: imagelandmark_detectionResponseModel
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
   securitySchemes:
     FeatureApiAuth:
       type: http

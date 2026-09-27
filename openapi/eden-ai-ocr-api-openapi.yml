@@ -648,13 +648,6 @@ paths:
       description: Production
 components:
   schemas:
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     ocrocrResponseModel:
       properties:
         api4ai:
@@ -682,91 +675,6 @@ components:
           $ref: '#/components/schemas/ocrocrOcrDataClass'
           default: null
       title: ocrocrResponseModel
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ocrocrOcrDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        bounding_boxes:
-          items:
-            $ref: '#/components/schemas/Bounding_box'
-          title: Bounding Boxes
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - text
-      - status
-      title: ocrocrOcrDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    Bounding_box:
-      properties:
-        text:
-          title: Text
-          type: string
-        left:
-          title: Left
-          type: integer
-        top:
-          title: Top
-          type: integer
-        width:
-          title: Width
-          type: integer
-        height:
-          title: Height
-          type: integer
-      required:
-      - text
-      - left
-      - top
-      - width
-      - height
-      title: Bounding_box
       type: object
     ocrocrOcrRequest:
       type: object
@@ -826,6 +734,68 @@ components:
           description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
       required:
       - providers
+    Bounding_box:
+      properties:
+        text:
+          title: Text
+          type: string
+        left:
+          title: Left
+          type: integer
+        top:
+          title: Top
+          type: integer
+        width:
+          title: Width
+          type: integer
+        height:
+          title: Height
+          type: integer
+      required:
+      - text
+      - left
+      - top
+      - width
+      - height
+      title: Bounding_box
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -836,6 +806,36 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ocrocrOcrDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        bounding_boxes:
+          items:
+            $ref: '#/components/schemas/Bounding_box'
+          title: Bounding Boxes
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: ocrocrOcrDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

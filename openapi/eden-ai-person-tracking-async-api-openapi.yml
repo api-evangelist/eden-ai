@@ -59489,29 +59489,6 @@ paths:
           description: ''
 components:
   schemas:
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     PersonLandmarks:
       properties:
         eye_left:
@@ -59611,37 +59588,25 @@ components:
           type: array
       title: PersonLandmarks
       type: object
-    Error:
+    ListAsyncJobResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - error
-    AsyncJobList:
+      - jobs
+    NestedError:
       type: object
       properties:
-        providers:
+        type:
           type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
+        message:
           type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
+      - message
+      - type
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -59693,101 +59658,33 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    VideoTrackingPerson:
+    VideoTrackingBoundingBox:
       properties:
-        tracked:
-          items:
-            $ref: '#/components/schemas/PersonTracking'
-          title: Tracked
-          type: array
-      title: VideoTrackingPerson
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoTrackingBoundingBox
       type: object
-    NestedBadRequest:
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    PersonAttributes:
-      properties:
-        upper_cloths:
-          items:
-            $ref: '#/components/schemas/UpperCloth'
-          title: Upper Cloths
-          type: array
-        lower_cloths:
-          items:
-            $ref: '#/components/schemas/LowerCloth'
-          title: Lower Cloths
-          type: array
-      title: PersonAttributes
-      type: object
-    VideoPersonPoses:
-      properties:
-        pitch:
-          title: Pitch
-          type: integer
-        roll:
-          title: Roll
-          type: integer
-        yaw:
-          title: Yaw
-          type: integer
-      required:
-      - pitch
-      - roll
-      - yaw
-      title: VideoPersonPoses
-      type: object
-    PersonTracking:
-      properties:
-        offset:
-          title: Offset
-          type: integer
-        attributes:
-          $ref: '#/components/schemas/PersonAttributes'
-        landmarks:
-          $ref: '#/components/schemas/PersonLandmarks'
-        poses:
-          $ref: '#/components/schemas/VideoPersonPoses'
-        quality:
-          $ref: '#/components/schemas/VideoPersonQuality'
-        bounding_box:
-          $ref: '#/components/schemas/VideoTrackingBoundingBox'
-      required:
-      - offset
-      - bounding_box
-      title: PersonTracking
-      type: object
-    videoperson_tracking_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
-          default: null
-      title: videoperson_tracking_asyncModel
-      type: object
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
+          default: Not Found
     asyncvideoperson_tracking_asyncResponseModel:
       properties:
         results:
@@ -59809,6 +59706,20 @@ components:
       - status
       title: asyncvideoperson_tracking_asyncResponseModel
       type: object
+    VideoTrackingPerson:
+      properties:
+        tracked:
+          items:
+            $ref: '#/components/schemas/PersonTracking'
+          title: Tracked
+          type: array
+      title: VideoTrackingPerson
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     VideoPersonQuality:
       properties:
         brightness:
@@ -59821,46 +59732,6 @@ components:
       - brightness
       - sharpness
       title: VideoPersonQuality
-      type: object
-    LowerCloth:
-      properties:
-        value:
-          title: Value
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - value
-      - confidence
-      title: LowerCloth
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    VideoTrackingBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoTrackingBoundingBox
       type: object
     videoperson_tracking_asyncPersonTrackingAsyncDataClass:
       properties:
@@ -59890,20 +59761,74 @@ components:
       - final_status
       title: videoperson_tracking_asyncPersonTrackingAsyncDataClass
       type: object
-    ListAsyncJobResponse:
+    AsyncJobList:
       type: object
       properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
-      - jobs
-    FinalStatusEnum:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    VideoPersonPoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yaw:
+          title: Yaw
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yaw
+      title: VideoPersonPoses
+      type: object
+    LowerCloth:
+      properties:
+        value:
+          title: Value
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - value
+      - confidence
+      title: LowerCloth
+      type: object
+    StateEnum:
       enum:
-      - sucess
-      - fail
+      - finished
+      - failed
+      - Timeout error
+      - processing
       type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
     UpperCloth:
       properties:
         value:
@@ -59917,16 +59842,91 @@ components:
       - confidence
       title: UpperCloth
       type: object
-    NestedError:
+    NestedBadRequest:
       type: object
       properties:
         type:
           type: string
         message:
-          type: string
+          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    PersonTracking:
+      properties:
+        offset:
+          title: Offset
+          type: integer
+        attributes:
+          $ref: '#/components/schemas/PersonAttributes'
+        landmarks:
+          $ref: '#/components/schemas/PersonLandmarks'
+        poses:
+          $ref: '#/components/schemas/VideoPersonPoses'
+        quality:
+          $ref: '#/components/schemas/VideoPersonQuality'
+        bounding_box:
+          $ref: '#/components/schemas/VideoTrackingBoundingBox'
+      required:
+      - offset
+      - bounding_box
+      title: PersonTracking
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    videoperson_tracking_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
+          default: null
+      title: videoperson_tracking_asyncModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    PersonAttributes:
+      properties:
+        upper_cloths:
+          items:
+            $ref: '#/components/schemas/UpperCloth'
+          title: Upper Cloths
+          type: array
+        lower_cloths:
+          items:
+            $ref: '#/components/schemas/LowerCloth'
+          title: Lower Cloths
+          type: array
+      title: PersonAttributes
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

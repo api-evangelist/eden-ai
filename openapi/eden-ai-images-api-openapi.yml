@@ -172,91 +172,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    Capabilities:
-      properties:
-        input_modalities:
-          items:
-            type: string
-          type: array
-          title: Input Modalities
-        output_modalities:
-          items:
-            type: string
-          type: array
-          title: Output Modalities
-        supports_reasoning:
-          type: boolean
-          title: Supports Reasoning
-          default: false
-        supports_web_search:
-          type: boolean
-          title: Supports Web Search
-          default: false
-        supports_tool_choice:
-          type: boolean
-          title: Supports Tool Choice
-          default: false
-        supports_computer_use:
-          type: boolean
-          title: Supports Computer Use
-          default: false
-        supports_prompt_caching:
-          type: boolean
-          title: Supports Prompt Caching
-          default: false
-        supports_response_schema:
-          type: boolean
-          title: Supports Response Schema
-          default: false
-        supports_system_messages:
-          type: boolean
-          title: Supports System Messages
-          default: false
-        supports_function_calling:
-          type: boolean
-          title: Supports Function Calling
-          default: false
-        supports_native_streaming:
-          type: boolean
-          title: Supports Native Streaming
-          default: false
-        supports_assistant_prefill:
-          type: boolean
-          title: Supports Assistant Prefill
-          default: false
-        supports_embedding_image_input:
-          type: boolean
-          title: Supports Embedding Image Input
-          default: false
-        supports_parallel_function_calling:
-          type: boolean
-          title: Supports Parallel Function Calling
-          default: false
-      additionalProperties: true
-      type: object
-      title: Capabilities
-      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
-
-        new capabilities are introduced without a coordinated release.'
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
     ValidationError:
       properties:
         loc:
@@ -278,6 +193,69 @@ components:
       - msg
       - type
       title: ValidationError
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
+        allow_fallbacks:
+          type: boolean
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+          default: true
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ImageGenerationBody:
       properties:
         routing:
@@ -347,229 +325,6 @@ components:
       - prompt
       title: ImageGenerationBody
       description: OpenAI-compatible ``POST /v1/images/generations`` request body.
-    ProviderRoutingPreferences:
-      properties:
-        sort:
-          anyOf:
-          - type: string
-            enum:
-            - cost
-            - speed
-            - latency
-            - exact
-          - type: 'null'
-          title: Sort
-          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
-        sticky:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Sticky
-          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
-        allow_fallbacks:
-          type: boolean
-          title: Allow Fallbacks
-          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
-          default: true
-        quality_cost:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 0.0
-          - type: 'null'
-          title: Quality Cost
-          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
-        allowed_providers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Allowed Providers
-          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
-      type: object
-      title: ProviderRoutingPreferences
-      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
-
-        quality for cost when the platform chooses the model.
-
-
-        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
-
-        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
-
-        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
-
-        ``quality_cost`` below is the one field here that speaks to it.'
-    ModelWithEndpoints:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
-        object:
-          type: string
-          const: model
-          title: Object
-          description: Object type
-          default: model
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp of the newest endpoint serving this model
-          default: 0
-        owned_by:
-          type: string
-          title: Owned By
-          description: Who authored the model, independent of who sells it
-          default: ''
-        mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
-        endpoints:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Endpoints
-          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
-        endpoint_count:
-          type: integer
-          title: Endpoint Count
-          description: How many provider endpoints serve this model
-          readOnly: true
-      type: object
-      required:
-      - id
-      - endpoints
-      - endpoint_count
-      title: ModelWithEndpoints
-      description: 'One routable model name and the provider endpoints behind it.
-
-
-        Deliberately carries NO pricing, context window or capability of its own. Those vary between
-
-        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
-
-        and six distinct capability sets across ten sellers — so a value here would be wrong for most
-
-        of the group. Each endpoint keeps its own, unchanged.
-
-
-        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
-
-        field, which is what makes this view a pure regrouping: a caller reading
-
-        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    ImageResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        created:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Created
-        data:
-          items:
-            $ref: '#/components/schemas/ImageDataItem'
-          type: array
-          title: Data
-        usage:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Usage
-      additionalProperties: true
-      type: object
-      title: ImageResponse
-      description: 'OpenAI-compatible image response + Eden ``cost`` / ``provider`` fields.
-
-
-        Shared by ``POST /v3/images/generations`` and ``POST /v3/images/edits`` —
-
-        the wire shape is identical.'
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ImageRef:
-      properties:
-        file_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: File Id
-        image_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Image Url
-      additionalProperties: false
-      type: object
-      title: ImageRef
-      description: 'One entry in ``images[]`` (or the ``mask`` value).
-
-
-        Exactly one of ``file_id`` or ``image_url`` must be set.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ImageDataItem:
-      properties:
-        url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Url
-        b64_json:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: B64 Json
-        revised_prompt:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Revised Prompt
-      additionalProperties: true
-      type: object
-      title: ImageDataItem
-      description: 'Single image entry inside the OpenAI-shaped ``data: [...]`` array.
-
-
-        Providers return either ``url`` (most non-OpenAI providers) or
-
-        ``b64_json`` (gpt-image-*); ``revised_prompt`` is OpenAI-specific.'
     ModelObject:
       properties:
         id:
@@ -677,6 +432,251 @@ components:
         OpenAPI schema titles and generated SDK classes, and a caller never needs the word
 
         "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    ImageDataItem:
+      properties:
+        url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Url
+        b64_json:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: B64 Json
+        revised_prompt:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Revised Prompt
+      additionalProperties: true
+      type: object
+      title: ImageDataItem
+      description: 'Single image entry inside the OpenAI-shaped ``data: [...]`` array.
+
+
+        Providers return either ``url`` (most non-OpenAI providers) or
+
+        ``b64_json`` (gpt-image-*); ``revised_prompt`` is OpenAI-specific.'
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
+    ModelWithEndpoints:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of the newest endpoint serving this model
+          default: 0
+        owned_by:
+          type: string
+          title: Owned By
+          description: Who authored the model, independent of who sells it
+          default: ''
+        mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
+        endpoints:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Endpoints
+          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
+        endpoint_count:
+          type: integer
+          title: Endpoint Count
+          description: How many provider endpoints serve this model
+          readOnly: true
+      type: object
+      required:
+      - id
+      - endpoints
+      - endpoint_count
+      title: ModelWithEndpoints
+      description: 'One routable model name and the provider endpoints behind it.
+
+
+        Deliberately carries NO pricing, context window or capability of its own. Those vary between
+
+        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
+
+        and six distinct capability sets across ten sellers — so a value here would be wrong for most
+
+        of the group. Each endpoint keeps its own, unchanged.
+
+
+        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
+
+        field, which is what makes this view a pure regrouping: a caller reading
+
+        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    Capabilities:
+      properties:
+        input_modalities:
+          items:
+            type: string
+          type: array
+          title: Input Modalities
+        output_modalities:
+          items:
+            type: string
+          type: array
+          title: Output Modalities
+        supports_reasoning:
+          type: boolean
+          title: Supports Reasoning
+          default: false
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
+      additionalProperties: true
+      type: object
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
+
+        new capabilities are introduced without a coordinated release.'
+    ImageResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        created:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Created
+        data:
+          items:
+            $ref: '#/components/schemas/ImageDataItem'
+          type: array
+          title: Data
+        usage:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Usage
+      additionalProperties: true
+      type: object
+      title: ImageResponse
+      description: 'OpenAI-compatible image response + Eden ``cost`` / ``provider`` fields.
+
+
+        Shared by ``POST /v3/images/generations`` and ``POST /v3/images/edits`` —
+
+        the wire shape is identical.'
+    ImageRef:
+      properties:
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+      additionalProperties: false
+      type: object
+      title: ImageRef
+      description: 'One entry in ``images[]`` (or the ``mask`` value).
+
+
+        Exactly one of ``file_id`` or ``image_url`` must be set.'
   securitySchemes:
     AuthBearer:
       type: http

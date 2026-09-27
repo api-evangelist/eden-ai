@@ -397,61 +397,6 @@ paths:
           description: ''
 components:
   schemas:
-    OptionEnum:
-      enum:
-      - FEMALE
-      - MALE
-      type: string
-      description: '* `FEMALE` - Female
-
-        * `MALE` - Male'
-    audiotext_to_speechResponseModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        elevenlabs:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        lovoai:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        deepgram:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
-          default: null
-      title: audiotext_to_speechResponseModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     audiotext_to_speechTextToSpeechRequest:
       type: object
       properties:
@@ -543,21 +488,51 @@ components:
       required:
       - providers
       - text
-    BlankEnum:
-      enum:
-      - ''
-    Error:
+    audiotext_to_speechResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        elevenlabs:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        lovoai:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        deepgram:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/audiotext_to_speechTextToSpeechDataClass'
+          default: null
+      title: audiotext_to_speechResponseModel
+      type: object
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
+      - <parameter_name>
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     NestedError:
       type: object
       properties:
@@ -568,6 +543,21 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    OptionEnum:
+      enum:
+      - FEMALE
+      - MALE
+      type: string
+      description: '* `FEMALE` - Female
+
+        * `MALE` - Male'
     NestedBadRequest:
       type: object
       properties:
@@ -578,6 +568,16 @@ components:
       required:
       - message
       - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    BlankEnum:
+      enum:
+      - ''
     audiotext_to_speechTextToSpeechDataClass:
       properties:
         audio:

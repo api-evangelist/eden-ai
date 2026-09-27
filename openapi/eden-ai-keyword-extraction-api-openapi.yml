@@ -310,13 +310,26 @@ components:
       - status
       title: textkeyword_extractionKeywordExtractionDataClass
       type: object
-    BadRequest:
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     textkeyword_extractionResponseModel:
       properties:
         xai:
@@ -345,28 +358,6 @@ components:
           default: null
       title: textkeyword_extractionResponseModel
       type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     InfosKeywordExtractionDataClass:
       properties:
         keyword:
@@ -380,21 +371,6 @@ components:
       - importance
       title: InfosKeywordExtractionDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     NestedError:
       type: object
       properties:
@@ -405,6 +381,30 @@ components:
       required:
       - message
       - type
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:
