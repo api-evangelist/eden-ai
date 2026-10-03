@@ -376,51 +376,6 @@ paths:
           description: ''
 components:
   schemas:
-    textspell_checkSpellCheckDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        items:
-          items:
-            $ref: '#/components/schemas/SpellCheckItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - text
-      - status
-      title: textspell_checkSpellCheckDataClass
-      type: object
-    textspell_checkResponseModel:
-      properties:
-        sapling:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-        xai:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-        prowritingaid:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-        cohere:
-          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
-          default: null
-      title: textspell_checkResponseModel
-      type: object
     SuggestionItem:
       description: "Represents a suggestion for a misspelled word.\n\nArgs:\n    suggestion (str): The suggested text.\n    score (float, optional): The score of the suggested text (between 0 and 1).\n\nRaises:\n    ValueError: If the score is not between 0 and 1.\n\nReturns:\n    SuggestionItem: An instance of the SuggestionItem class."
       properties:
@@ -437,65 +392,6 @@ components:
       - score
       title: SuggestionItem
       type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    SpellCheckItem:
-      description: "Represents a spell check item with suggestions.\n\nArgs:\n    text (str): The text to spell check.\n    type (str, optional): The type of the text.\n    offset (int): The offset of the text.\n    length (int): The length of the text.\n    suggestions (Sequence[SuggestionItem], optional): The list of suggestions for the misspelled text.\n\nRaises:\n    ValueError: If the offset or length is not positive.\n\nReturns:\n    SpellCheckItem: An instance of the SpellCheckItem class."
-      properties:
-        text:
-          title: Text
-          type: string
-        type:
-          title: Type
-          type: string
-        offset:
-          minimum: 0
-          title: Offset
-          type: integer
-        length:
-          minimum: 0
-          title: Length
-          type: integer
-        suggestions:
-          items:
-            $ref: '#/components/schemas/SuggestionItem'
-          title: Suggestions
-          type: array
-      required:
-      - text
-      - type
-      - offset
-      - length
-      title: SpellCheckItem
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     Error:
       type: object
       properties:
@@ -503,16 +399,6 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     BadRequest:
       type: object
       properties:
@@ -520,6 +406,12 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     textspell_checkSpellCheckRequest:
       type: object
       properties:
@@ -567,6 +459,114 @@ components:
       required:
       - providers
       - text
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    textspell_checkSpellCheckDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/SpellCheckItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: textspell_checkSpellCheckDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    textspell_checkResponseModel:
+      properties:
+        sapling:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        xai:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        prowritingaid:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+        cohere:
+          $ref: '#/components/schemas/textspell_checkSpellCheckDataClass'
+          default: null
+      title: textspell_checkResponseModel
+      type: object
+    SpellCheckItem:
+      description: "Represents a spell check item with suggestions.\n\nArgs:\n    text (str): The text to spell check.\n    type (str, optional): The type of the text.\n    offset (int): The offset of the text.\n    length (int): The length of the text.\n    suggestions (Sequence[SuggestionItem], optional): The list of suggestions for the misspelled text.\n\nRaises:\n    ValueError: If the offset or length is not positive.\n\nReturns:\n    SpellCheckItem: An instance of the SpellCheckItem class."
+      properties:
+        text:
+          title: Text
+          type: string
+        type:
+          title: Type
+          type: string
+        offset:
+          minimum: 0
+          title: Offset
+          type: integer
+        length:
+          minimum: 0
+          title: Length
+          type: integer
+        suggestions:
+          items:
+            $ref: '#/components/schemas/SuggestionItem'
+          title: Suggestions
+          type: array
+      required:
+      - text
+      - type
+      - offset
+      - length
+      title: SpellCheckItem
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

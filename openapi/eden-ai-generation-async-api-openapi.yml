@@ -342,42 +342,41 @@ paths:
           description: ''
 components:
   schemas:
-    videogeneration_asyncGenerationAsyncDataClass:
+    videogeneration_asyncModel:
       properties:
-        video:
-          title: Video
-          type: string
-        video_resource_url:
-          title: Video Resource Url
-          type: string
-        usage:
-          additionalProperties: true
+        minimax:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
           default: null
-          title: Usage
-          type: object
-        original_response:
+        google:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
           default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
+        amazon:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
           default: null
-          title: Error
-          type: object
-      required:
-      - video
-      - video_resource_url
-      - id
-      - final_status
-      title: videogeneration_asyncGenerationAsyncDataClass
+        pruna:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        pixverse:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        bytedance:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+      title: videogeneration_asyncModel
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     AsyncJobList:
       type: object
       properties:
@@ -402,27 +401,45 @@ components:
       - providers
       - public_id
       - state
-    asyncvideogeneration_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videogeneration_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideogeneration_asyncResponseModel
+    BadRequest:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
     GenerationAsyncRequest:
       type: object
       properties:
@@ -500,30 +517,88 @@ components:
       required:
       - providers
       - text
-    FieldError:
-      type: object
+    asyncvideogeneration_asyncResponseModel:
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
+        results:
+          $ref: '#/components/schemas/videogeneration_asyncModel'
+        error:
+          title: Error
           type: string
-          default: Not Found
-    ListAsyncJobResponse:
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideogeneration_asyncResponseModel
+      type: object
+    NestedBadRequest:
       type: object
       properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - jobs
+      - message
+      - type
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    videogeneration_asyncGenerationAsyncDataClass:
+      properties:
+        video:
+          title: Video
+          type: string
+        video_resource_url:
+          title: Video Resource Url
+          type: string
+        usage:
+          additionalProperties: true
+          default: null
+          title: Usage
+          type: object
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - video
+      - video_resource_url
+      - id
+      - final_status
+      title: videogeneration_asyncGenerationAsyncDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     StateEnum:
       enum:
       - finished
@@ -538,81 +613,6 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    videogeneration_asyncModel:
-      properties:
-        minimax:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        pruna:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        pixverse:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        bytedance:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-      title: videogeneration_asyncModel
-      type: object
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -212,20 +212,26 @@ paths:
           description: ''
 components:
   schemas:
-    CategoryType:
-      description: This enum are used to categorize the explicit content extracted from the text
-      enum:
-      - Toxic
-      - Content
-      - Sexual
-      - Violence
-      - DrugAndAlcohol
-      - Finance
-      - HateAndExtremism
-      - Safe
-      - Other
-      title: CategoryType
-      type: string
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -235,59 +241,6 @@ components:
             type: string
       required:
       - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imageexplicit_contentResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-      title: imageexplicit_contentResponseModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     imageexplicit_contentExplicitContentDataClass:
       properties:
         nsfw_likelihood:
@@ -318,6 +271,41 @@ components:
       - status
       title: imageexplicit_contentExplicitContentDataClass
       type: object
+    imageexplicit_contentResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+      title: imageexplicit_contentResponseModel
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ExplicitItem:
       properties:
         label:
@@ -466,23 +454,6 @@ components:
       - subcategory
       title: ExplicitItem
       type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -531,6 +502,35 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    CategoryType:
+      description: This enum are used to categorize the explicit content extracted from the text
+      enum:
+      - Toxic
+      - Content
+      - Sexual
+      - Violence
+      - DrugAndAlcohol
+      - Finance
+      - HateAndExtremism
+      - Safe
+      - Other
+      title: CategoryType
+      type: string
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

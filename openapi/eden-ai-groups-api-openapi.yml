@@ -71,25 +71,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ManageGroup:
-      type: object
-      description: 'A directory-synced group as the management plane exposes it: the stable IdP identifiers plus
-
-        the member emails. The internal PK is not exposed; ``external_group_id`` is the addressable id.'
-      properties:
-        external_group_id:
-          type: string
-          maxLength: 255
-        name:
-          type: string
-          maxLength: 255
-        members:
-          type: string
-          readOnly: true
-      required:
-      - external_group_id
-      - members
-      - name
     PaginatedManageGroupList:
       type: object
       required:
@@ -115,3 +96,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ManageGroup'
+    ManageGroup:
+      type: object
+      description: 'A directory-synced group as the management plane exposes it: the stable IdP identifiers plus
+
+        the member emails. The internal PK is not exposed; ``external_group_id`` is the addressable id.'
+      properties:
+        external_group_id:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 255
+        members:
+          type: string
+          readOnly: true
+      required:
+      - external_group_id
+      - members
+      - name

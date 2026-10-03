@@ -190,6 +190,13 @@ components:
           default: null
       title: textprompt_optimizationResponseModel
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     textprompt_optimizationPromptOptimizationDataClass:
       properties:
         missing_information:
@@ -213,6 +220,13 @@ components:
       - status
       title: textprompt_optimizationPromptOptimizationDataClass
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     FieldError:
       type: object
       properties:
@@ -222,11 +236,6 @@ components:
             type: string
       required:
       - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     NotFoundResponse:
       type: object
       properties:
@@ -242,40 +251,6 @@ components:
       - text
       title: PromptDataClass
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     textprompt_optimizationPromptOptimizationRequest:
       type: object
       properties:
@@ -323,6 +298,31 @@ components:
       - providers
       - target_provider
       - text
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

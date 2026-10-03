@@ -437,6 +437,13 @@ paths:
           description: ''
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     translationautomatic_translationResponseModel:
       properties:
         xai:
@@ -462,6 +469,38 @@ components:
           default: null
       title: translationautomatic_translationResponseModel
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     translationautomatic_translationAutomaticTranslationDataClass:
       properties:
         text:
@@ -480,26 +519,16 @@ components:
       - status
       title: translationautomatic_translationAutomaticTranslationDataClass
       type: object
-    FieldError:
+    NestedError:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          type: string
+      required:
+      - message
+      - type
     translationautomatic_translationAutomaticTranslationRequest:
       type: object
       properties:
@@ -552,40 +581,11 @@ components:
       - providers
       - target_language
       - text
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

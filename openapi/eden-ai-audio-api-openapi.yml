@@ -308,27 +308,49 @@ paths:
       description: Production server
 components:
   schemas:
-    ValidationError:
+    TranscriptionResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Text
+        usage:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Usage
+      additionalProperties: true
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: TranscriptionResponse
+      description: 'OpenAI-compatible transcription response, plus Eden ``cost`` / ``provider``.
+
+
+        The provider''s full transcript payload passes through — ``text`` plus any
+
+        ``language``, ``duration``, ``words``, and ``segments`` the provider returns
+
+        — alongside the Eden-added ``cost`` and ``provider`` fields.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ProviderRoutingPreferences:
       properties:
         sort:
@@ -383,15 +405,87 @@ components:
         MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
 
         ``quality_cost`` below is the one field here that speaks to it.'
-    HTTPValidationError:
+    ModelWithEndpoints:
       properties:
-        detail:
+        id:
+          type: string
+          title: Id
+          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of the newest endpoint serving this model
+          default: 0
+        owned_by:
+          type: string
+          title: Owned By
+          description: Who authored the model, independent of who sells it
+          default: ''
+        mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
+        endpoints:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/ModelObject'
           type: array
-          title: Detail
+          title: Endpoints
+          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
+        endpoint_count:
+          type: integer
+          title: Endpoint Count
+          description: How many provider endpoints serve this model
+          readOnly: true
       type: object
-      title: HTTPValidationError
+      required:
+      - id
+      - endpoints
+      - endpoint_count
+      title: ModelWithEndpoints
+      description: 'One routable model name and the provider endpoints behind it.
+
+
+        Deliberately carries NO pricing, context window or capability of its own. Those vary between
+
+        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
+
+        and six distinct capability sets across ten sellers — so a value here would be wrong for most
+
+        of the group. Each endpoint keeps its own, unchanged.
+
+
+        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
+
+        field, which is what makes this view a pure regrouping: a caller reading
+
+        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
     ModelObject:
       properties:
         id:
@@ -473,6 +567,55 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
+    SpeechBody:
+      properties:
+        routing:
+          anyOf:
+          - $ref: '#/components/schemas/ProviderRoutingPreferences'
+          - type: 'null'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+        model:
+          type: string
+          title: Model
+          description: provider/model, e.g. 'openai/tts-1'
+        input:
+          type: string
+          title: Input
+          description: The text to synthesize into audio.
+        voice:
+          type: string
+          title: Voice
+          description: Voice preset, e.g. 'alloy'.
+        response_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Format
+          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
+        speed:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Speed
+          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: Optional guidance for voice and delivery style.
+      type: object
+      required:
+      - model
+      - input
+      - voice
+      title: SpeechBody
+      description: 'OpenAI-compatible text-to-speech request.
+
+
+        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
+
+        top-level fields are dropped.'
     ListModelsWithEndpointsResponse:
       properties:
         object:
@@ -499,41 +642,27 @@ components:
         OpenAPI schema titles and generated SDK classes, and a caller never needs the word
 
         "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    RegionObject:
+    ValidationError:
       properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
+        loc:
           items:
-            $ref: '#/components/schemas/ModelObject'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Data
-          description: List of models
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
+      - loc
+      - msg
+      - type
+      title: ValidationError
     Capabilities:
       properties:
         input_modalities:
@@ -600,151 +729,22 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
-    ModelWithEndpoints:
+    RegionObject:
       properties:
-        id:
+        code:
           type: string
-          title: Id
-          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
-        object:
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
           type: string
-          const: model
-          title: Object
-          description: Object type
-          default: model
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp of the newest endpoint serving this model
-          default: 0
-        owned_by:
-          type: string
-          title: Owned By
-          description: Who authored the model, independent of who sells it
-          default: ''
-        mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
-        endpoints:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Endpoints
-          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
-        endpoint_count:
-          type: integer
-          title: Endpoint Count
-          description: How many provider endpoints serve this model
-          readOnly: true
+          title: Name
+          description: Region display name
       type: object
       required:
-      - id
-      - endpoints
-      - endpoint_count
-      title: ModelWithEndpoints
-      description: 'One routable model name and the provider endpoints behind it.
-
-
-        Deliberately carries NO pricing, context window or capability of its own. Those vary between
-
-        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
-
-        and six distinct capability sets across ten sellers — so a value here would be wrong for most
-
-        of the group. Each endpoint keeps its own, unchanged.
-
-
-        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
-
-        field, which is what makes this view a pure regrouping: a caller reading
-
-        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    TranscriptionResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Text
-        usage:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Usage
-      additionalProperties: true
-      type: object
-      title: TranscriptionResponse
-      description: 'OpenAI-compatible transcription response, plus Eden ``cost`` / ``provider``.
-
-
-        The provider''s full transcript payload passes through — ``text`` plus any
-
-        ``language``, ``duration``, ``words``, and ``segments`` the provider returns
-
-        — alongside the Eden-added ``cost`` and ``provider`` fields.'
-    SpeechBody:
-      properties:
-        routing:
-          anyOf:
-          - $ref: '#/components/schemas/ProviderRoutingPreferences'
-          - type: 'null'
-          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
-        model:
-          type: string
-          title: Model
-          description: provider/model, e.g. 'openai/tts-1'
-        input:
-          type: string
-          title: Input
-          description: The text to synthesize into audio.
-        voice:
-          type: string
-          title: Voice
-          description: Voice preset, e.g. 'alloy'.
-        response_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Response Format
-          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
-        speed:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Speed
-          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: Optional guidance for voice and delivery style.
-      type: object
-      required:
-      - model
-      - input
-      - voice
-      title: SpeechBody
-      description: 'OpenAI-compatible text-to-speech request.
-
-
-        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
-
-        top-level fields are dropped.'
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
   securitySchemes:
     bearerAuth:
       type: http

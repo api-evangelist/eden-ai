@@ -226,64 +226,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    ManagementKeyRequest:
-      type: object
-      description: 'An org''s inference key as the management plane exposes it. Never the secret or
-
-        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
-
-
-        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
-
-        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
-
-        batched rollup has not settled, so a management admin must be shown available, not
-
-        settled (the shipped display-vs-accounting doctrine, mirrored from
-
-        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
-
-        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
-
-        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
-
-
-        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
-
-        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
-
-        it is regenerated onto the hashed scheme.'
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The token name
-          maxLength: 200
-        token_type:
-          $ref: '#/components/schemas/TokenTypeEnum'
-        active_balance:
-          type: boolean
-          description: Weither to use the balance field or not.
-        expire_time:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        revoked_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - name
-    TokenTypeEnum:
-      enum:
-      - sandbox_api_token
-      - api_token
-      type: string
-      description: '* `sandbox_api_token` - Sandbox
-
-        * `api_token` - Back'
     PaginatedManagementKeyList:
       type: object
       required:
@@ -357,6 +299,64 @@ components:
           - string
           - 'null'
           format: date-time
+    ManagementKeyRequest:
+      type: object
+      description: 'An org''s inference key as the management plane exposes it. Never the secret or
+
+        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
+
+
+        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
+
+        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
+
+        batched rollup has not settled, so a management admin must be shown available, not
+
+        settled (the shipped display-vs-accounting doctrine, mirrored from
+
+        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
+
+        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
+
+        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
+
+
+        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
+
+        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
+
+        it is regenerated onto the hashed scheme.'
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - name
+    TokenTypeEnum:
+      enum:
+      - sandbox_api_token
+      - api_token
+      type: string
+      description: '* `sandbox_api_token` - Sandbox
+
+        * `api_token` - Back'
     ManagementKey:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or

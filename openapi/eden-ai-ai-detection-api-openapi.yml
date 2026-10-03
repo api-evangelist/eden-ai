@@ -265,56 +265,13 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    ImageaiDetectionAiDetectionDataClassPredictionEnum:
-      enum:
-      - ai-generated
-      - original
-      type: string
-    FieldError:
+    Error:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imageai_detectionAiDetectionDataClass:
-      properties:
-        ai_score:
-          maximum: 1
-          minimum: 0
-          title: Ai Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/ImageaiDetectionAiDetectionDataClassPredictionEnum'
-          title: Prediction
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - ai_score
-      - prediction
-      - status
-      title: imageai_detectionAiDetectionDataClass
-      type: object
+      - error
     imageai_detectionResponseModel:
       properties:
         resemble:
@@ -325,33 +282,6 @@ components:
           default: null
       title: imageai_detectionResponseModel
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     BadRequest:
       type: object
       properties:
@@ -359,6 +289,21 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageai_detectionAiDetectionRequest:
       type: object
       properties:
@@ -406,6 +351,84 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imageai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          maximum: 1
+          minimum: 0
+          title: Ai Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/ImageaiDetectionAiDetectionDataClassPredictionEnum'
+          title: Prediction
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - prediction
+      - status
+      title: imageai_detectionAiDetectionDataClass
+      type: object
+    ImageaiDetectionAiDetectionDataClassPredictionEnum:
+      enum:
+      - ai-generated
+      - original
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textai_detectionAiDetectionDataClass:
+      properties:
+        ai_score:
+          title: Ai Score
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/AiDetectionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - ai_score
+      - status
+      title: textai_detectionAiDetectionDataClass
+      type: object
     AiDetectionItem:
       properties:
         text:
@@ -485,29 +508,6 @@ components:
       required:
       - providers
       - text
-    textai_detectionAiDetectionDataClass:
-      properties:
-        ai_score:
-          title: Ai Score
-          type: integer
-        items:
-          items:
-            $ref: '#/components/schemas/AiDetectionItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - ai_score
-      - status
-      title: textai_detectionAiDetectionDataClass
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -519,6 +519,13 @@ paths:
           description: ''
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     imagesearchupload_imageUploadImageRequest:
       type: object
       properties:
@@ -572,29 +579,6 @@ components:
       required:
       - image_name
       - providers
-    imagesearchSearchDeleteImageDataClass:
-      properties:
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-      required:
-      - status
-      title: imagesearchSearchDeleteImageDataClass
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     imagesearchResponseModel:
       properties:
         sentisight:
@@ -605,17 +589,38 @@ components:
           default: null
       title: imagesearchResponseModel
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     imagesearchdelete_imageDeleteImageRequest:
       type: object
       properties:
@@ -667,30 +672,25 @@ components:
       required:
       - message
       - type
-    Error:
-      type: object
+    imagesearchSearchDeleteImageDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
       required:
-      - error
-    NestedBadRequest:
+      - status
+      title: imagesearchSearchDeleteImageDataClass
       type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     imagesearchlaunch_similaritySearchImageRequest:
       type: object
       properties:

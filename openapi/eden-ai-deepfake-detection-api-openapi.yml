@@ -92,98 +92,11 @@ paths:
           description: ''
 components:
   schemas:
-    ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum:
-      enum:
-      - deepfake
-      - original
-      type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    imagedeepfake_detectionResponseModel:
-      properties:
-        resemble:
-          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
-          default: null
-        sightengine:
-          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
-          default: null
-      title: imagedeepfake_detectionResponseModel
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     Error:
       type: object
       properties:
         error:
           $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imagedeepfake_detectionDeepfakeDetectionDataClass:
-      properties:
-        deepfake_score:
-          maximum: 1
-          minimum: 0
-          title: Deepfake Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum'
-          title: Prediction
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - deepfake_score
-      - prediction
-      - status
-      title: imagedeepfake_detectionDeepfakeDetectionDataClass
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
@@ -234,6 +147,93 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum:
+      enum:
+      - deepfake
+      - original
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imagedeepfake_detectionDeepfakeDetectionDataClass:
+      properties:
+        deepfake_score:
+          maximum: 1
+          minimum: 0
+          title: Deepfake Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum'
+          title: Prediction
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - deepfake_score
+      - prediction
+      - status
+      title: imagedeepfake_detectionDeepfakeDetectionDataClass
+      type: object
+    imagedeepfake_detectionResponseModel:
+      properties:
+        resemble:
+          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
+          default: null
+        sightengine:
+          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
+          default: null
+      title: imagedeepfake_detectionResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

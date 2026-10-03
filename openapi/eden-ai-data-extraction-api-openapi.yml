@@ -180,6 +180,71 @@ paths:
           description: ''
 components:
   schemas:
+    BoundingBox:
+      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
+      properties:
+        left:
+          description: Left coordinate of the bounding box
+          title: Left
+          type: integer
+        top:
+          description: Top coordinate of the bounding box
+          title: Top
+          type: integer
+        width:
+          description: Width of the bounding box
+          title: Width
+          type: integer
+        height:
+          description: Height of the bounding box
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: BoundingBox
+      type: object
+    ocrdata_extractionResponseModel:
+      properties:
+        base64:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+      title: ocrdata_extractionResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     ocrdata_extractionDataExtractionDataClass:
       properties:
         fields:
@@ -199,6 +264,16 @@ components:
       - status
       title: ocrdata_extractionDataExtractionDataClass
       type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ItemDataExtraction:
       properties:
         key:
@@ -279,36 +354,6 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    ocrdata_extractionResponseModel:
-      properties:
-        base64:
-          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
-          default: null
-      title: ocrdata_extractionResponseModel
-      type: object
     NestedError:
       type: object
       properties:
@@ -319,56 +364,11 @@ components:
       required:
       - message
       - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BoundingBox:
-      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
-      properties:
-        left:
-          description: Left coordinate of the bounding box
-          title: Left
-          type: integer
-        top:
-          description: Top coordinate of the bounding box
-          title: Top
-          type: integer
-        width:
-          description: Width of the bounding box
-          title: Width
-          type: integer
-        height:
-          description: Height of the bounding box
-          title: Height
-          type: integer
-      required:
-      - left
-      - top
-      - width
-      - height
-      title: BoundingBox
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

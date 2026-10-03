@@ -508,6 +508,53 @@ paths:
           description: ''
 components:
   schemas:
+    BlankEnum:
+      enum:
+      - ''
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     TextToSpeechAsyncRequest:
       type: object
       properties:
@@ -610,45 +657,14 @@ components:
       required:
       - providers
       - text
-    AsyncJobList:
+    LaunchAsyncJobResponse:
       type: object
       properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
         public_id:
           type: string
           format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
       - public_id
-      - state
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     ListAsyncJobResponse:
       type: object
       properties:
@@ -658,50 +674,6 @@ components:
             $ref: '#/components/schemas/AsyncJobList'
       required:
       - jobs
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    OptionEnum:
-      enum:
-      - FEMALE
-      - MALE
-      type: string
-      description: '* `FEMALE` - Female
-
-        * `MALE` - Male'
     NestedBadRequest:
       type: object
       properties:
@@ -712,16 +684,44 @@ components:
       required:
       - message
       - type
-    BadRequest:
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
+      - <parameter_name>
+    asyncaudiotext_to_speech_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/audiotext_to_speech_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
       - error
-    BlankEnum:
+      - public_id
+      - status
+      title: asyncaudiotext_to_speech_asyncResponseModel
+      type: object
+    OptionEnum:
       enum:
-      - ''
+      - FEMALE
+      - MALE
+      type: string
+      description: '* `FEMALE` - Female
+
+        * `MALE` - Male'
     audiotext_to_speech_asyncTextToSpeechAsyncDataClass:
       properties:
         audio:
@@ -757,35 +757,35 @@ components:
       - final_status
       title: audiotext_to_speech_asyncTextToSpeechAsyncDataClass
       type: object
-    asyncaudiotext_to_speech_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/audiotext_to_speech_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncaudiotext_to_speech_asyncResponseModel
-      type: object
-    LaunchAsyncJobResponse:
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
       type: object
       properties:
-        public_id:
+        type:
           type: string
-          format: uuid
+        message:
+          type: string
       required:
-      - public_id
+      - message
+      - type
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
     audiotext_to_speech_asyncModel:
       properties:
         amazon:

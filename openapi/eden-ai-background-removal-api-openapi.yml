@@ -168,6 +168,26 @@ components:
           description: Provider specific parameters
       required:
       - providers
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -177,17 +197,41 @@ components:
             type: string
       required:
       - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
+    NestedBadRequest:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imagebackground_removalResponseModel:
+      properties:
+        photoroom:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        stabilityai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        picsart:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        clipdrop:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+      title: imagebackground_removalResponseModel
+      type: object
     imagebackground_removalBackgroundRemovalDataClass:
       properties:
         image_b64:
@@ -222,55 +266,11 @@ components:
       required:
       - message
       - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imagebackground_removalResponseModel:
-      properties:
-        photoroom:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        stabilityai:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        picsart:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        clipdrop:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-      title: imagebackground_removalResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

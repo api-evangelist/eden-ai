@@ -7479,24 +7479,40 @@ paths:
           description: ''
 components:
   schemas:
-    ObjectFrame:
-      properties:
-        timestamp:
-          title: Timestamp
-          type: integer
-        bounding_box:
-          $ref: '#/components/schemas/VideoObjectBoundingBox'
-      required:
-      - timestamp
-      - bounding_box
-      title: ObjectFrame
-      type: object
     videoobject_tracking_asyncModel:
       properties:
         google:
           $ref: '#/components/schemas/videoobject_tracking_asyncObjectTrackingAsyncDataClass'
           default: null
       title: videoobject_tracking_asyncModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    asyncvideoobject_tracking_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoobject_tracking_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoobject_tracking_asyncResponseModel
       type: object
     AsyncJobList:
       type: object
@@ -7522,6 +7538,55 @@ components:
       - providers
       - public_id
       - state
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     videoobject_tracking_asyncObjectTrackingAsyncDataClass:
       properties:
         objects:
@@ -7550,51 +7615,41 @@ components:
       - final_status
       title: videoobject_tracking_asyncObjectTrackingAsyncDataClass
       type: object
-    FieldError:
-      type: object
+    ObjectTrack:
       properties:
-        <parameter_name>:
-          type: array
+        description:
+          title: Description
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        frames:
           items:
-            type: string
-      required:
-      - <parameter_name>
-    asyncvideoobject_tracking_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videoobject_tracking_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideoobject_tracking_asyncResponseModel
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
+            $ref: '#/components/schemas/ObjectFrame'
+          title: Frames
           type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - jobs
+      - description
+      - confidence
+      title: ObjectTrack
+      type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    ObjectFrame:
+      properties:
+        timestamp:
+          title: Timestamp
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/VideoObjectBoundingBox'
+      required:
+      - timestamp
+      - bounding_box
+      title: ObjectFrame
+      type: object
     VideoObjectBoundingBox:
       properties:
         top:
@@ -7616,20 +7671,6 @@ components:
       - width
       title: VideoObjectBoundingBox
       type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
     NestedError:
       type: object
       properties:
@@ -7640,61 +7681,6 @@ components:
       required:
       - message
       - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    ObjectTrack:
-      properties:
-        description:
-          title: Description
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        frames:
-          items:
-            $ref: '#/components/schemas/ObjectFrame'
-          title: Frames
-          type: array
-      required:
-      - description
-      - confidence
-      title: ObjectTrack
-      type: object
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -7746,6 +7732,20 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
   securitySchemes:
     FeatureApiAuth:
       type: http

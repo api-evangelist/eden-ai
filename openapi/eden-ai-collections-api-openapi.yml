@@ -281,27 +281,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     CollectionResponse:
       properties:
         collection_id:
@@ -339,6 +318,25 @@ components:
       - file
       title: AddItemRequest
       description: Body for adding an item to a collection.
+    CreateCollectionRequest:
+      properties:
+        model:
+          type: string
+          minLength: 1
+          title: Model
+          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Name
+          description: Optional human-readable name for the collection.
+      type: object
+      required:
+      - model
+      title: CreateCollectionRequest
+      description: Body for creating a collection.
     HTTPValidationError:
       properties:
         detail:
@@ -366,6 +364,27 @@ components:
       - item_ids
       title: ItemsResponse
       description: Item ids stored in a collection (provider-side ids, passed through).
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ListCollectionsResponse:
       properties:
         items:
@@ -399,40 +418,6 @@ components:
       - total_pages
       title: ListCollectionsResponse
       description: Paginated list of the user's collections.
-    DeleteCollectionResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - deleted
-      title: DeleteCollectionResponse
-      description: Result of deleting a collection.
-    CreateCollectionRequest:
-      properties:
-        model:
-          type: string
-          minLength: 1
-          title: Model
-          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
-        name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Name
-          description: Optional human-readable name for the collection.
-      type: object
-      required:
-      - model
-      title: CreateCollectionRequest
-      description: Body for creating a collection.
     DeleteItemResponse:
       properties:
         collection_id:
@@ -452,6 +437,21 @@ components:
       - deleted
       title: DeleteItemResponse
       description: Result of deleting an item from a collection.
+    DeleteCollectionResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
   securitySchemes:
     AuthBearer:
       type: http

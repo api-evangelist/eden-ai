@@ -160,192 +160,6 @@ paths:
       - AuthBearer: []
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ListFilesResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/FileResponse'
-          type: array
-          title: Items
-          description: List of items
-        total:
-          type: integer
-          title: Total
-          description: Total number of items
-        page:
-          type: integer
-          title: Page
-          description: Current page number
-        limit:
-          type: integer
-          title: Limit
-          description: Items per page
-        total_pages:
-          type: integer
-          title: Total Pages
-          description: Total number of pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      - total_pages
-      title: ListFilesResponse
-      description: Response for listing files with pagination.
-      example:
-        items:
-        - created_at: '2025-12-08T10:30:00Z'
-          expires_at: '2026-01-07T10:30:00Z'
-          file_id: 550e8400-e29b-41d4-a716-446655440000
-          file_mimetype: application/pdf
-          file_name: invoice.pdf
-          file_size: 1048576
-          metadata:
-            page_count: 5
-          purpose: general
-        limit: 100
-        page: 1
-        total: 25
-        total_pages: 1
-    Body_upload_file_v3_upload_post:
-      properties:
-        file:
-          type: string
-          format: binary
-          title: File
-          description: File to upload
-        expires_in_days:
-          type: integer
-          maximum: 30.0
-          minimum: 1.0
-          title: Expires In Days
-          description: Expiration in days (1-30)
-          default: 30
-        purpose:
-          type: string
-          maxLength: 50
-          minLength: 1
-          title: Purpose
-          description: Purpose of the file
-          default: general
-      type: object
-      required:
-      - file
-      title: Body_upload_file_v3_upload_post
-    DeleteFilesResponse:
-      properties:
-        deleted_count:
-          type: integer
-          title: Deleted Count
-          description: Number of files deleted
-      type: object
-      required:
-      - deleted_count
-      title: DeleteFilesResponse
-      description: Response for file deletion.
-      example:
-        deleted_count: 5
-    DeleteFilesRequest:
-      properties:
-        file_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          maxItems: 100
-          minItems: 1
-          title: File Ids
-          description: List of file IDs to delete (1-100)
-      type: object
-      required:
-      - file_ids
-      title: DeleteFilesRequest
-      description: Request body for deleting multiple files.
-      example:
-        file_ids:
-        - 550e8400-e29b-41d4-a716-446655440000
-        - 550e8400-e29b-41d4-a716-446655440001
-    FileResponse:
-      properties:
-        file_id:
-          type: string
-          format: uuid
-          title: File Id
-          description: Unique file identifier for use in API calls
-        file_name:
-          type: string
-          title: File Name
-          description: Original filename
-        file_size:
-          type: integer
-          title: File Size
-          description: File size in bytes
-        file_mimetype:
-          type: string
-          title: File Mimetype
-          description: Detected MIME type
-        purpose:
-          type: string
-          title: Purpose
-          description: Purpose of the file (e.g., 'general', 'assistants')
-        metadata:
-          additionalProperties: true
-          type: object
-          title: Metadata
-          description: File metadata (e.g., page_count for PDFs/documents)
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-          description: Upload timestamp
-        expires_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Expires At
-          description: Expiration timestamp
-      type: object
-      required:
-      - file_id
-      - file_name
-      - file_size
-      - file_mimetype
-      - purpose
-      - created_at
-      title: FileResponse
-      description: Response for a file.
     UploadResponse:
       properties:
         file_id:
@@ -406,6 +220,192 @@ components:
         metadata:
           page_count: 5
         purpose: general
+    ListFilesResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FileResponse'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: ListFilesResponse
+      description: Response for listing files with pagination.
+      example:
+        items:
+        - created_at: '2025-12-08T10:30:00Z'
+          expires_at: '2026-01-07T10:30:00Z'
+          file_id: 550e8400-e29b-41d4-a716-446655440000
+          file_mimetype: application/pdf
+          file_name: invoice.pdf
+          file_size: 1048576
+          metadata:
+            page_count: 5
+          purpose: general
+        limit: 100
+        page: 1
+        total: 25
+        total_pages: 1
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    FileResponse:
+      properties:
+        file_id:
+          type: string
+          format: uuid
+          title: File Id
+          description: Unique file identifier for use in API calls
+        file_name:
+          type: string
+          title: File Name
+          description: Original filename
+        file_size:
+          type: integer
+          title: File Size
+          description: File size in bytes
+        file_mimetype:
+          type: string
+          title: File Mimetype
+          description: Detected MIME type
+        purpose:
+          type: string
+          title: Purpose
+          description: Purpose of the file (e.g., 'general', 'assistants')
+        metadata:
+          additionalProperties: true
+          type: object
+          title: Metadata
+          description: File metadata (e.g., page_count for PDFs/documents)
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Upload timestamp
+        expires_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Expires At
+          description: Expiration timestamp
+      type: object
+      required:
+      - file_id
+      - file_name
+      - file_size
+      - file_mimetype
+      - purpose
+      - created_at
+      title: FileResponse
+      description: Response for a file.
+    Body_upload_file_v3_upload_post:
+      properties:
+        file:
+          type: string
+          format: binary
+          title: File
+          description: File to upload
+        expires_in_days:
+          type: integer
+          maximum: 30.0
+          minimum: 1.0
+          title: Expires In Days
+          description: Expiration in days (1-30)
+          default: 30
+        purpose:
+          type: string
+          maxLength: 50
+          minLength: 1
+          title: Purpose
+          description: Purpose of the file
+          default: general
+      type: object
+      required:
+      - file
+      title: Body_upload_file_v3_upload_post
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DeleteFilesRequest:
+      properties:
+        file_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          maxItems: 100
+          minItems: 1
+          title: File Ids
+          description: List of file IDs to delete (1-100)
+      type: object
+      required:
+      - file_ids
+      title: DeleteFilesRequest
+      description: Request body for deleting multiple files.
+      example:
+        file_ids:
+        - 550e8400-e29b-41d4-a716-446655440000
+        - 550e8400-e29b-41d4-a716-446655440001
+    DeleteFilesResponse:
+      properties:
+        deleted_count:
+          type: integer
+          title: Deleted Count
+          description: Number of files deleted
+      type: object
+      required:
+      - deleted_count
+      title: DeleteFilesResponse
+      description: Response for file deletion.
+      example:
+        deleted_count: 5
   securitySchemes:
     AuthBearer:
       type: http

@@ -627,6 +627,140 @@ paths:
           description: ''
 components:
   schemas:
+    Country:
+      properties:
+        name:
+          title: Name
+          type: string
+        alpha2:
+          title: Alpha2
+          type: string
+        alpha3:
+          title: Alpha3
+          type: string
+        confidence:
+          default: null
+          title: Confidence
+          type: integer
+      required:
+      - name
+      - alpha2
+      - alpha3
+      title: Country
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ItemIdentityParserDataClass:
+      properties:
+        value:
+          default: null
+          title: Value
+          type: string
+        confidence:
+          default: null
+          title: Confidence
+          type: integer
+      title: ItemIdentityParserDataClass
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    InfosIdentityParserDataClass:
+      properties:
+        last_name:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        given_names:
+          items:
+            $ref: '#/components/schemas/ItemIdentityParserDataClass'
+          title: Given Names
+          type: array
+        birth_place:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        birth_date:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        issuance_date:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        expire_date:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        document_id:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        issuing_state:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        address:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        age:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        country:
+          $ref: '#/components/schemas/Country'
+        document_type:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        gender:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        image_id:
+          items:
+            $ref: '#/components/schemas/ItemIdentityParserDataClass'
+          title: Image Id
+          type: array
+        image_signature:
+          items:
+            $ref: '#/components/schemas/ItemIdentityParserDataClass'
+          title: Image Signature
+          type: array
+        mrz:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+        nationality:
+          $ref: '#/components/schemas/ItemIdentityParserDataClass'
+      required:
+      - last_name
+      - birth_place
+      - birth_date
+      - issuance_date
+      - expire_date
+      - document_id
+      - issuing_state
+      - address
+      - age
+      - country
+      - document_type
+      - gender
+      - mrz
+      - nationality
+      title: InfosIdentityParserDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ocridentity_parserResponseModel:
       properties:
         amazon:
@@ -711,18 +845,16 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    ItemIdentityParserDataClass:
-      properties:
-        value:
-          default: null
-          title: Value
-          type: string
-        confidence:
-          default: null
-          title: Confidence
-          type: integer
-      title: ItemIdentityParserDataClass
+    NestedError:
       type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     ocridentity_parserIdentityParserDataClass:
       properties:
         extracted_data:
@@ -742,143 +874,11 @@ components:
       - status
       title: ocridentity_parserIdentityParserDataClass
       type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    InfosIdentityParserDataClass:
-      properties:
-        last_name:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        given_names:
-          items:
-            $ref: '#/components/schemas/ItemIdentityParserDataClass'
-          title: Given Names
-          type: array
-        birth_place:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        birth_date:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        issuance_date:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        expire_date:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        document_id:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        issuing_state:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        address:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        age:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        country:
-          $ref: '#/components/schemas/Country'
-        document_type:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        gender:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        image_id:
-          items:
-            $ref: '#/components/schemas/ItemIdentityParserDataClass'
-          title: Image Id
-          type: array
-        image_signature:
-          items:
-            $ref: '#/components/schemas/ItemIdentityParserDataClass'
-          title: Image Signature
-          type: array
-        mrz:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-        nationality:
-          $ref: '#/components/schemas/ItemIdentityParserDataClass'
-      required:
-      - last_name
-      - birth_place
-      - birth_date
-      - issuance_date
-      - expire_date
-      - document_id
-      - issuing_state
-      - address
-      - age
-      - country
-      - document_type
-      - gender
-      - mrz
-      - nationality
-      title: InfosIdentityParserDataClass
-      type: object
-    Country:
-      properties:
-        name:
-          title: Name
-          type: string
-        alpha2:
-          title: Alpha2
-          type: string
-        alpha3:
-          title: Alpha3
-          type: string
-        confidence:
-          default: null
-          title: Confidence
-          type: integer
-      required:
-      - name
-      - alpha2
-      - alpha3
-      title: Country
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

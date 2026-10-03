@@ -207,6 +207,76 @@ paths:
           description: ''
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textcode_generationCodeGenerationDataClass:
+      properties:
+        generated_text:
+          title: Generated Text
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - generated_text
+      - status
+      title: textcode_generationCodeGenerationDataClass
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    textcode_generationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+      title: textcode_generationResponseModel
+      type: object
     textcode_generationCodeGenerationRequest:
       type: object
       properties:
@@ -267,26 +337,6 @@ components:
       required:
       - instruction
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     NestedError:
       type: object
       properties:
@@ -297,61 +347,11 @@ components:
       required:
       - message
       - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    textcode_generationCodeGenerationDataClass:
-      properties:
-        generated_text:
-          title: Generated Text
-          type: string
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - generated_text
-      - status
-      title: textcode_generationCodeGenerationDataClass
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    textcode_generationResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-      title: textcode_generationResponseModel
-      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

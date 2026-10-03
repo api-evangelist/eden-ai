@@ -257,69 +257,27 @@ paths:
           description: ''
 components:
   schemas:
-    VideoLogo:
+    asyncvideologo_detection_asyncResponseModel:
       properties:
-        timestamp:
-          title: Timestamp
-          type: integer
-        bounding_box:
-          $ref: '#/components/schemas/VideoLogoBoundingBox'
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - timestamp
-      - bounding_box
-      - confidence
-      title: VideoLogo
-      type: object
-    LogoTrack:
-      properties:
-        description:
-          title: Description
+        results:
+          $ref: '#/components/schemas/videologo_detection_asyncModel'
+        error:
+          title: Error
           type: string
-        tracking:
-          items:
-            $ref: '#/components/schemas/VideoLogo'
-          title: Tracking
-          type: array
-      required:
-      - description
-      title: LogoTrack
-      type: object
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
         public_id:
-          type: string
           format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
+          title: Public Id
           type: string
-          format: date-time
+        status:
+          title: Status
+          type: string
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
+      - results
+      - error
       - public_id
-      - state
-    FieldError:
+      - status
+      title: asyncvideologo_detection_asyncResponseModel
       type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     videologo_detection_asyncModel:
       properties:
         twelvelabs:
@@ -330,35 +288,13 @@ components:
           default: null
       title: videologo_detection_asyncModel
       type: object
-    NotFoundResponse:
+    Error:
       type: object
       properties:
-        details:
-          type: string
-          default: Not Found
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - jobs
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
+      - error
     videologo_detection_asyncLogoDetectionAsyncDataClass:
       properties:
         logos:
@@ -387,49 +323,69 @@ components:
       - final_status
       title: videologo_detection_asyncLogoDetectionAsyncDataClass
       type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    Error:
+    AsyncJobList:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    asyncvideologo_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videologo_detection_asyncModel'
-        error:
-          title: Error
+        providers:
           type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
         public_id:
+          type: string
           format: uuid
-          title: Public Id
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
           type: string
-        status:
-          title: Status
-          type: string
+          format: date-time
       required:
-      - results
-      - error
+      - created_at
+      - nb
+      - nb_ok
+      - providers
       - public_id
-      - status
-      title: asyncvideologo_detection_asyncResponseModel
-      type: object
-    NestedError:
+      - state
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
     NestedBadRequest:
       type: object
       properties:
@@ -440,42 +396,21 @@ components:
       required:
       - message
       - type
-    BadRequest:
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    VideoLogoBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoLogoBoundingBox
-      type: object
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
+        type:
           type: string
-          format: uuid
+        message:
+          type: string
       required:
-      - public_id
+      - message
+      - type
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -527,6 +462,71 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    LogoTrack:
+      properties:
+        description:
+          title: Description
+          type: string
+        tracking:
+          items:
+            $ref: '#/components/schemas/VideoLogo'
+          title: Tracking
+          type: array
+      required:
+      - description
+      title: LogoTrack
+      type: object
+    VideoLogoBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoLogoBoundingBox
+      type: object
+    VideoLogo:
+      properties:
+        timestamp:
+          title: Timestamp
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/VideoLogoBoundingBox'
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - timestamp
+      - bounding_box
+      - confidence
+      title: VideoLogo
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -66,218 +66,6 @@ paths:
       - AuthBearer: []
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ProviderRoutingPreferences:
-      properties:
-        sort:
-          anyOf:
-          - type: string
-            enum:
-            - cost
-            - speed
-            - latency
-            - exact
-          - type: 'null'
-          title: Sort
-          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
-        sticky:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Sticky
-          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
-        allow_fallbacks:
-          type: boolean
-          title: Allow Fallbacks
-          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
-          default: true
-        quality_cost:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 0.0
-          - type: 'null'
-          title: Quality Cost
-          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
-        allowed_providers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Allowed Providers
-          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
-      type: object
-      title: ProviderRoutingPreferences
-      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
-
-        quality for cost when the platform chooses the model.
-
-
-        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
-
-        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
-
-        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
-
-        ``quality_cost`` below is the one field here that speaks to it.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    AnthropicUsage:
-      properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-          description: Number of input tokens consumed.
-        output_tokens:
-          type: integer
-          title: Output Tokens
-          description: Number of output tokens generated.
-        cache_creation_input_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Cache Creation Input Tokens
-          description: Tokens written to the prompt cache (when prompt caching is used).
-        cache_read_input_tokens:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Cache Read Input Tokens
-          description: Tokens read from the prompt cache (when prompt caching is used).
-      additionalProperties: true
-      type: object
-      required:
-      - input_tokens
-      - output_tokens
-      title: AnthropicUsage
-      description: Token usage block returned by the Anthropic Messages API.
-    AnthropicMessagesResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Unique identifier for the message.
-        type:
-          type: string
-          const: message
-          title: Type
-          description: Object type. Always 'message' for this endpoint.
-          default: message
-        role:
-          type: string
-          const: assistant
-          title: Role
-          description: Conversational role of the response.
-          default: assistant
-        model:
-          type: string
-          title: Model
-          description: Model that generated the message.
-        content:
-          items:
-            $ref: '#/components/schemas/AnthropicContentBlock'
-          type: array
-          title: Content
-          description: Ordered list of content blocks produced by the model.
-        stop_reason:
-          anyOf:
-          - type: string
-            enum:
-            - end_turn
-            - max_tokens
-            - stop_sequence
-            - tool_use
-          - type: 'null'
-          title: Stop Reason
-          description: Reason generation stopped, if known.
-        stop_sequence:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Stop Sequence
-          description: Custom stop sequence that triggered the stop, if any.
-        usage:
-          $ref: '#/components/schemas/AnthropicUsage'
-          description: Token usage for the request.
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - model
-      - content
-      - usage
-      title: AnthropicMessagesResponse
-      description: Response body for POST /v1/messages (non-streaming).
-    CacheControl:
-      properties:
-        type:
-          type: string
-          const: ephemeral
-          title: Type
-          description: Cache type. Currently only 'ephemeral' is supported.
-        ttl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ttl
-          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
-      type: object
-      required:
-      - type
-      title: CacheControl
-      description: 'Prompt-cache marker.
-
-
-        Marks a message (or content part) as a cache boundary so that the prefix
-
-        up to that point is stored and reused on subsequent requests, reducing
-
-        latency and cost. Only a single contiguous cache-marked block is stored
-
-        per request, and providers enforce a minimum token count below which
-
-        caching is silently skipped. Silently ignored by providers that don''t
-
-        support prompt caching.'
-    AnthropicCountTokensResponse:
-      properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-          description: Number of input tokens the request would consume.
-      type: object
-      required:
-      - input_tokens
-      title: AnthropicCountTokensResponse
-      description: Response body for POST /v1/messages/count_tokens.
     AnthropicCountTokensBody:
       properties:
         model:
@@ -446,6 +234,126 @@ components:
       - model
       - messages
       title: AnthropicMessagesBody
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
+        allow_fallbacks:
+          type: boolean
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+          default: true
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
+    AnthropicMessagesResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the message.
+        type:
+          type: string
+          const: message
+          title: Type
+          description: Object type. Always 'message' for this endpoint.
+          default: message
+        role:
+          type: string
+          const: assistant
+          title: Role
+          description: Conversational role of the response.
+          default: assistant
+        model:
+          type: string
+          title: Model
+          description: Model that generated the message.
+        content:
+          items:
+            $ref: '#/components/schemas/AnthropicContentBlock'
+          type: array
+          title: Content
+          description: Ordered list of content blocks produced by the model.
+        stop_reason:
+          anyOf:
+          - type: string
+            enum:
+            - end_turn
+            - max_tokens
+            - stop_sequence
+            - tool_use
+          - type: 'null'
+          title: Stop Reason
+          description: Reason generation stopped, if known.
+        stop_sequence:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Stop Sequence
+          description: Custom stop sequence that triggered the stop, if any.
+        usage:
+          $ref: '#/components/schemas/AnthropicUsage'
+          description: Token usage for the request.
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - model
+      - content
+      - usage
+      title: AnthropicMessagesResponse
+      description: Response body for POST /v1/messages (non-streaming).
     AnthropicMessage:
       properties:
         role:
@@ -537,6 +445,98 @@ components:
       required:
       - type
       title: AnthropicContentBlock
+    AnthropicUsage:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          description: Number of input tokens consumed.
+        output_tokens:
+          type: integer
+          title: Output Tokens
+          description: Number of output tokens generated.
+        cache_creation_input_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Cache Creation Input Tokens
+          description: Tokens written to the prompt cache (when prompt caching is used).
+        cache_read_input_tokens:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Cache Read Input Tokens
+          description: Tokens read from the prompt cache (when prompt caching is used).
+      additionalProperties: true
+      type: object
+      required:
+      - input_tokens
+      - output_tokens
+      title: AnthropicUsage
+      description: Token usage block returned by the Anthropic Messages API.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CacheControl:
+      properties:
+        type:
+          type: string
+          const: ephemeral
+          title: Type
+          description: Cache type. Currently only 'ephemeral' is supported.
+        ttl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
+      type: object
+      required:
+      - type
+      title: CacheControl
+      description: 'Prompt-cache marker.
+
+
+        Marks a message (or content part) as a cache boundary so that the prefix
+
+        up to that point is stored and reused on subsequent requests, reducing
+
+        latency and cost. Only a single contiguous cache-marked block is stored
+
+        per request, and providers enforce a minimum token count below which
+
+        caching is silently skipped. Silently ignored by providers that don''t
+
+        support prompt caching.'
+    AnthropicCountTokensResponse:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          description: Number of input tokens the request would consume.
+      type: object
+      required:
+      - input_tokens
+      title: AnthropicCountTokensResponse
+      description: Response body for POST /v1/messages/count_tokens.
   securitySchemes:
     AuthBearer:
       type: http

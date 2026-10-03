@@ -92,6 +92,48 @@ components:
           default: null
       title: textemotion_detectionResponseModel
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    textemotion_detectionEmotionDetectionDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/EmotionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: textemotion_detectionEmotionDetectionDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     FieldError:
       type: object
       properties:
@@ -101,6 +143,48 @@ components:
             type: string
       required:
       - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    EmotionItem:
+      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
+      properties:
+        emotion:
+          title: Emotion
+          type: string
+        emotion_score:
+          maximum: 100
+          minimum: 0
+          title: Emotion Score
+          type: integer
+      required:
+      - emotion
+      - emotion_score
+      title: EmotionItem
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     textemotion_detectionEmotionDetectionRequest:
       type: object
       properties:
@@ -143,90 +227,6 @@ components:
       required:
       - providers
       - text
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    textemotion_detectionEmotionDetectionDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        items:
-          items:
-            $ref: '#/components/schemas/EmotionItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - text
-      - status
-      title: textemotion_detectionEmotionDetectionDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    EmotionItem:
-      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
-      properties:
-        emotion:
-          title: Emotion
-          type: string
-        emotion_score:
-          maximum: 100
-          minimum: 0
-          title: Emotion Score
-          type: integer
-      required:
-      - emotion
-      - emotion_score
-      title: EmotionItem
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

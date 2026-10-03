@@ -124,70 +124,6 @@ paths:
           description: ''
 components:
   schemas:
-    LandmarkLocation:
-      properties:
-        lat_lng:
-          $ref: '#/components/schemas/LandmarkLatLng'
-      required:
-      - lat_lng
-      title: LandmarkLocation
-      type: object
-    LandmarkVertice:
-      properties:
-        x:
-          title: X
-          type: integer
-        y:
-          title: Y
-          type: integer
-      required:
-      - x
-      - y
-      title: LandmarkVertice
-      type: object
-    LandmarkLatLng:
-      properties:
-        latitude:
-          title: Latitude
-          type: integer
-        longitude:
-          title: Longitude
-          type: integer
-      required:
-      - latitude
-      - longitude
-      title: LandmarkLatLng
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imagelandmark_detectionResponseModel:
-      properties:
-        microsoft:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-      title: imagelandmark_detectionResponseModel
-      type: object
     imagelandmark_detectionLandmarkDetectionDataClass:
       properties:
         items:
@@ -207,16 +143,6 @@ components:
       - status
       title: imagelandmark_detectionLandmarkDetectionDataClass
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     Error:
       type: object
       properties:
@@ -224,29 +150,51 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    LandmarkItem:
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LandmarkLocation:
       properties:
-        description:
-          title: Description
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_box:
-          items:
-            $ref: '#/components/schemas/LandmarkVertice'
-          title: Bounding Box
-          type: array
-        locations:
-          items:
-            $ref: '#/components/schemas/LandmarkLocation'
-          title: Locations
-          type: array
+        lat_lng:
+          $ref: '#/components/schemas/LandmarkLatLng'
       required:
-      - description
-      - confidence
-      title: LandmarkItem
+      - lat_lng
+      title: LandmarkLocation
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imagelandmark_detectionResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+      title: imagelandmark_detectionResponseModel
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NestedBadRequest:
       type: object
       properties:
@@ -257,13 +205,19 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
+    LandmarkLatLng:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        latitude:
+          title: Latitude
+          type: integer
+        longitude:
+          title: Longitude
+          type: integer
       required:
-      - error
+      - latitude
+      - longitude
+      title: LandmarkLatLng
+      type: object
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -312,6 +266,52 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    LandmarkVertice:
+      properties:
+        x:
+          title: X
+          type: integer
+        y:
+          title: Y
+          type: integer
+      required:
+      - x
+      - y
+      title: LandmarkVertice
+      type: object
+    LandmarkItem:
+      properties:
+        description:
+          title: Description
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          items:
+            $ref: '#/components/schemas/LandmarkVertice'
+          title: Bounding Box
+          type: array
+        locations:
+          items:
+            $ref: '#/components/schemas/LandmarkLocation'
+          title: Locations
+          type: array
+      required:
+      - description
+      - confidence
+      title: LandmarkItem
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

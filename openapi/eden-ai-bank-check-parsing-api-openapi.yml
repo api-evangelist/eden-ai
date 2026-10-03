@@ -172,6 +172,38 @@ paths:
           description: ''
 components:
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    MicrModel:
+      properties:
+        raw:
+          title: Raw
+          type: string
+        account_number:
+          title: Account Number
+          type: string
+        routing_number:
+          title: Routing Number
+          type: string
+        serial_number:
+          title: Serial Number
+          type: string
+        check_number:
+          title: Check Number
+          type: string
+      required:
+      - raw
+      - account_number
+      - routing_number
+      - serial_number
+      - check_number
+      title: MicrModel
+      type: object
     ocrbank_check_parsingBankCheckParsingDataClass:
       properties:
         extracted_data:
@@ -191,6 +223,38 @@ components:
       - status
       title: ocrbank_check_parsingBankCheckParsingDataClass
       type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ocrbank_check_parsingBankCheckParsingRequest:
       type: object
       properties:
@@ -250,26 +314,32 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
+    NestedError:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ocrbank_check_parsingResponseModel:
+      properties:
+        mindee:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        veryfi:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+      title: ocrbank_check_parsingResponseModel
+      type: object
     ItemBankCheckParsingDataClass:
       properties:
         amount:
@@ -322,81 +392,11 @@ components:
       - micr
       title: ItemBankCheckParsingDataClass
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    ocrbank_check_parsingResponseModel:
-      properties:
-        mindee:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        veryfi:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        extracta:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-      title: ocrbank_check_parsingResponseModel
-      type: object
-    MicrModel:
-      properties:
-        raw:
-          title: Raw
-          type: string
-        account_number:
-          title: Account Number
-          type: string
-        routing_number:
-          title: Routing Number
-          type: string
-        serial_number:
-          title: Serial Number
-          type: string
-        check_number:
-          title: Check Number
-          type: string
-      required:
-      - raw
-      - account_number
-      - routing_number
-      - serial_number
-      - check_number
-      title: MicrModel
-      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

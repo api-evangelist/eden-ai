@@ -334,6 +334,23 @@ paths:
           description: ''
 components:
   schemas:
+    translationdocument_translationResponseModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+        deepl:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+      title: translationdocument_translationResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     translationdocument_translationDocumentTranslationDataClass:
       properties:
         file:
@@ -356,16 +373,13 @@ components:
       - status
       title: translationdocument_translationDocumentTranslationDataClass
       type: object
-    translationdocument_translationResponseModel:
-      properties:
-        google:
-          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
-          default: null
-        deepl:
-          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
-          default: null
-      title: translationdocument_translationResponseModel
+    BadRequest:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     FieldError:
       type: object
       properties:
@@ -375,34 +389,22 @@ components:
             type: string
       required:
       - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
-    NestedError:
+    NestedBadRequest:
       type: object
       properties:
         type:
           type: string
         message:
-          type: string
+          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     translationdocument_translationDocumentTranslationRequest:
       type: object
       properties:
@@ -466,23 +468,21 @@ components:
       required:
       - providers
       - target_language
-    NestedBadRequest:
+    NestedError:
       type: object
       properties:
         type:
           type: string
         message:
-          $ref: '#/components/schemas/FieldError'
+          type: string
       required:
       - message
       - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

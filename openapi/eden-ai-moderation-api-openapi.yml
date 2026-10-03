@@ -468,19 +468,6 @@ components:
       - status
       title: textmoderationModerationDataClass
       type: object
-    textmoderationResponseModel:
-      properties:
-        microsoft:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-      title: textmoderationResponseModel
-      type: object
     SubCategoryType:
       enum:
       - CreditCard
@@ -526,19 +513,26 @@ components:
       - Unknown
       title: SubCategoryType
       type: string
-    CategoryType:
-      description: This enum are used to categorize the entities extracted from the text.
-      enum:
-      - PersonalInformation
-      - FinancialInformation
-      - IdentificationNumbers
-      - Miscellaneous
-      - OrganizationInformation
-      - DateAndTime
-      - LocationInformation
-      - Other
-      title: CategoryType
-      type: string
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -548,17 +542,39 @@ components:
             type: string
       required:
       - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
+    NestedBadRequest:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    textmoderationResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+      title: textmoderationResponseModel
+      type: object
     TextModerationItem:
       properties:
         label:
@@ -582,40 +598,6 @@ components:
       - likelihood_score
       title: TextModerationItem
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:
@@ -663,6 +645,24 @@ components:
       required:
       - providers
       - text
+    CategoryType:
+      description: This enum are used to categorize the entities extracted from the text.
+      enum:
+      - PersonalInformation
+      - FinancialInformation
+      - IdentificationNumbers
+      - Miscellaneous
+      - OrganizationInformation
+      - DateAndTime
+      - LocationInformation
+      - Other
+      title: CategoryType
+      type: string
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

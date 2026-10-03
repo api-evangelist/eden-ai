@@ -282,71 +282,6 @@ paths:
           description: ''
 components:
   schemas:
-    Entity:
-      properties:
-        type:
-          description: Recognized Entity type
-          title: Type
-          type: string
-        text:
-          description: Text corresponding to the entity
-          title: Text
-          type: string
-        sentiment:
-          allOf:
-          - $ref: '#/components/schemas/EntitySentimentEnum'
-          title: Sentiment
-        begin_offset:
-          default: null
-          title: Begin Offset
-          type: integer
-        end_offset:
-          default: null
-          title: End Offset
-          type: integer
-      required:
-      - type
-      - text
-      - sentiment
-      title: Entity
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     textentity_sentimentResponseModel:
       properties:
         google:
@@ -357,6 +292,20 @@ components:
           default: null
       title: textentity_sentimentResponseModel
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    EntitySentimentEnum:
+      enum:
+      - Positive
+      - Negative
+      - Neutral
+      - Mixed
+      type: string
     textentity_sentimentEntitySentimentRequest:
       type: object
       properties:
@@ -404,13 +353,66 @@ components:
       required:
       - providers
       - text
-    EntitySentimentEnum:
-      enum:
-      - Positive
-      - Negative
-      - Neutral
-      - Mixed
-      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Entity:
+      properties:
+        type:
+          description: Recognized Entity type
+          title: Type
+          type: string
+        text:
+          description: Text corresponding to the entity
+          title: Text
+          type: string
+        sentiment:
+          allOf:
+          - $ref: '#/components/schemas/EntitySentimentEnum'
+          title: Sentiment
+        begin_offset:
+          default: null
+          title: Begin Offset
+          type: integer
+        end_offset:
+          default: null
+          title: End Offset
+          type: integer
+      required:
+      - type
+      - text
+      - sentiment
+      title: Entity
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     textentity_sentimentEntitySentimentDataClass:
       properties:
         items:
@@ -431,23 +433,21 @@ components:
       - status
       title: textentity_sentimentEntitySentimentDataClass
       type: object
-    NestedBadRequest:
+    NestedError:
       type: object
       properties:
         type:
           type: string
         message:
-          $ref: '#/components/schemas/FieldError'
+          type: string
       required:
       - message
       - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http
