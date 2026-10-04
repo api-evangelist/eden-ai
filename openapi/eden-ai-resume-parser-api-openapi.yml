@@ -1085,6 +1085,221 @@ paths:
           description: ''
 components:
   schemas:
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ResumeWorkExp:
+      properties:
+        total_years_experience:
+          title: Total Years Experience
+          type: string
+        entries:
+          items:
+            $ref: '#/components/schemas/ResumeWorkExpEntry'
+          title: Entries
+          type: array
+      required:
+      - total_years_experience
+      title: ResumeWorkExp
+      type: object
+    ResumePersonalName:
+      properties:
+        first_name:
+          title: First Name
+          type: string
+        last_name:
+          title: Last Name
+          type: string
+        raw_name:
+          title: Raw Name
+          type: string
+        middle:
+          title: Middle
+          type: string
+        title:
+          title: Title
+          type: string
+        prefix:
+          title: Prefix
+          type: string
+        sufix:
+          title: Sufix
+          type: string
+      required:
+      - first_name
+      - last_name
+      - raw_name
+      - middle
+      - title
+      - prefix
+      - sufix
+      title: ResumePersonalName
+      type: object
+    ResumeLang:
+      properties:
+        name:
+          title: Name
+          type: string
+        code:
+          title: Code
+          type: string
+      required:
+      - name
+      - code
+      title: ResumeLang
+      type: object
+    ResumeWorkExpEntry:
+      properties:
+        title:
+          title: Title
+          type: string
+        start_date:
+          title: Start Date
+          type: string
+        end_date:
+          title: End Date
+          type: string
+        company:
+          title: Company
+          type: string
+        location:
+          $ref: '#/components/schemas/ResumeLocation'
+        description:
+          title: Description
+          type: string
+        type:
+          default: null
+          title: Type
+          type: string
+        industry:
+          title: Industry
+          type: string
+      required:
+      - title
+      - start_date
+      - end_date
+      - company
+      - location
+      - description
+      - industry
+      title: ResumeWorkExpEntry
+      type: object
+    ResumeLocation:
+      properties:
+        formatted_location:
+          title: Formatted Location
+          type: string
+        postal_code:
+          title: Postal Code
+          type: string
+        region:
+          title: Region
+          type: string
+        country:
+          title: Country
+          type: string
+        country_code:
+          title: Country Code
+          type: string
+        raw_input_location:
+          title: Raw Input Location
+          type: string
+        street:
+          title: Street
+          type: string
+        street_number:
+          title: Street Number
+          type: string
+        appartment_number:
+          title: Appartment Number
+          type: string
+        city:
+          title: City
+          type: string
+      required:
+      - formatted_location
+      - postal_code
+      - region
+      - country
+      - country_code
+      - raw_input_location
+      - street
+      - street_number
+      - appartment_number
+      - city
+      title: ResumeLocation
+      type: object
+    ResumeExtractedData:
+      properties:
+        personal_infos:
+          $ref: '#/components/schemas/ResumePersonalInfo'
+        education:
+          $ref: '#/components/schemas/ResumeEducation'
+        work_experience:
+          $ref: '#/components/schemas/ResumeWorkExp'
+        languages:
+          items:
+            $ref: '#/components/schemas/ResumeLang'
+          title: Languages
+          type: array
+        skills:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Skills
+          type: array
+        certifications:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Certifications
+          type: array
+        courses:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Courses
+          type: array
+        publications:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Publications
+          type: array
+        interests:
+          items:
+            $ref: '#/components/schemas/ResumeSkill'
+          title: Interests
+          type: array
+      required:
+      - personal_infos
+      - education
+      - work_experience
+      title: ResumeExtractedData
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     ocrresume_parserResumeParserRequest:
       type: object
       properties:
@@ -1144,6 +1359,19 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
+    ResumeSkill:
+      properties:
+        name:
+          title: Name
+          type: string
+        type:
+          title: Type
+          type: string
+      required:
+      - name
+      - type
+      title: ResumeSkill
+      type: object
     ocrresume_parserResponseModel:
       properties:
         senseloaf:
@@ -1166,105 +1394,33 @@ components:
           default: null
       title: ocrresume_parserResponseModel
       type: object
-    ResumeWorkExp:
+    ocrresume_parserResumeParserDataClass:
       properties:
-        total_years_experience:
-          title: Total Years Experience
-          type: string
-        entries:
-          items:
-            $ref: '#/components/schemas/ResumeWorkExpEntry'
-          title: Entries
-          type: array
-      required:
-      - total_years_experience
-      title: ResumeWorkExp
-      type: object
-    ResumeWorkExpEntry:
-      properties:
-        title:
-          title: Title
-          type: string
-        start_date:
-          title: Start Date
-          type: string
-        end_date:
-          title: End Date
-          type: string
-        company:
-          title: Company
-          type: string
-        location:
-          $ref: '#/components/schemas/ResumeLocation'
-        description:
-          title: Description
-          type: string
-        type:
+        extracted_data:
+          $ref: '#/components/schemas/ResumeExtractedData'
+        original_response:
           default: null
-          title: Type
-          type: string
-        industry:
-          title: Industry
-          type: string
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - title
-      - start_date
-      - end_date
-      - company
-      - location
-      - description
-      - industry
-      title: ResumeWorkExpEntry
+      - extracted_data
+      - status
+      title: ocrresume_parserResumeParserDataClass
       type: object
-    Error:
+    NestedBadRequest:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    ResumeEducationEntry:
-      properties:
-        title:
-          title: Title
-          type: string
-        start_date:
-          title: Start Date
-          type: string
-        end_date:
-          title: End Date
-          type: string
-        location:
-          $ref: '#/components/schemas/ResumeLocation'
-        establishment:
-          title: Establishment
-          type: string
-        description:
-          title: Description
-          type: string
-        gpa:
-          title: Gpa
-          type: string
-        accreditation:
-          title: Accreditation
-          type: string
-      required:
-      - title
-      - start_date
-      - end_date
-      - location
-      - establishment
-      - description
-      - gpa
-      - accreditation
-      title: ResumeEducationEntry
-      type: object
+      - message
+      - type
     ResumePersonalInfo:
       properties:
         name:
@@ -1336,13 +1492,11 @@ components:
       - current_salary
       title: ResumePersonalInfo
       type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FieldError:
       type: object
       properties:
@@ -1352,61 +1506,42 @@ components:
             type: string
       required:
       - <parameter_name>
-    ResumeLocation:
+    ResumeEducationEntry:
       properties:
-        formatted_location:
-          title: Formatted Location
+        title:
+          title: Title
           type: string
-        postal_code:
-          title: Postal Code
+        start_date:
+          title: Start Date
           type: string
-        region:
-          title: Region
+        end_date:
+          title: End Date
           type: string
-        country:
-          title: Country
+        location:
+          $ref: '#/components/schemas/ResumeLocation'
+        establishment:
+          title: Establishment
           type: string
-        country_code:
-          title: Country Code
+        description:
+          title: Description
           type: string
-        raw_input_location:
-          title: Raw Input Location
+        gpa:
+          title: Gpa
           type: string
-        street:
-          title: Street
-          type: string
-        street_number:
-          title: Street Number
-          type: string
-        appartment_number:
-          title: Appartment Number
-          type: string
-        city:
-          title: City
+        accreditation:
+          title: Accreditation
           type: string
       required:
-      - formatted_location
-      - postal_code
-      - region
-      - country
-      - country_code
-      - raw_input_location
-      - street
-      - street_number
-      - appartment_number
-      - city
-      title: ResumeLocation
+      - title
+      - start_date
+      - end_date
+      - location
+      - establishment
+      - description
+      - gpa
+      - accreditation
+      title: ResumeEducationEntry
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     ResumeEducation:
       properties:
         total_years_education:
@@ -1420,141 +1555,6 @@ components:
       required:
       - total_years_education
       title: ResumeEducation
-      type: object
-    ocrresume_parserResumeParserDataClass:
-      properties:
-        extracted_data:
-          $ref: '#/components/schemas/ResumeExtractedData'
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - extracted_data
-      - status
-      title: ocrresume_parserResumeParserDataClass
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    ResumeExtractedData:
-      properties:
-        personal_infos:
-          $ref: '#/components/schemas/ResumePersonalInfo'
-        education:
-          $ref: '#/components/schemas/ResumeEducation'
-        work_experience:
-          $ref: '#/components/schemas/ResumeWorkExp'
-        languages:
-          items:
-            $ref: '#/components/schemas/ResumeLang'
-          title: Languages
-          type: array
-        skills:
-          items:
-            $ref: '#/components/schemas/ResumeSkill'
-          title: Skills
-          type: array
-        certifications:
-          items:
-            $ref: '#/components/schemas/ResumeSkill'
-          title: Certifications
-          type: array
-        courses:
-          items:
-            $ref: '#/components/schemas/ResumeSkill'
-          title: Courses
-          type: array
-        publications:
-          items:
-            $ref: '#/components/schemas/ResumeSkill'
-          title: Publications
-          type: array
-        interests:
-          items:
-            $ref: '#/components/schemas/ResumeSkill'
-          title: Interests
-          type: array
-      required:
-      - personal_infos
-      - education
-      - work_experience
-      title: ResumeExtractedData
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    ResumePersonalName:
-      properties:
-        first_name:
-          title: First Name
-          type: string
-        last_name:
-          title: Last Name
-          type: string
-        raw_name:
-          title: Raw Name
-          type: string
-        middle:
-          title: Middle
-          type: string
-        title:
-          title: Title
-          type: string
-        prefix:
-          title: Prefix
-          type: string
-        sufix:
-          title: Sufix
-          type: string
-      required:
-      - first_name
-      - last_name
-      - raw_name
-      - middle
-      - title
-      - prefix
-      - sufix
-      title: ResumePersonalName
-      type: object
-    ResumeSkill:
-      properties:
-        name:
-          title: Name
-          type: string
-        type:
-          title: Type
-          type: string
-      required:
-      - name
-      - type
-      title: ResumeSkill
-      type: object
-    ResumeLang:
-      properties:
-        name:
-          title: Name
-          type: string
-        code:
-          title: Code
-          type: string
-      required:
-      - name
-      - code
-      title: ResumeLang
       type: object
   securitySchemes:
     FeatureApiAuth:

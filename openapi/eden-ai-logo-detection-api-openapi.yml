@@ -219,38 +219,6 @@ paths:
           description: ''
 components:
   schemas:
-    imagelogo_detectionResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        anthropic:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        smartclick:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-      title: imagelogo_detectionResponseModel
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     LogoVertice:
       properties:
         x:
@@ -266,38 +234,42 @@ components:
       - y
       title: LogoVertice
       type: object
-    BadRequest:
+    imagelogo_detectionLogoDetectionDataClass:
+      properties:
+        items:
+          description: List of the detected brands logo from the image.
+          items:
+            $ref: '#/components/schemas/LogoItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagelogo_detectionLogoDetectionDataClass
+      type: object
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - error
+      - message
+      - type
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     imagelogo_detectionLogoDetectionRequest:
       type: object
       properties:
@@ -346,26 +318,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    LogoBoundingPoly:
-      properties:
-        vertices:
-          description: Vertices of the logos in the image
-          items:
-            $ref: '#/components/schemas/LogoVertice'
-          title: Vertices
-          type: array
-      title: LogoBoundingPoly
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     LogoItem:
       properties:
         bounding_poly:
@@ -385,31 +337,79 @@ components:
       - score
       title: LogoItem
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    imagelogo_detectionLogoDetectionDataClass:
-      properties:
-        items:
-          description: List of the detected brands logo from the image.
-          items:
-            $ref: '#/components/schemas/LogoItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imagelogo_detectionLogoDetectionDataClass
+    FieldError:
       type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imagelogo_detectionResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        smartclick:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+      title: imagelogo_detectionResponseModel
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    LogoBoundingPoly:
+      properties:
+        vertices:
+          description: Vertices of the logos in the image
+          items:
+            $ref: '#/components/schemas/LogoVertice'
+          title: Vertices
+          type: array
+      title: LogoBoundingPoly
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

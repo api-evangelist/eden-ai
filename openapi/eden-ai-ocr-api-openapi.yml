@@ -701,45 +701,6 @@ components:
           default: null
       title: ocrocrResponseModel
       type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     ocrocrOcrDataClass:
       properties:
         text:
@@ -763,6 +724,43 @@ components:
       - status
       title: ocrocrOcrDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     ocrocrOcrRequest:
       type: object
       properties:
@@ -821,21 +819,23 @@ components:
           description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
       required:
       - providers
-    NestedError:
+    NestedBadRequest:
       type: object
       properties:
         type:
           type: string
         message:
-          type: string
+          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

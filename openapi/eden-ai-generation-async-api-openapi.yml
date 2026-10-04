@@ -342,72 +342,61 @@ paths:
           description: ''
 components:
   schemas:
-    videogeneration_asyncModel:
+    videogeneration_asyncGenerationAsyncDataClass:
       properties:
-        minimax:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+        video:
+          title: Video
+          type: string
+        video_resource_url:
+          title: Video Resource Url
+          type: string
+        usage:
+          additionalProperties: true
           default: null
-        google:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          title: Usage
+          type: object
+        original_response:
           default: null
-        amazon:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        pruna:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        pixverse:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        bytedance:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
-          default: null
-      title: videogeneration_asyncModel
-      type: object
-    Error:
-      type: object
-      properties:
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
         error:
-          $ref: '#/components/schemas/NestedError'
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
       required:
-      - error
-    AsyncJobList:
+      - video
+      - video_resource_url
+      - id
+      - final_status
+      title: videogeneration_asyncGenerationAsyncDataClass
+      type: object
+    ListAsyncJobResponse:
       type: object
       properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    BadRequest:
+      - jobs
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - error
+      - message
+      - type
     NotFoundResponse:
       type: object
       properties:
@@ -422,24 +411,27 @@ components:
           format: uuid
       required:
       - public_id
-    FieldError:
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    Error:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
+      - error
     GenerationAsyncRequest:
       type: object
       properties:
@@ -517,6 +509,39 @@ components:
       required:
       - providers
       - text
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     asyncvideogeneration_asyncResponseModel:
       properties:
         results:
@@ -538,6 +563,39 @@ components:
       - status
       title: asyncvideogeneration_asyncResponseModel
       type: object
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    videogeneration_asyncModel:
+      properties:
+        minimax:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        pruna:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        pixverse:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        bytedance:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/videogeneration_asyncGenerationAsyncDataClass'
+          default: null
+      title: videogeneration_asyncModel
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -548,71 +606,13 @@ components:
       required:
       - message
       - type
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    videogeneration_asyncGenerationAsyncDataClass:
+    BadRequest:
+      type: object
       properties:
-        video:
-          title: Video
-          type: string
-        video_resource_url:
-          title: Video Resource Url
-          type: string
-        usage:
-          additionalProperties: true
-          default: null
-          title: Usage
-          type: object
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
         error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - video
-      - video_resource_url
-      - id
-      - final_status
-      title: videogeneration_asyncGenerationAsyncDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

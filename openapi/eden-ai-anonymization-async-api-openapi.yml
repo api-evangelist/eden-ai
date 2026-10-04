@@ -212,6 +212,40 @@ paths:
           description: ''
 components:
   schemas:
+    asyncocranonymization_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/ocranonymization_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncocranonymization_asyncResponseModel
+      type: object
+    ocranonymization_asyncModel:
+      properties:
+        readyredact:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+        privateai:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+      title: ocranonymization_asyncModel
+      type: object
     ocranonymization_asyncAnonymizationAsyncDataClass:
       properties:
         document:
@@ -243,6 +277,39 @@ components:
       - final_status
       title: ocranonymization_asyncAnonymizationAsyncDataClass
       type: object
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     AnonymizationAsyncRequest:
       type: object
       properties:
@@ -302,6 +369,20 @@ components:
           maxLength: 200
       required:
       - providers
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
     Error:
       type: object
       properties:
@@ -333,27 +414,6 @@ components:
       - providers
       - public_id
       - state
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
     FieldError:
       type: object
       properties:
@@ -363,15 +423,11 @@ components:
             type: string
       required:
       - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     NestedBadRequest:
       type: object
       properties:
@@ -382,69 +438,13 @@ components:
       required:
       - message
       - type
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    asyncocranonymization_asyncResponseModel:
+    BadRequest:
+      type: object
       properties:
-        results:
-          $ref: '#/components/schemas/ocranonymization_asyncModel'
         error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - results
       - error
-      - public_id
-      - status
-      title: asyncocranonymization_asyncResponseModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    ocranonymization_asyncModel:
-      properties:
-        readyredact:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-        privateai:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-      title: ocranonymization_asyncModel
-      type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
   securitySchemes:
     FeatureApiAuth:
       type: http

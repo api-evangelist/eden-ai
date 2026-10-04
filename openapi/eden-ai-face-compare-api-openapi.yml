@@ -115,17 +115,26 @@ paths:
           description: ''
 components:
   schemas:
-    FaceMatch:
+    FaceCompareBoundingBox:
       properties:
-        confidence:
-          title: Confidence
+        top:
+          title: Top
           type: integer
-        bounding_box:
-          $ref: '#/components/schemas/FaceCompareBoundingBox'
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
       required:
-      - confidence
-      - bounding_box
-      title: FaceMatch
+      - top
+      - left
+      - height
+      - width
+      title: FaceCompareBoundingBox
       type: object
     imageface_compareFaceCompareDataClass:
       properties:
@@ -146,6 +155,22 @@ components:
       - status
       title: imageface_compareFaceCompareDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     Error:
       type: object
       properties:
@@ -212,6 +237,20 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     imageface_compareResponseModel:
       properties:
         facepp:
@@ -225,28 +264,6 @@ components:
           default: null
       title: imageface_compareResponseModel
       type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     NestedBadRequest:
       type: object
       properties:
@@ -257,42 +274,25 @@ components:
       required:
       - message
       - type
-    FaceCompareBoundingBox:
+    FaceMatch:
       properties:
-        top:
-          title: Top
+        confidence:
+          title: Confidence
           type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/FaceCompareBoundingBox'
       required:
-      - top
-      - left
-      - height
-      - width
-      title: FaceCompareBoundingBox
+      - confidence
+      - bounding_box
+      title: FaceMatch
       type: object
-    NestedError:
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -5999,48 +5999,6 @@ paths:
           description: ''
 components:
   schemas:
-    VideoText:
-      properties:
-        text:
-          title: Text
-          type: string
-        frames:
-          items:
-            $ref: '#/components/schemas/VideoTextFrames'
-          title: Frames
-          type: array
-      required:
-      - text
-      title: VideoText
-      type: object
-    VideoTextBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoTextBoundingBox
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     asyncvideotext_detection_asyncResponseModel:
       properties:
         results:
@@ -6062,65 +6020,43 @@ components:
       - status
       title: asyncvideotext_detection_asyncResponseModel
       type: object
-    videotext_detection_asyncTextDetectionAsyncDataClass:
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    ListAsyncJobResponse:
+      type: object
       properties:
-        texts:
-          items:
-            $ref: '#/components/schemas/VideoText'
-          title: Texts
+        jobs:
           type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - id
-      - final_status
-      title: videotext_detection_asyncTextDetectionAsyncDataClass
+      - jobs
+    videotext_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+        twelvelabs:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
+          default: null
+      title: videotext_detection_asyncModel
       type: object
-    AsyncJobList:
+    NestedError:
       type: object
       properties:
-        providers:
+        type:
           type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
+        message:
           type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+      - message
+      - type
     NotFoundResponse:
       type: object
       properties:
@@ -6135,62 +6071,6 @@ components:
           format: uuid
       required:
       - public_id
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    videotext_detection_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-        twelvelabs:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videotext_detection_asyncTextDetectionAsyncDataClass'
-          default: null
-      title: videotext_detection_asyncModel
-      type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -6256,6 +6136,88 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
+    videotext_detection_asyncTextDetectionAsyncDataClass:
+      properties:
+        texts:
+          items:
+            $ref: '#/components/schemas/VideoText'
+          title: Texts
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videotext_detection_asyncTextDetectionAsyncDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    VideoText:
+      properties:
+        text:
+          title: Text
+          type: string
+        frames:
+          items:
+            $ref: '#/components/schemas/VideoTextFrames'
+          title: Frames
+          type: array
+      required:
+      - text
+      title: VideoText
+      type: object
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     VideoTextFrames:
       properties:
         confidence:
@@ -6272,6 +6234,44 @@ components:
       - bounding_box
       title: VideoTextFrames
       type: object
+    VideoTextBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoTextBoundingBox
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

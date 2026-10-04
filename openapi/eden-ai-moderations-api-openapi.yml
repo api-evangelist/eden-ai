@@ -83,20 +83,39 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ModerationTextInput:
+    OpenAIModerationResult:
       properties:
-        type:
-          type: string
-          const: text
-          title: Type
-        text:
-          type: string
-          title: Text
+        categories:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Categories
+        category_applied_input_types:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Category Applied Input Types
+        category_scores:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Category Scores
+        flagged:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Flagged
+      additionalProperties: true
       type: object
       required:
-      - type
-      - text
-      title: ModerationTextInput
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      title: OpenAIModerationResult
     ModelWithEndpoints:
       properties:
         id:
@@ -159,6 +178,153 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ModelObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Model identifier (e.g., 'openai/gpt-4')
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of model creation/release
+        owned_by:
+          type: string
+          title: Owned By
+          description: Provider/organization that owns the model
+        model_name:
+          type: string
+          title: Model Name
+          description: Model name without provider prefix
+        context_length:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Context Length
+          description: Maximum context length in tokens
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Model description
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+          description: Model source URL
+        capabilities:
+          $ref: '#/components/schemas/Capabilities'
+          description: Model capabilities
+        pricing:
+          additionalProperties: true
+          type: object
+          title: Pricing
+          description: Pricing information after any applicable discounts have been applied
+        list_pricing:
+          additionalProperties: true
+          type: object
+          title: List Pricing
+          description: Provider list pricing, before any discounts are applied
+        discount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Discount
+          description: Discount applied to the model (0-1 range)
+        regions:
+          items:
+            $ref: '#/components/schemas/RegionObject'
+          type: array
+          title: Regions
+          description: Regions where this model is available
+        alias_of:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alias Of
+          description: 'Set when this entry is an alias (e.g. ''gemini-pro-latest''): the real model_id it currently resolves to. None for concrete models.'
+      type: object
+      required:
+      - id
+      - created
+      - owned_by
+      - model_name
+      title: ModelObject
+      description: Extended model object with full metadata.
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
     ModerationImageInput:
       properties:
         type:
@@ -267,132 +433,6 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
-    ModelObject:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Model identifier (e.g., 'openai/gpt-4')
-        object:
-          type: string
-          const: model
-          title: Object
-          description: Object type
-          default: model
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp of model creation/release
-        owned_by:
-          type: string
-          title: Owned By
-          description: Provider/organization that owns the model
-        model_name:
-          type: string
-          title: Model Name
-          description: Model name without provider prefix
-        context_length:
-          anyOf:
-          - type: integer
-          - type: 'null'
-          title: Context Length
-          description: Maximum context length in tokens
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-          description: Model description
-        source:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Source
-          description: Model source URL
-        capabilities:
-          $ref: '#/components/schemas/Capabilities'
-          description: Model capabilities
-        pricing:
-          additionalProperties: true
-          type: object
-          title: Pricing
-          description: Pricing information after any applicable discounts have been applied
-        list_pricing:
-          additionalProperties: true
-          type: object
-          title: List Pricing
-          description: Provider list pricing, before any discounts are applied
-        discount:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Discount
-          description: Discount applied to the model (0-1 range)
-        regions:
-          items:
-            $ref: '#/components/schemas/RegionObject'
-          type: array
-          title: Regions
-          description: Regions where this model is available
-        alias_of:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Alias Of
-          description: 'Set when this entry is an alias (e.g. ''gemini-pro-latest''): the real model_id it currently resolves to. None for concrete models.'
-      type: object
-      required:
-      - id
-      - created
-      - owned_by
-      - model_name
-      title: ModelObject
-      description: Extended model object with full metadata.
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
     ModerationImageUrl:
       properties:
         url:
@@ -402,27 +442,36 @@ components:
       required:
       - url
       title: ModerationImageUrl
-    ValidationError:
+    RegionObject:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        code:
           type: string
-          title: Message
-        type:
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
           type: string
-          title: Error Type
+          title: Name
+          description: Region display name
       type: object
       required:
-      - loc
-      - msg
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
+    ModerationTextInput:
+      properties:
+        type:
+          type: string
+          const: text
+          title: Type
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
       - type
-      title: ValidationError
+      - text
+      title: ModerationTextInput
     ModerationResponse:
       properties:
         cost:
@@ -453,55 +502,6 @@ components:
       - model
       - results
       title: ModerationResponse
-    OpenAIModerationResult:
-      properties:
-        categories:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Categories
-        category_applied_input_types:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Category Applied Input Types
-        category_scores:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Category Scores
-        flagged:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Flagged
-      additionalProperties: true
-      type: object
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      title: OpenAIModerationResult
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
   securitySchemes:
     AuthBearer:
       type: http

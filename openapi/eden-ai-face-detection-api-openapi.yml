@@ -540,149 +540,6 @@ paths:
           description: ''
 components:
   schemas:
-    FaceAccessories:
-      properties:
-        sunglasses:
-          title: Sunglasses
-          type: integer
-        reading_glasses:
-          title: Reading Glasses
-          type: integer
-        swimming_goggles:
-          title: Swimming Goggles
-          type: integer
-        face_mask:
-          title: Face Mask
-          type: integer
-        eyeglasses:
-          title: Eyeglasses
-          type: integer
-        headwear:
-          title: Headwear
-          type: integer
-      required:
-      - sunglasses
-      - reading_glasses
-      - swimming_goggles
-      - face_mask
-      - eyeglasses
-      - headwear
-      title: FaceAccessories
-      type: object
-    FaceFacialHair:
-      properties:
-        moustache:
-          title: Moustache
-          type: integer
-        beard:
-          title: Beard
-          type: integer
-        sideburns:
-          title: Sideburns
-          type: integer
-      required:
-      - moustache
-      - beard
-      - sideburns
-      title: FaceFacialHair
-      type: object
-    FaceQuality:
-      properties:
-        noise:
-          title: Noise
-          type: integer
-        exposure:
-          title: Exposure
-          type: integer
-        blur:
-          title: Blur
-          type: integer
-        brightness:
-          title: Brightness
-          type: integer
-        sharpness:
-          title: Sharpness
-          type: integer
-      required:
-      - noise
-      - exposure
-      - blur
-      - brightness
-      - sharpness
-      title: FaceQuality
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imageface_detectionResponseModel:
-      properties:
-        clarifai:
-          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
-          default: null
-      title: imageface_detectionResponseModel
-      type: object
-    imageface_detectionFaceDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/FaceItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imageface_detectionFaceDetectionDataClass
-      type: object
-    FaceBoundingBox:
-      properties:
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: FaceBoundingBox
-      type: object
     FaceLandmarks:
       properties:
         left_eye:
@@ -947,70 +804,82 @@ components:
           type: array
       title: FaceLandmarks
       type: object
-    imageface_detectionFaceDetectionRequest:
+    FaceMakeup:
+      properties:
+        eye_make:
+          title: Eye Make
+          type: boolean
+        lip_make:
+          title: Lip Make
+          type: boolean
+      required:
+      - eye_make
+      - lip_make
+      title: FaceMakeup
+      type: object
+    NestedError:
       type: object
       properties:
-        settings:
+        type:
           type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        file:
+        message:
           type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-          pattern: (?:jpg|jpeg|png|tiff)$
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
-      - providers
-    BadRequest:
+      - message
+      - type
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
+        details:
+          type: string
+          default: Not Found
+    FaceHairColor:
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        color:
+          title: Color
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
       required:
-      - <parameter_name>
+      - color
+      - confidence
+      title: FaceHairColor
+      type: object
+    FaceFeatures:
+      properties:
+        eyes_open:
+          title: Eyes Open
+          type: integer
+        smile:
+          title: Smile
+          type: integer
+        mouth_open:
+          title: Mouth Open
+          type: integer
+      required:
+      - eyes_open
+      - smile
+      - mouth_open
+      title: FaceFeatures
+      type: object
+    FacePoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yaw:
+          title: Yaw
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yaw
+      title: FacePoses
+      type: object
     FaceItem:
       properties:
         confidence:
@@ -1061,51 +930,102 @@ components:
       - features
       title: FaceItem
       type: object
-    NestedError:
-      type: object
+    FaceQuality:
       properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FaceHairColor:
-      properties:
-        color:
-          title: Color
-          type: string
-        confidence:
-          title: Confidence
+        noise:
+          title: Noise
+          type: integer
+        exposure:
+          title: Exposure
+          type: integer
+        blur:
+          title: Blur
+          type: integer
+        brightness:
+          title: Brightness
+          type: integer
+        sharpness:
+          title: Sharpness
           type: integer
       required:
-      - color
-      - confidence
-      title: FaceHairColor
+      - noise
+      - exposure
+      - blur
+      - brightness
+      - sharpness
+      title: FaceQuality
       type: object
-    FacePoses:
+    Error:
+      type: object
       properties:
-        pitch:
-          title: Pitch
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    FaceAccessories:
+      properties:
+        sunglasses:
+          title: Sunglasses
           type: integer
-        roll:
-          title: Roll
+        reading_glasses:
+          title: Reading Glasses
           type: integer
-        yaw:
-          title: Yaw
+        swimming_goggles:
+          title: Swimming Goggles
+          type: integer
+        face_mask:
+          title: Face Mask
+          type: integer
+        eyeglasses:
+          title: Eyeglasses
+          type: integer
+        headwear:
+          title: Headwear
           type: integer
       required:
-      - pitch
-      - roll
-      - yaw
-      title: FacePoses
+      - sunglasses
+      - reading_glasses
+      - swimming_goggles
+      - face_mask
+      - eyeglasses
+      - headwear
+      title: FaceAccessories
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imageface_detectionFaceDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/FaceItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageface_detectionFaceDetectionDataClass
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     FaceEmotions:
       properties:
         joy:
@@ -1155,16 +1075,6 @@ components:
       - contempt
       title: FaceEmotions
       type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     FaceHair:
       properties:
         hair_color:
@@ -1183,19 +1093,78 @@ components:
       - invisible
       title: FaceHair
       type: object
-    FaceMakeup:
+    FaceBoundingBox:
       properties:
-        eye_make:
-          title: Eye Make
-          type: boolean
-        lip_make:
-          title: Lip Make
-          type: boolean
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
       required:
-      - eye_make
-      - lip_make
-      title: FaceMakeup
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: FaceBoundingBox
       type: object
+    imageface_detectionResponseModel:
+      properties:
+        clarifai:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageface_detectionFaceDetectionDataClass'
+          default: null
+      title: imageface_detectionResponseModel
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    FaceFacialHair:
+      properties:
+        moustache:
+          title: Moustache
+          type: integer
+        beard:
+          title: Beard
+          type: integer
+        sideburns:
+          title: Sideburns
+          type: integer
+      required:
+      - moustache
+      - beard
+      - sideburns
+      title: FaceFacialHair
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FaceOcclusions:
       properties:
         eye_occluded:
@@ -1213,23 +1182,54 @@ components:
       - mouth_occluded
       title: FaceOcclusions
       type: object
-    FaceFeatures:
-      properties:
-        eyes_open:
-          title: Eyes Open
-          type: integer
-        smile:
-          title: Smile
-          type: integer
-        mouth_open:
-          title: Mouth Open
-          type: integer
-      required:
-      - eyes_open
-      - smile
-      - mouth_open
-      title: FaceFeatures
+    imageface_detectionFaceDetectionRequest:
       type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
   securitySchemes:
     FeatureApiAuth:
       type: http

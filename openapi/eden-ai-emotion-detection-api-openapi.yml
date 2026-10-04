@@ -85,20 +85,6 @@ paths:
           description: ''
 components:
   schemas:
-    textemotion_detectionResponseModel:
-      properties:
-        vernai:
-          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
-          default: null
-      title: textemotion_detectionResponseModel
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     textemotion_detectionEmotionDetectionDataClass:
       properties:
         text:
@@ -122,69 +108,6 @@ components:
       - status
       title: textemotion_detectionEmotionDetectionDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    EmotionItem:
-      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
-      properties:
-        emotion:
-          title: Emotion
-          type: string
-        emotion_score:
-          maximum: 100
-          minimum: 0
-          title: Emotion Score
-          type: integer
-      required:
-      - emotion
-      - emotion_score
-      title: EmotionItem
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     textemotion_detectionEmotionDetectionRequest:
       type: object
       properties:
@@ -227,6 +150,83 @@ components:
       required:
       - providers
       - text
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    EmotionItem:
+      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
+      properties:
+        emotion:
+          title: Emotion
+          type: string
+        emotion_score:
+          maximum: 100
+          minimum: 0
+          title: Emotion Score
+          type: integer
+      required:
+      - emotion
+      - emotion_score
+      title: EmotionItem
+      type: object
+    textemotion_detectionResponseModel:
+      properties:
+        vernai:
+          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
+          default: null
+      title: textemotion_detectionResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -290,99 +290,6 @@ paths:
           description: ''
 components:
   schemas:
-    textnamed_entity_recognitionNamedEntityRecognitionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/InfosNamedEntityRecognitionDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: textnamed_entity_recognitionNamedEntityRecognitionDataClass
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    textnamed_entity_recognitionResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-        tenstorrent:
-          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
-          default: null
-      title: textnamed_entity_recognitionResponseModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:
@@ -447,11 +354,104 @@ components:
       - importance
       title: InfosNamedEntityRecognitionDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    textnamed_entity_recognitionResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+        tenstorrent:
+          $ref: '#/components/schemas/textnamed_entity_recognitionNamedEntityRecognitionDataClass'
+          default: null
+      title: textnamed_entity_recognitionResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    textnamed_entity_recognitionNamedEntityRecognitionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosNamedEntityRecognitionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: textnamed_entity_recognitionNamedEntityRecognitionDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

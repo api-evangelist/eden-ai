@@ -281,6 +281,49 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeleteCollectionResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
+    CreateCollectionRequest:
+      properties:
+        model:
+          type: string
+          minLength: 1
+          title: Model
+          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Name
+          description: Optional human-readable name for the collection.
+      type: object
+      required:
+      - model
+      title: CreateCollectionRequest
+      description: Body for creating a collection.
     CollectionResponse:
       properties:
         collection_id:
@@ -318,73 +361,6 @@ components:
       - file
       title: AddItemRequest
       description: Body for adding an item to a collection.
-    CreateCollectionRequest:
-      properties:
-        model:
-          type: string
-          minLength: 1
-          title: Model
-          description: 'Model string the collection binds to, as ''feature/subfeature/provider'' (e.g. ''image/face_recognition/amazon''). Fixed at creation: item operations and /v3/universal-ai calls against this collection all run on that provider.'
-        name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Name
-          description: Optional human-readable name for the collection.
-      type: object
-      required:
-      - model
-      title: CreateCollectionRequest
-      description: Body for creating a collection.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ItemsResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        item_ids:
-          items:
-            type: string
-          type: array
-          title: Item Ids
-          description: Provider-side item ids (face ids for image/face_recognition).
-      type: object
-      required:
-      - collection_id
-      - item_ids
-      title: ItemsResponse
-      description: Item ids stored in a collection (provider-side ids, passed through).
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     ListCollectionsResponse:
       properties:
         items:
@@ -437,21 +413,45 @@ components:
       - deleted
       title: DeleteItemResponse
       description: Result of deleting an item from a collection.
-    DeleteCollectionResponse:
+    ItemsResponse:
       properties:
         collection_id:
           type: string
           format: uuid
           title: Collection Id
-        deleted:
-          type: boolean
-          title: Deleted
+        item_ids:
+          items:
+            type: string
+          type: array
+          title: Item Ids
+          description: Provider-side item ids (face ids for image/face_recognition).
       type: object
       required:
       - collection_id
-      - deleted
-      title: DeleteCollectionResponse
-      description: Result of deleting a collection.
+      - item_ids
+      title: ItemsResponse
+      description: Item ids stored in a collection (provider-side ids, passed through).
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     AuthBearer:
       type: http

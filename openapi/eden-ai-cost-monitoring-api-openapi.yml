@@ -236,6 +236,41 @@ components:
       - data
       title: TokenData
       type: object
+    CostMonitoringResponse:
+      properties:
+        response:
+          items:
+            $ref: '#/components/schemas/TokenData'
+          title: Response
+          type: array
+      required:
+      - response
+      title: CostMonitoringResponse
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    credits_serializer:
+      type: object
+      properties:
+        credits:
+          type: number
+          format: double
+      required:
+      - credits
     Error:
       type: object
       properties:
@@ -243,13 +278,15 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    BadRequest:
+    FieldError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - error
+      - <parameter_name>
     Details:
       properties:
         total_cost:
@@ -269,21 +306,6 @@ components:
       - cost_per_provider
       title: Details
       type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     NestedBadRequest:
       type: object
       properties:
@@ -294,32 +316,10 @@ components:
       required:
       - message
       - type
-    NestedError:
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
-    credits_serializer:
-      type: object
-      properties:
-        credits:
-          type: number
-          format: double
-      required:
-      - credits
-    CostMonitoringResponse:
-      properties:
-        response:
-          items:
-            $ref: '#/components/schemas/TokenData'
-          title: Response
-          type: array
-      required:
-      - response
-      title: CostMonitoringResponse
-      type: object
+      - error

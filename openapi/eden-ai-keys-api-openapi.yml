@@ -226,31 +226,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedManagementKeyList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagementKey'
     PatchedManagementKeyRequest:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
@@ -349,14 +324,6 @@ components:
           format: date-time
       required:
       - name
-    TokenTypeEnum:
-      enum:
-      - sandbox_api_token
-      - api_token
-      type: string
-      description: '* `sandbox_api_token` - Sandbox
-
-        * `api_token` - Back'
     ManagementKey:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
@@ -428,3 +395,36 @@ components:
       - member
       - name
       - revoked
+    PaginatedManagementKeyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementKey'
+    TokenTypeEnum:
+      enum:
+      - sandbox_api_token
+      - api_token
+      type: string
+      description: '* `sandbox_api_token` - Sandbox
+
+        * `api_token` - Back'

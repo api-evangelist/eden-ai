@@ -154,6 +154,31 @@ paths:
           description: ''
 components:
   schemas:
+    translationlanguage_detectionResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        modernmt:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+      title: translationlanguage_detectionResponseModel
+      type: object
     translationlanguage_detectionLanguageDetectionRequest:
       type: object
       properties:
@@ -196,13 +221,23 @@ components:
       required:
       - providers
       - text
-    Error:
-      type: object
+    InfosLanguageDetectionDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        language:
+          title: Language
+          type: string
+        display_name:
+          title: Display Name
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
       required:
-      - error
+      - language
+      - display_name
+      - confidence
+      title: InfosLanguageDetectionDataClass
+      type: object
     translationlanguage_detectionLanguageDetectionDataClass:
       properties:
         items:
@@ -222,19 +257,34 @@ components:
       - status
       title: translationlanguage_detectionLanguageDetectionDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
-    BadRequest:
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FieldError:
       type: object
       properties:
@@ -254,63 +304,13 @@ components:
       required:
       - message
       - type
-    NestedError:
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
-    InfosLanguageDetectionDataClass:
-      properties:
-        language:
-          title: Language
-          type: string
-        display_name:
-          title: Display Name
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - language
-      - display_name
-      - confidence
-      title: InfosLanguageDetectionDataClass
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    translationlanguage_detectionResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        modernmt:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-      title: translationlanguage_detectionResponseModel
-      type: object
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

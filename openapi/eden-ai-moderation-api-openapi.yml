@@ -441,163 +441,6 @@ paths:
           description: ''
 components:
   schemas:
-    textmoderationModerationDataClass:
-      properties:
-        nsfw_likelihood:
-          title: Nsfw Likelihood
-          type: integer
-        items:
-          items:
-            $ref: '#/components/schemas/TextModerationItem'
-          title: Items
-          type: array
-        nsfw_likelihood_score:
-          title: Nsfw Likelihood Score
-          type: integer
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - nsfw_likelihood
-      - nsfw_likelihood_score
-      - status
-      title: textmoderationModerationDataClass
-      type: object
-    SubCategoryType:
-      enum:
-      - CreditCard
-      - CardExpiry
-      - BankAccountNumber
-      - BankRoutingNumber
-      - SwiftCode
-      - TaxIdentificationNumber
-      - Name
-      - Age
-      - Email
-      - Phone
-      - PersonType
-      - Gender
-      - SocialSecurityNumber
-      - NationalIdentificationNumber
-      - NationalHealthService
-      - ResidentRegistrationNumber
-      - DriverLicenseNumber
-      - PassportNumber
-      - URL
-      - IP
-      - MAC
-      - VehicleIdentificationNumber
-      - LicensePlate
-      - VoterNumber
-      - AWSKeys
-      - AzureKeys
-      - Password
-      - CompanyName
-      - CompanyNumber
-      - BuisnessNumber
-      - Date
-      - Time
-      - DateTime
-      - Duration
-      - Address
-      - Location
-      - Other
-      - Anonymized
-      - Nerd
-      - Wsd
-      - Unknown
-      title: SubCategoryType
-      type: string
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    textmoderationResponseModel:
-      properties:
-        microsoft:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textmoderationModerationDataClass'
-          default: null
-      title: textmoderationResponseModel
-      type: object
-    TextModerationItem:
-      properties:
-        label:
-          title: Label
-          type: string
-        likelihood:
-          title: Likelihood
-          type: integer
-        category:
-          $ref: '#/components/schemas/CategoryType'
-        subcategory:
-          $ref: '#/components/schemas/SubCategoryType'
-        likelihood_score:
-          title: Likelihood Score
-          type: integer
-      required:
-      - label
-      - likelihood
-      - category
-      - subcategory
-      - likelihood_score
-      title: TextModerationItem
-      type: object
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
       properties:
@@ -658,11 +501,168 @@ components:
       - Other
       title: CategoryType
       type: string
+    SubCategoryType:
+      enum:
+      - CreditCard
+      - CardExpiry
+      - BankAccountNumber
+      - BankRoutingNumber
+      - SwiftCode
+      - TaxIdentificationNumber
+      - Name
+      - Age
+      - Email
+      - Phone
+      - PersonType
+      - Gender
+      - SocialSecurityNumber
+      - NationalIdentificationNumber
+      - NationalHealthService
+      - ResidentRegistrationNumber
+      - DriverLicenseNumber
+      - PassportNumber
+      - URL
+      - IP
+      - MAC
+      - VehicleIdentificationNumber
+      - LicensePlate
+      - VoterNumber
+      - AWSKeys
+      - AzureKeys
+      - Password
+      - CompanyName
+      - CompanyNumber
+      - BuisnessNumber
+      - Date
+      - Time
+      - DateTime
+      - Duration
+      - Address
+      - Location
+      - Other
+      - Anonymized
+      - Nerd
+      - Wsd
+      - Unknown
+      title: SubCategoryType
+      type: string
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    textmoderationModerationDataClass:
+      properties:
+        nsfw_likelihood:
+          title: Nsfw Likelihood
+          type: integer
+        items:
+          items:
+            $ref: '#/components/schemas/TextModerationItem'
+          title: Items
+          type: array
+        nsfw_likelihood_score:
+          title: Nsfw Likelihood Score
+          type: integer
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: textmoderationModerationDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    TextModerationItem:
+      properties:
+        label:
+          title: Label
+          type: string
+        likelihood:
+          title: Likelihood
+          type: integer
+        category:
+          $ref: '#/components/schemas/CategoryType'
+        subcategory:
+          $ref: '#/components/schemas/SubCategoryType'
+        likelihood_score:
+          title: Likelihood Score
+          type: integer
+      required:
+      - label
+      - likelihood
+      - category
+      - subcategory
+      - likelihood_score
+      title: TextModerationItem
+      type: object
+    textmoderationResponseModel:
+      properties:
+        microsoft:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textmoderationModerationDataClass'
+          default: null
+      title: textmoderationResponseModel
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

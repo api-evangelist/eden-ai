@@ -351,60 +351,25 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ProviderRoutingPreferences:
+    ListModelsResponse:
       properties:
-        sort:
-          anyOf:
-          - type: string
-            enum:
-            - cost
-            - speed
-            - latency
-            - exact
-          - type: 'null'
-          title: Sort
-          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
-        sticky:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Sticky
-          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
-        allow_fallbacks:
-          type: boolean
-          title: Allow Fallbacks
-          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
-          default: true
-        quality_cost:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 0.0
-          - type: 'null'
-          title: Quality Cost
-          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
-        allowed_providers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Allowed Providers
-          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
       type: object
-      title: ProviderRoutingPreferences
-      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
-
-        quality for cost when the platform chooses the model.
-
-
-        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
-
-        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
-
-        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
-
-        ``quality_cost`` below is the one field here that speaks to it.'
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
     ModelWithEndpoints:
       properties:
         id:
@@ -467,25 +432,6 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
     ModelObject:
       properties:
         id:
@@ -567,55 +513,6 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    SpeechBody:
-      properties:
-        routing:
-          anyOf:
-          - $ref: '#/components/schemas/ProviderRoutingPreferences'
-          - type: 'null'
-          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
-        model:
-          type: string
-          title: Model
-          description: provider/model, e.g. 'openai/tts-1'
-        input:
-          type: string
-          title: Input
-          description: The text to synthesize into audio.
-        voice:
-          type: string
-          title: Voice
-          description: Voice preset, e.g. 'alloy'.
-        response_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Response Format
-          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
-        speed:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Speed
-          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: Optional guidance for voice and delivery style.
-      type: object
-      required:
-      - model
-      - input
-      - voice
-      title: SpeechBody
-      description: 'OpenAI-compatible text-to-speech request.
-
-
-        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
-
-        top-level fields are dropped.'
     ListModelsWithEndpointsResponse:
       properties:
         object:
@@ -642,27 +539,6 @@ components:
         OpenAPI schema titles and generated SDK classes, and a caller never needs the word
 
         "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Capabilities:
       properties:
         input_modalities:
@@ -729,6 +605,109 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
+    SpeechBody:
+      properties:
+        routing:
+          anyOf:
+          - $ref: '#/components/schemas/ProviderRoutingPreferences'
+          - type: 'null'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+        model:
+          type: string
+          title: Model
+          description: provider/model, e.g. 'openai/tts-1'
+        input:
+          type: string
+          title: Input
+          description: The text to synthesize into audio.
+        voice:
+          type: string
+          title: Voice
+          description: Voice preset, e.g. 'alloy'.
+        response_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Format
+          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
+        speed:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Speed
+          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: Optional guidance for voice and delivery style.
+      type: object
+      required:
+      - model
+      - input
+      - voice
+      title: SpeechBody
+      description: 'OpenAI-compatible text-to-speech request.
+
+
+        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
+
+        top-level fields are dropped.'
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
+        allow_fallbacks:
+          type: boolean
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+          default: true
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
     RegionObject:
       properties:
         code:
@@ -745,6 +724,27 @@ components:
       - name
       title: RegionObject
       description: Region where a model is available.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
   securitySchemes:
     bearerAuth:
       type: http

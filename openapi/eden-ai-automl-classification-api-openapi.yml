@@ -711,30 +711,189 @@ paths:
           description: ''
 components:
   schemas:
-    AsyncJobList:
+    NestedError:
       type: object
       properties:
-        providers:
+        type:
           type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
+        message:
+          type: string
+      required:
+      - message
+      - type
+    imageautoml_classificationdelete_projectAutomlClassificationDeleteRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        project_id:
+          type: string
+          minLength: 1
+          description: The id of project
+          maxLength: 250
+      required:
+      - project_id
+      - providers
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    AutomlClassificationProject:
+      properties:
+        project_id:
+          format: uuid
+          title: Project Id
+          type: string
+        name:
+          title: Name
+          type: string
+        provider:
+          title: Provider
+          type: string
+      required:
+      - project_id
+      - name
+      - provider
+      title: AutomlClassificationProject
+      type: object
+    AutomlClassificationListProjectsResponse:
+      properties:
+        projects:
+          items:
+            $ref: '#/components/schemas/AutomlClassificationProject'
+          title: Projects
+          type: array
+      required:
+      - projects
+      title: AutomlClassificationListProjectsResponse
+      type: object
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
         public_id:
           type: string
           format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
       - public_id
-      - state
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AutomlClassificationPredictRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        project_id:
+          type: string
+          minLength: 1
+          description: The id of project
+          maxLength: 250
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - project_id
+      - providers
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    imageautoml_classificationResponseModel:
+      properties:
+        nyckel:
+          $ref: '#/components/schemas/imageautoml_classificationAutomlClassificationCreateProjectDataClass'
+          default: null
+      title: imageautoml_classificationResponseModel
+      type: object
     AutomlClassificationUploadDataRequest:
       type: object
       properties:
@@ -808,140 +967,16 @@ components:
       - project_id
       - providers
       - type_of_data
-    AutomlClassificationListProjectsResponse:
+    NestedBadRequest:
+      type: object
       properties:
-        projects:
-          items:
-            $ref: '#/components/schemas/AutomlClassificationProject'
-          title: Projects
-          type: array
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - projects
-      title: AutomlClassificationListProjectsResponse
-      type: object
-    imageautoml_classificationAutomlClassificationCreateProjectDataClass:
-      properties:
-        name:
-          title: Name
-          type: string
-        project_id:
-          title: Project Id
-          type: string
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - name
-      - project_id
-      - status
-      title: imageautoml_classificationAutomlClassificationCreateProjectDataClass
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    AutomlClassificationPredictRequest:
-      type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        webhook_receiver:
-          type: string
-          format: uri
-          minLength: 1
-          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
-        users_webhook_parameters:
-          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
-        send_webhook_data:
-          type: boolean
-          default: true
-          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
-        show_base_64:
-          type: boolean
-          default: true
-        project_id:
-          type: string
-          minLength: 1
-          description: The id of project
-          maxLength: 250
-        file:
-          type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-          pattern: (?:jpg|jpeg|png|tiff)$
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
-      required:
-      - project_id
-      - providers
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
+      - message
+      - type
     imageautoml_classificationcreate_projectAutomlClassificationCreateProjectRequest:
       type: object
       properties:
@@ -984,13 +1019,33 @@ components:
           maxLength: 250
       required:
       - providers
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    TypeOfDataEnum:
+      enum:
+      - TRAINING
+      - TEST
+      type: string
+      description: '* `TRAINING` - TRAINING
+
+        * `TEST` - TEST'
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FieldError:
       type: object
       properties:
@@ -1000,6 +1055,52 @@ components:
             type: string
       required:
       - <parameter_name>
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    imageautoml_classificationAutomlClassificationCreateProjectDataClass:
+      properties:
+        name:
+          title: Name
+          type: string
+        project_id:
+          title: Project Id
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - name
+      - project_id
+      - status
+      title: imageautoml_classificationAutomlClassificationCreateProjectDataClass
+      type: object
     AutomlClassificationTrainRequest:
       type: object
       properties:
@@ -1038,107 +1139,6 @@ components:
         show_base_64:
           type: boolean
           default: true
-        project_id:
-          type: string
-          minLength: 1
-          description: The id of project
-          maxLength: 250
-      required:
-      - project_id
-      - providers
-    TypeOfDataEnum:
-      enum:
-      - TRAINING
-      - TEST
-      type: string
-      description: '* `TRAINING` - TRAINING
-
-        * `TEST` - TEST'
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    AutomlClassificationProject:
-      properties:
-        project_id:
-          format: uuid
-          title: Project Id
-          type: string
-        name:
-          title: Name
-          type: string
-        provider:
-          title: Provider
-          type: string
-      required:
-      - project_id
-      - name
-      - provider
-      title: AutomlClassificationProject
-      type: object
-    imageautoml_classificationResponseModel:
-      properties:
-        nyckel:
-          $ref: '#/components/schemas/imageautoml_classificationAutomlClassificationCreateProjectDataClass'
-          default: null
-      title: imageautoml_classificationResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    imageautoml_classificationdelete_projectAutomlClassificationDeleteRequest:
-      type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
         project_id:
           type: string
           minLength: 1

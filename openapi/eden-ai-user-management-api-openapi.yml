@@ -180,23 +180,17 @@ paths:
           description: No response body
 components:
   schemas:
-    CustomTokensCreateRequest:
+    PatchedCustomTokenUpdateRequest:
       type: object
       properties:
-        name:
-          type: string
-          minLength: 1
-          description: The token name
-          maxLength: 200
-        token_type:
-          $ref: '#/components/schemas/TokenTypeEnum'
         balance:
           type:
-          - string
+          - number
           - 'null'
-          format: decimal
-          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          format: double
           description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
         expire_time:
           type:
           - string
@@ -207,11 +201,12 @@ components:
           description: Weither to use the balance field or not.
         balance_reset_amount:
           type:
-          - string
+          - number
           - 'null'
-          format: decimal
-          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          format: double
           description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
         balance_reset_period:
           allOf:
           - $ref: '#/components/schemas/BalanceResetPeriodEnum'
@@ -225,8 +220,20 @@ components:
             * `weekly` - Weekly
 
             * `monthly` - Monthly'
-      required:
-      - name
+    BalanceResetPeriodEnum:
+      enum:
+      - none
+      - daily
+      - weekly
+      - monthly
+      type: string
+      description: '* `none` - None
+
+        * `daily` - Daily
+
+        * `weekly` - Weekly
+
+        * `monthly` - Monthly'
     CustomTokensCreate:
       type: object
       properties:
@@ -273,119 +280,6 @@ components:
             * `monthly` - Monthly'
       required:
       - name
-    PatchedCustomTokenUpdateRequest:
-      type: object
-      properties:
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
-          exclusiveMinimum: -100000
-          exclusiveMaximum: 100000
-        expire_time:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        active_balance:
-          type: boolean
-          description: Weither to use the balance field or not.
-        balance_reset_amount:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
-          exclusiveMinimum: -100000
-          exclusiveMaximum: 100000
-        balance_reset_period:
-          allOf:
-          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
-          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
-
-
-            * `none` - None
-
-            * `daily` - Daily
-
-            * `weekly` - Weekly
-
-            * `monthly` - Monthly'
-    CustomTokenUpdate:
-      type: object
-      properties:
-        name:
-          type: string
-          readOnly: true
-          description: The token name
-        token_type:
-          allOf:
-          - $ref: '#/components/schemas/TokenTypeEnum'
-          readOnly: true
-        balance:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
-          exclusiveMinimum: -100000
-          exclusiveMaximum: 100000
-        expire_time:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        active_balance:
-          type: boolean
-          description: Weither to use the balance field or not.
-        balance_reset_amount:
-          type:
-          - number
-          - 'null'
-          format: double
-          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
-          exclusiveMinimum: -100000
-          exclusiveMaximum: 100000
-        balance_reset_period:
-          allOf:
-          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
-          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
-
-
-            * `none` - None
-
-            * `daily` - Daily
-
-            * `weekly` - Weekly
-
-            * `monthly` - Monthly'
-      required:
-      - name
-      - token_type
-    BalanceResetPeriodEnum:
-      enum:
-      - none
-      - daily
-      - weekly
-      - monthly
-      type: string
-      description: '* `none` - None
-
-        * `daily` - Daily
-
-        * `weekly` - Weekly
-
-        * `monthly` - Monthly'
-    TokenTypeEnum:
-      enum:
-      - sandbox_api_token
-      - api_token
-      type: string
-      description: '* `sandbox_api_token` - Sandbox
-
-        * `api_token` - Back'
     CustomTokensList:
       type: object
       properties:
@@ -469,6 +363,112 @@ components:
       - name
       - revoked
       - synthesized
+    CustomTokensCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        balance:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - string
+          - 'null'
+          format: decimal
+          pattern: ^-?\d{0,5}(?:\.\d{0,9})?$
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+      required:
+      - name
+    CustomTokenUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          readOnly: true
+          description: The token name
+        token_type:
+          allOf:
+          - $ref: '#/components/schemas/TokenTypeEnum'
+          readOnly: true
+        balance:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Optional remaining credits balance for this Token, if `active_balance` is set to True and the balance reaches 0, this token will become unusable
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        balance_reset_amount:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: The amount this token's balance is reset to at the start of each balance_reset_period. Null when balance_reset_period is 'none'.
+          exclusiveMinimum: -100000
+          exclusiveMaximum: 100000
+        balance_reset_period:
+          allOf:
+          - $ref: '#/components/schemas/BalanceResetPeriodEnum'
+          description: 'How often this token''s balance is reinitialized to balance_reset_amount. ''none'' = one-time balance (default, current behaviour).
+
+
+            * `none` - None
+
+            * `daily` - Daily
+
+            * `weekly` - Weekly
+
+            * `monthly` - Monthly'
+      required:
+      - name
+      - token_type
+    TokenTypeEnum:
+      enum:
+      - sandbox_api_token
+      - api_token
+      type: string
+      description: '* `sandbox_api_token` - Sandbox
+
+        * `api_token` - Back'
   securitySchemes:
     FeatureApiAuth:
       type: http

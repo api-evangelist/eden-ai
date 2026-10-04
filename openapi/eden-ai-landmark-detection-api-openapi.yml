@@ -143,33 +143,19 @@ components:
       - status
       title: imagelandmark_detectionLandmarkDetectionDataClass
       type: object
-    Error:
-      type: object
+    LandmarkVertice:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        x:
+          title: X
+          type: integer
+        y:
+          title: Y
+          type: integer
       required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    LandmarkLocation:
-      properties:
-        lat_lng:
-          $ref: '#/components/schemas/LandmarkLatLng'
-      required:
-      - lat_lng
-      title: LandmarkLocation
+      - x
+      - y
+      title: LandmarkVertice
       type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     imagelandmark_detectionResponseModel:
       properties:
         microsoft:
@@ -180,44 +166,53 @@ components:
           default: null
       title: imagelandmark_detectionResponseModel
       type: object
+    LandmarkLocation:
+      properties:
+        lat_lng:
+          $ref: '#/components/schemas/LandmarkLatLng'
+      required:
+      - lat_lng
+      title: LandmarkLocation
+      type: object
+    LandmarkItem:
+      properties:
+        description:
+          title: Description
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          items:
+            $ref: '#/components/schemas/LandmarkVertice'
+          title: Bounding Box
+          type: array
+        locations:
+          items:
+            $ref: '#/components/schemas/LandmarkLocation'
+          title: Locations
+          type: array
+      required:
+      - description
+      - confidence
+      title: LandmarkItem
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    LandmarkLatLng:
-      properties:
-        latitude:
-          title: Latitude
-          type: integer
-        longitude:
-          title: Longitude
-          type: integer
-      required:
-      - latitude
-      - longitude
-      title: LandmarkLatLng
-      type: object
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -266,52 +261,57 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    LandmarkLatLng:
+      properties:
+        latitude:
+          title: Latitude
+          type: integer
+        longitude:
+          title: Longitude
+          type: integer
+      required:
+      - latitude
+      - longitude
+      title: LandmarkLatLng
+      type: object
+    NestedBadRequest:
       type: object
       properties:
         type:
           type: string
         message:
-          type: string
+          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
-    LandmarkVertice:
-      properties:
-        x:
-          title: X
-          type: integer
-        y:
-          title: Y
-          type: integer
-      required:
-      - x
-      - y
-      title: LandmarkVertice
+    BadRequest:
       type: object
-    LandmarkItem:
       properties:
-        description:
-          title: Description
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_box:
-          items:
-            $ref: '#/components/schemas/LandmarkVertice'
-          title: Bounding Box
-          type: array
-        locations:
-          items:
-            $ref: '#/components/schemas/LandmarkLocation'
-          title: Locations
-          type: array
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - description
-      - confidence
-      title: LandmarkItem
-      type: object
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

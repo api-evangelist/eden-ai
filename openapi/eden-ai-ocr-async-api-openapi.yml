@@ -33631,30 +33631,154 @@ paths:
           description: ''
 components:
   schemas:
-    AsyncJobList:
+    Page:
+      description: "Page of a document\n\nAttributes:\n    lines (Sequence[Line]): List of lines of the page"
+      properties:
+        lines:
+          description: List of lines
+          items:
+            $ref: '#/components/schemas/Line'
+          title: Lines
+          type: array
+      title: Page
+      type: object
+    ocrocr_asyncOcrAsyncDataClass:
+      properties:
+        raw_text:
+          title: Raw Text
+          type: string
+        pages:
+          description: List of pages
+          items:
+            $ref: '#/components/schemas/Page'
+          title: Pages
+          type: array
+        number_of_pages:
+          description: Number of pages in the document
+          title: Number Of Pages
+          type: integer
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - raw_text
+      - number_of_pages
+      - id
+      - final_status
+      title: ocrocr_asyncOcrAsyncDataClass
+      type: object
+    Line:
+      description: "Line of a document\n\nAttributes:\n    text (str): Text detected in the line\n    bounding_boxes (Sequence[BoundingBox]): Bounding boxes of the words in the line\n    words (Sequence[Word]): List of words of the line\n    confidence (float): Confidence of the line"
+      properties:
+        text:
+          description: Text detected in the line
+          title: Text
+          type: string
+        words:
+          description: List of words
+          items:
+            $ref: '#/components/schemas/Word'
+          title: Words
+          type: array
+        bounding_box:
+          $ref: '#/components/schemas/BoundingBox'
+          default: null
+          description: Bounding box of the line, can be None
+        confidence:
+          description: Confidence of the line
+          title: Confidence
+          type: integer
+      required:
+      - text
+      - confidence
+      title: Line
+      type: object
+    NestedError:
       type: object
       properties:
-        providers:
+        type:
           type: string
-        nb:
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    BoundingBox:
+      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
+      properties:
+        left:
+          description: Left coordinate of the bounding box
+          title: Left
           type: integer
-        nb_ok:
+        top:
+          description: Top coordinate of the bounding box
+          title: Top
           type: integer
+        width:
+          description: Width of the bounding box
+          title: Width
+          type: integer
+        height:
+          description: Height of the bounding box
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: BoundingBox
+      type: object
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
         public_id:
           type: string
           format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
       - public_id
-      - state
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     AsyncOcrRequest:
       type: object
       properties:
@@ -33711,6 +33835,16 @@ components:
           maxLength: 200
       required:
       - providers
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ocrocr_asyncModel:
       properties:
         oneai:
@@ -33730,11 +33864,6 @@ components:
           default: null
       title: ocrocr_asyncModel
       type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     asyncocrocr_asyncResponseModel:
       properties:
         results:
@@ -33756,114 +33885,6 @@ components:
       - status
       title: asyncocrocr_asyncResponseModel
       type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    ocrocr_asyncOcrAsyncDataClass:
-      properties:
-        raw_text:
-          title: Raw Text
-          type: string
-        pages:
-          description: List of pages
-          items:
-            $ref: '#/components/schemas/Page'
-          title: Pages
-          type: array
-        number_of_pages:
-          description: Number of pages in the document
-          title: Number Of Pages
-          type: integer
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - raw_text
-      - number_of_pages
-      - id
-      - final_status
-      title: ocrocr_asyncOcrAsyncDataClass
-      type: object
     Word:
       description: "Word of a document\n\nAttributes:\n    text (str): Text detected in the word\n    bounding_boxes (Sequence[BoundingBox]): Bounding boxes of the words in the word\n    confidence (float): Confidence score of the word"
       properties:
@@ -33884,79 +33905,58 @@ components:
       - confidence
       title: Word
       type: object
-    BoundingBox:
-      description: "Bounding box of a word in the image\n\nAttributes:\n    left (float): Left coordinate of the bounding box\n    top (float): Top coordinate of the bounding box\n    width (float): Width of the bounding box\n    height (float): Height of the bounding box\n    text (str): Text detected in the bounding box\n\nConstructor:\n    from_json (classmethod): Create a new instance of BoundingBox from a JSON object\n    from_normalized_vertices (classmethod): Create a new instance of BoundingBox from normalized vertices\n    unknown (classmethod): Return a invalid bouding_box with all field filled with `-1`"
-      properties:
-        left:
-          description: Left coordinate of the bounding box
-          title: Left
-          type: integer
-        top:
-          description: Top coordinate of the bounding box
-          title: Top
-          type: integer
-        width:
-          description: Width of the bounding box
-          title: Width
-          type: integer
-        height:
-          description: Height of the bounding box
-          title: Height
-          type: integer
-      required:
-      - left
-      - top
-      - width
-      - height
-      title: BoundingBox
-      type: object
-    Page:
-      description: "Page of a document\n\nAttributes:\n    lines (Sequence[Line]): List of lines of the page"
-      properties:
-        lines:
-          description: List of lines
-          items:
-            $ref: '#/components/schemas/Line'
-          title: Lines
-          type: array
-      title: Page
-      type: object
-    NestedBadRequest:
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    AsyncJobList:
       type: object
       properties:
-        type:
+        providers:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    Line:
-      description: "Line of a document\n\nAttributes:\n    text (str): Text detected in the line\n    bounding_boxes (Sequence[BoundingBox]): Bounding boxes of the words in the line\n    words (Sequence[Word]): List of words of the line\n    confidence (float): Confidence of the line"
-      properties:
-        text:
-          description: Text detected in the line
-          title: Text
-          type: string
-        words:
-          description: List of words
-          items:
-            $ref: '#/components/schemas/Word'
-          title: Words
-          type: array
-        bounding_box:
-          $ref: '#/components/schemas/BoundingBox'
-          default: null
-          description: Bounding box of the line, can be None
-        confidence:
-          description: Confidence of the line
-          title: Confidence
+        nb:
           type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
-      - text
-      - confidence
-      title: Line
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FieldError:
       type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

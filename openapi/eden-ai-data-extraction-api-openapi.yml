@@ -206,45 +206,6 @@ components:
       - height
       title: BoundingBox
       type: object
-    ocrdata_extractionResponseModel:
-      properties:
-        base64:
-          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
-          default: null
-      title: ocrdata_extractionResponseModel
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     ocrdata_extractionDataExtractionDataClass:
       properties:
         fields:
@@ -264,37 +225,26 @@ components:
       - status
       title: ocrdata_extractionDataExtractionDataClass
       type: object
-    NestedBadRequest:
+    ocrdata_extractionResponseModel:
+      properties:
+        base64:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrdata_extractionDataExtractionDataClass'
+          default: null
+      title: ocrdata_extractionResponseModel
+      type: object
+    NestedError:
       type: object
       properties:
         type:
           type: string
         message:
-          $ref: '#/components/schemas/FieldError'
+          type: string
       required:
       - message
       - type
-    ItemDataExtraction:
-      properties:
-        key:
-          title: Key
-          type: string
-        value:
-          title: Value
-        bounding_box:
-          $ref: '#/components/schemas/BoundingBox'
-        confidence_score:
-          maximum: 1
-          minimum: 0
-          title: Confidence Score
-          type: integer
-      required:
-      - key
-      - value
-      - bounding_box
-      - confidence_score
-      title: ItemDataExtraction
-      type: object
     ocrdata_extractionDataExtractionRequest:
       type: object
       properties:
@@ -354,21 +304,71 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    NestedError:
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
+          default: Not Found
+    ItemDataExtraction:
+      properties:
+        key:
+          title: Key
           type: string
+        value:
+          title: Value
+        bounding_box:
+          $ref: '#/components/schemas/BoundingBox'
+        confidence_score:
+          maximum: 1
+          minimum: 0
+          title: Confidence Score
+          type: integer
       required:
-      - message
-      - type
+      - key
+      - value
+      - bounding_box
+      - confidence_score
+      title: ItemDataExtraction
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

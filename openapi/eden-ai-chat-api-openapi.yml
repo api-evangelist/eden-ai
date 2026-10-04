@@ -2399,24 +2399,54 @@ paths:
       description: Production server
 components:
   schemas:
-    ThinkingRequest:
+    NestedError:
       type: object
       properties:
         type:
-          $ref: '#/components/schemas/TypeEnum'
-        budget_tokens:
-          type: integer
-          minimum: 1024
+          type: string
+        message:
+          type: string
       required:
-      - budget_tokens
+      - message
       - type
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
+        details:
+          type: string
+          default: Not Found
+    ReasoningEffortEnum:
+      enum:
+      - low
+      - medium
+      - high
+      type: string
+      description: '**Choices**:
+
+        - ''low'': Minimal reasoning, quick responses
+
+        - ''medium'': Balanced reasoning approach
+
+        - ''high'': In-depth, comprehensive reasoning
+
+
+        **Example**: ''high'' for complex problem-solving tasks
+
+
+        * `low` - low
+
+        * `medium` - medium
+
+        * `high` - high'
+    ChatRole:
+      enum:
+      - system
+      - user
+      - assistant
+      - function
+      - tool
+      title: ChatRole
+      type: string
     llmchatResponseModel:
       properties:
         replicate:
@@ -2547,52 +2577,86 @@ components:
           default: null
       title: llmchatResponseModel
       type: object
-    NotFoundResponse:
+    ChatCompletionUsage:
+      properties:
+        completion_tokens_details:
+          $ref: '#/components/schemas/UsageTokensDetails'
+          description: Number of tokens in the generated completion
+        prompt_tokens_details:
+          $ref: '#/components/schemas/UsageTokensDetails'
+          description: Number of tokens in the prompt
+        total_tokens:
+          description: Total number of tokens used (prompt + completion)
+          title: Total Tokens
+          type: integer
+      required:
+      - completion_tokens_details
+      - prompt_tokens_details
+      - total_tokens
+      title: ChatCompletionUsage
+      type: object
+    Error:
       type: object
       properties:
-        details:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ChatCompletionChoice:
+      properties:
+        index:
+          description: The index of this completion choice
+          title: Index
+          type: integer
+        message:
+          $ref: '#/components/schemas/ChatMessage'
+          description: The chat completion message
+        finish_reason:
+          description: 'The reason the completion finished: ''stop'', ''length'', ''tool_calls'', ''content_filter'', or ''function_call'''
+          title: Finish Reason
           type: string
-          default: Not Found
-    ChatRole:
+      required:
+      - index
+      - message
+      - finish_reason
+      title: ChatCompletionChoice
+      type: object
+    MetadataRequest:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+          maxLength: 64
+        value:
+          type: string
+          minLength: 1
+          maxLength: 512
+      required:
+      - key
+      - value
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    ServiceTierEnum:
       enum:
-      - system
-      - user
-      - assistant
-      - function
-      - tool
-      title: ChatRole
-      type: string
-    TypeEnum:
-      enum:
-      - enabled
-      - disabled
-      type: string
-      description: '* `enabled` - enabled
-
-        * `disabled` - disabled'
-    ReasoningEffortEnum:
-      enum:
-      - low
-      - medium
-      - high
+      - auto
+      - default
       type: string
       description: '**Choices**:
 
-        - ''low'': Minimal reasoning, quick responses
+        - ''auto'': Automatically select appropriate tier
 
-        - ''medium'': Balanced reasoning approach
-
-        - ''high'': In-depth, comprehensive reasoning
+        - ''default'': Use default service configuration
 
 
-        **Example**: ''high'' for complex problem-solving tasks
+        * `auto` - auto
 
-
-        * `low` - low
-
-        * `medium` - medium
-
-        * `high` - high'
+        * `default` - default'
     llmchatChatDataClass:
       properties:
         id:
@@ -2643,69 +2707,6 @@ components:
       - status
       title: llmchatChatDataClass
       type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    MetadataRequest:
-      type: object
-      properties:
-        key:
-          type: string
-          minLength: 1
-          maxLength: 64
-        value:
-          type: string
-          minLength: 1
-          maxLength: 512
-      required:
-      - key
-      - value
-    ChatCompletionUsage:
-      properties:
-        completion_tokens_details:
-          $ref: '#/components/schemas/UsageTokensDetails'
-          description: Number of tokens in the generated completion
-        prompt_tokens_details:
-          $ref: '#/components/schemas/UsageTokensDetails'
-          description: Number of tokens in the prompt
-        total_tokens:
-          description: Total number of tokens used (prompt + completion)
-          title: Total Tokens
-          type: integer
-      required:
-      - completion_tokens_details
-      - prompt_tokens_details
-      - total_tokens
-      title: ChatCompletionUsage
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     NestedBadRequest:
       type: object
       properties:
@@ -2748,6 +2749,84 @@ components:
       required:
       - role
       title: ChatMessage
+      type: object
+    ThinkingRequest:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        budget_tokens:
+          type: integer
+          minimum: 1024
+      required:
+      - budget_tokens
+      - type
+    TypeEnum:
+      enum:
+      - enabled
+      - disabled
+      type: string
+      description: '* `enabled` - enabled
+
+        * `disabled` - disabled'
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    UsageTokensDetails:
+      properties:
+        audio_tokens:
+          description: Number of audio tokens in the prompt
+          title: Audio Tokens
+          type: integer
+        cached_tokens:
+          description: Number of cached tokens in the prompt
+          title: Cached Tokens
+          type: integer
+        prompt_tokens:
+          description: Number of tokens in the prompt
+          title: Prompt Tokens
+          type: integer
+        completion_tokens:
+          description: Number of tokens in the generated completion
+          title: Completion Tokens
+          type: integer
+        total_tokens:
+          description: Total number of tokens used (prompt + completion)
+          title: Total Tokens
+          type: integer
+        accepted_prediction_tokens:
+          description: Number of accepted tokens in the prompt
+          title: Accepted Prediction Tokens
+          type: integer
+        reasoning_tokens:
+          description: Number of reasoning tokens in the prompt
+          title: Reasoning Tokens
+          type: integer
+        rejected_prediction_tokens:
+          description: Number of rejected tokens in the prompt
+          title: Rejected Prediction Tokens
+          type: integer
+      required:
+      - audio_tokens
+      - cached_tokens
+      - prompt_tokens
+      - completion_tokens
+      - total_tokens
+      - accepted_prediction_tokens
+      - reasoning_tokens
+      - rejected_prediction_tokens
+      title: UsageTokensDetails
       type: object
     llmchatllmchatChatRequest:
       type: object
@@ -2892,104 +2971,53 @@ components:
       required:
       - messages
       - model
-    ServiceTierEnum:
-      enum:
-      - auto
-      - default
-      type: string
-      description: '**Choices**:
-
-        - ''auto'': Automatically select appropriate tier
-
-        - ''default'': Use default service configuration
-
-
-        * `auto` - auto
-
-        * `default` - default'
-    UsageTokensDetails:
+    multimodalchatChatDataClass:
       properties:
-        audio_tokens:
-          description: Number of audio tokens in the prompt
-          title: Audio Tokens
-          type: integer
-        cached_tokens:
-          description: Number of cached tokens in the prompt
-          title: Cached Tokens
-          type: integer
-        prompt_tokens:
-          description: Number of tokens in the prompt
-          title: Prompt Tokens
-          type: integer
-        completion_tokens:
-          description: Number of tokens in the generated completion
-          title: Completion Tokens
-          type: integer
-        total_tokens:
-          description: Total number of tokens used (prompt + completion)
-          title: Total Tokens
-          type: integer
-        accepted_prediction_tokens:
-          description: Number of accepted tokens in the prompt
-          title: Accepted Prediction Tokens
-          type: integer
-        reasoning_tokens:
-          description: Number of reasoning tokens in the prompt
-          title: Reasoning Tokens
-          type: integer
-        rejected_prediction_tokens:
-          description: Number of rejected tokens in the prompt
-          title: Rejected Prediction Tokens
-          type: integer
-      required:
-      - audio_tokens
-      - cached_tokens
-      - prompt_tokens
-      - completion_tokens
-      - total_tokens
-      - accepted_prediction_tokens
-      - reasoning_tokens
-      - rejected_prediction_tokens
-      title: UsageTokensDetails
-      type: object
-    ChatCompletionChoice:
-      properties:
-        index:
-          description: The index of this completion choice
-          title: Index
-          type: integer
-        message:
-          $ref: '#/components/schemas/ChatMessage'
-          description: The chat completion message
-        finish_reason:
-          description: 'The reason the completion finished: ''stop'', ''length'', ''tool_calls'', ''content_filter'', or ''function_call'''
-          title: Finish Reason
+        generated_text:
+          title: Generated Text
           type: string
-      required:
-      - index
-      - message
-      - finish_reason
-      title: ChatCompletionChoice
-      type: object
-    TypeEnum_2:
-      enum:
-      - media_url
-      - media_base64
-      - text
-      type: string
-    ChatMessageDataClass:
-      properties:
-        role:
-          title: Role
-          type: string
-        content:
+        messages:
           items:
-            $ref: '#/components/schemas/ChatMessage_2'
-          title: Content
+            $ref: '#/components/schemas/ChatMessageDataClass'
+          title: Messages
           type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - role
-      title: ChatMessageDataClass
+      - generated_text
+      - status
+      title: multimodalchatChatDataClass
+      type: object
+    multimodalchatResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        mistral:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        xai:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/multimodalchatChatDataClass'
+          default: null
+      title: multimodalchatResponseModel
       type: object
     multimodalchatChatRequest:
       type: object
@@ -3074,28 +3102,19 @@ components:
       required:
       - messages
       - providers
-    multimodalchatChatDataClass:
+    ChatMessageDataClass:
       properties:
-        generated_text:
-          title: Generated Text
+        role:
+          title: Role
           type: string
-        messages:
+        content:
           items:
-            $ref: '#/components/schemas/ChatMessageDataClass'
-          title: Messages
+            $ref: '#/components/schemas/ChatMessage_2'
+          title: Content
           type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
       required:
-      - generated_text
-      - status
-      title: multimodalchatChatDataClass
+      - role
+      title: ChatMessageDataClass
       type: object
     ChatMessage_2:
       properties:
@@ -3110,6 +3129,12 @@ components:
       - content
       title: ChatMessage
       type: object
+    TypeEnum_2:
+      enum:
+      - media_url
+      - media_base64
+      - text
+      type: string
     ChatMessageContent:
       properties:
         media_url:
@@ -3129,88 +3154,6 @@ components:
           title: Media Type
           type: string
       title: ChatMessageContent
-      type: object
-    multimodalchatResponseModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        mistral:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        xai:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-        anthropic:
-          $ref: '#/components/schemas/multimodalchatChatDataClass'
-          default: null
-      title: multimodalchatResponseModel
-      type: object
-    ChatAvailableToolsRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The name of your tool/function
-        description:
-          type: string
-        parameters:
-          description: "The tool's parameters are specified using a JSON Schema object. Detailed format documentation is available in the [JSON Schema reference](https://json-schema.org/understanding-json-schema/).\n\n**Make sure to well describe each parameter for best results.**\n\n\nExample for a weather tool:\n\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"location\": {\n          \"type\": \"string\"\n          \"description\": \"The geographical location for which weather data is requested.\"\n        },\n        \"unit\": {\n          \"type\": \"string\", \"enum\": [\"Celsius\", \"Fahrenheit\"]\n          \"description\": \"The unit of measurement for temperature.\"\n        }\n      },\n      \"required\": [\"location\"]\n    }\n    "
-    textchatResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        deepseek:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        anthropic:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        perplexityai:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        groq:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        together_ai:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        meta:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        cohere:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        replicate:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        mistral:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textchatChatDataClass'
-          default: null
-      title: textchatResponseModel
       type: object
     textchatChatStreamRequest:
       type: object
@@ -3308,36 +3251,36 @@ components:
           default: continue
       required:
       - providers
-    ChatToolResultRequest:
+    ChatMessageRequest:
       type: object
       properties:
-        id:
+        role:
           type: string
           minLength: 1
-          description: the id of the `tool_call` used to generate result
-        result:
-          type: string
-          minLength: 1
-          description: the result of your function
+        message: {}
+        tools:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChatAvailableToolsRequest'
+        tool_calls:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ChatToolCallsRequest'
       required:
-      - id
-      - result
-    ChatToolCallsRequest:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-        arguments:
-          type: string
-          minLength: 1
-      required:
-      - arguments
-      - id
-      - name
+      - message
+      - role
+    FallbackTypeEnum:
+      enum:
+      - rerun
+      - continue
+      type: string
+      description: '* `rerun` - Rerun
+
+        * `continue` - Continue'
     textchatChatRequest:
       type: object
       properties:
@@ -3430,57 +3373,20 @@ components:
           description: "Optional parameter to control the model's reasoning depth. \nAllows specifying the level of analytical effort in generating responses. \n\n**Choices**:\n- 'low': Minimal reasoning, quick responses\n- 'medium': Balanced reasoning approach\n- 'high': In-depth, comprehensive reasoning\n\n**Example**: 'high' for complex problem-solving tasks\n\n* `low` - low\n* `medium` - medium\n* `high` - high"
       required:
       - providers
-    ToolCall:
+    ChatToolResultRequest:
+      type: object
       properties:
         id:
-          title: Id
           type: string
-        name:
-          title: Name
+          minLength: 1
+          description: the id of the `tool_call` used to generate result
+        result:
           type: string
-        arguments:
-          title: Arguments
-          type: string
+          minLength: 1
+          description: the result of your function
       required:
       - id
-      - name
-      - arguments
-      title: ToolCall
-      type: object
-    textchatChatDataClass:
-      properties:
-        generated_text:
-          title: Generated Text
-          type: string
-        message:
-          items:
-            $ref: '#/components/schemas/ChatMessageDataClass_2'
-          title: Message
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - generated_text
-      - status
-      title: textchatChatDataClass
-      type: object
-    ToolChoiceEnum:
-      enum:
-      - auto
-      - required
-      - none
-      type: string
-      description: '* `auto` - auto
-
-        * `required` - required
-
-        * `none` - none'
+      - result
     ChatMessageDataClass_2:
       properties:
         role:
@@ -3509,380 +3415,130 @@ components:
       - role
       title: ChatMessageDataClass
       type: object
-    ChatMessageRequest:
+    textchatChatDataClass:
+      properties:
+        generated_text:
+          title: Generated Text
+          type: string
+        message:
+          items:
+            $ref: '#/components/schemas/ChatMessageDataClass_2'
+          title: Message
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - generated_text
+      - status
+      title: textchatChatDataClass
+      type: object
+    ChatAvailableToolsRequest:
       type: object
       properties:
-        role:
+        name:
           type: string
           minLength: 1
-        message: {}
-        tools:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ChatAvailableToolsRequest'
-        tool_calls:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/ChatToolCallsRequest'
-      required:
-      - message
-      - role
-    FallbackTypeEnum:
-      enum:
-      - rerun
-      - continue
-      type: string
-      description: '* `rerun` - Rerun
-
-        * `continue` - Continue'
-    PromptCacheOptions:
-      properties:
-        mode:
-          anyOf:
-          - type: string
-            enum:
-            - implicit
-            - explicit
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: '"implicit" (default) caches automatically and also honors any prompt_cache_breakpoint you set; "explicit" caches only the blocks you mark with prompt_cache_breakpoint. Known values are advertised in the schema but not enforced.'
-        ttl:
-          anyOf:
-          - type: string
-            const: 30m
-          - type: string
-          - type: 'null'
-          title: Ttl
-          description: How long to keep the prompt cache, e.g. "30m". Leave unset for the provider default. Known values are advertised in the schema but not enforced.
-      additionalProperties: true
-      type: object
-      title: PromptCacheOptions
-      description: 'Request-level prompt-cache settings (OpenAI GPT-5.6 and newer).
-
-
-        Controls how this request''s prompt cache behaves — whether caching happens
-
-        automatically or only on the blocks you mark with ``prompt_cache_breakpoint``, and
-
-        how long the cache is kept. Ignored by models that don''t support prompt caching.'
-    MessageFileUrlInput:
-      properties:
-        file_id:
+          description: The name of your tool/function
+        description:
           type: string
-          title: File Id
-          description: 'File identifier: either a UUID from /v3/upload endpoint or an HTTP(S) URL.'
-      type: object
-      required:
-      - file_id
-      title: MessageFileUrlInput
-    MessageRefusalContent:
+        parameters:
+          description: "The tool's parameters are specified using a JSON Schema object. Detailed format documentation is available in the [JSON Schema reference](https://json-schema.org/understanding-json-schema/).\n\n**Make sure to well describe each parameter for best results.**\n\n\nExample for a weather tool:\n\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"location\": {\n          \"type\": \"string\"\n          \"description\": \"The geographical location for which weather data is requested.\"\n        },\n        \"unit\": {\n          \"type\": \"string\", \"enum\": [\"Celsius\", \"Fahrenheit\"]\n          \"description\": \"The unit of measurement for temperature.\"\n        }\n      },\n      \"required\": [\"location\"]\n    }\n    "
+    ToolCall:
       properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
+        id:
+          title: Id
           type: string
-          const: refusal
-          title: Type
-        refusal:
+        name:
+          title: Name
           type: string
-          title: Refusal
-          description: The refusal message generated by the model.
-      type: object
-      required:
-      - type
-      - refusal
-      title: MessageRefusalContent
-    ChatCompletionMessage:
-      properties:
-        role:
+        arguments:
+          title: Arguments
           type: string
-          const: assistant
-          title: Role
-          description: Role of the message author.
-          default: assistant
-        content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Content
-          description: Content of the message.
-        tool_calls:
-          anyOf:
-          - items:
-              additionalProperties: true
-              type: object
-            type: array
-          - type: 'null'
-          title: Tool Calls
-          description: Tool calls produced by the model, if any.
-        refusal:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Refusal
-          description: Refusal message from the model, if any.
-        reasoning_content:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reasoning Content
-          description: Reasoning trace from the model, when supported by the provider.
-      additionalProperties: true
-      type: object
-      title: ChatCompletionMessage
-      description: Message returned in a chat completion choice.
-    ChatCompletionChoice_2:
-      properties:
-        index:
-          type: integer
-          title: Index
-          description: Position of the choice in the list.
-        message:
-          $ref: '#/components/schemas/ChatCompletionMessage'
-          description: Message produced by the model for this choice.
-        finish_reason:
-          anyOf:
-          - type: string
-            enum:
-            - stop
-            - length
-            - tool_calls
-            - content_filter
-            - function_call
-          - type: 'null'
-          title: Finish Reason
-          description: Reason the model stopped generating tokens.
-        logprobs:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Logprobs
-          description: Log probability information for the choice, if requested.
-      additionalProperties: true
-      type: object
       required:
-      - index
-      - message
-      title: ChatCompletionChoice
-      description: A single choice in a chat completion response.
-    ProviderRoutingPreferences:
-      properties:
-        sort:
-          anyOf:
-          - type: string
-            enum:
-            - cost
-            - speed
-            - latency
-            - exact
-          - type: 'null'
-          title: Sort
-          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
-        sticky:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Sticky
-          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
-        allow_fallbacks:
-          type: boolean
-          title: Allow Fallbacks
-          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
-          default: true
-        quality_cost:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 0.0
-          - type: 'null'
-          title: Quality Cost
-          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
-        allowed_providers:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Allowed Providers
-          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      - id
+      - name
+      - arguments
+      title: ToolCall
       type: object
-      title: ProviderRoutingPreferences
-      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
-
-        quality for cost when the platform chooses the model.
-
-
-        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
-
-        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
-
-        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
-
-        ``quality_cost`` below is the one field here that speaks to it.'
-    MessageAudioContent:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: input_audio
-          title: Type
-        input_audio:
-          $ref: '#/components/schemas/MessageAudioInput'
+    ChatToolCallsRequest:
       type: object
-      required:
-      - type
-      - input_audio
-      title: MessageAudioContent
-    ChatCompletionResponse:
       properties:
         id:
           type: string
-          title: Id
-          description: Unique identifier for the chat completion.
-        object:
+          minLength: 1
+        name:
           type: string
-          const: chat.completion
-          title: Object
-          description: Object type. Always 'chat.completion' for this endpoint.
-          default: chat.completion
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp (seconds) when the completion was created.
-        model:
+          minLength: 1
+        arguments:
           type: string
-          title: Model
-          description: Model that produced the completion.
-        choices:
-          items:
-            $ref: '#/components/schemas/ChatCompletionChoice_2'
-          type: array
-          title: Choices
-          description: List of completion choices generated for the request.
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/ChatCompletionUsage_2'
-          - type: 'null'
-          description: Token usage statistics for the request.
-        system_fingerprint:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: System Fingerprint
-          description: Backend configuration fingerprint that produced the response.
-        service_tier:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Service Tier
-          description: Service tier that processed the request.
-      additionalProperties: true
-      type: object
+          minLength: 1
       required:
+      - arguments
       - id
-      - created
-      - model
-      - choices
-      title: ChatCompletionResponse
-      description: Response body for POST /chat/completions (non-streaming).
-    Message:
+      - name
+    ToolChoiceEnum:
+      enum:
+      - auto
+      - required
+      - none
+      type: string
+      description: '* `auto` - auto
+
+        * `required` - required
+
+        * `none` - none'
+    textchatResponseModel:
       properties:
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-          - system
-          - tool
-          - developer
-          - function
-          title: Role
-          description: The role of the message sender (e.g., 'user', 'assistant').
-        content:
-          anyOf:
-          - type: string
-          - items:
-              anyOf:
-              - $ref: '#/components/schemas/MessageTextContent'
-              - $ref: '#/components/schemas/MessageImageContent'
-              - $ref: '#/components/schemas/MessageAudioContent'
-              - $ref: '#/components/schemas/MessageFileContent'
-              - $ref: '#/components/schemas/MessageRefusalContent'
-            type: array
-          - type: 'null'
-          title: Content
-          description: 'The content of the message: a string, or a list of content parts (text, image_url, input_audio, file, refusal).'
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
-      additionalProperties: true
+        xai:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        deepseek:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        perplexityai:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        groq:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        together_ai:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        meta:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        cohere:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        replicate:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        mistral:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textchatChatDataClass'
+          default: null
+      title: textchatResponseModel
       type: object
-      required:
-      - role
-      title: Message
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    MessageImageContent:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: image_url
-          title: Type
-        image_url:
-          $ref: '#/components/schemas/MessageImageUrl'
-      type: object
-      required:
-      - type
-      - image_url
-      title: MessageImageContent
     HTTPValidationError:
       properties:
         detail:
@@ -3892,16 +3548,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    MessageFileB64Input:
-      properties:
-        file_data:
-          type: string
-          title: File Data
-          description: The file data in base64 format.
-      type: object
-      required:
-      - file_data
-      title: MessageFileB64Input
     PromptCacheBreakpoint:
       properties:
         mode:
@@ -3925,131 +3571,6 @@ components:
         reducing latency and cost. Providers enforce a minimum token count below which
 
         caching is skipped. Ignored by models that don''t support explicit cache breakpoints.'
-    ChatCompletionUsage_2:
-      properties:
-        prompt_tokens:
-          type: integer
-          title: Prompt Tokens
-          description: Tokens in the prompt.
-        completion_tokens:
-          type: integer
-          title: Completion Tokens
-          description: Tokens in the generated completion.
-        total_tokens:
-          type: integer
-          title: Total Tokens
-          description: Total tokens consumed by the request.
-        prompt_tokens_details:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Prompt Tokens Details
-          description: Breakdown of prompt tokens (e.g. cached_tokens, audio_tokens).
-        completion_tokens_details:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Completion Tokens Details
-          description: Breakdown of completion tokens (e.g. reasoning_tokens).
-      additionalProperties: true
-      type: object
-      required:
-      - prompt_tokens
-      - completion_tokens
-      - total_tokens
-      title: ChatCompletionUsage
-      description: Token usage block returned by the OpenAI-compatible chat completion API.
-    CacheControl:
-      properties:
-        type:
-          type: string
-          const: ephemeral
-          title: Type
-          description: Cache type. Currently only 'ephemeral' is supported.
-        ttl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ttl
-          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
-      type: object
-      required:
-      - type
-      title: CacheControl
-      description: 'Prompt-cache marker.
-
-
-        Marks a message (or content part) as a cache boundary so that the prefix
-
-        up to that point is stored and reused on subsequent requests, reducing
-
-        latency and cost. Only a single contiguous cache-marked block is stored
-
-        per request, and providers enforce a minimum token count below which
-
-        caching is silently skipped. Silently ignored by providers that don''t
-
-        support prompt caching.'
-    GeminiImageConfig:
-      properties:
-        aspect_ratio:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Aspect Ratio
-          description: 'Output aspect ratio. Examples: ''1:1'', ''16:9'', ''9:16'', ''4:3'', ''3:4'', ''21:9''. Allowed set varies by model; see Gemini docs.'
-        image_size:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Image Size
-          description: 'Output resolution. Examples: ''1K'', ''2K'', ''4K''. ''512'' is valid on Gemini 3.1 Flash Image only.'
-      additionalProperties: false
-      type: object
-      title: GeminiImageConfig
-      description: 'Image generation config for Gemini image models (google/gemini-2.5-flash-image).
-
-
-        Values are passed through to Gemini''s generationConfig.imageConfig. Allowed
-
-        values may vary by model — see
-
-        https://ai.google.dev/gemini-api/docs/image-generation.'
-    MessageImageUrl:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: MessageImageUrl
-    MessageFileContent:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: file
-          title: Type
-        file:
-          anyOf:
-          - $ref: '#/components/schemas/MessageFileUrlInput'
-          - $ref: '#/components/schemas/MessageFileB64Input'
-          title: File
-      type: object
-      required:
-      - type
-      - file
-      title: MessageFileContent
     LlmCompletionBody:
       properties:
         routing:
@@ -4406,22 +3927,6 @@ components:
       - model
       - messages
       title: LlmCompletionBody
-    MessageAudioInput:
-      properties:
-        data:
-          type: string
-          title: Data
-          description: The audio data in base64 format or Http(s) link.
-        format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Format
-          description: The format of the audio file (e.g., 'mp3', 'wav').
-      type: object
-      required:
-      - data
-      title: MessageAudioInput
     MessageTextContent:
       properties:
         cache_control:
@@ -4445,6 +3950,501 @@ components:
       - type
       - text
       title: MessageTextContent
+    MessageAudioInput:
+      properties:
+        data:
+          type: string
+          title: Data
+          description: The audio data in base64 format or Http(s) link.
+        format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Format
+          description: The format of the audio file (e.g., 'mp3', 'wav').
+      type: object
+      required:
+      - data
+      title: MessageAudioInput
+    MessageFileUrlInput:
+      properties:
+        file_id:
+          type: string
+          title: File Id
+          description: 'File identifier: either a UUID from /v3/upload endpoint or an HTTP(S) URL.'
+      type: object
+      required:
+      - file_id
+      title: MessageFileUrlInput
+    Message:
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          - tool
+          - developer
+          - function
+          title: Role
+          description: The role of the message sender (e.g., 'user', 'assistant').
+        content:
+          anyOf:
+          - type: string
+          - items:
+              anyOf:
+              - $ref: '#/components/schemas/MessageTextContent'
+              - $ref: '#/components/schemas/MessageImageContent'
+              - $ref: '#/components/schemas/MessageAudioContent'
+              - $ref: '#/components/schemas/MessageFileContent'
+              - $ref: '#/components/schemas/MessageRefusalContent'
+            type: array
+          - type: 'null'
+          title: Content
+          description: 'The content of the message: a string, or a list of content parts (text, image_url, input_audio, file, refusal).'
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+      additionalProperties: true
+      type: object
+      required:
+      - role
+      title: Message
+    ChatCompletionUsage_2:
+      properties:
+        prompt_tokens:
+          type: integer
+          title: Prompt Tokens
+          description: Tokens in the prompt.
+        completion_tokens:
+          type: integer
+          title: Completion Tokens
+          description: Tokens in the generated completion.
+        total_tokens:
+          type: integer
+          title: Total Tokens
+          description: Total tokens consumed by the request.
+        prompt_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Prompt Tokens Details
+          description: Breakdown of prompt tokens (e.g. cached_tokens, audio_tokens).
+        completion_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Completion Tokens Details
+          description: Breakdown of completion tokens (e.g. reasoning_tokens).
+      additionalProperties: true
+      type: object
+      required:
+      - prompt_tokens
+      - completion_tokens
+      - total_tokens
+      title: ChatCompletionUsage
+      description: Token usage block returned by the OpenAI-compatible chat completion API.
+    ChatCompletionMessage:
+      properties:
+        role:
+          type: string
+          const: assistant
+          title: Role
+          description: Role of the message author.
+          default: assistant
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Content
+          description: Content of the message.
+        tool_calls:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Tool Calls
+          description: Tool calls produced by the model, if any.
+        refusal:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refusal
+          description: Refusal message from the model, if any.
+        reasoning_content:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reasoning Content
+          description: Reasoning trace from the model, when supported by the provider.
+      additionalProperties: true
+      type: object
+      title: ChatCompletionMessage
+      description: Message returned in a chat completion choice.
+    CacheControl:
+      properties:
+        type:
+          type: string
+          const: ephemeral
+          title: Type
+          description: Cache type. Currently only 'ephemeral' is supported.
+        ttl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
+      type: object
+      required:
+      - type
+      title: CacheControl
+      description: 'Prompt-cache marker.
+
+
+        Marks a message (or content part) as a cache boundary so that the prefix
+
+        up to that point is stored and reused on subsequent requests, reducing
+
+        latency and cost. Only a single contiguous cache-marked block is stored
+
+        per request, and providers enforce a minimum token count below which
+
+        caching is silently skipped. Silently ignored by providers that don''t
+
+        support prompt caching.'
+    ChatCompletionChoice_2:
+      properties:
+        index:
+          type: integer
+          title: Index
+          description: Position of the choice in the list.
+        message:
+          $ref: '#/components/schemas/ChatCompletionMessage'
+          description: Message produced by the model for this choice.
+        finish_reason:
+          anyOf:
+          - type: string
+            enum:
+            - stop
+            - length
+            - tool_calls
+            - content_filter
+            - function_call
+          - type: 'null'
+          title: Finish Reason
+          description: Reason the model stopped generating tokens.
+        logprobs:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Logprobs
+          description: Log probability information for the choice, if requested.
+      additionalProperties: true
+      type: object
+      required:
+      - index
+      - message
+      title: ChatCompletionChoice
+      description: A single choice in a chat completion response.
+    GeminiImageConfig:
+      properties:
+        aspect_ratio:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Aspect Ratio
+          description: 'Output aspect ratio. Examples: ''1:1'', ''16:9'', ''9:16'', ''4:3'', ''3:4'', ''21:9''. Allowed set varies by model; see Gemini docs.'
+        image_size:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Size
+          description: 'Output resolution. Examples: ''1K'', ''2K'', ''4K''. ''512'' is valid on Gemini 3.1 Flash Image only.'
+      additionalProperties: false
+      type: object
+      title: GeminiImageConfig
+      description: 'Image generation config for Gemini image models (google/gemini-2.5-flash-image).
+
+
+        Values are passed through to Gemini''s generationConfig.imageConfig. Allowed
+
+        values may vary by model — see
+
+        https://ai.google.dev/gemini-api/docs/image-generation.'
+    MessageRefusalContent:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: refusal
+          title: Type
+        refusal:
+          type: string
+          title: Refusal
+          description: The refusal message generated by the model.
+      type: object
+      required:
+      - type
+      - refusal
+      title: MessageRefusalContent
+    MessageImageUrl:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: MessageImageUrl
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
+        allow_fallbacks:
+          type: boolean
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+          default: true
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ChatCompletionResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the chat completion.
+        object:
+          type: string
+          const: chat.completion
+          title: Object
+          description: Object type. Always 'chat.completion' for this endpoint.
+          default: chat.completion
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp (seconds) when the completion was created.
+        model:
+          type: string
+          title: Model
+          description: Model that produced the completion.
+        choices:
+          items:
+            $ref: '#/components/schemas/ChatCompletionChoice_2'
+          type: array
+          title: Choices
+          description: List of completion choices generated for the request.
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/ChatCompletionUsage_2'
+          - type: 'null'
+          description: Token usage statistics for the request.
+        system_fingerprint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Fingerprint
+          description: Backend configuration fingerprint that produced the response.
+        service_tier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service Tier
+          description: Service tier that processed the request.
+      additionalProperties: true
+      type: object
+      required:
+      - id
+      - created
+      - model
+      - choices
+      title: ChatCompletionResponse
+      description: Response body for POST /chat/completions (non-streaming).
+    MessageFileB64Input:
+      properties:
+        file_data:
+          type: string
+          title: File Data
+          description: The file data in base64 format.
+      type: object
+      required:
+      - file_data
+      title: MessageFileB64Input
+    MessageFileContent:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: file
+          title: Type
+        file:
+          anyOf:
+          - $ref: '#/components/schemas/MessageFileUrlInput'
+          - $ref: '#/components/schemas/MessageFileB64Input'
+          title: File
+      type: object
+      required:
+      - type
+      - file
+      title: MessageFileContent
+    PromptCacheOptions:
+      properties:
+        mode:
+          anyOf:
+          - type: string
+            enum:
+            - implicit
+            - explicit
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: '"implicit" (default) caches automatically and also honors any prompt_cache_breakpoint you set; "explicit" caches only the blocks you mark with prompt_cache_breakpoint. Known values are advertised in the schema but not enforced.'
+        ttl:
+          anyOf:
+          - type: string
+            const: 30m
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: How long to keep the prompt cache, e.g. "30m". Leave unset for the provider default. Known values are advertised in the schema but not enforced.
+      additionalProperties: true
+      type: object
+      title: PromptCacheOptions
+      description: 'Request-level prompt-cache settings (OpenAI GPT-5.6 and newer).
+
+
+        Controls how this request''s prompt cache behaves — whether caching happens
+
+        automatically or only on the blocks you mark with ``prompt_cache_breakpoint``, and
+
+        how long the cache is kept. Ignored by models that don''t support prompt caching.'
+    MessageImageContent:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: image_url
+          title: Type
+        image_url:
+          $ref: '#/components/schemas/MessageImageUrl'
+      type: object
+      required:
+      - type
+      - image_url
+      title: MessageImageContent
+    MessageAudioContent:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_audio
+          title: Type
+        input_audio:
+          $ref: '#/components/schemas/MessageAudioInput'
+      type: object
+      required:
+      - type
+      - input_audio
+      title: MessageAudioContent
   securitySchemes:
     FeatureApiAuth:
       type: http

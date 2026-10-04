@@ -366,73 +366,6 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imageanonymizationResponseModel:
-      properties:
-        api4ai:
-          $ref: '#/components/schemas/imageanonymizationAnonymizationDataClass'
-          default: null
-      title: imageanonymizationResponseModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    AnonymizationBoundingBox:
-      properties:
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: AnonymizationBoundingBox
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     imageanonymizationAnonymizationDataClass:
       properties:
         image:
@@ -460,6 +393,38 @@ components:
       - status
       title: imageanonymizationAnonymizationDataClass
       type: object
+    AnonymizationItem:
+      properties:
+        kind:
+          title: Kind
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_boxes:
+          $ref: '#/components/schemas/AnonymizationBoundingBox'
+      required:
+      - kind
+      - confidence
+      - bounding_boxes
+      title: AnonymizationItem
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -508,37 +473,95 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
+    imageanonymizationResponseModel:
+      properties:
+        api4ai:
+          $ref: '#/components/schemas/imageanonymizationAnonymizationDataClass'
+          default: null
+      title: imageanonymizationResponseModel
+      type: object
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
-    AnonymizationItem:
+      - error
+    AnonymizationBoundingBox:
       properties:
-        kind:
-          title: Kind
-          type: string
-        confidence:
-          title: Confidence
+        x_min:
+          title: X Min
           type: integer
-        bounding_boxes:
-          $ref: '#/components/schemas/AnonymizationBoundingBox'
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
       required:
-      - kind
-      - confidence
-      - bounding_boxes
-      title: AnonymizationItem
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: AnonymizationBoundingBox
       type: object
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    textanonymizationAnonymizationDataClass:
+      properties:
+        result:
+          title: Result
+          type: string
+        entities:
+          items:
+            $ref: '#/components/schemas/AnonymizationEntity'
+          title: Entities
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - result
+      - status
+      title: textanonymizationAnonymizationDataClass
+      type: object
     AnonymizationEntity:
       description: "This model represents an entity extracted from the text.\n\nAttributes:\n    offset (int): The offset of the entity in the text.\n    length (int): The lenght of the entity in the text.\n    category (CategoryType): The category of the entity.\n    subcategory (SubCategoryType): The subcategory of the entity.\n    original_label (str): The original label of the entity.\n    content (str): The content of the entity."
       properties:
@@ -576,6 +599,66 @@ components:
       - confidence_score
       title: AnonymizationEntity
       type: object
+    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
+    : type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        text:
+          type: string
+          minLength: 1
+          description: Text to analyze
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code for the language the input text is written in (eg: en, fr).'
+      required:
+      - providers
+      - text
+    CategoryType:
+      description: This enum are used to categorize the entities extracted from the text.
+      enum:
+      - PersonalInformation
+      - FinancialInformation
+      - IdentificationNumbers
+      - Miscellaneous
+      - OrganizationInformation
+      - DateAndTime
+      - LocationInformation
+      - Other
+      title: CategoryType
+      type: string
     SubCategoryType:
       enum:
       - CreditCard
@@ -645,89 +728,6 @@ components:
           $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
           default: null
       title: textanonymizationResponseModel
-      type: object
-    ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
-    : type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        text:
-          type: string
-          minLength: 1
-          description: Text to analyze
-        language:
-          type:
-          - string
-          - 'null'
-          description: 'Language code for the language the input text is written in (eg: en, fr).'
-      required:
-      - providers
-      - text
-    CategoryType:
-      description: This enum are used to categorize the entities extracted from the text.
-      enum:
-      - PersonalInformation
-      - FinancialInformation
-      - IdentificationNumbers
-      - Miscellaneous
-      - OrganizationInformation
-      - DateAndTime
-      - LocationInformation
-      - Other
-      title: CategoryType
-      type: string
-    textanonymizationAnonymizationDataClass:
-      properties:
-        result:
-          title: Result
-          type: string
-        entities:
-          items:
-            $ref: '#/components/schemas/AnonymizationEntity'
-          title: Entities
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - result
-      - status
-      title: textanonymizationAnonymizationDataClass
       type: object
   securitySchemes:
     FeatureApiAuth:

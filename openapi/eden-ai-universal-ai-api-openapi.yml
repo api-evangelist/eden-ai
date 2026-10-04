@@ -274,61 +274,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UniversalAIResponse:
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          title: Status
-          description: Whether the request succeeded or failed
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
-        feature:
-          type: string
-          title: Feature
-          description: Feature category (e.g., text, ocr, image)
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output:
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-      type: object
-      required:
-      - status
-      - cost
-      - provider
-      - feature
-      - subfeature
-      - output
-      title: UniversalAIResponse
-      description: 'Sync response from universal-ai endpoint.
-
-
-        Inherits all fields from base, with status restricted to success/fail.'
     UniversalAIAsyncBody:
       properties:
         model:
@@ -417,6 +362,39 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    UniversalAIAsyncJobListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/UniversalAIAsyncJobListItem'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: UniversalAIAsyncJobListResponse
+      description: Response for listing async jobs.
     UniversalAIAsyncJobListItem:
       properties:
         public_id:
@@ -464,6 +442,121 @@ components:
       - created_at
       title: UniversalAIAsyncJobListItem
       description: Summary item for job list.
+    UniversalAIBody:
+      properties:
+        model:
+          type: string
+          title: Model
+          description: 'Model in format: feature/subfeature/provider[/model]'
+          examples:
+          - text/ai_detection/openai/gpt-4
+          - ocr/ocr/amazon
+          - image/generation/google/imagen-3
+        provider_params:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: Provider-specific parameters
+        input:
+          additionalProperties: true
+          type: object
+          title: Input
+          description: 'Feature-specific input parameters. Required fields depend on the feature/subfeature specified in provider. Examples:
+
+            - text/ai_detection: {''text'': ''content to analyze''}
+
+            - text/embeddings: {''texts'': [''text1'', ''text2'']}
+
+            - ocr/ocr: {''file_id'': ''abc123'', ''language'': ''en''}
+
+            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
+
+            - translation/document_translation: {''file_id'': ''abc123'', ''target_language'': ''fr''}'
+          examples:
+          - text: Analyze this text for AI detection
+          - dimensions: 512
+            texts:
+            - text1
+            - text2
+          - file_id: abc123
+            language: en
+        fallbacks:
+          items:
+            type: string
+          type: array
+          maxItems: 3
+          title: Fallbacks
+          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
+        show_original_response:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Show Original Response
+          description: Include raw provider response in the output
+          default: false
+      type: object
+      required:
+      - model
+      - input
+      title: UniversalAIBody
+      description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
+    UniversalAIResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          title: Status
+          description: Whether the request succeeded or failed
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output:
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - output
+      title: UniversalAIResponse
+      description: 'Sync response from universal-ai endpoint.
+
+
+        Inherits all fields from base, with status restricted to success/fail.'
     UniversalAIAsyncResponse:
       properties:
         status:
@@ -562,99 +655,6 @@ components:
       - msg
       - type
       title: ValidationError
-    UniversalAIAsyncJobListResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/UniversalAIAsyncJobListItem'
-          type: array
-          title: Items
-          description: List of items
-        total:
-          type: integer
-          title: Total
-          description: Total number of items
-        page:
-          type: integer
-          title: Page
-          description: Current page number
-        limit:
-          type: integer
-          title: Limit
-          description: Items per page
-        total_pages:
-          type: integer
-          title: Total Pages
-          description: Total number of pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      - total_pages
-      title: UniversalAIAsyncJobListResponse
-      description: Response for listing async jobs.
-    UniversalAIBody:
-      properties:
-        model:
-          type: string
-          title: Model
-          description: 'Model in format: feature/subfeature/provider[/model]'
-          examples:
-          - text/ai_detection/openai/gpt-4
-          - ocr/ocr/amazon
-          - image/generation/google/imagen-3
-        provider_params:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Provider Params
-          description: Provider-specific parameters
-        input:
-          additionalProperties: true
-          type: object
-          title: Input
-          description: 'Feature-specific input parameters. Required fields depend on the feature/subfeature specified in provider. Examples:
-
-            - text/ai_detection: {''text'': ''content to analyze''}
-
-            - text/embeddings: {''texts'': [''text1'', ''text2'']}
-
-            - ocr/ocr: {''file_id'': ''abc123'', ''language'': ''en''}
-
-            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
-
-            - translation/document_translation: {''file_id'': ''abc123'', ''target_language'': ''fr''}'
-          examples:
-          - text: Analyze this text for AI detection
-          - dimensions: 512
-            texts:
-            - text1
-            - text2
-          - file_id: abc123
-            language: en
-        fallbacks:
-          items:
-            type: string
-          type: array
-          maxItems: 3
-          title: Fallbacks
-          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
-        show_original_response:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Show Original Response
-          description: Include raw provider response in the output
-          default: false
-      type: object
-      required:
-      - model
-      - input
-      title: UniversalAIBody
-      description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
   securitySchemes:
     AuthBearer:
       type: http

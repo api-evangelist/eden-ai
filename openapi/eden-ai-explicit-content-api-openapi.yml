@@ -212,100 +212,6 @@ paths:
           description: ''
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    imageexplicit_contentExplicitContentDataClass:
-      properties:
-        nsfw_likelihood:
-          description: An integer representing the likelihood of NSFW content. Higher values indicate a higher likelihood.
-          title: Nsfw Likelihood
-          type: integer
-        nsfw_likelihood_score:
-          description: A floating-point score representing the confidence level of the NSFW likelihood assessment. This is typically a value between 0.0 and 1.0.
-          title: Nsfw Likelihood Score
-          type: integer
-        items:
-          description: A list of items identified as potentially explicit. Each item contains details of the explicit content detected.
-          items:
-            $ref: '#/components/schemas/ExplicitItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - nsfw_likelihood
-      - nsfw_likelihood_score
-      - status
-      title: imageexplicit_contentExplicitContentDataClass
-      type: object
-    imageexplicit_contentResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-      title: imageexplicit_contentResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     ExplicitItem:
       properties:
         label:
@@ -454,6 +360,66 @@ components:
       - subcategory
       title: ExplicitItem
       type: object
+    CategoryType:
+      description: This enum are used to categorize the explicit content extracted from the text
+      enum:
+      - Toxic
+      - Content
+      - Sexual
+      - Violence
+      - DrugAndAlcohol
+      - Finance
+      - HateAndExtremism
+      - Safe
+      - Other
+      title: CategoryType
+      type: string
+    imageexplicit_contentExplicitContentDataClass:
+      properties:
+        nsfw_likelihood:
+          description: An integer representing the likelihood of NSFW content. Higher values indicate a higher likelihood.
+          title: Nsfw Likelihood
+          type: integer
+        nsfw_likelihood_score:
+          description: A floating-point score representing the confidence level of the NSFW likelihood assessment. This is typically a value between 0.0 and 1.0.
+          title: Nsfw Likelihood Score
+          type: integer
+        items:
+          description: A list of items identified as potentially explicit. Each item contains details of the explicit content detected.
+          items:
+            $ref: '#/components/schemas/ExplicitItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: imageexplicit_contentExplicitContentDataClass
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -502,35 +468,69 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
-    CategoryType:
-      description: This enum are used to categorize the explicit content extracted from the text
-      enum:
-      - Toxic
-      - Content
-      - Sexual
-      - Violence
-      - DrugAndAlcohol
-      - Finance
-      - HateAndExtremism
-      - Safe
-      - Other
-      title: CategoryType
-      type: string
+      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imageexplicit_contentResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+      title: imageexplicit_contentResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

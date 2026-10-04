@@ -13130,47 +13130,6 @@ paths:
           description: ''
 components:
   schemas:
-    VideoLabelBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoLabelBoundingBox
-      type: object
-    VideoLabelTimeStamp:
-      properties:
-        start:
-          title: Start
-          type: integer
-        end:
-          title: End
-          type: integer
-      required:
-      - start
-      - end
-      title: VideoLabelTimeStamp
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     videolabel_detection_asyncModel:
       properties:
         amazon:
@@ -13181,60 +13140,6 @@ components:
           default: null
       title: videolabel_detection_asyncModel
       type: object
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     ListAsyncJobResponse:
       type: object
       properties:
@@ -13244,49 +13149,6 @@ components:
             $ref: '#/components/schemas/AsyncJobList'
       required:
       - jobs
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    VideoLabel:
-      properties:
-        name:
-          title: Name
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        timestamp:
-          items:
-            $ref: '#/components/schemas/VideoLabelTimeStamp'
-          title: Timestamp
-          type: array
-        category:
-          items:
-            type: string
-          title: Category
-          type: array
-        bounding_box:
-          items:
-            $ref: '#/components/schemas/VideoLabelBoundingBox'
-          title: Bounding Box
-          type: array
-      required:
-      - name
-      - confidence
-      title: VideoLabel
-      type: object
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     videolabel_detection_asyncLabelDetectionAsyncDataClass:
       properties:
         labels:
@@ -13315,6 +13177,55 @@ components:
       - final_status
       title: videolabel_detection_asyncLabelDetectionAsyncDataClass
       type: object
+    VideoLabel:
+      properties:
+        name:
+          title: Name
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        timestamp:
+          items:
+            $ref: '#/components/schemas/VideoLabelTimeStamp'
+          title: Timestamp
+          type: array
+        category:
+          items:
+            type: string
+          title: Category
+          type: array
+        bounding_box:
+          items:
+            $ref: '#/components/schemas/VideoLabelBoundingBox'
+          title: Bounding Box
+          type: array
+      required:
+      - name
+      - confidence
+      title: VideoLabel
+      type: object
+    VideoLabelBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoLabelBoundingBox
+      type: object
     NestedError:
       type: object
       properties:
@@ -13325,6 +13236,20 @@ components:
       required:
       - message
       - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -13390,6 +13315,51 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     asyncvideolabel_detection_asyncResponseModel:
       properties:
         results:
@@ -13411,6 +13381,36 @@ components:
       - status
       title: asyncvideolabel_detection_asyncResponseModel
       type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    VideoLabelTimeStamp:
+      properties:
+        start:
+          title: Start
+          type: integer
+        end:
+          title: End
+          type: integer
+      required:
+      - start
+      - end
+      title: VideoLabelTimeStamp
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

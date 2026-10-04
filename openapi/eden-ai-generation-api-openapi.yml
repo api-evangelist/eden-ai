@@ -221,103 +221,6 @@ paths:
           description: ''
 components:
   schemas:
-    GeneratedImageDataClass:
-      properties:
-        image:
-          title: Image
-          type: string
-        image_resource_url:
-          title: Image Resource Url
-          type: string
-      required:
-      - image
-      - image_resource_url
-      title: GeneratedImageDataClass
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imagegenerationGenerationDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/GeneratedImageDataClass'
-          title: Items
-          type: array
-        usage:
-          additionalProperties: true
-          default: null
-          title: Usage
-          type: object
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imagegenerationGenerationDataClass
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    imagegenerationResponseModel:
-      properties:
-        minimax:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        deepai:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        leonardo:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        stabilityai:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        bytedance:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-        replicate:
-          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
-          default: null
-      title: imagegenerationResponseModel
-      type: object
     imagegenerationGenerationRequest:
       type: object
       properties:
@@ -372,16 +275,37 @@ components:
       - providers
       - resolution
       - text
-    NestedBadRequest:
-      type: object
+    imagegenerationResponseModel:
       properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
+        minimax:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        deepai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        leonardo:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        stabilityai:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        bytedance:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+        replicate:
+          $ref: '#/components/schemas/imagegenerationGenerationDataClass'
+          default: null
+      title: imagegenerationResponseModel
+      type: object
     NestedError:
       type: object
       properties:
@@ -392,11 +316,87 @@ components:
       required:
       - message
       - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imagegenerationGenerationDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/GeneratedImageDataClass'
+          title: Items
+          type: array
+        usage:
+          additionalProperties: true
+          default: null
+          title: Usage
+          type: object
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imagegenerationGenerationDataClass
+      type: object
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    GeneratedImageDataClass:
+      properties:
+        image:
+          title: Image
+          type: string
+        image_resource_url:
+          title: Image Resource Url
+          type: string
+      required:
+      - image
+      - image_resource_url
+      title: GeneratedImageDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -92,13 +92,62 @@ paths:
           description: ''
 components:
   schemas:
-    Error:
+    imagedeepfake_detectionResponseModel:
+      properties:
+        resemble:
+          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
+          default: null
+        sightengine:
+          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
+          default: null
+      title: imagedeepfake_detectionResponseModel
+      type: object
+    ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum:
+      enum:
+      - deepfake
+      - original
+      type: string
+    imagedeepfake_detectionDeepfakeDetectionDataClass:
+      properties:
+        deepfake_score:
+          maximum: 1
+          minimum: 0
+          title: Deepfake Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum'
+          title: Prediction
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - deepfake_score
+      - prediction
+      - status
+      title: imagedeepfake_detectionDeepfakeDetectionDataClass
+      type: object
+    NestedError:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - error
+      - message
+      - type
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -147,23 +196,17 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    BadRequest:
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum:
+    StatusEnum:
       enum:
-      - deepfake
-      - original
+      - sucess
+      - fail
       type: string
     FieldError:
       type: object
@@ -184,56 +227,13 @@ components:
       required:
       - message
       - type
-    imagedeepfake_detectionDeepfakeDetectionDataClass:
+    BadRequest:
+      type: object
       properties:
-        deepfake_score:
-          maximum: 1
-          minimum: 0
-          title: Deepfake Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/ImagedeepfakeDetectionDeepfakeDetectionDataClassPredictionEnum'
-          title: Prediction
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - deepfake_score
-      - prediction
-      - status
-      title: imagedeepfake_detectionDeepfakeDetectionDataClass
-      type: object
-    imagedeepfake_detectionResponseModel:
-      properties:
-        resemble:
-          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
-          default: null
-        sightengine:
-          $ref: '#/components/schemas/imagedeepfake_detectionDeepfakeDetectionDataClass'
-          default: null
-      title: imagedeepfake_detectionResponseModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

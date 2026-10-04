@@ -282,6 +282,51 @@ paths:
           description: ''
 components:
   schemas:
+    EntitySentimentEnum:
+      enum:
+      - Positive
+      - Negative
+      - Neutral
+      - Mixed
+      type: string
+    Entity:
+      properties:
+        type:
+          description: Recognized Entity type
+          title: Type
+          type: string
+        text:
+          description: Text corresponding to the entity
+          title: Text
+          type: string
+        sentiment:
+          allOf:
+          - $ref: '#/components/schemas/EntitySentimentEnum'
+          title: Sentiment
+        begin_offset:
+          default: null
+          title: Begin Offset
+          type: integer
+        end_offset:
+          default: null
+          title: End Offset
+          type: integer
+      required:
+      - type
+      - text
+      - sentiment
+      title: Entity
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     textentity_sentimentResponseModel:
       properties:
         google:
@@ -292,20 +337,6 @@ components:
           default: null
       title: textentity_sentimentResponseModel
       type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    EntitySentimentEnum:
-      enum:
-      - Positive
-      - Negative
-      - Neutral
-      - Mixed
-      type: string
     textentity_sentimentEntitySentimentRequest:
       type: object
       properties:
@@ -353,13 +384,24 @@ components:
       required:
       - providers
       - text
-    BadRequest:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FieldError:
       type: object
       properties:
@@ -369,40 +411,6 @@ components:
             type: string
       required:
       - <parameter_name>
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Entity:
-      properties:
-        type:
-          description: Recognized Entity type
-          title: Type
-          type: string
-        text:
-          description: Text corresponding to the entity
-          title: Text
-          type: string
-        sentiment:
-          allOf:
-          - $ref: '#/components/schemas/EntitySentimentEnum'
-          title: Sentiment
-        begin_offset:
-          default: null
-          title: Begin Offset
-          type: integer
-        end_offset:
-          default: null
-          title: End Offset
-          type: integer
-      required:
-      - type
-      - text
-      - sentiment
-      title: Entity
-      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -433,21 +441,13 @@ components:
       - status
       title: textentity_sentimentEntitySentimentDataClass
       type: object
-    NestedError:
+    BadRequest:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+      - error
   securitySchemes:
     FeatureApiAuth:
       type: http
