@@ -1,0 +1,46 @@
+slug: eden-ai
+provider: Eden AI
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 3
+edges:
+- tag: User Management
+  spec_file: eden-ai-user-management-api-openapi.yml
+  capability_id: BC-4270.40
+  capability_id_l1: BC-4270
+  capability_name: Developer Identity & Credential Management
+  confidence: 0.85
+  evidence: POST /user/custom_token/  Create new Token; POST /user/custom_token/{name}/rotate/  Rotate
+    a Token's secret; GET /user/custom_token/me/  Inspect the calling API key
+  reason: Despite the 'User Management' tag, every operation issues, rotates, inspects and revokes API
+    tokens/keys for developers consuming the platform API — developer credential management, not HR or
+    customer user administration.
+- tag: Automl Classification
+  spec_file: eden-ai-automl-classification-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.8
+  evidence: Automl Classification Train Launch Job; Automl Classification Upload Data Launch Job; Automl
+    Classification - Create Project
+  reason: Project creation, training-data upload, model training and prediction jobs — this is explicitly
+    custom model lifecycle / MLOps, which is the stated scope of Artificial Intelligence Management.
+- tag: universal-ai
+  spec_file: eden-ai-universal-ai-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.7
+  evidence: POST /v3/universal-ai  universal_ai_v3_universal_ai_post  Universal Ai; UniversalAIAsyncJobListResponse
+  reason: Model-routed inference endpoint (sync and async jobs) for invoking AI models through the gateway,
+    which realises AI/ML model consumption and operations. Mapped to Artificial Intelligence Management;
+    some ambiguity as the surface is inference execution rather than model lifecycle governance.

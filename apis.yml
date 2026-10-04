@@ -1829,6 +1829,9 @@ maintainers:
   email: kin@apievangelist.com
 specificationVersion: '0.23'
 common:
+- type: CapabilityMap
+  url: capabilities/eden-ai-capability-edges.yml
+  name: Eden AI Business Capability Map
 - type: Overlay
   url: overlays/eden-ai-v3-overlay.yaml
 - type: Website
