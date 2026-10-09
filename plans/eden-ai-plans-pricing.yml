@@ -86,3 +86,23 @@ per_model_pricing:
     - {url: 'https://api.edenai.run/v3/models', note: 'LLM catalog with extended metadata; requires a key.'}
     - {tool: list_models, surface: 'https://mcp.edenai.run/mcp', note: 'The MCP server exposes the same catalog and pricing as a tool.'}
 plan_count: 2
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - negotiated
+  units: []
+  plans:
+  - name: Self-serve AI API
+    access: other
+    model: metered
+    model_how: stated
+    units: []
+    periods: []
+  - name: Advanced AI Platform
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
