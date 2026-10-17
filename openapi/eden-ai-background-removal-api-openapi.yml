@@ -116,31 +116,12 @@ paths:
           description: ''
 components:
   schemas:
-    imagebackground_removalResponseModel:
-      properties:
-        photoroom:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        stabilityai:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        picsart:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-        clipdrop:
-          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
-          default: null
-      title: imagebackground_removalResponseModel
+    NotFoundResponse:
       type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imagebackground_removalBackgroundRemovalDataClass:
       properties:
         image_b64:
@@ -165,16 +146,6 @@ components:
       - status
       title: imagebackground_removalBackgroundRemovalDataClass
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     imagebackground_removalBackgroundRemovalRequest:
       type: object
       properties:
@@ -227,12 +198,15 @@ components:
           description: Provider specific parameters
       required:
       - providers
-    NotFoundResponse:
+    FieldError:
       type: object
       properties:
-        details:
-          type: string
-          default: Not Found
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     Error:
       type: object
       properties:
@@ -245,15 +219,23 @@ components:
       - sucess
       - fail
       type: string
-    FieldError:
+    BadRequest:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - <parameter_name>
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NestedBadRequest:
       type: object
       properties:
@@ -264,13 +246,31 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
+    imagebackground_removalResponseModel:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+        photoroom:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        stabilityai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        picsart:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+        clipdrop:
+          $ref: '#/components/schemas/imagebackground_removalBackgroundRemovalDataClass'
+          default: null
+      title: imagebackground_removalResponseModel
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -219,20 +219,103 @@ paths:
           description: ''
 components:
   schemas:
-    LogoVertice:
+    NotFoundResponse:
+      type: object
       properties:
-        x:
-          description: The x-coordinate of the vertex.
-          title: X
-          type: integer
-        y:
-          description: The y-coordinate of the vertex.
-          title: Y
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LogoBoundingPoly:
+      properties:
+        vertices:
+          description: Vertices of the logos in the image
+          items:
+            $ref: '#/components/schemas/LogoVertice'
+          title: Vertices
+          type: array
+      title: LogoBoundingPoly
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    LogoItem:
+      properties:
+        bounding_poly:
+          $ref: '#/components/schemas/LogoBoundingPoly'
+          default:
+            vertices: []
+        description:
+          description: Name of the logo
+          title: Description
+          type: string
+        score:
+          description: Confidence score how sure it's this is a real logo.
+          title: Score
           type: integer
       required:
-      - x
-      - y
-      title: LogoVertice
+      - description
+      - score
+      title: LogoItem
+      type: object
+    imagelogo_detectionResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        anthropic:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+        smartclick:
+          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
+          default: null
+      title: imagelogo_detectionResponseModel
       type: object
     imagelogo_detectionLogoDetectionDataClass:
       properties:
@@ -264,12 +347,6 @@ components:
       required:
       - message
       - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     imagelogo_detectionLogoDetectionRequest:
       type: object
       properties:
@@ -318,98 +395,21 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    LogoItem:
+    LogoVertice:
       properties:
-        bounding_poly:
-          $ref: '#/components/schemas/LogoBoundingPoly'
-          default:
-            vertices: []
-        description:
-          description: Name of the logo
-          title: Description
-          type: string
-        score:
-          description: Confidence score how sure it's this is a real logo.
-          title: Score
+        x:
+          description: The x-coordinate of the vertex.
+          title: X
+          type: integer
+        y:
+          description: The y-coordinate of the vertex.
+          title: Y
           type: integer
       required:
-      - description
-      - score
-      title: LogoItem
+      - x
+      - y
+      title: LogoVertice
       type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    imagelogo_detectionResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        anthropic:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-        smartclick:
-          $ref: '#/components/schemas/imagelogo_detectionLogoDetectionDataClass'
-          default: null
-      title: imagelogo_detectionResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    LogoBoundingPoly:
-      properties:
-        vertices:
-          description: Vertices of the logos in the image
-          items:
-            $ref: '#/components/schemas/LogoVertice'
-          title: Vertices
-          type: array
-      title: LogoBoundingPoly
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

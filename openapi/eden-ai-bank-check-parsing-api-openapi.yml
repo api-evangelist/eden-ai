@@ -172,6 +172,153 @@ paths:
           description: ''
 components:
   schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    ItemBankCheckParsingDataClass:
+      properties:
+        amount:
+          title: Amount
+          type: integer
+        amount_text:
+          title: Amount Text
+          type: string
+        bank_address:
+          title: Bank Address
+          type: string
+        bank_name:
+          title: Bank Name
+          type: string
+        date:
+          title: Date
+          type: string
+        memo:
+          title: Memo
+          type: string
+        payer_address:
+          title: Payer Address
+          type: string
+        payer_name:
+          title: Payer Name
+          type: string
+        receiver_address:
+          title: Receiver Address
+          type: string
+        receiver_name:
+          title: Receiver Name
+          type: string
+        currency:
+          title: Currency
+          type: string
+        micr:
+          $ref: '#/components/schemas/MicrModel'
+      required:
+      - amount
+      - amount_text
+      - bank_address
+      - bank_name
+      - date
+      - memo
+      - payer_address
+      - payer_name
+      - receiver_address
+      - receiver_name
+      - currency
+      - micr
+      title: ItemBankCheckParsingDataClass
+      type: object
+    MicrModel:
+      properties:
+        raw:
+          title: Raw
+          type: string
+        account_number:
+          title: Account Number
+          type: string
+        routing_number:
+          title: Routing Number
+          type: string
+        serial_number:
+          title: Serial Number
+          type: string
+        check_number:
+          title: Check Number
+          type: string
+      required:
+      - raw
+      - account_number
+      - routing_number
+      - serial_number
+      - check_number
+      title: MicrModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    ocrbank_check_parsingResponseModel:
+      properties:
+        mindee:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        veryfi:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+      title: ocrbank_check_parsingResponseModel
+      type: object
     ocrbank_check_parsingBankCheckParsingRequest:
       type: object
       properties:
@@ -231,41 +378,6 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    MicrModel:
-      properties:
-        raw:
-          title: Raw
-          type: string
-        account_number:
-          title: Account Number
-          type: string
-        routing_number:
-          title: Routing Number
-          type: string
-        serial_number:
-          title: Serial Number
-          type: string
-        check_number:
-          title: Check Number
-          type: string
-      required:
-      - raw
-      - account_number
-      - routing_number
-      - serial_number
-      - check_number
-      title: MicrModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     ocrbank_check_parsingBankCheckParsingDataClass:
       properties:
         extracted_data:
@@ -285,118 +397,6 @@ components:
       - status
       title: ocrbank_check_parsingBankCheckParsingDataClass
       type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ocrbank_check_parsingResponseModel:
-      properties:
-        mindee:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        veryfi:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        extracta:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-      title: ocrbank_check_parsingResponseModel
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    ItemBankCheckParsingDataClass:
-      properties:
-        amount:
-          title: Amount
-          type: integer
-        amount_text:
-          title: Amount Text
-          type: string
-        bank_address:
-          title: Bank Address
-          type: string
-        bank_name:
-          title: Bank Name
-          type: string
-        date:
-          title: Date
-          type: string
-        memo:
-          title: Memo
-          type: string
-        payer_address:
-          title: Payer Address
-          type: string
-        payer_name:
-          title: Payer Name
-          type: string
-        receiver_address:
-          title: Receiver Address
-          type: string
-        receiver_name:
-          title: Receiver Name
-          type: string
-        currency:
-          title: Currency
-          type: string
-        micr:
-          $ref: '#/components/schemas/MicrModel'
-      required:
-      - amount
-      - amount_text
-      - bank_address
-      - bank_name
-      - date
-      - memo
-      - payer_address
-      - payer_name
-      - receiver_address
-      - receiver_name
-      - currency
-      - micr
-      title: ItemBankCheckParsingDataClass
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

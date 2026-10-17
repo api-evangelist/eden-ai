@@ -219,23 +219,12 @@ paths:
       x-operation-id-original: cost_management_<Display Name of your Subfeature>
 components:
   schemas:
-    TokenData:
-      properties:
-        token:
-          title: Token
-          type: string
-        data:
-          additionalProperties:
-            additionalProperties:
-              $ref: '#/components/schemas/Details'
-            type: object
-          title: Data
-          type: object
-      required:
-      - token
-      - data
-      title: TokenData
+    NotFoundResponse:
       type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     CostMonitoringResponse:
       properties:
         response:
@@ -247,37 +236,6 @@ components:
       - response
       title: CostMonitoringResponse
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    credits_serializer:
-      type: object
-      properties:
-        credits:
-          type: number
-          format: double
-      required:
-      - credits
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     FieldError:
       type: object
       properties:
@@ -287,6 +245,28 @@ components:
             type: string
       required:
       - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    credits_serializer:
+      type: object
+      properties:
+        credits:
+          type: number
+          format: double
+      required:
+      - credits
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     Details:
       properties:
         total_cost:
@@ -306,6 +286,16 @@ components:
       - cost_per_provider
       title: Details
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NestedBadRequest:
       type: object
       properties:
@@ -316,10 +306,20 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
+    TokenData:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        token:
+          title: Token
+          type: string
+        data:
+          additionalProperties:
+            additionalProperties:
+              $ref: '#/components/schemas/Details'
+            type: object
+          title: Data
+          type: object
       required:
-      - error
+      - token
+      - data
+      title: TokenData
+      type: object

@@ -274,6 +274,160 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    UniversalAIAsyncJobListItem:
+      properties:
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          - processing
+          title: Status
+          description: Job status
+        feature:
+          type: string
+          title: Feature
+          description: Feature name
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Subfeature name
+        provider:
+          type: string
+          title: Provider
+          description: Provider name
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: Model name
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Job creation timestamp
+      type: object
+      required:
+      - public_id
+      - status
+      - feature
+      - subfeature
+      - provider
+      - created_at
+      title: UniversalAIAsyncJobListItem
+      description: Summary item for job list.
+    UniversalAIAsyncResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          - processing
+          title: Status
+          description: 'Request status: success, fail, or processing (async only)'
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID for polling status
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: Model name if specified in the request
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Job creation timestamp
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - public_id
+      - created_at
+      title: UniversalAIAsyncResponse
+      description: 'Async response from universal-ai/async endpoint.
+
+
+        Inherits base fields and adds job-specific fields for tracking async operations.
+
+        Used for both job creation (202 Accepted) and job detail (GET) responses.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     UniversalAIAsyncBody:
       properties:
         model:
@@ -353,15 +507,61 @@ components:
 
 
         Extends UniversalAIBody with webhook parameters for async notifications.'
-    HTTPValidationError:
+    UniversalAIResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          title: Status
+          description: Whether the request succeeded or failed
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output:
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
       type: object
-      title: HTTPValidationError
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - output
+      title: UniversalAIResponse
+      description: 'Sync response from universal-ai endpoint.
+
+
+        Inherits all fields from base, with status restricted to success/fail.'
     UniversalAIAsyncJobListResponse:
       properties:
         items:
@@ -395,53 +595,6 @@ components:
       - total_pages
       title: UniversalAIAsyncJobListResponse
       description: Response for listing async jobs.
-    UniversalAIAsyncJobListItem:
-      properties:
-        public_id:
-          type: string
-          title: Public Id
-          description: Job ID
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          - processing
-          title: Status
-          description: Job status
-        feature:
-          type: string
-          title: Feature
-          description: Feature name
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Subfeature name
-        provider:
-          type: string
-          title: Provider
-          description: Provider name
-        model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Model
-          description: Model name
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-          description: Job creation timestamp
-      type: object
-      required:
-      - public_id
-      - status
-      - feature
-      - subfeature
-      - provider
-      - created_at
-      title: UniversalAIAsyncJobListItem
-      description: Summary item for job list.
     UniversalAIBody:
       properties:
         model:
@@ -502,159 +655,6 @@ components:
       - input
       title: UniversalAIBody
       description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
-    UniversalAIResponse:
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          title: Status
-          description: Whether the request succeeded or failed
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
-        feature:
-          type: string
-          title: Feature
-          description: Feature category (e.g., text, ocr, image)
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output:
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-      type: object
-      required:
-      - status
-      - cost
-      - provider
-      - feature
-      - subfeature
-      - output
-      title: UniversalAIResponse
-      description: 'Sync response from universal-ai endpoint.
-
-
-        Inherits all fields from base, with status restricted to success/fail.'
-    UniversalAIAsyncResponse:
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          - processing
-          title: Status
-          description: 'Request status: success, fail, or processing (async only)'
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
-        feature:
-          type: string
-          title: Feature
-          description: Feature category (e.g., text, ocr, image)
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-        public_id:
-          type: string
-          title: Public Id
-          description: Job ID for polling status
-        model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Model
-          description: Model name if specified in the request
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-          description: Job creation timestamp
-      type: object
-      required:
-      - status
-      - cost
-      - provider
-      - feature
-      - subfeature
-      - public_id
-      - created_at
-      title: UniversalAIAsyncResponse
-      description: 'Async response from universal-ai/async endpoint.
-
-
-        Inherits base fields and adds job-specific fields for tracking async operations.
-
-        Used for both job creation (202 Accepted) and job detail (GET) responses.'
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     AuthBearer:
       type: http

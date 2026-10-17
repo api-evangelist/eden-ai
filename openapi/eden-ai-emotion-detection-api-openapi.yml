@@ -85,6 +85,56 @@ paths:
           description: ''
 components:
   schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    EmotionItem:
+      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
+      properties:
+        emotion:
+          title: Emotion
+          type: string
+        emotion_score:
+          maximum: 100
+          minimum: 0
+          title: Emotion Score
+          type: integer
+      required:
+      - emotion
+      - emotion_score
+      title: EmotionItem
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     textemotion_detectionEmotionDetectionDataClass:
       properties:
         text:
@@ -107,6 +157,13 @@ components:
       - text
       - status
       title: textemotion_detectionEmotionDetectionDataClass
+      type: object
+    textemotion_detectionResponseModel:
+      properties:
+        vernai:
+          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
+          default: null
+      title: textemotion_detectionResponseModel
       type: object
     textemotion_detectionEmotionDetectionRequest:
       type: object
@@ -160,33 +217,6 @@ components:
       required:
       - message
       - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     NestedBadRequest:
       type: object
       properties:
@@ -197,36 +227,6 @@ components:
       required:
       - message
       - type
-    EmotionItem:
-      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
-      properties:
-        emotion:
-          title: Emotion
-          type: string
-        emotion_score:
-          maximum: 100
-          minimum: 0
-          title: Emotion Score
-          type: integer
-      required:
-      - emotion
-      - emotion_score
-      title: EmotionItem
-      type: object
-    textemotion_detectionResponseModel:
-      properties:
-        vernai:
-          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
-          default: null
-      title: textemotion_detectionResponseModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

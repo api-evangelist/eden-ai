@@ -169,6 +169,19 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    DeleteFilesResponse:
+      properties:
+        deleted_count:
+          type: integer
+          title: Deleted Count
+          description: Number of files deleted
+      type: object
+      required:
+      - deleted_count
+      title: DeleteFilesResponse
+      description: Response for file deletion.
+      example:
+        deleted_count: 5
     UploadResponse:
       properties:
         file_id:
@@ -229,31 +242,27 @@ components:
         metadata:
           page_count: 5
         purpose: general
-    Body_upload_file_v3_upload_post:
+    ValidationError:
       properties:
-        file:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
           type: string
-          format: binary
-          title: File
-          description: File to upload
-        expires_in_days:
-          type: integer
-          maximum: 30.0
-          minimum: 1.0
-          title: Expires In Days
-          description: Expiration in days (1-30)
-          default: 30
-        purpose:
+          title: Message
+        type:
           type: string
-          maxLength: 50
-          minLength: 1
-          title: Purpose
-          description: Purpose of the file
-          default: general
+          title: Error Type
       type: object
       required:
-      - file
-      title: Body_upload_file_v3_upload_post
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ListFilesResponse:
       properties:
         items:
@@ -302,19 +311,6 @@ components:
         page: 1
         total: 25
         total_pages: 1
-    DeleteFilesResponse:
-      properties:
-        deleted_count:
-          type: integer
-          title: Deleted Count
-          description: Number of files deleted
-      type: object
-      required:
-      - deleted_count
-      title: DeleteFilesResponse
-      description: Response for file deletion.
-      example:
-        deleted_count: 5
     FileResponse:
       properties:
         file_id:
@@ -385,27 +381,31 @@ components:
         file_ids:
         - 550e8400-e29b-41d4-a716-446655440000
         - 550e8400-e29b-41d4-a716-446655440001
-    ValidationError:
+    Body_upload_file_v3_upload_post:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        file:
           type: string
-          title: Message
-        type:
+          format: binary
+          title: File
+          description: File to upload
+        expires_in_days:
+          type: integer
+          maximum: 30.0
+          minimum: 1.0
+          title: Expires In Days
+          description: Expiration in days (1-30)
+          default: 30
+        purpose:
           type: string
-          title: Error Type
+          maxLength: 50
+          minLength: 1
+          title: Purpose
+          description: Purpose of the file
+          default: general
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - file
+      title: Body_upload_file_v3_upload_post
   securitySchemes:
     AuthBearer:
       type: http

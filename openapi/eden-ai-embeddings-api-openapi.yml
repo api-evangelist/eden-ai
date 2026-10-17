@@ -423,17 +423,12 @@ paths:
       description: Production server
 components:
   schemas:
-    RepresentationEnum:
-      enum:
-      - document
-      - query
-      - symetric
-      type: string
-      description: '* `document` - document
-
-        * `query` - query
-
-        * `symetric` - symetric'
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageembeddingsEmbeddingsRequest:
       type: object
       properties:
@@ -494,33 +489,6 @@ components:
       required:
       - providers
       - representation
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    EmbeddingDataClass:
-      properties:
-        embedding:
-          items:
-            type: integer
-          title: Embedding
-          type: array
-      required:
-      - embedding
-      title: EmbeddingDataClass
-      type: object
     imageembeddingsEmbeddingsDataClass:
       properties:
         items:
@@ -540,6 +508,15 @@ components:
       - status
       title: imageembeddingsEmbeddingsDataClass
       type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     Error:
       type: object
       properties:
@@ -552,15 +529,13 @@ components:
       - sucess
       - fail
       type: string
-    FieldError:
+    BadRequest:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - <parameter_name>
+      - error
     imageembeddingsResponseModel:
       properties:
         alephalpha:
@@ -574,6 +549,16 @@ components:
           default: null
       title: imageembeddingsResponseModel
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NestedBadRequest:
       type: object
       properties:
@@ -584,31 +569,27 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
+    RepresentationEnum:
+      enum:
+      - document
+      - query
+      - symetric
+      type: string
+      description: '* `document` - document
+
+        * `query` - query
+
+        * `symetric` - symetric'
+    EmbeddingDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    textembeddingsEmbeddingsDataClass:
-      properties:
-        items:
+        embedding:
           items:
-            $ref: '#/components/schemas/EmbeddingDataClass'
-          title: Items
+            type: integer
+          title: Embedding
           type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
       required:
-      - status
-      title: textembeddingsEmbeddingsDataClass
+      - embedding
+      title: EmbeddingDataClass
       type: object
     textembeddingsEmbeddingsRequest:
       type: object
@@ -685,6 +666,194 @@ components:
           default: null
       title: textembeddingsResponseModel
       type: object
+    textembeddingsEmbeddingsDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/EmbeddingDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: textembeddingsEmbeddingsDataClass
+      type: object
+    Usage:
+      properties:
+        prompt_tokens:
+          type: integer
+          title: Prompt Tokens
+        total_tokens:
+          type: integer
+          title: Total Tokens
+      additionalProperties: true
+      type: object
+      required:
+      - prompt_tokens
+      - total_tokens
+      title: Usage
+      description: The usage information for the request.
+    EmbeddingsResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        data:
+          items:
+            $ref: '#/components/schemas/EmbeddingItem'
+          type: array
+          title: Data
+        model:
+          type: string
+          title: Model
+        object:
+          type: string
+          const: list
+          title: Object
+        usage:
+          $ref: '#/components/schemas/Usage'
+      additionalProperties: true
+      type: object
+      required:
+      - data
+      - model
+      - object
+      - usage
+      title: EmbeddingsResponse
+      description: 'OpenAI-compatible embeddings response + Eden `cost` and `provider` fields.
+
+
+        `EmbeddingsDataClass` (from edenai-apis) already widens
+
+        ``data[].embedding`` to ``list[float] | str`` so the base64 wire format
+
+        validates here too.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Capabilities:
+      properties:
+        input_modalities:
+          items:
+            type: string
+          type: array
+          title: Input Modalities
+        output_modalities:
+          items:
+            type: string
+          type: array
+          title: Output Modalities
+        supports_reasoning:
+          type: boolean
+          title: Supports Reasoning
+          default: false
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
+      additionalProperties: true
+      type: object
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
+
+        new capabilities are introduced without a coordinated release.'
     ListModelsResponse:
       properties:
         object:
@@ -704,77 +873,6 @@ components:
       - data
       title: ListModelsResponse
       description: List models response.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ModelWithEndpoints:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
-        object:
-          type: string
-          const: model
-          title: Object
-          description: Object type
-          default: model
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp of the newest endpoint serving this model
-          default: 0
-        owned_by:
-          type: string
-          title: Owned By
-          description: Who authored the model, independent of who sells it
-          default: ''
-        mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
-        endpoints:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Endpoints
-          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
-        endpoint_count:
-          type: integer
-          title: Endpoint Count
-          description: How many provider endpoints serve this model
-          readOnly: true
-      type: object
-      required:
-      - id
-      - endpoints
-      - endpoint_count
-      title: ModelWithEndpoints
-      description: 'One routable model name and the provider endpoints behind it.
-
-
-        Deliberately carries NO pricing, context window or capability of its own. Those vary between
-
-        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
-
-        and six distinct capability sets across ten sellers — so a value here would be wrong for most
-
-        of the group. Each endpoint keeps its own, unchanged.
-
-
-        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
-
-        field, which is what makes this view a pure regrouping: a caller reading
-
-        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
     ModelObject:
       properties:
         id:
@@ -856,6 +954,129 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    EmbeddingItem:
+      properties:
+        embedding:
+          anyOf:
+          - items:
+              type: number
+            type: array
+          - type: string
+          title: Embedding
+        index:
+          type: integer
+          title: Index
+        object:
+          type: string
+          const: embedding
+          title: Object
+      additionalProperties: true
+      type: object
+      required:
+      - embedding
+      - index
+      - object
+      title: EmbeddingItem
+      description: 'OpenAI embedding item with the wire-format quirk made explicit.
+
+
+        The OpenAI SDK types ``embedding`` as ``list[float]`` only because the SDK
+
+        transparently decodes base64 before populating the model. The actual API
+
+        *wire* response returns a base64 string when ``encoding_format=''base64''``.
+
+        Eden is a passthrough for OpenAI-compatible callers who explicitly want the
+
+        smaller base64 payload, so we must allow both shapes.'
+    ModelWithEndpoints:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of the newest endpoint serving this model
+          default: 0
+        owned_by:
+          type: string
+          title: Owned By
+          description: Who authored the model, independent of who sells it
+          default: ''
+        mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
+        endpoints:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Endpoints
+          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
+        endpoint_count:
+          type: integer
+          title: Endpoint Count
+          description: How many provider endpoints serve this model
+          readOnly: true
+      type: object
+      required:
+      - id
+      - endpoints
+      - endpoint_count
+      title: ModelWithEndpoints
+      description: 'One routable model name and the provider endpoints behind it.
+
+
+        Deliberately carries NO pricing, context window or capability of its own. Those vary between
+
+        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
+
+        and six distinct capability sets across ten sellers — so a value here would be wrong for most
+
+        of the group. Each endpoint keeps its own, unchanged.
+
+
+        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
+
+        field, which is what makes this view a pure regrouping: a caller reading
+
+        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
     EmbeddingsBody:
       properties:
         input:
@@ -928,227 +1149,6 @@ components:
         Unknown top-level fields are forwarded to the underlying provider
 
         (``extra="allow"`` via the base mixin, which also rejects connection keys).'
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    Capabilities:
-      properties:
-        input_modalities:
-          items:
-            type: string
-          type: array
-          title: Input Modalities
-        output_modalities:
-          items:
-            type: string
-          type: array
-          title: Output Modalities
-        supports_reasoning:
-          type: boolean
-          title: Supports Reasoning
-          default: false
-        supports_web_search:
-          type: boolean
-          title: Supports Web Search
-          default: false
-        supports_tool_choice:
-          type: boolean
-          title: Supports Tool Choice
-          default: false
-        supports_computer_use:
-          type: boolean
-          title: Supports Computer Use
-          default: false
-        supports_prompt_caching:
-          type: boolean
-          title: Supports Prompt Caching
-          default: false
-        supports_response_schema:
-          type: boolean
-          title: Supports Response Schema
-          default: false
-        supports_system_messages:
-          type: boolean
-          title: Supports System Messages
-          default: false
-        supports_function_calling:
-          type: boolean
-          title: Supports Function Calling
-          default: false
-        supports_native_streaming:
-          type: boolean
-          title: Supports Native Streaming
-          default: false
-        supports_assistant_prefill:
-          type: boolean
-          title: Supports Assistant Prefill
-          default: false
-        supports_embedding_image_input:
-          type: boolean
-          title: Supports Embedding Image Input
-          default: false
-        supports_parallel_function_calling:
-          type: boolean
-          title: Supports Parallel Function Calling
-          default: false
-      additionalProperties: true
-      type: object
-      title: Capabilities
-      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
-
-        new capabilities are introduced without a coordinated release.'
-    EmbeddingItem:
-      properties:
-        embedding:
-          anyOf:
-          - items:
-              type: number
-            type: array
-          - type: string
-          title: Embedding
-        index:
-          type: integer
-          title: Index
-        object:
-          type: string
-          const: embedding
-          title: Object
-      additionalProperties: true
-      type: object
-      required:
-      - embedding
-      - index
-      - object
-      title: EmbeddingItem
-      description: 'OpenAI embedding item with the wire-format quirk made explicit.
-
-
-        The OpenAI SDK types ``embedding`` as ``list[float]`` only because the SDK
-
-        transparently decodes base64 before populating the model. The actual API
-
-        *wire* response returns a base64 string when ``encoding_format=''base64''``.
-
-        Eden is a passthrough for OpenAI-compatible callers who explicitly want the
-
-        smaller base64 payload, so we must allow both shapes.'
-    Usage:
-      properties:
-        prompt_tokens:
-          type: integer
-          title: Prompt Tokens
-        total_tokens:
-          type: integer
-          title: Total Tokens
-      additionalProperties: true
-      type: object
-      required:
-      - prompt_tokens
-      - total_tokens
-      title: Usage
-      description: The usage information for the request.
-    EmbeddingsResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        data:
-          items:
-            $ref: '#/components/schemas/EmbeddingItem'
-          type: array
-          title: Data
-        model:
-          type: string
-          title: Model
-        object:
-          type: string
-          const: list
-          title: Object
-        usage:
-          $ref: '#/components/schemas/Usage'
-      additionalProperties: true
-      type: object
-      required:
-      - data
-      - model
-      - object
-      - usage
-      title: EmbeddingsResponse
-      description: 'OpenAI-compatible embeddings response + Eden `cost` and `provider` fields.
-
-
-        `EmbeddingsDataClass` (from edenai-apis) already widens
-
-        ``data[].embedding`` to ``list[float] | str`` so the base64 wire format
-
-        validates here too.'
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     FeatureApiAuth:
       type: http

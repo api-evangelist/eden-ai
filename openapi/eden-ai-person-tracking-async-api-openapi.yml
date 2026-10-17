@@ -59489,44 +59489,13 @@ paths:
           description: ''
 components:
   schemas:
-    NestedError:
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    VideoPersonQuality:
-      properties:
-        brightness:
-          title: Brightness
-          type: integer
-        sharpness:
-          title: Sharpness
-          type: integer
-      required:
-      - brightness
-      - sharpness
-      title: VideoPersonQuality
-      type: object
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
+      - error
     VideoTrackingBoundingBox:
       properties:
         top:
@@ -59548,6 +59517,198 @@ components:
       - width
       title: VideoTrackingBoundingBox
       type: object
+    PersonTracking:
+      properties:
+        offset:
+          title: Offset
+          type: integer
+        attributes:
+          $ref: '#/components/schemas/PersonAttributes'
+        landmarks:
+          $ref: '#/components/schemas/PersonLandmarks'
+        poses:
+          $ref: '#/components/schemas/VideoPersonPoses'
+        quality:
+          $ref: '#/components/schemas/VideoPersonQuality'
+        bounding_box:
+          $ref: '#/components/schemas/VideoTrackingBoundingBox'
+      required:
+      - offset
+      - bounding_box
+      title: PersonTracking
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    VideoPersonPoses:
+      properties:
+        pitch:
+          title: Pitch
+          type: integer
+        roll:
+          title: Roll
+          type: integer
+        yaw:
+          title: Yaw
+          type: integer
+      required:
+      - pitch
+      - roll
+      - yaw
+      title: VideoPersonPoses
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    videoperson_tracking_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
+          default: null
+      title: videoperson_tracking_asyncModel
+      type: object
+    VideoTrackingPerson:
+      properties:
+        tracked:
+          items:
+            $ref: '#/components/schemas/PersonTracking'
+          title: Tracked
+          type: array
+      title: VideoTrackingPerson
+      type: object
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    asyncvideoperson_tracking_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoperson_tracking_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoperson_tracking_asyncResponseModel
+      type: object
+    AsyncVideoAnalysisRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        webhook_receiver:
+          type: string
+          format: uri
+          minLength: 1
+          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
+        users_webhook_parameters:
+          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
+        send_webhook_data:
+          type: boolean
+          default: true
+          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
+        show_base_64:
+          type: boolean
+          default: true
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:mov|mp4|avi)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    VideoPersonQuality:
+      properties:
+        brightness:
+          title: Brightness
+          type: integer
+        sharpness:
+          title: Sharpness
+          type: integer
+      required:
+      - brightness
+      - sharpness
+      title: VideoPersonQuality
+      type: object
     LaunchAsyncJobResponse:
       type: object
       properties:
@@ -59556,6 +59717,21 @@ components:
           format: uuid
       required:
       - public_id
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     PersonLandmarks:
       properties:
         eye_left:
@@ -59655,57 +59831,6 @@ components:
           type: array
       title: PersonLandmarks
       type: object
-    asyncvideoperson_tracking_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videoperson_tracking_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideoperson_tracking_asyncResponseModel
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    videoperson_tracking_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videoperson_tracking_asyncPersonTrackingAsyncDataClass'
-          default: null
-      title: videoperson_tracking_asyncModel
-      type: object
-    UpperCloth:
-      properties:
-        value:
-          title: Value
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - value
-      - confidence
-      title: UpperCloth
-      type: object
     videoperson_tracking_asyncPersonTrackingAsyncDataClass:
       properties:
         persons:
@@ -59734,163 +59859,15 @@ components:
       - final_status
       title: videoperson_tracking_asyncPersonTrackingAsyncDataClass
       type: object
-    BadRequest:
+    ListAsyncJobResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    PersonTracking:
-      properties:
-        offset:
-          title: Offset
-          type: integer
-        attributes:
-          $ref: '#/components/schemas/PersonAttributes'
-        landmarks:
-          $ref: '#/components/schemas/PersonLandmarks'
-        poses:
-          $ref: '#/components/schemas/VideoPersonPoses'
-        quality:
-          $ref: '#/components/schemas/VideoPersonQuality'
-        bounding_box:
-          $ref: '#/components/schemas/VideoTrackingBoundingBox'
-      required:
-      - offset
-      - bounding_box
-      title: PersonTracking
-      type: object
-    VideoTrackingPerson:
-      properties:
-        tracked:
-          items:
-            $ref: '#/components/schemas/PersonTracking'
-          title: Tracked
-          type: array
-      title: VideoTrackingPerson
-      type: object
-    AsyncVideoAnalysisRequest:
-      type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
+        jobs:
           type: array
           items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        webhook_receiver:
-          type: string
-          format: uri
-          minLength: 1
-          description: 'Webhook receiver should be a valid https URL (ex : https://your.listner.com/endpoint).             After the processing is done, the webhook endpoint will receive a POST request with the result.'
-        users_webhook_parameters:
-          description: 'Json data that contains of additional parameters that will be sent back to the webhook receiver             (ex: api key for security or client''s data ID to link the result internally).             Will only be used when webhook_receiver is set.'
-        send_webhook_data:
-          type: boolean
-          default: true
-          description: If set to false the webhook will not contain the result data. Use if your webhook receiver has a request size limit.
-        show_base_64:
-          type: boolean
-          default: true
-        file:
-          type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-          pattern: (?:mov|mp4|avi)$
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - providers
-    LowerCloth:
-      properties:
-        value:
-          title: Value
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - value
-      - confidence
-      title: LowerCloth
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
+      - jobs
     FinalStatusEnum:
       enum:
       - sucess
@@ -59910,23 +59887,46 @@ components:
           type: array
       title: PersonAttributes
       type: object
-    VideoPersonPoses:
+    UpperCloth:
       properties:
-        pitch:
-          title: Pitch
-          type: integer
-        roll:
-          title: Roll
-          type: integer
-        yaw:
-          title: Yaw
+        value:
+          title: Value
+          type: string
+        confidence:
+          title: Confidence
           type: integer
       required:
-      - pitch
-      - roll
-      - yaw
-      title: VideoPersonPoses
+      - value
+      - confidence
+      title: UpperCloth
       type: object
+    LowerCloth:
+      properties:
+        value:
+          title: Value
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - value
+      - confidence
+      title: LowerCloth
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
   securitySchemes:
     FeatureApiAuth:
       type: http

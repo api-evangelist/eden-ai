@@ -265,6 +265,12 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     imageai_detectionAiDetectionDataClass:
       properties:
         ai_score:
@@ -290,6 +296,22 @@ components:
       - status
       title: imageai_detectionAiDetectionDataClass
       type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     imageai_detectionAiDetectionRequest:
       type: object
       properties:
@@ -337,48 +359,23 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     ImageaiDetectionAiDetectionDataClassPredictionEnum:
       enum:
       - ai-generated
       - original
       type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     imageai_detectionResponseModel:
       properties:
         resemble:
@@ -389,6 +386,16 @@ components:
           default: null
       title: imageai_detectionResponseModel
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     NestedBadRequest:
       type: object
       properties:
@@ -399,26 +406,6 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    textai_detectionResponseModel:
-      properties:
-        sapling:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-        originalityai:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-        winstonai:
-          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
-          default: null
-      title: textai_detectionResponseModel
-      type: object
     AiDetectionItem:
       properties:
         text:
@@ -439,6 +426,19 @@ components:
       - ai_score
       - ai_score_detail
       title: AiDetectionItem
+      type: object
+    textai_detectionResponseModel:
+      properties:
+        sapling:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+        originalityai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+        winstonai:
+          $ref: '#/components/schemas/textai_detectionAiDetectionDataClass'
+          default: null
+      title: textai_detectionResponseModel
       type: object
     textai_detectionAiDetectionRequest:
       type: object

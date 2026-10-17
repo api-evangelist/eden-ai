@@ -309,35 +309,28 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    imagequestion_answerQuestionAnswerDataClass:
+    NotFoundResponse:
+      type: object
       properties:
-        answers:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
           items:
             type: string
-          title: Answers
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
       required:
-      - status
-      title: imagequestion_answerQuestionAnswerDataClass
-      type: object
-    NestedError:
+      - <parameter_name>
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
+      - error
     imagequestion_answerResponseModel:
       properties:
         alephalpha:
@@ -351,17 +344,16 @@ components:
           default: null
       title: imagequestion_answerResponseModel
       type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imagequestion_answerQuestionAnswerRequest:
@@ -429,20 +421,16 @@ components:
           description: The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length.
       required:
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FieldError:
+    NestedError:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        type:
+          type: string
+        message:
+          type: string
       required:
-      - <parameter_name>
+      - message
+      - type
     NestedBadRequest:
       type: object
       properties:
@@ -453,13 +441,25 @@ components:
       required:
       - message
       - type
-    BadRequest:
-      type: object
+    imagequestion_answerQuestionAnswerDataClass:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        answers:
+          items:
+            type: string
+          title: Answers
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - error
+      - status
+      title: imagequestion_answerQuestionAnswerDataClass
+      type: object
     videoquestion_answerQuestionAnswerDataClass:
       properties:
         answer:
@@ -481,6 +481,16 @@ components:
       - answer
       - status
       title: videoquestion_answerQuestionAnswerDataClass
+      type: object
+    videoquestion_answerResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+      title: videoquestion_answerResponseModel
       type: object
     videoquestion_answerQuestionAnswerRequest:
       type: object
@@ -547,16 +557,6 @@ components:
       required:
       - providers
       - text
-    videoquestion_answerResponseModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
-          default: null
-      title: videoquestion_answerResponseModel
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

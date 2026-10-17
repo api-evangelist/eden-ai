@@ -207,20 +207,125 @@ paths:
           description: ''
 components:
   schemas:
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    ListAsyncJobResponse:
+    NotFoundResponse:
       type: object
       properties:
-        jobs:
+        details:
+          type: string
+          default: Not Found
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass:
+      properties:
+        shotAnnotations:
+          items:
+            $ref: '#/components/schemas/ShotFrame'
+          title: Shotannotations
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - id
+      - final_status
+      title: videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass
+      type: object
+    videoshot_change_detection_asyncModel:
+      properties:
+        google:
+          $ref: '#/components/schemas/videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass'
+          default: null
+      title: videoshot_change_detection_asyncModel
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
           type: array
           items:
-            $ref: '#/components/schemas/AsyncJobList'
+            type: string
       required:
-      - jobs
+      - <parameter_name>
+    asyncvideoshot_change_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videoshot_change_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoshot_change_detection_asyncResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ShotFrame:
       properties:
         startTimeOffset:
@@ -234,22 +339,6 @@ components:
       - endTimeOffset
       title: ShotFrame
       type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -301,6 +390,16 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     LaunchAsyncJobResponse:
       type: object
       properties:
@@ -323,119 +422,20 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    Error:
+    ListAsyncJobResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
+        jobs:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/AsyncJobList'
       required:
-      - <parameter_name>
-    videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass:
-      properties:
-        shotAnnotations:
-          items:
-            $ref: '#/components/schemas/ShotFrame'
-          title: Shotannotations
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - id
-      - final_status
-      title: videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass
-      type: object
-    asyncvideoshot_change_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videoshot_change_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideoshot_change_detection_asyncResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    videoshot_change_detection_asyncModel:
-      properties:
-        google:
-          $ref: '#/components/schemas/videoshot_change_detection_asyncShotChangeDetectionAsyncDataClass'
-          default: null
-      title: videoshot_change_detection_asyncModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+      - jobs
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

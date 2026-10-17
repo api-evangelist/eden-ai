@@ -1137,24 +1137,207 @@ paths:
           description: ''
 components:
   schemas:
-    SpeechDiarization:
+    NotFoundResponse:
+      type: object
       properties:
-        total_speakers:
-          title: Total Speakers
+        details:
+          type: string
+          default: Not Found
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
           type: integer
-        entries:
-          items:
-            $ref: '#/components/schemas/SpeechDiarizationEntry'
-          title: Entries
-          type: array
-        error_message:
-          default: null
-          title: Error Message
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    SpeechDiarizationEntry:
+      properties:
+        segment:
+          title: Segment
+          type: string
+        start_time:
+          title: Start Time
+          type: string
+        end_time:
+          title: End Time
+          type: string
+        speaker:
+          title: Speaker
+          type: integer
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - segment
+      - start_time
+      - end_time
+      - speaker
+      - confidence
+      title: SpeechDiarizationEntry
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
           type: string
       required:
-      - total_speakers
-      title: SpeechDiarization
+      - message
+      - type
+    FieldError:
       type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    audiospeech_to_text_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        voci:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        speechmatics:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        voxist:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        faker:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        gladia:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        deepgram:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        assembly:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        symbl:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
+          default: null
+      title: audiospeech_to_text_asyncModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    audiospeech_to_text_asyncSpeechToTextAsyncDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        diarization:
+          $ref: '#/components/schemas/SpeechDiarization'
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - text
+      - diarization
+      - id
+      - final_status
+      title: audiospeech_to_text_asyncSpeechToTextAsyncDataClass
+      type: object
+    asyncaudiospeech_to_text_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/audiospeech_to_text_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncaudiospeech_to_text_asyncResponseModel
+      type: object
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
     SpeechToTextAsyncRequest:
       type: object
       properties:
@@ -1235,99 +1418,6 @@ components:
           description: Boolean value to specify weather to convert the audio/video file to wav format to be accepted by a majority of the providers
       required:
       - providers
-    SpeechDiarizationEntry:
-      properties:
-        segment:
-          title: Segment
-          type: string
-        start_time:
-          title: Start Time
-          type: string
-        end_time:
-          title: End Time
-          type: string
-        speaker:
-          title: Speaker
-          type: integer
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - segment
-      - start_time
-      - end_time
-      - speaker
-      - confidence
-      title: SpeechDiarizationEntry
-      type: object
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    audiospeech_to_text_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        voci:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        speechmatics:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        voxist:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        faker:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        gladia:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        deepgram:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        assembly:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        symbl:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncSpeechToTextAsyncDataClass'
-          default: null
-      title: audiospeech_to_text_asyncModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     LaunchAsyncJobResponse:
       type: object
       properties:
@@ -1336,26 +1426,23 @@ components:
           format: uuid
       required:
       - public_id
-    asyncaudiospeech_to_text_asyncResponseModel:
+    SpeechDiarization:
       properties:
-        results:
-          $ref: '#/components/schemas/audiospeech_to_text_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
+        total_speakers:
+          title: Total Speakers
+          type: integer
+        entries:
+          items:
+            $ref: '#/components/schemas/SpeechDiarizationEntry'
+          title: Entries
+          type: array
+        error_message:
+          default: null
+          title: Error Message
           type: string
       required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncaudiospeech_to_text_asyncResponseModel
+      - total_speakers
+      title: SpeechDiarization
       type: object
     StateEnum:
       enum:
@@ -1371,98 +1458,11 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    audiospeech_to_text_asyncSpeechToTextAsyncDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        diarization:
-          $ref: '#/components/schemas/SpeechDiarization'
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - text
-      - diarization
-      - id
-      - final_status
-      title: audiospeech_to_text_asyncSpeechToTextAsyncDataClass
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     FinalStatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

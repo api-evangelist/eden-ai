@@ -260,141 +260,36 @@ paths:
           description: ''
 components:
   schemas:
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    CustomDocumentParsingAsyncItem:
-      properties:
-        confidence:
-          title: Confidence
-          type: integer
-        value:
-          title: Value
-          type: string
-        query:
-          title: Query
-          type: string
-        bounding_box:
-          $ref: '#/components/schemas/CustomDocumentParsingAsyncBoundingBox'
-        page:
-          title: Page
-          type: integer
-      required:
-      - confidence
-      - value
-      - query
-      - bounding_box
-      - page
-      title: CustomDocumentParsingAsyncItem
-      type: object
-    CustomDocumentParsingAsyncBoundingBox:
-      properties:
-        left:
-          title: Left
-          type: integer
-        top:
-          title: Top
-          type: integer
-        width:
-          title: Width
-          type: integer
-        height:
-          title: Height
-          type: integer
-      required:
-      - left
-      - top
-      - width
-      - height
-      title: CustomDocumentParsingAsyncBoundingBox
-      type: object
-    asyncocrcustom_document_parsing_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncocrcustom_document_parsing_asyncResponseModel
-      type: object
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    ocrcustom_document_parsing_asyncModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
-          default: null
-        extracta:
-          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
-          default: null
-      title: ocrcustom_document_parsing_asyncModel
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
-    LaunchAsyncJobResponse:
+    AsyncJobList:
       type: object
       properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
         public_id:
           type: string
           format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
       - public_id
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
+      - state
     ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass:
       properties:
         items:
@@ -423,30 +318,27 @@ components:
       - final_status
       title: ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass
       type: object
-    AsyncJobList:
-      type: object
+    asyncocrcustom_document_parsing_asyncResponseModel:
       properties:
-        providers:
+        results:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncModel'
+        error:
+          title: Error
           type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
         public_id:
-          type: string
           format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
+          title: Public Id
           type: string
-          format: date-time
+        status:
+          title: Status
+          type: string
       required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
+      - results
+      - error
       - public_id
-      - state
+      - status
+      title: asyncocrcustom_document_parsing_asyncResponseModel
+      type: object
     FieldError:
       type: object
       properties:
@@ -456,6 +348,23 @@ components:
             type: string
       required:
       - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    ocrcustom_document_parsing_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrcustom_document_parsing_asyncCustomDocumentParsingAsyncDataClass'
+          default: null
+      title: ocrcustom_document_parsing_asyncModel
+      type: object
     BadRequest:
       type: object
       properties:
@@ -470,6 +379,33 @@ components:
           type: string
         message:
           $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
       required:
       - message
       - type
@@ -540,6 +476,70 @@ components:
       required:
       - providers
       - queries
+    CustomDocumentParsingAsyncItem:
+      properties:
+        confidence:
+          title: Confidence
+          type: integer
+        value:
+          title: Value
+          type: string
+        query:
+          title: Query
+          type: string
+        bounding_box:
+          $ref: '#/components/schemas/CustomDocumentParsingAsyncBoundingBox'
+        page:
+          title: Page
+          type: integer
+      required:
+      - confidence
+      - value
+      - query
+      - bounding_box
+      - page
+      title: CustomDocumentParsingAsyncItem
+      type: object
+    CustomDocumentParsingAsyncBoundingBox:
+      properties:
+        left:
+          title: Left
+          type: integer
+        top:
+          title: Top
+          type: integer
+        width:
+          title: Width
+          type: integer
+        height:
+          title: Height
+          type: integer
+      required:
+      - left
+      - top
+      - width
+      - height
+      title: CustomDocumentParsingAsyncBoundingBox
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -212,6 +212,36 @@ paths:
           description: ''
 components:
   schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
     asyncocranonymization_asyncResponseModel:
       properties:
         results:
@@ -232,19 +262,6 @@ components:
       - public_id
       - status
       title: asyncocranonymization_asyncResponseModel
-      type: object
-    ocranonymization_asyncModel:
-      properties:
-        readyredact:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-        privateai:
-          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
-          default: null
-      title: ocranonymization_asyncModel
       type: object
     ocranonymization_asyncAnonymizationAsyncDataClass:
       properties:
@@ -277,39 +294,35 @@ components:
       - final_status
       title: ocranonymization_asyncAnonymizationAsyncDataClass
       type: object
-    ListAsyncJobResponse:
+    FieldError:
       type: object
       properties:
-        jobs:
+        <parameter_name>:
           type: array
           items:
-            $ref: '#/components/schemas/AsyncJobList'
+            type: string
       required:
-      - jobs
-    NestedError:
+      - <parameter_name>
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
-    NotFoundResponse:
-      type: object
+      - error
+    ocranonymization_asyncModel:
       properties:
-        details:
-          type: string
-          default: Not Found
-    LaunchAsyncJobResponse:
+        readyredact:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+        privateai:
+          $ref: '#/components/schemas/ocranonymization_asyncAnonymizationAsyncDataClass'
+          default: null
+      title: ocranonymization_asyncModel
       type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
     AnonymizationAsyncRequest:
       type: object
       properties:
@@ -369,6 +382,50 @@ components:
           maxLength: 200
       required:
       - providers
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
     StateEnum:
       enum:
       - finished
@@ -383,68 +440,11 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     FinalStatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

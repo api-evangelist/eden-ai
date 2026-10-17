@@ -127,15 +127,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     SubfeatureDetailResponse:
       properties:
         feature:
@@ -192,18 +183,43 @@ components:
       - models
       title: SubfeatureDetailResponse
       description: Detailed response for a specific subfeature.
-    FeaturesListResponse:
+    HTTPValidationError:
       properties:
-        features:
+        detail:
           items:
-            $ref: '#/components/schemas/FeatureInfo'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Features
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SchemaFormat:
+      type: string
+      enum:
+      - simplified
+      - json_schema
+      title: SchemaFormat
+      description: Output format for schema information.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - features
-      title: FeaturesListResponse
-      description: Response for listing all features.
+      - loc
+      - msg
+      - type
+      title: ValidationError
     FeatureInfo:
       properties:
         name:
@@ -229,6 +245,18 @@ components:
       - subfeatures
       title: FeatureInfo
       description: Info about a feature and its subfeatures.
+    FeaturesListResponse:
+      properties:
+        features:
+          items:
+            $ref: '#/components/schemas/FeatureInfo'
+          type: array
+          title: Features
+      type: object
+      required:
+      - features
+      title: FeaturesListResponse
+      description: Response for listing all features.
     SubfeatureInfo:
       properties:
         name:
@@ -262,34 +290,6 @@ components:
       - mode
       title: SubfeatureInfo
       description: Info about a subfeature.
-    SchemaFormat:
-      type: string
-      enum:
-      - simplified
-      - json_schema
-      title: SchemaFormat
-      description: Output format for schema information.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
   securitySchemes:
     AuthBearer:
       type: http

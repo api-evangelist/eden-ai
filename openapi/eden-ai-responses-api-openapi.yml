@@ -95,386 +95,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ResponseOutputText:
-      properties:
-        type:
-          type: string
-          const: output_text
-          title: Type
-        text:
-          type: string
-          title: Text
-        annotations:
-          items: {}
-          type: array
-          title: Annotations
-          default: []
-      type: object
-      required:
-      - type
-      - text
-      title: ResponseOutputText
-    PromptCacheBreakpoint:
-      properties:
-        mode:
-          anyOf:
-          - type: string
-            const: explicit
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: Breakpoint mode. Currently only "explicit" is defined; the known value is advertised in the schema but not enforced, so a new provider value works without an Eden AI release. Leave unset for the provider default.
-      additionalProperties: true
-      type: object
-      title: PromptCacheBreakpoint
-      description: 'Marks the end of a reusable prompt prefix (OpenAI GPT-5.6 and newer).
-
-
-        Set it on the last content part of the stable prefix you want cached: the prompt
-
-        up to and including that part is stored and reused on later requests that share it,
-
-        reducing latency and cost. Providers enforce a minimum token count below which
-
-        caching is skipped. Ignored by models that don''t support explicit cache breakpoints.'
-    ResponseInputText:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: input_text
-          title: Type
-        text:
-          type: string
-          title: Text
-      type: object
-      required:
-      - type
-      - text
-      title: ResponseInputText
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ResponseInputImage:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: input_image
-          title: Type
-        image_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Image Url
-        file_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: File Id
-        detail:
-          type: string
-          enum:
-          - low
-          - high
-          - auto
-          title: Detail
-          default: auto
-      type: object
-      required:
-      - type
-      title: ResponseInputImage
-    ResponseInputFile:
-      properties:
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
-          - type: 'null'
-        prompt_cache_breakpoint:
-          anyOf:
-          - $ref: '#/components/schemas/PromptCacheBreakpoint'
-          - type: 'null'
-        type:
-          type: string
-          const: input_file
-          title: Type
-        file_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: File Id
-        file_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: File Url
-        file_data:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: File Data
-        filename:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Filename
-      type: object
-      required:
-      - type
-      title: ResponseInputFile
-    LLMResponseObject:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        id:
-          type: string
-          title: Id
-        object:
-          type: string
-          const: response
-          title: Object
-          default: response
-        created_at:
-          type: integer
-          title: Created At
-        model:
-          type: string
-          title: Model
-        status:
-          type: string
-          title: Status
-        output:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ResponseOutputMessage'
-            - additionalProperties: true
-              type: object
-          type: array
-          title: Output
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-        previous_response_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Previous Response Id
-        usage:
-          anyOf:
-          - $ref: '#/components/schemas/ResponseUsage'
-          - type: 'null'
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-      type: object
-      required:
-      - id
-      - created_at
-      - model
-      - status
-      - output
-      title: LLMResponseObject
-    ResponseOutputRefusal:
-      properties:
-        type:
-          type: string
-          const: refusal
-          title: Type
-        refusal:
-          type: string
-          title: Refusal
-      type: object
-      required:
-      - type
-      - refusal
-      title: ResponseOutputRefusal
-    ResponseInputItem:
-      properties:
-        type:
-          type: string
-          title: Type
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      title: ResponseInputItem
-      description: Non-message input item forwarded to the provider as-is (reasoning, function_call, etc.).
-    ResponseUsage:
-      properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-        output_tokens:
-          type: integer
-          title: Output Tokens
-        total_tokens:
-          type: integer
-          title: Total Tokens
-        input_tokens_details:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Input Tokens Details
-        output_tokens_details:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Output Tokens Details
-      type: object
-      required:
-      - input_tokens
-      - output_tokens
-      - total_tokens
-      title: ResponseUsage
-    DeleteResponseObject:
-      properties:
-        id:
-          type: string
-          title: Id
-        object:
-          type: string
-          const: response.deleted
-          title: Object
-          default: response.deleted
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - id
-      - deleted
-      title: DeleteResponseObject
-    PromptCacheOptions:
-      properties:
-        mode:
-          anyOf:
-          - type: string
-            enum:
-            - implicit
-            - explicit
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: '"implicit" (default) caches automatically and also honors any prompt_cache_breakpoint you set; "explicit" caches only the blocks you mark with prompt_cache_breakpoint. Known values are advertised in the schema but not enforced.'
-        ttl:
-          anyOf:
-          - type: string
-            const: 30m
-          - type: string
-          - type: 'null'
-          title: Ttl
-          description: How long to keep the prompt cache, e.g. "30m". Leave unset for the provider default. Known values are advertised in the schema but not enforced.
-      additionalProperties: true
-      type: object
-      title: PromptCacheOptions
-      description: 'Request-level prompt-cache settings (OpenAI GPT-5.6 and newer).
-
-
-        Controls how this request''s prompt cache behaves — whether caching happens
-
-        automatically or only on the blocks you mark with ``prompt_cache_breakpoint``, and
-
-        how long the cache is kept. Ignored by models that don''t support prompt caching.'
-    ResponseOutputMessage:
-      properties:
-        id:
-          type: string
-          title: Id
-        type:
-          type: string
-          const: message
-          title: Type
-        role:
-          type: string
-          const: assistant
-          title: Role
-        status:
-          type: string
-          title: Status
-        content:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ResponseOutputText'
-            - $ref: '#/components/schemas/ResponseOutputRefusal'
-            - additionalProperties: true
-              type: object
-          type: array
-          title: Content
-      type: object
-      required:
-      - id
-      - type
-      - role
-      - status
-      - content
-      title: ResponseOutputMessage
     ProviderRoutingPreferences:
       properties:
         sort:
@@ -529,37 +149,28 @@ components:
         MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
 
         ``quality_cost`` below is the one field here that speaks to it.'
-    CacheControl:
+    ResponseInputText:
       properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
         type:
           type: string
-          const: ephemeral
+          const: input_text
           title: Type
-          description: Cache type. Currently only 'ephemeral' is supported.
-        ttl:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Ttl
-          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
+        text:
+          type: string
+          title: Text
       type: object
       required:
       - type
-      title: CacheControl
-      description: 'Prompt-cache marker.
-
-
-        Marks a message (or content part) as a cache boundary so that the prefix
-
-        up to that point is stored and reused on subsequent requests, reducing
-
-        latency and cost. Only a single contiguous cache-marked block is stored
-
-        per request, and providers enforce a minimum token count below which
-
-        caching is silently skipped. Silently ignored by providers that don''t
-
-        support prompt caching.'
+      - text
+      title: ResponseInputText
     EasyInputMessage:
       properties:
         role:
@@ -608,6 +219,308 @@ components:
       - role
       - content
       title: EasyInputMessage
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ResponseInputFile:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_file
+          title: Type
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        file_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Url
+        file_data:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Data
+        filename:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Filename
+      type: object
+      required:
+      - type
+      title: ResponseInputFile
+    PromptCacheBreakpoint:
+      properties:
+        mode:
+          anyOf:
+          - type: string
+            const: explicit
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: Breakpoint mode. Currently only "explicit" is defined; the known value is advertised in the schema but not enforced, so a new provider value works without an Eden AI release. Leave unset for the provider default.
+      additionalProperties: true
+      type: object
+      title: PromptCacheBreakpoint
+      description: 'Marks the end of a reusable prompt prefix (OpenAI GPT-5.6 and newer).
+
+
+        Set it on the last content part of the stable prefix you want cached: the prompt
+
+        up to and including that part is stored and reused on later requests that share it,
+
+        reducing latency and cost. Providers enforce a minimum token count below which
+
+        caching is skipped. Ignored by models that don''t support explicit cache breakpoints.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    DeleteResponseObject:
+      properties:
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: response.deleted
+          title: Object
+          default: response.deleted
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - id
+      - deleted
+      title: DeleteResponseObject
+    PromptCacheOptions:
+      properties:
+        mode:
+          anyOf:
+          - type: string
+            enum:
+            - implicit
+            - explicit
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: '"implicit" (default) caches automatically and also honors any prompt_cache_breakpoint you set; "explicit" caches only the blocks you mark with prompt_cache_breakpoint. Known values are advertised in the schema but not enforced.'
+        ttl:
+          anyOf:
+          - type: string
+            const: 30m
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: How long to keep the prompt cache, e.g. "30m". Leave unset for the provider default. Known values are advertised in the schema but not enforced.
+      additionalProperties: true
+      type: object
+      title: PromptCacheOptions
+      description: 'Request-level prompt-cache settings (OpenAI GPT-5.6 and newer).
+
+
+        Controls how this request''s prompt cache behaves — whether caching happens
+
+        automatically or only on the blocks you mark with ``prompt_cache_breakpoint``, and
+
+        how long the cache is kept. Ignored by models that don''t support prompt caching.'
+    ResponseOutputText:
+      properties:
+        type:
+          type: string
+          const: output_text
+          title: Type
+        text:
+          type: string
+          title: Text
+        annotations:
+          items: {}
+          type: array
+          title: Annotations
+          default: []
+      type: object
+      required:
+      - type
+      - text
+      title: ResponseOutputText
+    CacheControl:
+      properties:
+        type:
+          type: string
+          const: ephemeral
+          title: Type
+          description: Cache type. Currently only 'ephemeral' is supported.
+        ttl:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Ttl
+          description: Optional cache time-to-live, e.g. '3600s'. Provider-dependent.
+      type: object
+      required:
+      - type
+      title: CacheControl
+      description: 'Prompt-cache marker.
+
+
+        Marks a message (or content part) as a cache boundary so that the prefix
+
+        up to that point is stored and reused on subsequent requests, reducing
+
+        latency and cost. Only a single contiguous cache-marked block is stored
+
+        per request, and providers enforce a minimum token count below which
+
+        caching is silently skipped. Silently ignored by providers that don''t
+
+        support prompt caching.'
+    ResponseInputImage:
+      properties:
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+        prompt_cache_breakpoint:
+          anyOf:
+          - $ref: '#/components/schemas/PromptCacheBreakpoint'
+          - type: 'null'
+        type:
+          type: string
+          const: input_image
+          title: Type
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Image Url
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: File Id
+        detail:
+          type: string
+          enum:
+          - low
+          - high
+          - auto
+          title: Detail
+          default: auto
+      type: object
+      required:
+      - type
+      title: ResponseInputImage
+    ResponseOutputRefusal:
+      properties:
+        type:
+          type: string
+          const: refusal
+          title: Type
+        refusal:
+          type: string
+          title: Refusal
+      type: object
+      required:
+      - type
+      - refusal
+      title: ResponseOutputRefusal
+    ResponseUsage:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+        output_tokens:
+          type: integer
+          title: Output Tokens
+        total_tokens:
+          type: integer
+          title: Total Tokens
+        input_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input Tokens Details
+        output_tokens_details:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Tokens Details
+      type: object
+      required:
+      - input_tokens
+      - output_tokens
+      - total_tokens
+      title: ResponseUsage
+    ResponseOutputMessage:
+      properties:
+        id:
+          type: string
+          title: Id
+        type:
+          type: string
+          const: message
+          title: Type
+        role:
+          type: string
+          const: assistant
+          title: Role
+        status:
+          type: string
+          title: Status
+        content:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ResponseOutputText'
+            - $ref: '#/components/schemas/ResponseOutputRefusal'
+            - additionalProperties: true
+              type: object
+          type: array
+          title: Content
+      type: object
+      required:
+      - id
+      - type
+      - role
+      - status
+      - content
+      title: ResponseOutputMessage
     ResponsesBody:
       properties:
         routing:
@@ -799,6 +712,93 @@ components:
       required:
       - model
       title: ResponsesBody
+    LLMResponseObject:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: response
+          title: Object
+          default: response
+        created_at:
+          type: integer
+          title: Created At
+        model:
+          type: string
+          title: Model
+        status:
+          type: string
+          title: Status
+        output:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ResponseOutputMessage'
+            - additionalProperties: true
+              type: object
+          type: array
+          title: Output
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+        previous_response_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Previous Response Id
+        usage:
+          anyOf:
+          - $ref: '#/components/schemas/ResponseUsage'
+          - type: 'null'
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+      type: object
+      required:
+      - id
+      - created_at
+      - model
+      - status
+      - output
+      title: LLMResponseObject
+    ResponseInputItem:
+      properties:
+        type:
+          type: string
+          title: Type
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: ResponseInputItem
+      description: Non-message input item forwarded to the provider as-is (reasoning, function_call, etc.).
   securitySchemes:
     AuthBearer:
       type: http
