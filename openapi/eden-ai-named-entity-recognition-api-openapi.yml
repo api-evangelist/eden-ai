@@ -290,6 +290,15 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
@@ -343,23 +352,6 @@ components:
       required:
       - providers
       - text
-    InfosNamedEntityRecognitionDataClass:
-      properties:
-        entity:
-          title: Entity
-          type: string
-        category:
-          title: Category
-          type: string
-        importance:
-          title: Importance
-          type: integer
-      required:
-      - entity
-      - category
-      - importance
-      title: InfosNamedEntityRecognitionDataClass
-      type: object
     textnamed_entity_recognitionResponseModel:
       properties:
         xai:
@@ -385,6 +377,13 @@ components:
           default: null
       title: textnamed_entity_recognitionResponseModel
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     textnamed_entity_recognitionNamedEntityRecognitionDataClass:
       properties:
         items:
@@ -404,22 +403,16 @@ components:
       - status
       title: textnamed_entity_recognitionNamedEntityRecognitionDataClass
       type: object
-    FieldError:
+    NestedBadRequest:
       type: object
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
       required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
+      - message
+      - type
     StatusEnum:
       enum:
       - sucess
@@ -442,16 +435,23 @@ components:
       required:
       - message
       - type
-    NestedBadRequest:
-      type: object
+    InfosNamedEntityRecognitionDataClass:
       properties:
-        type:
+        entity:
+          title: Entity
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
+        category:
+          title: Category
+          type: string
+        importance:
+          title: Importance
+          type: integer
       required:
-      - message
-      - type
+      - entity
+      - category
+      - importance
+      title: InfosNamedEntityRecognitionDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

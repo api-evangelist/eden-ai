@@ -309,12 +309,6 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     FieldError:
       type: object
       properties:
@@ -324,36 +318,17 @@ components:
             type: string
       required:
       - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     Error:
       type: object
       properties:
         error:
           $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    imagequestion_answerResponseModel:
-      properties:
-        alephalpha:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-      title: imagequestion_answerResponseModel
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     imagequestion_answerQuestionAnswerRequest:
@@ -421,16 +396,19 @@ components:
           description: The maximum number of tokens to generate in the completion. The token count of your prompt plus max_tokens cannot exceed the model's context length.
       required:
       - providers
-    NestedError:
-      type: object
+    imagequestion_answerResponseModel:
       properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+        alephalpha:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+      title: imagequestion_answerResponseModel
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -438,6 +416,28 @@ components:
           type: string
         message:
           $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
       required:
       - message
       - type
@@ -459,28 +459,6 @@ components:
       required:
       - status
       title: imagequestion_answerQuestionAnswerDataClass
-      type: object
-    videoquestion_answerQuestionAnswerDataClass:
-      properties:
-        answer:
-          title: Answer
-          type: string
-        finish_reason:
-          default: null
-          title: Finish Reason
-          type: string
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - answer
-      - status
-      title: videoquestion_answerQuestionAnswerDataClass
       type: object
     videoquestion_answerResponseModel:
       properties:
@@ -557,6 +535,28 @@ components:
       required:
       - providers
       - text
+    videoquestion_answerQuestionAnswerDataClass:
+      properties:
+        answer:
+          title: Answer
+          type: string
+        finish_reason:
+          default: null
+          title: Finish Reason
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - answer
+      - status
+      title: videoquestion_answerQuestionAnswerDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

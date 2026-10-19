@@ -281,33 +281,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    ItemsResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        item_ids:
-          items:
-            type: string
-          type: array
-          title: Item Ids
-          description: Provider-side item ids (face ids for image/face_recognition).
-      type: object
-      required:
-      - collection_id
-      - item_ids
-      title: ItemsResponse
-      description: Item ids stored in a collection (provider-side ids, passed through).
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     CreateCollectionRequest:
       properties:
         model:
@@ -327,6 +300,81 @@ components:
       - model
       title: CreateCollectionRequest
       description: Body for creating a collection.
+    ItemsResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_ids:
+          items:
+            type: string
+          type: array
+          title: Item Ids
+          description: Provider-side item ids (face ids for image/face_recognition).
+      type: object
+      required:
+      - collection_id
+      - item_ids
+      title: ItemsResponse
+      description: Item ids stored in a collection (provider-side ids, passed through).
+    DeleteCollectionResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ListCollectionsResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/CollectionResponse'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: ListCollectionsResponse
+      description: Paginated list of the user's collections.
     ValidationError:
       properties:
         loc:
@@ -371,68 +419,6 @@ components:
       - model
       title: CollectionResponse
       description: A collection owned by the authenticated user.
-    ListCollectionsResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/CollectionResponse'
-          type: array
-          title: Items
-          description: List of items
-        total:
-          type: integer
-          title: Total
-          description: Total number of items
-        page:
-          type: integer
-          title: Page
-          description: Current page number
-        limit:
-          type: integer
-          title: Limit
-          description: Items per page
-        total_pages:
-          type: integer
-          title: Total Pages
-          description: Total number of pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      - total_pages
-      title: ListCollectionsResponse
-      description: Paginated list of the user's collections.
-    DeleteCollectionResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - deleted
-      title: DeleteCollectionResponse
-      description: Result of deleting a collection.
-    AddItemRequest:
-      properties:
-        file:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: string
-          title: File
-          description: File to add, as a file id from /v3/upload or a URL. Accepted MIME types depend on the collection's subfeature (images for image/face_recognition).
-      type: object
-      required:
-      - file
-      title: AddItemRequest
-      description: Body for adding an item to a collection.
     DeleteItemResponse:
       properties:
         collection_id:
@@ -452,6 +438,21 @@ components:
       - deleted
       title: DeleteItemResponse
       description: Result of deleting an item from a collection.
+    AddItemRequest:
+      properties:
+        file:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: string
+          title: File
+          description: File to add, as a file id from /v3/upload or a URL. Accepted MIME types depend on the collection's subfeature (images for image/face_recognition).
+          x-file-input: true
+      type: object
+      required:
+      - file
+      title: AddItemRequest
+      description: Body for adding an item to a collection.
   securitySchemes:
     AuthBearer:
       type: http

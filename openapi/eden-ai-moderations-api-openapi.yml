@@ -56,6 +56,16 @@ paths:
           default: endpoints
           title: View
         description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
       responses:
         '200':
           description: Successful Response
@@ -74,181 +84,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    OpenAIModerationResult:
-      properties:
-        categories:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Categories
-        category_applied_input_types:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Category Applied Input Types
-        category_scores:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Category Scores
-        flagged:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Flagged
-      additionalProperties: true
-      type: object
-      required:
-      - categories
-      - category_applied_input_types
-      - category_scores
-      - flagged
-      title: OpenAIModerationResult
-    Capabilities:
-      properties:
-        input_modalities:
-          items:
-            type: string
-          type: array
-          title: Input Modalities
-        output_modalities:
-          items:
-            type: string
-          type: array
-          title: Output Modalities
-        supports_reasoning:
-          type: boolean
-          title: Supports Reasoning
-          default: false
-        supports_web_search:
-          type: boolean
-          title: Supports Web Search
-          default: false
-        supports_tool_choice:
-          type: boolean
-          title: Supports Tool Choice
-          default: false
-        supports_computer_use:
-          type: boolean
-          title: Supports Computer Use
-          default: false
-        supports_prompt_caching:
-          type: boolean
-          title: Supports Prompt Caching
-          default: false
-        supports_response_schema:
-          type: boolean
-          title: Supports Response Schema
-          default: false
-        supports_system_messages:
-          type: boolean
-          title: Supports System Messages
-          default: false
-        supports_function_calling:
-          type: boolean
-          title: Supports Function Calling
-          default: false
-        supports_native_streaming:
-          type: boolean
-          title: Supports Native Streaming
-          default: false
-        supports_assistant_prefill:
-          type: boolean
-          title: Supports Assistant Prefill
-          default: false
-        supports_embedding_image_input:
-          type: boolean
-          title: Supports Embedding Image Input
-          default: false
-        supports_parallel_function_calling:
-          type: boolean
-          title: Supports Parallel Function Calling
-          default: false
-      additionalProperties: true
-      type: object
-      title: Capabilities
-      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
-
-        new capabilities are introduced without a coordinated release.'
-    ModerationResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        id:
-          type: string
-          title: Id
-        model:
-          type: string
-          title: Model
-        results:
-          items:
-            $ref: '#/components/schemas/OpenAIModerationResult'
-          type: array
-          title: Results
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - model
-      - results
-      title: ModerationResponse
     ModelWithEndpoints:
       properties:
         id:
@@ -311,41 +146,6 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    ModerationImageUrl:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: ModerationImageUrl
     ModelObject:
       properties:
         id:
@@ -413,6 +213,12 @@ components:
           type: array
           title: Regions
           description: Regions where this model is available
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'true when calls to this entry keep no prompts or outputs after the response (Zero Data Retention), under Eden AI''s terms with its provider: the model''s own terms when they differ, else the provider''s; a customer-hosted model is always true. false when they are kept, null when not verified yet.'
         alias_of:
           anyOf:
           - type: string
@@ -427,27 +233,148 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ListModelsResponse:
+    ModerationImageUrl:
       properties:
-        object:
+        url:
           type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
+          title: Url
       type: object
       required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
+      - url
+      title: ModerationImageUrl
+    Capabilities:
+      properties:
+        input_modalities:
+          items:
+            type: string
+          type: array
+          title: Input Modalities
+        output_modalities:
+          items:
+            type: string
+          type: array
+          title: Output Modalities
+        supports_reasoning:
+          type: boolean
+          title: Supports Reasoning
+          default: false
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
+      additionalProperties: true
+      type: object
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
+
+        new capabilities are introduced without a coordinated release.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ModerationImageInput:
+      properties:
+        type:
+          type: string
+          const: image_url
+          title: Type
+        image_url:
+          $ref: '#/components/schemas/ModerationImageUrl'
+      type: object
+      required:
+      - type
+      - image_url
+      title: ModerationImageInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
     ModerationBody:
       properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
         input:
           anyOf:
           - type: string
@@ -475,19 +402,36 @@ components:
       required:
       - input
       title: ModerationBody
-    ModerationImageInput:
+    ModerationResponse:
       properties:
-        type:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        id:
           type: string
-          const: image_url
-          title: Type
-        image_url:
-          $ref: '#/components/schemas/ModerationImageUrl'
+          title: Id
+        model:
+          type: string
+          title: Model
+        results:
+          items:
+            $ref: '#/components/schemas/OpenAIModerationResult'
+          type: array
+          title: Results
+      additionalProperties: true
       type: object
       required:
-      - type
-      - image_url
-      title: ModerationImageInput
+      - id
+      - model
+      - results
+      title: ModerationResponse
     ModerationTextInput:
       properties:
         type:
@@ -502,6 +446,84 @@ components:
       - type
       - text
       title: ModerationTextInput
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    OpenAIModerationResult:
+      properties:
+        categories:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Categories
+        category_applied_input_types:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Category Applied Input Types
+        category_scores:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Category Scores
+        flagged:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Flagged
+      additionalProperties: true
+      type: object
+      required:
+      - categories
+      - category_applied_input_types
+      - category_scores
+      - flagged
+      title: OpenAIModerationResult
   securitySchemes:
     AuthBearer:
       type: http

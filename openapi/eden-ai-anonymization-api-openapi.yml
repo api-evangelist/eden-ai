@@ -366,12 +366,75 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    AnonymizationItem:
+      properties:
+        kind:
+          title: Kind
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_boxes:
+          $ref: '#/components/schemas/AnonymizationBoundingBox'
+      required:
+      - kind
+      - confidence
+      - bounding_boxes
+      title: AnonymizationItem
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    AnonymizationBoundingBox:
+      properties:
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: AnonymizationBoundingBox
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -420,6 +483,11 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     imageanonymizationResponseModel:
       properties:
         api4ai:
@@ -427,48 +495,6 @@ components:
           default: null
       title: imageanonymizationResponseModel
       type: object
-    AnonymizationBoundingBox:
-      properties:
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: AnonymizationBoundingBox
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     BadRequest:
       type: object
       properties:
@@ -476,6 +502,16 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     imageanonymizationAnonymizationDataClass:
       properties:
         image:
@@ -502,67 +538,6 @@ components:
       - image_resource_url
       - status
       title: imageanonymizationAnonymizationDataClass
-      type: object
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    AnonymizationItem:
-      properties:
-        kind:
-          title: Kind
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_boxes:
-          $ref: '#/components/schemas/AnonymizationBoundingBox'
-      required:
-      - kind
-      - confidence
-      - bounding_boxes
-      title: AnonymizationItem
-      type: object
-    textanonymizationResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        privateai:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-        emvista:
-          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
-          default: null
-      title: textanonymizationResponseModel
       type: object
     ? texttopic_extractiontextanonymizationtextmoderationtextnamed_entity_recognitiontextkeyword_extractiontextsyntax_analysistextsentiment_analysisTextAnalysisRequest
     : type: object
@@ -611,51 +586,31 @@ components:
       required:
       - providers
       - text
-    SubCategoryType:
-      enum:
-      - CreditCard
-      - CardExpiry
-      - BankAccountNumber
-      - BankRoutingNumber
-      - SwiftCode
-      - TaxIdentificationNumber
-      - Name
-      - Age
-      - Email
-      - Phone
-      - PersonType
-      - Gender
-      - SocialSecurityNumber
-      - NationalIdentificationNumber
-      - NationalHealthService
-      - ResidentRegistrationNumber
-      - DriverLicenseNumber
-      - PassportNumber
-      - URL
-      - IP
-      - MAC
-      - VehicleIdentificationNumber
-      - LicensePlate
-      - VoterNumber
-      - AWSKeys
-      - AzureKeys
-      - Password
-      - CompanyName
-      - CompanyNumber
-      - BuisnessNumber
-      - Date
-      - Time
-      - DateTime
-      - Duration
-      - Address
-      - Location
-      - Other
-      - Anonymized
-      - Nerd
-      - Wsd
-      - Unknown
-      title: SubCategoryType
-      type: string
+    textanonymizationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        privateai:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+        emvista:
+          $ref: '#/components/schemas/textanonymizationAnonymizationDataClass'
+          default: null
+      title: textanonymizationResponseModel
+      type: object
     textanonymizationAnonymizationDataClass:
       properties:
         result:
@@ -728,6 +683,51 @@ components:
       - LocationInformation
       - Other
       title: CategoryType
+      type: string
+    SubCategoryType:
+      enum:
+      - CreditCard
+      - CardExpiry
+      - BankAccountNumber
+      - BankRoutingNumber
+      - SwiftCode
+      - TaxIdentificationNumber
+      - Name
+      - Age
+      - Email
+      - Phone
+      - PersonType
+      - Gender
+      - SocialSecurityNumber
+      - NationalIdentificationNumber
+      - NationalHealthService
+      - ResidentRegistrationNumber
+      - DriverLicenseNumber
+      - PassportNumber
+      - URL
+      - IP
+      - MAC
+      - VehicleIdentificationNumber
+      - LicensePlate
+      - VoterNumber
+      - AWSKeys
+      - AzureKeys
+      - Password
+      - CompanyName
+      - CompanyNumber
+      - BuisnessNumber
+      - Date
+      - Time
+      - DateTime
+      - Duration
+      - Address
+      - Location
+      - Other
+      - Anonymized
+      - Nerd
+      - Wsd
+      - Unknown
+      title: SubCategoryType
       type: string
   securitySchemes:
     FeatureApiAuth:

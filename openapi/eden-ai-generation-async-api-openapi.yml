@@ -342,36 +342,6 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
     FieldError:
       type: object
       properties:
@@ -381,66 +351,12 @@ components:
             type: string
       required:
       - <parameter_name>
-    videogeneration_asyncGenerationAsyncDataClass:
-      properties:
-        video:
-          title: Video
-          type: string
-        video_resource_url:
-          title: Video Resource Url
-          type: string
-        usage:
-          additionalProperties: true
-          default: null
-          title: Usage
-          type: object
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - video
-      - video_resource_url
-      - id
-      - final_status
-      title: videogeneration_asyncGenerationAsyncDataClass
-      type: object
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
+        details:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
+          default: Not Found
     asyncvideogeneration_asyncResponseModel:
       properties:
         results:
@@ -471,24 +387,13 @@ components:
             $ref: '#/components/schemas/AsyncJobList'
       required:
       - jobs
-    NestedError:
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
+      - error
     GenerationAsyncRequest:
       type: object
       properties:
@@ -566,6 +471,103 @@ components:
       required:
       - providers
       - text
+    videogeneration_asyncGenerationAsyncDataClass:
+      properties:
+        video:
+          title: Video
+          type: string
+        video_resource_url:
+          title: Video Resource Url
+          type: string
+        usage:
+          additionalProperties: true
+          default: null
+          title: Usage
+          type: object
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - video
+      - video_resource_url
+      - id
+      - final_status
+      title: videogeneration_asyncGenerationAsyncDataClass
+      type: object
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     videogeneration_asyncModel:
       properties:
         minimax:
@@ -594,25 +596,23 @@ components:
           default: null
       title: videogeneration_asyncModel
       type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
   securitySchemes:
     FeatureApiAuth:
       type: http

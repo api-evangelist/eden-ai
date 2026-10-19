@@ -234,6 +234,81 @@ components:
       description: '* `sandbox_api_token` - Sandbox
 
         * `api_token` - Back'
+    ManagementKeyRequest:
+      type: object
+      description: 'An org''s inference key as the management plane exposes it. Never the secret or
+
+        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
+
+
+        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
+
+        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
+
+        batched rollup has not settled, so a management admin must be shown available, not
+
+        settled (the shipped display-vs-accounting doctrine, mirrored from
+
+        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
+
+        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
+
+        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
+
+
+        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
+
+        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
+
+        it is regenerated onto the hashed scheme.'
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The token name
+          maxLength: 200
+        token_type:
+          $ref: '#/components/schemas/TokenTypeEnum'
+        active_balance:
+          type: boolean
+          description: Weither to use the balance field or not.
+        expire_time:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        revoked_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+      required:
+      - name
+    PaginatedManagementKeyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagementKey'
     ManagementKey:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
@@ -305,56 +380,6 @@ components:
       - member
       - name
       - revoked
-    ManagementKeyRequest:
-      type: object
-      description: 'An org''s inference key as the management plane exposes it. Never the secret or
-
-        its hash — only non-secret metadata, addressed by the stable ``key_id`` (``id``).
-
-
-        ``balance`` is the pending-adjusted LIVE sub-limit, not the raw settled column.
-
-        For a credit-ledger-enrolled org the stored ``Token.balance`` lags by whatever the
-
-        batched rollup has not settled, so a management admin must be shown available, not
-
-        settled (the shipped display-vs-accounting doctrine, mirrored from
-
-        ``utils/check_credits.py`` and ``manage_user_account_serializers``). The un-settled
-
-        deltas (≤ 0, so they ADD) are batch-fetched once per page by the view and passed in
-
-        ``context["pending"]``; a non-ledger org simply has none, so the add is a no-op.
-
-
-        ``id`` is null for an un-migrated legacy key (one still stored as a JWT, no
-
-        ``key_id`` yet); such a key is listed but not addressable via ``/keys/{id}`` until
-
-        it is regenerated onto the hashed scheme.'
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The token name
-          maxLength: 200
-        token_type:
-          $ref: '#/components/schemas/TokenTypeEnum'
-        active_balance:
-          type: boolean
-          description: Weither to use the balance field or not.
-        expire_time:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        revoked_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-      required:
-      - name
     PatchedManagementKeyRequest:
       type: object
       description: 'An org''s inference key as the management plane exposes it. Never the secret or
@@ -403,28 +428,3 @@ components:
           - string
           - 'null'
           format: date-time
-    PaginatedManagementKeyList:
-      type: object
-      required:
-      - count
-      - results
-      properties:
-        count:
-          type: integer
-          example: 123
-        next:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=400&limit=100
-        previous:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: http://api.example.org/accounts/?offset=200&limit=100
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/ManagementKey'

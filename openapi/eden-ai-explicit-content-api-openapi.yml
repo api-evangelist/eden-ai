@@ -212,85 +212,6 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
-      type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        file:
-          type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-          pattern: (?:jpg|jpeg|png|tiff)$
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
-      required:
-      - providers
-    imageexplicit_contentResponseModel:
-      properties:
-        openai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
-          default: null
-      title: imageexplicit_contentResponseModel
-      type: object
     FieldError:
       type: object
       properties:
@@ -300,75 +221,12 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    NestedError:
-      type: object
-      properties:
-        type:
+        details:
           type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    imageexplicit_contentExplicitContentDataClass:
-      properties:
-        nsfw_likelihood:
-          description: An integer representing the likelihood of NSFW content. Higher values indicate a higher likelihood.
-          title: Nsfw Likelihood
-          type: integer
-        nsfw_likelihood_score:
-          description: A floating-point score representing the confidence level of the NSFW likelihood assessment. This is typically a value between 0.0 and 1.0.
-          title: Nsfw Likelihood Score
-          type: integer
-        items:
-          description: A list of items identified as potentially explicit. Each item contains details of the explicit content detected.
-          items:
-            $ref: '#/components/schemas/ExplicitItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - nsfw_likelihood
-      - nsfw_likelihood_score
-      - status
-      title: imageexplicit_contentExplicitContentDataClass
-      type: object
+          default: Not Found
     ExplicitItem:
       properties:
         label:
@@ -517,6 +375,131 @@ components:
       - subcategory
       title: ExplicitItem
       type: object
+    imageexplicit_contentResponseModel:
+      properties:
+        openai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageexplicit_contentExplicitContentDataClass'
+          default: null
+      title: imageexplicit_contentResponseModel
+      type: object
+    imageexplicit_contentExplicitContentDataClass:
+      properties:
+        nsfw_likelihood:
+          description: An integer representing the likelihood of NSFW content. Higher values indicate a higher likelihood.
+          title: Nsfw Likelihood
+          type: integer
+        nsfw_likelihood_score:
+          description: A floating-point score representing the confidence level of the NSFW likelihood assessment. This is typically a value between 0.0 and 1.0.
+          title: Nsfw Likelihood Score
+          type: integer
+        items:
+          description: A list of items identified as potentially explicit. Each item contains details of the explicit content detected.
+          items:
+            $ref: '#/components/schemas/ExplicitItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - nsfw_likelihood
+      - nsfw_likelihood_score
+      - status
+      title: imageexplicit_contentExplicitContentDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+      required:
+      - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     CategoryType:
       description: This enum are used to categorize the explicit content extracted from the text
       enum:
@@ -531,6 +514,23 @@ components:
       - Other
       title: CategoryType
       type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
   securitySchemes:
     FeatureApiAuth:
       type: http

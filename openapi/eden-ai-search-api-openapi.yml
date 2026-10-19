@@ -1,10 +1,12 @@
 openapi: 3.2.0
 info:
-  title: Image Features Search API
-  version: '2.0'
-  description: Your project description
+  title: Eden Ai Search API
+  version: '1.0'
+  description: 'Operations tagged Search across 2 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.edenai.run/v2
+- url: https://api.edenai.run
+  description: Production server
 tags:
 - name: Search
 paths:
@@ -90,6 +92,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: ''
+    servers:
+    - url: https://api.edenai.run/v2
   /image/search/get_image/:
     get:
       operationId: image_search_get_image_retrieve
@@ -211,6 +215,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: ''
+    servers:
+    - url: https://api.edenai.run/v2
   /image/search/get_images/:
     get:
       operationId: image_search_get_images_retrieve
@@ -329,6 +335,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: ''
+    servers:
+    - url: https://api.edenai.run/v2
   /image/search/launch_similarity/:
     post:
       operationId: image_search_launch_similarity_create
@@ -433,6 +441,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: ''
+    servers:
+    - url: https://api.edenai.run/v2
   /image/search/upload_image/:
     post:
       operationId: image_search_upload_image_create
@@ -517,67 +527,232 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundResponse'
           description: ''
+    servers:
+    - url: https://api.edenai.run/v2
+  /v3/search:
+    post:
+      tags:
+      - Search
+      summary: Search
+      description: 'Search the web with a Perplexity-shaped request.
+
+
+        Send a `query` and the provider as `model` (`tavily`, `linkup`, `firecrawl`;
+
+        see GET /v3/search/models), optionally `max_results`, `search_domain_filter`
+
+        and `country`. Results come back as `{title, url, snippet}` items; `provider`
+
+        and `cost` (USD) are Eden AI extensions. With the Perplexity SDK, pass the
+
+        provider through `extra_body={"model": "tavily"}`.'
+      operationId: search_v3_search_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                query:
+                  type: string
+                  minLength: 1
+                  title: Query
+                  description: The search query.
+                model:
+                  anyOf:
+                  - type: string
+                  - type: 'null'
+                  title: Model
+                  description: Search provider, e.g. `tavily`. Optional when the provider is in the path (`POST /v3/search/{provider}`). List the ids with GET /v3/search/models.
+                max_results:
+                  type: integer
+                  maximum: 20.0
+                  minimum: 1.0
+                  title: Max Results
+                  description: Number of results to return (1-20).
+                  default: 10
+                search_domain_filter:
+                  anyOf:
+                  - items:
+                      type: string
+                    type: array
+                    maxItems: 20
+                    minItems: 1
+                  - type: 'null'
+                  title: Search Domain Filter
+                  description: Domains to restrict results to, or, with a leading `-`, domains to exclude (`-pinterest.com`). Allow and deny entries cannot be mixed.
+                country:
+                  anyOf:
+                  - type: string
+                    pattern: ^[A-Za-z]{2}$
+                  - type: 'null'
+                  title: Country
+                  description: ISO 3166-1 alpha-2 country code to bias results toward, e.g. `US`.
+              additionalProperties: false
+              type: object
+              required:
+              - query
+              title: SearchBody
+              description: 'Request body for ``POST /v3/search``.
+
+
+                Perplexity''s Search API shape (`query`, `max_results`, `search_domain_filter`,
+
+                `country`) plus `model`, the Eden AI provider that runs the search. Fields of
+
+                Perplexity''s API that no provider here maps to (`search_recency_filter`,
+
+                `max_tokens_per_page`, ...) are rejected rather than silently dropped.'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+      security:
+      - AuthBearer: []
+    servers:
+    - url: https://api.edenai.run
+      description: Production server
+  /v3/search/models:
+    get:
+      tags:
+      - Search
+      summary: List Search Models
+      description: 'List the search providers available in the caller''s region.
+
+
+        Each `id` is the value to pass as `model` to POST /v3/search, or in the path
+
+        of POST /v3/search/{provider}.'
+      operationId: list_search_models_v3_search_models_get
+      parameters:
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchModelsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.edenai.run
+      description: Production server
+  /v3/search/{provider}:
+    post:
+      tags:
+      - Search
+      summary: Search With Provider
+      description: 'Search the web with the provider named in the path.
+
+
+        Same request and response as POST /v3/search, for clients whose body is
+
+        fixed but whose endpoint URL is configurable (Open WebUI''s
+
+        `perplexity_search` engine: set its URL to `/v3/search/tavily`). A `model`
+
+        in the body, if present, must name the same provider.'
+      operationId: search_with_provider_v3_search__provider__post
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Provider
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              description: 'Request body for ``POST /v3/search``.
+
+
+                Perplexity''s Search API shape (`query`, `max_results`, `search_domain_filter`,
+
+                `country`) plus `model`, the Eden AI provider that runs the search. Fields of
+
+                Perplexity''s API that no provider here maps to (`search_recency_filter`,
+
+                `max_tokens_per_page`, ...) are rejected rather than silently dropped.'
+              properties:
+                query:
+                  description: The search query.
+                  minLength: 1
+                  title: Query
+                  type: string
+                model:
+                  anyOf:
+                  - type: string
+                  - type: 'null'
+                  description: Search provider, e.g. `tavily`. Optional when the provider is in the path (`POST /v3/search/{provider}`). List the ids with GET /v3/search/models.
+                  title: Model
+                max_results:
+                  default: 10
+                  description: Number of results to return (1-20).
+                  maximum: 20
+                  minimum: 1
+                  title: Max Results
+                  type: integer
+                search_domain_filter:
+                  anyOf:
+                  - items:
+                      type: string
+                    maxItems: 20
+                    minItems: 1
+                    type: array
+                  - type: 'null'
+                  description: Domains to restrict results to, or, with a leading `-`, domains to exclude (`-pinterest.com`). Allow and deny entries cannot be mixed.
+                  title: Search Domain Filter
+                country:
+                  anyOf:
+                  - pattern: ^[A-Za-z]{2}$
+                    type: string
+                  - type: 'null'
+                  description: ISO 3166-1 alpha-2 country code to bias results toward, e.g. `US`.
+                  title: Country
+              required:
+              - query
+              title: SearchBody
+              type: object
+    servers:
+    - url: https://api.edenai.run
+      description: Production server
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    imagesearchlaunch_similaritySearchImageRequest:
-      type: object
-      properties:
-        settings:
-          type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        file:
-          type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-          pattern: (?:jpg|jpeg|png|tiff)$
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
-        n:
-          type: integer
-          minimum: 1
-          default: 10
-          description: The `n` parameter specifies the number of images you want to be returned in the response.             It determines the count of the most similar images to the input image that will be included in the response.             By default, it is set to 10.
-      required:
-      - providers
     FieldError:
       type: object
       properties:
@@ -587,35 +762,26 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    imagesearchResponseModel:
+        details:
+          type: string
+          default: Not Found
+    imagesearchSearchDeleteImageDataClass:
       properties:
-        sentisight:
-          $ref: '#/components/schemas/imagesearchSearchDeleteImageDataClass'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+        original_response:
           default: null
-        nyckel:
-          $ref: '#/components/schemas/imagesearchSearchDeleteImageDataClass'
-          default: null
-      title: imagesearchResponseModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
       required:
-      - error
+      - status
+      title: imagesearchSearchDeleteImageDataClass
+      type: object
     imagesearchupload_imageUploadImageRequest:
       type: object
       properties:
@@ -710,16 +876,13 @@ components:
       required:
       - image_name
       - providers
-    NestedError:
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
+      - error
     NestedBadRequest:
       type: object
       properties:
@@ -730,22 +893,244 @@ components:
       required:
       - message
       - type
-    imagesearchSearchDeleteImageDataClass:
-      properties:
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-      required:
-      - status
-      title: imagesearchSearchDeleteImageDataClass
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    imagesearchlaunch_similaritySearchImageRequest:
       type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+          pattern: (?:jpg|jpeg|png|tiff)$
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        n:
+          type: integer
+          minimum: 1
+          default: 10
+          description: The `n` parameter specifies the number of images you want to be returned in the response.             It determines the count of the most similar images to the input image that will be included in the response.             By default, it is set to 10.
+      required:
+      - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    imagesearchResponseModel:
+      properties:
+        sentisight:
+          $ref: '#/components/schemas/imagesearchSearchDeleteImageDataClass'
+          default: null
+        nyckel:
+          $ref: '#/components/schemas/imagesearchSearchDeleteImageDataClass'
+          default: null
+      title: imagesearchResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    SearchResult:
+      properties:
+        title:
+          type: string
+          title: Title
+          description: Page title; empty when the provider returns none.
+          default: ''
+        url:
+          type: string
+          title: Url
+          description: Result URL.
+        snippet:
+          type: string
+          title: Snippet
+          description: Text excerpt of the page.
+          default: ''
+        date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Date
+          description: 'Always null: providers here do not date results.'
+        last_updated:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Updated
+          description: Always null.
+      type: object
+      required:
+      - url
+      title: SearchResult
+      description: One search result, in Perplexity's result shape.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SearchModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/SearchModel'
+          type: array
+          title: Data
+      type: object
+      required:
+      - data
+      title: SearchModelsResponse
+      description: Search providers available in the caller's region.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SearchModel:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Provider id to pass as `model` or in the path.
+        object:
+          type: string
+          const: model
+          title: Object
+          default: model
+        provider:
+          type: string
+          title: Provider
+        pricing:
+          additionalProperties: true
+          type: object
+          title: Pricing
+          description: 'Base price: `price`, `price_unit_quantity`, `price_unit_type`.'
+        regions:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Regions
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'true when calls to this entry keep no prompts or outputs after the response (Zero Data Retention), under Eden AI''s terms with its provider: the model''s own terms when they differ, else the provider''s; a customer-hosted model is always true. false when they are kept, null when not verified yet.'
+      type: object
+      required:
+      - id
+      - provider
+      - pricing
+      title: SearchModel
+      description: A search provider callable through ``POST /v3/search``.
+    SearchResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Eden AI request id; quote it when reporting a problem.
+        results:
+          items:
+            $ref: '#/components/schemas/SearchResult'
+          type: array
+          title: Results
+        provider:
+          type: string
+          title: Provider
+          description: 'Eden extension: provider that ran the search.'
+        cost:
+          type: number
+          title: Cost
+          description: 'Eden extension: cost in USD.'
+      type: object
+      required:
+      - id
+      - results
+      - provider
+      - cost
+      title: SearchResponse
+      description: Search results, in Perplexity's response shape. `provider` and `cost` are Eden extensions.
   securitySchemes:
     FeatureApiAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    AuthBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- eden-ai-image-features-openapi.json
+- eden-ai-openapi.json

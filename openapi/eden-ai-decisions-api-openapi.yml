@@ -1,0 +1,719 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Decisions API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: Decisions
+paths:
+  /v3/alpha/decisions:
+    post:
+      tags:
+      - Decisions
+      summary: Create Decisions
+      description: TypeSafe-compatible System One decisions endpoint.
+      operationId: create_decisions_v3_alpha_decisions_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionsBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - AuthBearer: []
+  /v3/alpha/decisions/models:
+    get:
+      tags:
+      - Decisions
+      summary: List Decisions Models
+      description: List available decision models.
+      operationId: list_decisions_models_v3_alpha_decisions_models_get
+      parameters:
+      - name: view
+        in: query
+        required: false
+        schema:
+          enum:
+          - endpoints
+          - models
+          type: string
+          description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
+          default: endpoints
+          title: View
+        description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ListModelsResponse'
+                - $ref: '#/components/schemas/ListModelsWithEndpointsResponse'
+                title: Response List Decisions Models V3 Alpha Decisions Models Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    ModelWithEndpoints:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of the newest endpoint serving this model
+          default: 0
+        owned_by:
+          type: string
+          title: Owned By
+          description: Who authored the model, independent of who sells it
+          default: ''
+        mode:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Mode
+          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
+        endpoints:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Endpoints
+          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
+        endpoint_count:
+          type: integer
+          title: Endpoint Count
+          description: How many provider endpoints serve this model
+          readOnly: true
+      type: object
+      required:
+      - id
+      - endpoints
+      - endpoint_count
+      title: ModelWithEndpoints
+      description: 'One routable model name and the provider endpoints behind it.
+
+
+        Deliberately carries NO pricing, context window or capability of its own. Those vary between
+
+        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
+
+        and six distinct capability sets across ten sellers — so a value here would be wrong for most
+
+        of the group. Each endpoint keeps its own, unchanged.
+
+
+        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
+
+        field, which is what makes this view a pure regrouping: a caller reading
+
+        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    NoulAnswer:
+      properties:
+        type:
+          type: string
+          const: noul
+          title: Type
+        noul:
+          type: number
+          title: Noul
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - noul
+      title: NoulAnswer
+    ModelObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Model identifier (e.g., 'openai/gpt-4')
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
+          type: integer
+          title: Created
+          description: Unix timestamp of model creation/release
+        owned_by:
+          type: string
+          title: Owned By
+          description: Provider/organization that owns the model
+        model_name:
+          type: string
+          title: Model Name
+          description: Model name without provider prefix
+        context_length:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Context Length
+          description: Maximum context length in tokens
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+          description: Model description
+        source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source
+          description: Model source URL
+        capabilities:
+          $ref: '#/components/schemas/Capabilities'
+          description: Model capabilities
+        pricing:
+          additionalProperties: true
+          type: object
+          title: Pricing
+          description: Pricing information after any applicable discounts have been applied
+        list_pricing:
+          additionalProperties: true
+          type: object
+          title: List Pricing
+          description: Provider list pricing, before any discounts are applied
+        discount:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Discount
+          description: Discount applied to the model (0-1 range)
+        regions:
+          items:
+            $ref: '#/components/schemas/RegionObject'
+          type: array
+          title: Regions
+          description: Regions where this model is available
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'true when calls to this entry keep no prompts or outputs after the response (Zero Data Retention), under Eden AI''s terms with its provider: the model''s own terms when they differ, else the provider''s; a customer-hosted model is always true. false when they are kept, null when not verified yet.'
+        alias_of:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Alias Of
+          description: 'Set when this entry is an alias (e.g. ''gemini-pro-latest''): the real model_id it currently resolves to. None for concrete models.'
+      type: object
+      required:
+      - id
+      - created
+      - owned_by
+      - model_name
+      title: ModelObject
+      description: Extended model object with full metadata.
+    DecisionUsage:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          default: 0
+        output_tokens:
+          type: integer
+          title: Output Tokens
+          default: 0
+      additionalProperties: true
+      type: object
+      title: DecisionUsage
+    Capabilities:
+      properties:
+        input_modalities:
+          items:
+            type: string
+          type: array
+          title: Input Modalities
+        output_modalities:
+          items:
+            type: string
+          type: array
+          title: Output Modalities
+        supports_reasoning:
+          type: boolean
+          title: Supports Reasoning
+          default: false
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
+      additionalProperties: true
+      type: object
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
+
+        new capabilities are introduced without a coordinated release.'
+    DecisionsBody:
+      properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
+        state:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          title: State
+          description: 'The content to decide about: a plain string, or a JSON object / array of related context.'
+        questions:
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/NoulQuestion'
+            - $ref: '#/components/schemas/ChoiceQuestion'
+            - $ref: '#/components/schemas/ScoreQuestion'
+            discriminator:
+              propertyName: type
+              mapping:
+                choice: '#/components/schemas/ChoiceQuestion'
+                noul: '#/components/schemas/NoulQuestion'
+                score: '#/components/schemas/ScoreQuestion'
+          type: object
+          minProperties: 1
+          title: Questions
+          description: 'Typed questions keyed by name: `noul` (yes/no probability), `choice` (one of the `criteria` keys) or `score` (position on the ordered `criteria` rubric).'
+        model:
+          type: string
+          title: Model
+          description: Model identifier in 'provider/model' format, e.g. 'typesafe/jev-latest'.
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Arbitrary metadata attached to the request.
+        extra_headers:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Extra Headers
+          description: Additional HTTP headers forwarded to the provider API.
+        extra_body:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Extra Body
+          description: Additional body fields forwarded to the provider API.
+      additionalProperties: true
+      type: object
+      required:
+      - state
+      - questions
+      - model
+      title: DecisionsBody
+      description: 'TypeSafe''s ``POST /v1/systemone`` request body, plus minimal Eden extensions.
+
+
+        Unknown top-level fields are forwarded to the provider (``extra="allow"`` via the base
+
+        mixin, which also rejects connection keys).'
+    ScoreAnswer:
+      properties:
+        type:
+          type: string
+          const: score
+          title: Type
+        score:
+          type: number
+          title: Score
+        confidence:
+          type: number
+          title: Confidence
+        legend:
+          additionalProperties:
+            anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - items: {}
+              type: array
+          type: object
+          title: Legend
+        probabilities:
+          additionalProperties:
+            type: number
+          type: object
+          title: Probabilities
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - score
+      - confidence
+      - legend
+      - probabilities
+      title: ScoreAnswer
+    DecisionsResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+          description: TypeSafe request id (x-typesafe-request-id).
+        model:
+          type: string
+          title: Model
+        answers:
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/NoulAnswer'
+            - $ref: '#/components/schemas/ChoiceAnswer'
+            - $ref: '#/components/schemas/ScoreAnswer'
+            - $ref: '#/components/schemas/RefusalAnswer'
+            discriminator:
+              propertyName: type
+              mapping:
+                choice: '#/components/schemas/ChoiceAnswer'
+                noul: '#/components/schemas/NoulAnswer'
+                refusal: '#/components/schemas/RefusalAnswer'
+                score: '#/components/schemas/ScoreAnswer'
+          type: object
+          title: Answers
+        usage:
+          $ref: '#/components/schemas/DecisionUsage'
+      additionalProperties: true
+      type: object
+      required:
+      - model
+      - answers
+      - usage
+      title: DecisionsResponse
+      description: TypeSafe's response (typed answers, usage, request id) + Eden `cost` and `provider`.
+    ChoiceQuestion:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Instructions
+        type:
+          type: string
+          const: choice
+          title: Type
+        criteria:
+          additionalProperties:
+            anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - items: {}
+              type: array
+            - type: 'null'
+          type: object
+          title: Criteria
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - criteria
+      title: ChoiceQuestion
+      description: One-of-N selection; ``criteria`` maps each option label to its description.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ScoreQuestion:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Instructions
+        type:
+          type: string
+          const: score
+          title: Type
+        criteria:
+          items:
+            anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - items: {}
+              type: array
+          type: array
+          title: Criteria
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - criteria
+      title: ScoreQuestion
+      description: Ordered rubric; ``criteria[i]`` describes score level ``i``.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
+    NoulQuestion:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Instructions
+        type:
+          type: string
+          const: noul
+          title: Type
+        criteria:
+          anyOf:
+          - additionalProperties:
+              anyOf:
+              - type: string
+              - additionalProperties: true
+                type: object
+              - items: {}
+                type: array
+              - type: 'null'
+            type: object
+          - type: 'null'
+          title: Criteria
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: NoulQuestion
+      description: 'Yes/no question, answered as a probability; ``criteria`` may describe the ``true``
+
+        and ``false`` outcomes.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ChoiceAnswer:
+      properties:
+        type:
+          type: string
+          const: choice
+          title: Type
+        choice:
+          type: string
+          title: Choice
+        confidence:
+          type: number
+          title: Confidence
+        probabilities:
+          additionalProperties:
+            type: number
+          type: object
+          title: Probabilities
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - choice
+      - confidence
+      - probabilities
+      title: ChoiceAnswer
+    RefusalAnswer:
+      properties:
+        type:
+          type: string
+          const: refusal
+          title: Type
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: RefusalAnswer
+      description: 'The provider declined this one question without saying why; the other answers still
+
+        stand. OpenAI''s Decisions API returns these, TypeSafe''s format has no equivalent.'
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

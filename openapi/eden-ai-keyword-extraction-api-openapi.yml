@@ -291,6 +291,15 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
@@ -344,15 +353,6 @@ components:
       required:
       - providers
       - text
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     Error:
       type: object
       properties:
@@ -360,18 +360,40 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
+    textkeyword_extractionKeywordExtractionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosKeywordExtractionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: textkeyword_extractionKeywordExtractionDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     textkeyword_extractionResponseModel:
       properties:
         xai:
@@ -400,6 +422,13 @@ components:
           default: null
       title: textkeyword_extractionResponseModel
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     NestedError:
       type: object
       properties:
@@ -407,16 +436,6 @@ components:
           type: string
         message:
           type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
@@ -432,25 +451,6 @@ components:
       - keyword
       - importance
       title: InfosKeywordExtractionDataClass
-      type: object
-    textkeyword_extractionKeywordExtractionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/InfosKeywordExtractionDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: textkeyword_extractionKeywordExtractionDataClass
       type: object
   securitySchemes:
     FeatureApiAuth:

@@ -2098,182 +2098,12 @@ paths:
           description: ''
 components:
   schemas:
-    ocrfinancial_parserFinancialParserRequest:
+    NotFoundResponse:
       type: object
       properties:
-        settings:
+        details:
           type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        file:
-          type: string
-          format: binary
-          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
-        file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
-        file_password:
-          type:
-          - string
-          - 'null'
-          description: If your PDF file has a password, you can pass it here!
-          maxLength: 200
-        language:
-          type:
-          - string
-          - 'null'
-          description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
-        document_type:
-          allOf:
-          - $ref: '#/components/schemas/DocumentTypeEnum'
-          default: invoice
-          description: 'Specify the type of your document. Can be Set to ''auto-detect'' for automatic detection if the provider supports it. Otherwise, the default is ''invoice''.
-
-
-            * `auto-detect` - auto-detect
-
-            * `invoice` - invoice
-
-            * `receipt` - receipt'
-        convert_to_pdf:
-          type:
-          - boolean
-          - 'null'
-          default: false
-          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
-      required:
-      - providers
-    FinancialDocumentInformation:
-      properties:
-        invoice_receipt_id:
-          default: null
-          description: Identifier for the invoice.
-          title: Invoice Receipt Id
-          type: string
-        purchase_order:
-          default: null
-          description: Purchase order related to the document.
-          title: Purchase Order
-          type: string
-        invoice_date:
-          default: null
-          description: Date of the invoice.
-          title: Invoice Date
-          type: string
-        time:
-          default: null
-          description: Time associated with the document.
-          title: Time
-          type: string
-        invoice_due_date:
-          default: null
-          description: Due date for the invoice.
-          title: Invoice Due Date
-          type: string
-        service_start_date:
-          default: null
-          description: Start date of the service associated with the document.
-          title: Service Start Date
-          type: string
-        service_end_date:
-          default: null
-          description: End date of the service associated with the document.
-          title: Service End Date
-          type: string
-        reference:
-          default: null
-          description: Reference number associated with the document.
-          title: Reference
-          type: string
-        biller_code:
-          default: null
-          description: Biller code associated with the document.
-          title: Biller Code
-          type: string
-        order_date:
-          default: null
-          description: Date of the order associated with the document.
-          title: Order Date
-          type: string
-        tracking_number:
-          default: null
-          description: Tracking number associated with the document.
-          title: Tracking Number
-          type: string
-        barcodes:
-          description: List of barcodes associated with the document.
-          items:
-            $ref: '#/components/schemas/FinancialBarcode'
-          title: Barcodes
-          type: array
-      title: FinancialDocumentInformation
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    DocumentTypeEnum:
-      enum:
-      - auto-detect
-      - invoice
-      - receipt
-      type: string
-      description: '* `auto-detect` - auto-detect
-
-        * `invoice` - invoice
-
-        * `receipt` - receipt'
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+          default: Not Found
     FinancialDocumentMetadata:
       properties:
         document_index:
@@ -2292,177 +2122,6 @@ components:
           title: Document Type
           type: string
       title: FinancialDocumentMetadata
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    FinancialParserObjectDataClass:
-      properties:
-        customer_information:
-          $ref: '#/components/schemas/FinancialCustomerInformation'
-        merchant_information:
-          $ref: '#/components/schemas/FinancialMerchantInformation'
-        payment_information:
-          $ref: '#/components/schemas/FinancialPaymentInformation'
-        financial_document_information:
-          $ref: '#/components/schemas/FinancialDocumentInformation'
-        local:
-          $ref: '#/components/schemas/FinancialLocalInformation'
-        bank:
-          $ref: '#/components/schemas/FinancialBankInformation'
-        item_lines:
-          description: List of line items associated with the document.
-          items:
-            $ref: '#/components/schemas/FinancialLineItem'
-          title: Item Lines
-          type: array
-        document_metadata:
-          $ref: '#/components/schemas/FinancialDocumentMetadata'
-      required:
-      - customer_information
-      - merchant_information
-      - payment_information
-      - financial_document_information
-      - local
-      - bank
-      - document_metadata
-      title: FinancialParserObjectDataClass
-      type: object
-    FinancialMerchantInformation:
-      properties:
-        name:
-          default: null
-          description: Name of the merchant.
-          title: Name
-          type: string
-        address:
-          default: null
-          description: Address of the merchant.
-          title: Address
-          type: string
-        phone:
-          default: null
-          description: Phone number of the merchant.
-          title: Phone
-          type: string
-        tax_id:
-          default: null
-          description: Tax identification number of the merchant.
-          title: Tax Id
-          type: string
-        id_reference:
-          default: null
-          description: Unique reference ID for the merchant.
-          title: Id Reference
-          type: string
-        vat_number:
-          default: null
-          description: VAT (Value Added Tax) number of the merchant.
-          title: Vat Number
-          type: string
-        abn_number:
-          default: null
-          description: ABN (Australian Business Number) of the merchant.
-          title: Abn Number
-          type: string
-        gst_number:
-          default: null
-          description: GST (Goods and Services Tax) number of the merchant.
-          title: Gst Number
-          type: string
-        business_number:
-          default: null
-          description: Business registration number of the merchant.
-          title: Business Number
-          type: string
-        siret_number:
-          default: null
-          description: SIRET (Système d'Identification du Répertoire des Entreprises et de leurs Établissements) number of the merchant.
-          title: Siret Number
-          type: string
-        siren_number:
-          default: null
-          description: SIREN (Système d'Identification du Répertoire des Entreprises) number of the merchant.
-          title: Siren Number
-          type: string
-        pan_number:
-          default: null
-          description: PAN (Permanent Account Number) of the merchant.
-          title: Pan Number
-          type: string
-        coc_number:
-          default: null
-          description: Chamber of Commerce registration number of the merchant.
-          title: Coc Number
-          type: string
-        fiscal_number:
-          default: null
-          description: Fiscal identification number of the merchant.
-          title: Fiscal Number
-          type: string
-        email:
-          default: null
-          description: Email address of the merchant.
-          title: Email
-          type: string
-        fax:
-          default: null
-          description: Fax number of the merchant.
-          title: Fax
-          type: string
-        website:
-          default: null
-          description: Website of the merchant.
-          title: Website
-          type: string
-        registration:
-          default: null
-          description: Official registration information of the merchant.
-          title: Registration
-          type: string
-        city:
-          default: null
-          description: City associated with the merchant's address.
-          title: City
-          type: string
-        country:
-          default: null
-          description: Country associated with the merchant's address.
-          title: Country
-          type: string
-        house_number:
-          default: null
-          description: House number associated with the merchant's address.
-          title: House Number
-          type: string
-        province:
-          default: null
-          description: Province associated with the merchant's address.
-          title: Province
-          type: string
-        street_name:
-          default: null
-          description: Street name associated with the merchant's address.
-          title: Street Name
-          type: string
-        zip_code:
-          default: null
-          description: ZIP code associated with the merchant's address.
-          title: Zip Code
-          type: string
-        country_code:
-          default: null
-          description: Country code associated with the merchant's location.
-          title: Country Code
-          type: string
-      title: FinancialMerchantInformation
       type: object
     FinancialPaymentInformation:
       properties:
@@ -2572,55 +2231,6 @@ components:
           title: Transaction Reference
           type: string
       title: FinancialPaymentInformation
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    FinancialLocalInformation:
-      properties:
-        currency:
-          default: null
-          description: Currency used in financial transactions.
-          title: Currency
-          type: string
-        currency_code:
-          default: null
-          description: Currency code (e.g., USD, EUR).
-          title: Currency Code
-          type: string
-        currency_exchange_rate:
-          default: null
-          description: Exchange rate for the specified currency.
-          title: Currency Exchange Rate
-          type: string
-        country:
-          default: null
-          description: Country associated with the local financial information.
-          title: Country
-          type: string
-        language:
-          default: null
-          description: Language used in financial transactions.
-          title: Language
-          type: string
-      title: FinancialLocalInformation
       type: object
     FinancialCustomerInformation:
       properties:
@@ -2776,6 +2386,95 @@ components:
           type: string
       title: FinancialCustomerInformation
       type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    FinancialLocalInformation:
+      properties:
+        currency:
+          default: null
+          description: Currency used in financial transactions.
+          title: Currency
+          type: string
+        currency_code:
+          default: null
+          description: Currency code (e.g., USD, EUR).
+          title: Currency Code
+          type: string
+        currency_exchange_rate:
+          default: null
+          description: Exchange rate for the specified currency.
+          title: Currency Exchange Rate
+          type: string
+        country:
+          default: null
+          description: Country associated with the local financial information.
+          title: Country
+          type: string
+        language:
+          default: null
+          description: Language used in financial transactions.
+          title: Language
+          type: string
+      title: FinancialLocalInformation
+      type: object
+    ocrfinancial_parserResponseModel:
+      properties:
+        veryfi:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        tabscanner:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        eagledoc:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        mindee:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        affinda:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        dataleon:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        klippa:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          default: null
+      title: ocrfinancial_parserResponseModel
+      type: object
     ocrfinancial_parserFinancialParserDataClass:
       properties:
         extracted_data:
@@ -2795,45 +2494,6 @@ components:
       required:
       - status
       title: ocrfinancial_parserFinancialParserDataClass
-      type: object
-    FinancialBankInformation:
-      properties:
-        iban:
-          default: null
-          description: International Bank Account Number.
-          title: Iban
-          type: string
-        swift:
-          default: null
-          description: Society for Worldwide Interbank Financial Telecommunication code.
-          title: Swift
-          type: string
-        bsb:
-          default: null
-          description: Bank State Branch code (Australia).
-          title: Bsb
-          type: string
-        sort_code:
-          default: null
-          description: Sort code for UK banks.
-          title: Sort Code
-          type: string
-        account_number:
-          default: null
-          description: Bank account number.
-          title: Account Number
-          type: string
-        routing_number:
-          default: null
-          description: Routing number for banks in the United States.
-          title: Routing Number
-          type: string
-        bic:
-          default: null
-          description: Bank Identifier Code.
-          title: Bic
-          type: string
-      title: FinancialBankInformation
       type: object
     FinancialLineItem:
       properties:
@@ -2924,49 +2584,205 @@ components:
           type: string
       title: FinancialLineItem
       type: object
-    ocrfinancial_parserResponseModel:
+    FinancialBankInformation:
       properties:
-        veryfi:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+        iban:
           default: null
-        tabscanner:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: International Bank Account Number.
+          title: Iban
+          type: string
+        swift:
           default: null
-        amazon:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: Society for Worldwide Interbank Financial Telecommunication code.
+          title: Swift
+          type: string
+        bsb:
           default: null
-        extracta:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: Bank State Branch code (Australia).
+          title: Bsb
+          type: string
+        sort_code:
           default: null
-        eagledoc:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: Sort code for UK banks.
+          title: Sort Code
+          type: string
+        account_number:
           default: null
-        google:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: Bank account number.
+          title: Account Number
+          type: string
+        routing_number:
           default: null
-        microsoft:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
+          description: Routing number for banks in the United States.
+          title: Routing Number
+          type: string
+        bic:
           default: null
-        mindee:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-        affinda:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-        dataleon:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-        klippa:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocrfinancial_parserFinancialParserDataClass'
-          default: null
-      title: ocrfinancial_parserResponseModel
+          description: Bank Identifier Code.
+          title: Bic
+          type: string
+      title: FinancialBankInformation
       type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    FinancialMerchantInformation:
+      properties:
+        name:
+          default: null
+          description: Name of the merchant.
+          title: Name
+          type: string
+        address:
+          default: null
+          description: Address of the merchant.
+          title: Address
+          type: string
+        phone:
+          default: null
+          description: Phone number of the merchant.
+          title: Phone
+          type: string
+        tax_id:
+          default: null
+          description: Tax identification number of the merchant.
+          title: Tax Id
+          type: string
+        id_reference:
+          default: null
+          description: Unique reference ID for the merchant.
+          title: Id Reference
+          type: string
+        vat_number:
+          default: null
+          description: VAT (Value Added Tax) number of the merchant.
+          title: Vat Number
+          type: string
+        abn_number:
+          default: null
+          description: ABN (Australian Business Number) of the merchant.
+          title: Abn Number
+          type: string
+        gst_number:
+          default: null
+          description: GST (Goods and Services Tax) number of the merchant.
+          title: Gst Number
+          type: string
+        business_number:
+          default: null
+          description: Business registration number of the merchant.
+          title: Business Number
+          type: string
+        siret_number:
+          default: null
+          description: SIRET (Système d'Identification du Répertoire des Entreprises et de leurs Établissements) number of the merchant.
+          title: Siret Number
+          type: string
+        siren_number:
+          default: null
+          description: SIREN (Système d'Identification du Répertoire des Entreprises) number of the merchant.
+          title: Siren Number
+          type: string
+        pan_number:
+          default: null
+          description: PAN (Permanent Account Number) of the merchant.
+          title: Pan Number
+          type: string
+        coc_number:
+          default: null
+          description: Chamber of Commerce registration number of the merchant.
+          title: Coc Number
+          type: string
+        fiscal_number:
+          default: null
+          description: Fiscal identification number of the merchant.
+          title: Fiscal Number
+          type: string
+        email:
+          default: null
+          description: Email address of the merchant.
+          title: Email
+          type: string
+        fax:
+          default: null
+          description: Fax number of the merchant.
+          title: Fax
+          type: string
+        website:
+          default: null
+          description: Website of the merchant.
+          title: Website
+          type: string
+        registration:
+          default: null
+          description: Official registration information of the merchant.
+          title: Registration
+          type: string
+        city:
+          default: null
+          description: City associated with the merchant's address.
+          title: City
+          type: string
+        country:
+          default: null
+          description: Country associated with the merchant's address.
+          title: Country
+          type: string
+        house_number:
+          default: null
+          description: House number associated with the merchant's address.
+          title: House Number
+          type: string
+        province:
+          default: null
+          description: Province associated with the merchant's address.
+          title: Province
+          type: string
+        street_name:
+          default: null
+          description: Street name associated with the merchant's address.
+          title: Street Name
+          type: string
+        zip_code:
+          default: null
+          description: ZIP code associated with the merchant's address.
+          title: Zip Code
+          type: string
+        country_code:
+          default: null
+          description: Country code associated with the merchant's location.
+          title: Country Code
+          type: string
+      title: FinancialMerchantInformation
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     FinancialBarcode:
       properties:
         value:
@@ -2980,6 +2796,190 @@ components:
       - type
       title: FinancialBarcode
       type: object
+    FinancialParserObjectDataClass:
+      properties:
+        customer_information:
+          $ref: '#/components/schemas/FinancialCustomerInformation'
+        merchant_information:
+          $ref: '#/components/schemas/FinancialMerchantInformation'
+        payment_information:
+          $ref: '#/components/schemas/FinancialPaymentInformation'
+        financial_document_information:
+          $ref: '#/components/schemas/FinancialDocumentInformation'
+        local:
+          $ref: '#/components/schemas/FinancialLocalInformation'
+        bank:
+          $ref: '#/components/schemas/FinancialBankInformation'
+        item_lines:
+          description: List of line items associated with the document.
+          items:
+            $ref: '#/components/schemas/FinancialLineItem'
+          title: Item Lines
+          type: array
+        document_metadata:
+          $ref: '#/components/schemas/FinancialDocumentMetadata'
+      required:
+      - customer_information
+      - merchant_information
+      - payment_information
+      - financial_document_information
+      - local
+      - bank
+      - document_metadata
+      title: FinancialParserObjectDataClass
+      type: object
+    FinancialDocumentInformation:
+      properties:
+        invoice_receipt_id:
+          default: null
+          description: Identifier for the invoice.
+          title: Invoice Receipt Id
+          type: string
+        purchase_order:
+          default: null
+          description: Purchase order related to the document.
+          title: Purchase Order
+          type: string
+        invoice_date:
+          default: null
+          description: Date of the invoice.
+          title: Invoice Date
+          type: string
+        time:
+          default: null
+          description: Time associated with the document.
+          title: Time
+          type: string
+        invoice_due_date:
+          default: null
+          description: Due date for the invoice.
+          title: Invoice Due Date
+          type: string
+        service_start_date:
+          default: null
+          description: Start date of the service associated with the document.
+          title: Service Start Date
+          type: string
+        service_end_date:
+          default: null
+          description: End date of the service associated with the document.
+          title: Service End Date
+          type: string
+        reference:
+          default: null
+          description: Reference number associated with the document.
+          title: Reference
+          type: string
+        biller_code:
+          default: null
+          description: Biller code associated with the document.
+          title: Biller Code
+          type: string
+        order_date:
+          default: null
+          description: Date of the order associated with the document.
+          title: Order Date
+          type: string
+        tracking_number:
+          default: null
+          description: Tracking number associated with the document.
+          title: Tracking Number
+          type: string
+        barcodes:
+          description: List of barcodes associated with the document.
+          items:
+            $ref: '#/components/schemas/FinancialBarcode'
+          title: Barcodes
+          type: array
+      title: FinancialDocumentInformation
+      type: object
+    DocumentTypeEnum:
+      enum:
+      - auto-detect
+      - invoice
+      - receipt
+      type: string
+      description: '* `auto-detect` - auto-detect
+
+        * `invoice` - invoice
+
+        * `receipt` - receipt'
+    ocrfinancial_parserFinancialParserRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        file:
+          type: string
+          format: binary
+          description: 'File to analyse in binary format to be used with *content-type*: **multipart/form-data** <br> **Does not work with application/json !**'
+        file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
+        file_password:
+          type:
+          - string
+          - 'null'
+          description: If your PDF file has a password, you can pass it here!
+          maxLength: 200
+        language:
+          type:
+          - string
+          - 'null'
+          description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          default: invoice
+          description: 'Specify the type of your document. Can be Set to ''auto-detect'' for automatic detection if the provider supports it. Otherwise, the default is ''invoice''.
+
+
+            * `auto-detect` - auto-detect
+
+            * `invoice` - invoice
+
+            * `receipt` - receipt'
+        convert_to_pdf:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
+      required:
+      - providers
   securitySchemes:
     FeatureApiAuth:
       type: http

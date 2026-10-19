@@ -1,0 +1,571 @@
+openapi: 3.2.0
+info:
+  title: Eden AI API V3 Videos API
+  version: 3.0.0
+servers:
+- url: https://api.edenai.run
+  description: Production server
+tags:
+- name: Videos
+paths:
+  /v3/videos:
+    post:
+      tags:
+      - Videos
+      summary: Create Video
+      description: 'Start a video generation job.
+
+
+        Send `model` as `provider/model` (see GET /v3/videos/models), a `prompt`,
+
+        and optionally `seconds`, `size` and an `input_reference` image. The job
+
+        runs asynchronously: poll GET /v3/videos/{video_id} until `status` is
+
+        `completed`, then download the mp4 from GET /v3/videos/{video_id}/content.
+
+        Accepts `application/json`, or `multipart/form-data` with the reference
+
+        image as the `input_reference` file part.'
+      operationId: create_video_v3_videos_post
+      security:
+      - AuthBearer: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoObject'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              additionalProperties: false
+              description: 'Request body for ``POST /v3/videos``.
+
+
+                OpenAI''s video creation shape (`model`, `prompt`, `seconds`, `size`,
+
+                `input_reference`) plus Eden extensions (`seed`, `provider_params`,
+
+                `webhook_receiver`, `user_webhook_parameters`).'
+              properties:
+                model:
+                  description: Video model as `provider/model`, e.g. `pruna/p-video` or `openai/sora-2`. List the available ids with GET /v3/videos/models.
+                  minLength: 1
+                  title: Model
+                  type: string
+                prompt:
+                  description: Text describing the video to generate.
+                  minLength: 1
+                  title: Prompt
+                  type: string
+                seconds:
+                  anyOf:
+                  - maximum: 120
+                    minimum: 1
+                    type: integer
+                  - type: 'null'
+                  description: Clip length in seconds. Accepts OpenAI's string form ("4", "8", "12") or an integer. Omit to use the model's default duration.
+                  title: Seconds
+                size:
+                  anyOf:
+                  - pattern: ^\d+x\d+$
+                    type: string
+                  - type: 'null'
+                  description: Output resolution as `WIDTHxHEIGHT`, e.g. `1280x720` or `1920x1080`. Omitted uses the provider's default; each provider maps it to its nearest tier.
+                  title: Size
+                seed:
+                  anyOf:
+                  - maximum: 2147483646
+                    minimum: 0
+                    type: integer
+                  - type: 'null'
+                  description: 'Eden extension: random seed for reproducible output.'
+                  title: Seed
+                provider_params:
+                  anyOf:
+                  - additionalProperties: true
+                    type: object
+                  - type: 'null'
+                  description: 'Eden extension: provider-native parameters merged into the provider request, subject to the per-provider allow-list.'
+                  title: Provider Params
+                webhook_receiver:
+                  anyOf:
+                  - format: uri
+                    maxLength: 2083
+                    minLength: 1
+                    type: string
+                  - type: 'null'
+                  description: 'Eden extension: URL notified when the job finishes.'
+                  title: Webhook Receiver
+                user_webhook_parameters:
+                  anyOf:
+                  - additionalProperties: true
+                    type: object
+                  - type: 'null'
+                  description: 'Eden extension: custom fields echoed in the webhook payload.'
+                  title: User Webhook Parameters
+                input_reference:
+                  anyOf:
+                  - $ref: '#/components/schemas/VideoInputReference'
+                  - type: 'null'
+                  description: Optional reference image that seeds an image-to-video generation.
+              required:
+              - model
+              - prompt
+              title: VideoGenerationBody
+              type: object
+    get:
+      tags:
+      - Videos
+      summary: List Videos
+      description: List your video generation jobs, newest first.
+      operationId: list_videos_v3_videos_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Number of jobs to return (1-100).
+          default: 20
+          title: Limit
+        description: Number of jobs to return (1-100).
+      - name: after
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 'Cursor: return jobs created before this video id (use the previous page''s `last_id`).'
+          title: After
+        description: 'Cursor: return jobs created before this video id (use the previous page''s `last_id`).'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/videos/models:
+    get:
+      tags:
+      - Videos
+      summary: List Video Models
+      description: 'List the video models available in the caller''s region.
+
+
+        Each `id` is the `provider/model` value to pass as `model` to POST /v3/videos.'
+      operationId: list_video_models_v3_videos_models_get
+      parameters:
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoModelsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/videos/{video_id}:
+    get:
+      tags:
+      - Videos
+      summary: Retrieve Video
+      description: Get a video job. Poll until `status` is `completed` or `failed`.
+      operationId: retrieve_video_v3_videos__video_id__get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoObject'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Videos
+      summary: Delete Video
+      description: Delete a finished video job. Jobs still in progress cannot be deleted.
+      operationId: delete_video_v3_videos__video_id__delete
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoDeletedResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/videos/{video_id}/content:
+    get:
+      tags:
+      - Videos
+      summary: Download Video Content
+      description: 'Download the finished mp4.
+
+
+        Responds with a redirect to the video file while its link is valid, and
+
+        with the file bytes afterwards. Available once `status` is `completed`.'
+      operationId: download_video_content_v3_videos__video_id__content_get
+      security:
+      - AuthBearer: []
+      parameters:
+      - name: video_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Video Id
+      - name: variant
+        in: query
+        required: false
+        schema:
+          type: string
+          description: Only `video` is supported.
+          default: video
+          title: Variant
+        description: Only `video` is supported.
+      responses:
+        '200':
+          description: The video file.
+          content:
+            video/mp4: {}
+        '302':
+          description: Redirect to the video file.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    VideoError:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Machine-readable error code.
+        message:
+          type: string
+          title: Message
+          description: Human-readable error message.
+      type: object
+      required:
+      - code
+      - message
+      title: VideoError
+      description: Why a video job failed.
+    VideoDeletedResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: video.deleted
+          title: Object
+          default: video.deleted
+        deleted:
+          type: boolean
+          title: Deleted
+          default: true
+      type: object
+      required:
+      - id
+      title: VideoDeletedResponse
+      description: Confirmation that a video job was deleted.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    VideoModel:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: '`provider/model` id to pass as `model`.'
+        object:
+          type: string
+          const: model
+          title: Object
+          default: model
+        provider:
+          type: string
+          title: Provider
+        pricing:
+          additionalProperties: true
+          type: object
+          title: Pricing
+          description: 'Base price: `price`, `price_unit_quantity`, `price_unit_type`.'
+        regions:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Regions
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'true when calls to this entry keep no prompts or outputs after the response (Zero Data Retention), under Eden AI''s terms with its provider: the model''s own terms when they differ, else the provider''s; a customer-hosted model is always true. false when they are kept, null when not verified yet.'
+      type: object
+      required:
+      - id
+      - provider
+      - pricing
+      title: VideoModel
+      description: A video model callable through ``POST /v3/videos``.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VideoListResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/VideoObject'
+          type: array
+          title: Data
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Id
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Id
+        has_more:
+          type: boolean
+          title: Has More
+          default: false
+      type: object
+      required:
+      - data
+      title: VideoListResponse
+      description: A page of the caller's video jobs, newest first.
+    VideoObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Job id. Use it to poll, download and delete.
+        object:
+          type: string
+          const: video
+          title: Object
+          default: video
+        status:
+          type: string
+          enum:
+          - queued
+          - in_progress
+          - completed
+          - failed
+          title: Status
+          description: queued, in_progress, completed or failed.
+        progress:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Progress
+          description: 0 while running or failed, 100 when completed.
+        created_at:
+          type: integer
+          title: Created At
+          description: Unix timestamp (seconds) of job creation.
+        completed_at:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Completed At
+          description: Unix timestamp (seconds) when the job finished.
+        expires_at:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Expires At
+          description: 'Always null: Eden AI keeps the result.'
+        model:
+          type: string
+          title: Model
+          description: The `provider/model` that ran the job.
+        seconds:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Seconds
+          description: Clip length in seconds, as a string.
+        size:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Size
+          description: Requested resolution as `WIDTHxHEIGHT`.
+        remixed_from_video_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Remixed From Video Id
+          description: 'Always null: remix is not supported.'
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/VideoError'
+          - type: 'null'
+          description: Set when status is failed.
+        provider:
+          type: string
+          title: Provider
+          description: 'Eden extension: provider that ran the job.'
+        cost:
+          type: number
+          title: Cost
+          description: 'Eden extension: cost in USD. 0 while the job is queued or in progress (the reserved estimate is not surfaced); the settled amount once the job completes or fails.'
+      type: object
+      required:
+      - id
+      - status
+      - created_at
+      - model
+      - provider
+      - cost
+      title: VideoObject
+      description: 'A video generation job, in OpenAI''s video object shape.
+
+
+        `provider` and `cost` are Eden extensions. Download the finished video from
+
+        ``GET /v3/videos/{video_id}/content``.'
+    VideoInputReference:
+      additionalProperties: false
+      description: 'Reference image for image-to-video generation.
+
+
+        Set exactly one of ``file_id`` (an image uploaded to ``POST /v3/upload``)
+
+        or ``image_url`` (a public http(s) URL to a JPEG or PNG). Base64 data URLs
+
+        are not accepted: upload the image and pass its ``file_id`` instead.'
+      properties:
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Id of an image previously uploaded to /v3/upload.
+          title: File Id
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Public http(s) URL of a JPEG or PNG image.
+          title: Image Url
+      title: VideoInputReference
+      type: object
+    VideoModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/VideoModel'
+          type: array
+          title: Data
+      type: object
+      required:
+      - data
+      title: VideoModelsResponse
+      description: Video models available in the caller's region.
+  securitySchemes:
+    AuthBearer:
+      type: http
+      scheme: bearer

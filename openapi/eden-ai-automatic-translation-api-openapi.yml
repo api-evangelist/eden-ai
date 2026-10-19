@@ -437,6 +437,15 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
@@ -495,42 +504,11 @@ components:
       - providers
       - target_language
       - text
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     Error:
       type: object
       properties:
         error:
           $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
     translationautomatic_translationResponseModel:
@@ -568,6 +546,18 @@ components:
       required:
       - message
       - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     translationautomatic_translationAutomaticTranslationDataClass:
       properties:
         text:
@@ -586,6 +576,16 @@ components:
       - status
       title: translationautomatic_translationAutomaticTranslationDataClass
       type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
   securitySchemes:
     FeatureApiAuth:
       type: http

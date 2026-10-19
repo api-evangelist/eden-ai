@@ -1739,6 +1739,26 @@ apis:
     url: finops/eden-ai-finops.yml
   - type: OAuthScopes
     url: scopes/eden-ai-scopes.yml
+- aid: eden-ai:eden-ai-decisions-api
+  name: Eden AI Decisions API
+  description: The Decisions API from Eden AI — 2 operation(s) for decisions.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Decisions
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-decisions-api-openapi.yml
+- aid: eden-ai:eden-ai-videos-api
+  name: Eden AI Videos API
+  description: The Videos API from Eden AI — 4 operation(s) for videos.
+  humanURL: https://www.edenai.co/docs
+  baseURL: https://api.edenai.run
+  tags:
+  - Videos
+  properties:
+  - type: OpenAPI
+    url: openapi/eden-ai-videos-api-openapi.yml
 name: Eden AI
 tags:
 - Artificial Intelligence

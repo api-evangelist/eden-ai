@@ -85,12 +85,6 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
     FieldError:
       type: object
       properties:
@@ -100,71 +94,12 @@ components:
             type: string
       required:
       - <parameter_name>
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    EmotionItem:
-      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
-      properties:
-        emotion:
-          title: Emotion
+        details:
           type: string
-        emotion_score:
-          maximum: 100
-          minimum: 0
-          title: Emotion Score
-          type: integer
-      required:
-      - emotion
-      - emotion_score
-      title: EmotionItem
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    textemotion_detectionEmotionDetectionDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        items:
-          items:
-            $ref: '#/components/schemas/EmotionItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - text
-      - status
-      title: textemotion_detectionEmotionDetectionDataClass
-      type: object
-    textemotion_detectionResponseModel:
-      properties:
-        vernai:
-          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
-          default: null
-      title: textemotion_detectionResponseModel
-      type: object
+          default: Not Found
     textemotion_detectionEmotionDetectionRequest:
       type: object
       properties:
@@ -207,16 +142,29 @@ components:
       required:
       - providers
       - text
-    NestedError:
+    Error:
       type: object
       properties:
-        type:
-          type: string
-        message:
-          type: string
+        error:
+          $ref: '#/components/schemas/NestedError'
       required:
-      - message
-      - type
+      - error
+    EmotionItem:
+      description: "This class is used in EmotionAnalysisDataClass to list emotion analysed.\nArgs:\n    - emotion (EmotionEnum): emotion of the text\n    - emotion_score (float): score of the emotion"
+      properties:
+        emotion:
+          title: Emotion
+          type: string
+        emotion_score:
+          maximum: 100
+          minimum: 0
+          title: Emotion Score
+          type: integer
+      required:
+      - emotion
+      - emotion_score
+      title: EmotionItem
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -224,6 +172,58 @@ components:
           type: string
         message:
           $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textemotion_detectionEmotionDetectionDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/EmotionItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: textemotion_detectionEmotionDetectionDataClass
+      type: object
+    textemotion_detectionResponseModel:
+      properties:
+        vernai:
+          $ref: '#/components/schemas/textemotion_detectionEmotionDetectionDataClass'
+          default: null
+      title: textemotion_detectionResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
       required:
       - message
       - type

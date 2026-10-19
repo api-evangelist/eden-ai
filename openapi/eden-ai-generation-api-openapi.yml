@@ -221,6 +221,15 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
@@ -281,22 +290,6 @@ components:
       - providers
       - resolution
       - text
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     imagegenerationResponseModel:
       properties:
         minimax:
@@ -328,18 +321,36 @@ components:
           default: null
       title: imagegenerationResponseModel
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
+    GeneratedImageDataClass:
+      properties:
+        image:
+          title: Image
+          type: string
+        image_resource_url:
+          title: Image Resource Url
+          type: string
+      required:
+      - image
+      - image_resource_url
+      title: GeneratedImageDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     imagegenerationGenerationDataClass:
       properties:
         items:
@@ -364,19 +375,18 @@ components:
       - status
       title: imagegenerationGenerationDataClass
       type: object
-    GeneratedImageDataClass:
-      properties:
-        image:
-          title: Image
-          type: string
-        image_resource_url:
-          title: Image Resource Url
-          type: string
-      required:
-      - image
-      - image_resource_url
-      title: GeneratedImageDataClass
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     NestedError:
       type: object
       properties:
@@ -384,16 +394,6 @@ components:
           type: string
         message:
           type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type

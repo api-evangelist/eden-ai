@@ -1,0 +1,12 @@
+{
+ "url": "https://api.edenai.run/v3/docs/openapi.json",
+ "final": "https://api.edenai.run/v3/docs/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 186046,
+ "sha256": "3958d4fe80c1d2abc31769f05d613336121cc8e8a56e2697858436fb4503e83f",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

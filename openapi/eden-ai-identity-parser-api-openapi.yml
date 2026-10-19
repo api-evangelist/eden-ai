@@ -627,12 +627,61 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Country:
+      properties:
+        name:
+          title: Name
+          type: string
+        alpha2:
+          title: Alpha2
+          type: string
+        alpha3:
+          title: Alpha3
+          type: string
+        confidence:
+          default: null
+          title: Confidence
+          type: integer
+      required:
+      - name
+      - alpha2
+      - alpha3
+      title: Country
+      type: object
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    ItemIdentityParserDataClass:
+      properties:
+        value:
+          default: null
+          title: Value
+          type: string
+        confidence:
+          default: null
+          title: Confidence
+          type: integer
+      title: ItemIdentityParserDataClass
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     InfosIdentityParserDataClass:
       properties:
         last_name:
@@ -695,18 +744,72 @@ components:
       - nationality
       title: InfosIdentityParserDataClass
       type: object
-    ItemIdentityParserDataClass:
+    ocridentity_parserIdentityParserDataClass:
       properties:
-        value:
+        extracted_data:
+          items:
+            $ref: '#/components/schemas/InfosIdentityParserDataClass'
+          title: Extracted Data
+          type: array
+        original_response:
           default: null
-          title: Value
-          type: string
-        confidence:
-          default: null
-          title: Confidence
-          type: integer
-      title: ItemIdentityParserDataClass
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: ocridentity_parserIdentityParserDataClass
       type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    ocridentity_parserResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        mindee:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        affinda:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        klippa:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
+          default: null
+      title: ocridentity_parserResponseModel
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
     ocridentity_parserIdentityParserRequest:
       type: object
       properties:
@@ -766,99 +869,6 @@ components:
           description: Boolean value to specify weather to convert the doc/docx files to pdf format to be accepted by a majority of the providers
       required:
       - providers
-    ocridentity_parserIdentityParserDataClass:
-      properties:
-        extracted_data:
-          items:
-            $ref: '#/components/schemas/InfosIdentityParserDataClass'
-          title: Extracted Data
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: ocridentity_parserIdentityParserDataClass
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    ocridentity_parserResponseModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        mindee:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        affinda:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        klippa:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocridentity_parserIdentityParserDataClass'
-          default: null
-      title: ocridentity_parserResponseModel
-      type: object
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    Country:
-      properties:
-        name:
-          title: Name
-          type: string
-        alpha2:
-          title: Alpha2
-          type: string
-        alpha3:
-          title: Alpha3
-          type: string
-        confidence:
-          default: null
-          title: Confidence
-          type: integer
-      required:
-      - name
-      - alpha2
-      - alpha3
-      title: Country
-      type: object
     NestedError:
       type: object
       properties:
@@ -866,16 +876,6 @@ components:
           type: string
         message:
           type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type

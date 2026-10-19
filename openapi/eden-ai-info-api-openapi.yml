@@ -18,8 +18,41 @@ paths:
 
         Returns features that exist in both the registry (technically supported)
 
-        and database (have available providers).'
+        and database (have available providers). With ``include=schemas`` each
+
+        subfeature also carries its detail-route schemas, so the whole catalog is
+
+        one request.'
       operationId: list_features_v3_info_get
+      parameters:
+      - name: include
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/InfoInclude'
+          - type: 'null'
+          description: '''schemas'' embeds in every subfeature what GET /v3/info/{feature}/{subfeature} adds: endpoints, request, input and output schemas, and provider_params.'
+          title: Include
+        description: '''schemas'' embeds in every subfeature what GET /v3/info/{feature}/{subfeature} adds: endpoints, request, input and output schemas, and provider_params.'
+      - name: format
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/SchemaFormat'
+          description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
+          default: simplified
+        description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
       responses:
         '200':
           description: Successful Response
@@ -27,6 +60,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeaturesListResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
   /v3/info/{feature}:
     get:
       tags:
@@ -51,6 +90,16 @@ paths:
         schema:
           type: string
           title: Feature
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
       responses:
         '200':
           description: Successful Response
@@ -58,6 +107,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FeatureInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /v3/info/audio/tts/voices:
+    get:
+      tags:
+      - Info
+      summary: List Tts Voices
+      description: 'List the voices accepted by the text-to-speech models, with language and gender.
+
+
+        Send a listed `id` (or its `name`) as `voice` in the request input. Each voice carries the
+
+        model identifiers that accept it, in the `audio/tts/{provider}[/{model}]` format.'
+      operationId: list_tts_voices_v3_info_audio_tts_voices_get
+      parameters:
+      - name: model
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: 'Restrict to one model, e.g. ''audio/tts/google/wavenet''. Default: every text-to-speech model available to you.'
+          title: Model
+        description: 'Restrict to one model, e.g. ''audio/tts/google/wavenet''. Default: every text-to-speech model available to you.'
+      - name: language
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Keep voices speaking this language. A bare code ('fr') matches every region; 'fr-CA' matches that locale only. Multilingual voices are always kept.
+          title: Language
+        description: Keep voices speaking this language. A bare code ('fr') matches every region; 'fr-CA' matches that locale only. Multilingual voices are always kept.
+      - name: gender
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - enum:
+            - male
+            - female
+            - unknown
+            type: string
+          - type: 'null'
+          description: Keep voices of this gender.
+          title: Gender
+        description: Keep voices of this gender.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceListResponse'
         '422':
           description: Validation Error
           content:
@@ -84,6 +193,8 @@ paths:
         Returns:
 
         - Feature and subfeature display names
+
+        - Request body schema (where the input fields and the model go)
 
         - Input schema
 
@@ -112,6 +223,16 @@ paths:
           description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
           default: simplified
         description: 'Schema format: ''simplified'' for flat readable format, ''json_schema'' for full Pydantic JSON Schema'
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
       responses:
         '200':
           description: Successful Response
@@ -156,6 +277,11 @@ components:
           additionalProperties: true
           type: object
           title: Endpoints
+        request_schema:
+          additionalProperties: true
+          type: object
+          title: Request Schema
+          description: Schema of the request body sent to `endpoints.create`. The fields of `input_schema` go inside its `input` field, and `model` takes one of the `models` ids.
         input_schema:
           additionalProperties: true
           type: object
@@ -170,6 +296,17 @@ components:
             type: object
           type: array
           title: Models
+          description: 'Models available for this subfeature: the `model` id to send, its `pricing` and `regions`, and `documentation_url`, the provider''s documentation for that model (the model''s own page when there is one, else the feature''s, else the provider''s; `null` when none is known). `requires_reference_images` is true for an edit-only model, which fails on a request without `reference_images`, and `requires_video` for a model that edits a source video, which fails without `video`.'
+        provider_params:
+          anyOf:
+          - additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: 'The `provider_params` each provider accepts, for subfeatures that restrict them; any other parameter is rejected with 400. Each entry is a parameter path in the provider''s own request format, nested keys joined with dots (e.g. `videogenerationconfig.seed`), matched case-insensitively: send the keys in the provider''s own casing (`{"videoGenerationConfig": {"seed": 7}}`). An empty list means the provider accepts none; `null` on subfeatures that publish no list.'
       type: object
       required:
       - feature
@@ -178,11 +315,19 @@ components:
       - subfeature_fullname
       - mode
       - endpoints
+      - request_schema
       - input_schema
       - output_schema
       - models
       title: SubfeatureDetailResponse
       description: Detailed response for a specific subfeature.
+    SchemaFormat:
+      type: string
+      enum:
+      - simplified
+      - json_schema
+      title: SchemaFormat
+      description: Output format for schema information.
     HTTPValidationError:
       properties:
         detail:
@@ -192,13 +337,12 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    SchemaFormat:
+    InfoInclude:
       type: string
       enum:
-      - simplified
-      - json_schema
-      title: SchemaFormat
-      description: Output format for schema information.
+      - schemas
+      title: InfoInclude
+      description: Extra data the feature listing can embed.
     ValidationError:
       properties:
         loc:
@@ -220,6 +364,157 @@ components:
       - msg
       - type
       title: ValidationError
+    SubfeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        mode:
+          type: string
+          enum:
+          - sync
+          - async
+          title: Mode
+        models:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Models
+          description: 'Models available for this subfeature: the `model` id to send, its `pricing` and `regions`, and `documentation_url`, the provider''s documentation for that model (the model''s own page when there is one, else the feature''s, else the provider''s; `null` when none is known). `requires_reference_images` is true for an edit-only model, which fails on a request without `reference_images`, and `requires_video` for a model that edits a source video, which fails without `video`.'
+        endpoints:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Endpoints
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        request_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Request Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        input_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        output_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        provider_params:
+          anyOf:
+          - additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+      type: object
+      required:
+      - name
+      - fullname
+      - mode
+      title: SubfeatureInfo
+      description: Info about a subfeature.
+    VoiceListResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/VoiceObject'
+          type: array
+          title: Data
+          description: Voices, sorted by provider then name.
+      type: object
+      required:
+      - data
+      title: VoiceListResponse
+      description: List of voices.
+    VoiceObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Voice identifier. Send this value as `voice`.
+        object:
+          type: string
+          const: voice
+          title: Object
+          description: Object type
+          default: voice
+        name:
+          type: string
+          title: Name
+          description: Display name. Also accepted as `voice`, case-insensitively.
+        provider:
+          type: string
+          title: Provider
+          description: Provider that serves the voice.
+        models:
+          items:
+            type: string
+          type: array
+          title: Models
+          description: Model identifiers that accept this voice, in this endpoint's id format.
+        languages:
+          items:
+            type: string
+          type: array
+          title: Languages
+          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - unknown
+          title: Gender
+          description: Voice gender as published by the provider.
+        preview_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Preview Url
+          description: Provider-hosted audio sample, when available.
+        default:
+          type: boolean
+          title: Default
+          description: Used when a request omits `voice` for one of these models.
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - models
+      - languages
+      - gender
+      title: VoiceObject
+      description: One text-to-speech voice and the models that accept it.
     FeatureInfo:
       properties:
         name:
@@ -257,39 +552,6 @@ components:
       - features
       title: FeaturesListResponse
       description: Response for listing all features.
-    SubfeatureInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        mode:
-          type: string
-          enum:
-          - sync
-          - async
-          title: Mode
-        models:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Models
-          default: []
-      type: object
-      required:
-      - name
-      - fullname
-      - mode
-      title: SubfeatureInfo
-      description: Info about a subfeature.
   securitySchemes:
     AuthBearer:
       type: http

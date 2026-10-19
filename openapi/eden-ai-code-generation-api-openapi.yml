@@ -207,6 +207,15 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
@@ -231,28 +240,6 @@ components:
       - status
       title: textcode_generationCodeGenerationDataClass
       type: object
-    textcode_generationResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
-          default: null
-      title: textcode_generationResponseModel
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     Error:
       type: object
       properties:
@@ -260,11 +247,16 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     textcode_generationCodeGenerationRequest:
       type: object
       properties:
@@ -325,6 +317,24 @@ components:
       required:
       - instruction
       - providers
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    textcode_generationResponseModel:
+      properties:
+        xai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textcode_generationCodeGenerationDataClass'
+          default: null
+      title: textcode_generationResponseModel
+      type: object
     BadRequest:
       type: object
       properties:
@@ -339,16 +349,6 @@ components:
           type: string
         message:
           type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type

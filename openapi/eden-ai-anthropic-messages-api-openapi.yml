@@ -13,7 +13,7 @@ paths:
       tags:
       - Anthropic Messages
       summary: Create Anthropic Message
-      description: Anthropic Messages API — native pass-through via litellm.
+      description: Anthropic Messages API, native pass-through.
       operationId: create_anthropic_message_v3_v1_messages_post
       requestBody:
         content:
@@ -66,33 +66,156 @@ paths:
       - AuthBearer: []
 components:
   schemas:
-    AnthropicMessage:
+    AnthropicMessagesResponse:
       properties:
+        id:
+          type: string
+          title: Id
+          description: Unique identifier for the message.
+        type:
+          type: string
+          const: message
+          title: Type
+          description: Object type. Always 'message' for this endpoint.
+          default: message
         role:
           type: string
-          enum:
-          - user
-          - assistant
-          - system
+          const: assistant
           title: Role
+          description: Conversational role of the response.
+          default: assistant
+        model:
+          type: string
+          title: Model
+          description: Model that generated the message.
         content:
+          items:
+            $ref: '#/components/schemas/AnthropicContentBlock'
+          type: array
+          title: Content
+          description: Ordered list of content blocks produced by the model.
+        stop_reason:
           anyOf:
           - type: string
-          - items:
-              $ref: '#/components/schemas/AnthropicContentBlock'
-            type: array
-          title: Content
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
+            enum:
+            - end_turn
+            - max_tokens
+            - stop_sequence
+            - tool_use
           - type: 'null'
-          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+          title: Stop Reason
+          description: Reason generation stopped, if known.
+        stop_sequence:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Stop Sequence
+          description: Custom stop sequence that triggered the stop, if any.
+        usage:
+          $ref: '#/components/schemas/AnthropicUsage'
+          description: Token usage for the request.
       additionalProperties: true
       type: object
       required:
-      - role
+      - id
+      - model
       - content
-      title: AnthropicMessage
+      - usage
+      title: AnthropicMessagesResponse
+      description: Response body for POST /v1/messages (non-streaming).
+    ProviderRoutingPreferences:
+      properties:
+        sort:
+          anyOf:
+          - type: string
+            enum:
+            - cost
+            - speed
+            - latency
+            - exact
+          - type: 'null'
+          title: Sort
+          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
+        sticky:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Sticky
+          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` or an `order` also takes priority over cache affinity.
+        allow_fallbacks:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Allow Fallbacks
+          description: 'Whether other providers of the same model may be tried when the chosen one fails. On by default. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller, useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
+        quality_cost:
+          anyOf:
+          - type: integer
+            maximum: 10.0
+            minimum: 0.0
+          - type: 'null'
+          title: Quality Cost
+          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
+        allowed_providers:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 64
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Allowed Providers
+          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'Serve this request only from providers that keep no prompts or outputs, and save neither its content nor its response. Applies to every model in the request, including a concrete ''provider/model'' and your `fallbacks`: one that is not zero data retention fails the request. It can only add the restriction. When your organization requires zero data retention, `false` does not lift it.'
+        ignored_providers:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 64
+              minLength: 1
+            type: array
+          - type: 'null'
+          title: Ignored Providers
+          description: 'Never route to these providers, e.g. [''deepinfra'']. The mirror of `allowed_providers`: an entry that does not sell the requested model is inert, and if the list removes every seller the request fails rather than falling back to one you excluded. Case-insensitive. A provider named in both lists is a validation error. A concrete ''provider/model'' you named in `fallbacks` is your own choice and is kept.'
+        order:
+          anyOf:
+          - items:
+              type: string
+              maxLength: 64
+              minLength: 1
+            type: array
+            maxItems: 16
+          - type: 'null'
+          title: Order
+          description: Providers to try first, in this order, e.g. ['azure', 'openai']. They become the head of the fallback chain; the remaining providers of the model follow, ranked by `sort` (or load-balanced on price when no `sort` is given). An entry that does not sell the model is inert. A provider our health data marks as down is moved to the end of the chain whatever its position here. Naming an `order` turns cache affinity off, as naming a `sort` does. Case-insensitive.
+        max_price:
+          anyOf:
+          - $ref: '#/components/schemas/MaxPrice'
+          - type: 'null'
+          description: 'Only route to providers whose listed per-token rates are at or under this price, in USD per MILLION tokens, e.g. {''input'': 2.5, ''output'': 10}. Either side may be omitted. Providers priced by another unit (per image, per second) are unaffected. If no provider of the model is within the ceiling the request fails and names the cheapest one.'
+      type: object
+      title: ProviderRoutingPreferences
+      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
+
+        quality for cost when the platform chooses the model. ``order``, ``allowed_providers``,
+
+        ``ignored_providers`` and ``max_price`` shape WHICH sellers and in what order; ``sort``
+
+        ranks the rest.
+
+
+        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
+
+        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
+
+        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
+
+        ``quality_cost`` below is the one field here that speaks to it.'
     AnthropicCountTokensBody:
       properties:
         model:
@@ -133,60 +256,33 @@ components:
       - messages
       title: AnthropicCountTokensBody
       description: Body for /v1/messages/count_tokens — same fields as messages but max_tokens is optional.
-    ProviderRoutingPreferences:
+    AnthropicMessage:
       properties:
-        sort:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          title: Role
+        content:
           anyOf:
           - type: string
-            enum:
-            - cost
-            - speed
-            - latency
-            - exact
-          - type: 'null'
-          title: Sort
-          description: What to optimise for when several providers serve the requested model. 'cost' (default) picks the cheapest for this request's shape; 'speed' the highest tokens/second; 'latency' the fastest to first token; 'exact' the most reliable at producing well-formed tool calls / structured output. Health is always a filter first — no mode will route you to a failing provider. Can also be written as a model suffix, e.g. 'gpt-5.5:speed'.
-        sticky:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Sticky
-          description: Keep a conversation on the provider holding its prompt cache. On by default, and only ever active for models whose providers discount cache reads. Set false to route every request independently on price instead. Naming an explicit `sort` also takes priority over cache affinity.
-        allow_fallbacks:
-          type: boolean
-          title: Allow Fallbacks
-          description: 'Whether other providers of the same model may be tried when the chosen one fails. Set false to pin the request to the single best provider: it then fails rather than silently moving to another seller. useful when a cache-warm prompt would cold-miss elsewhere. This governs PROVIDERS of the requested model only; models you list in `fallbacks` are your own choice and are always kept.'
-          default: true
-        quality_cost:
-          anyOf:
-          - type: integer
-            maximum: 10.0
-            minimum: 0.0
-          - type: 'null'
-          title: Quality Cost
-          description: 'Only with model=''@edenai'': how far to trade answer quality for cost when the platform chooses the MODEL. 0 asks for the best model for the request, 10 for the cheapest model that can still handle it, values in between blend the two; omit it to leave the choice to the platform (quality first). This is the one `routing` field that steers the model rather than the provider — `sort` never changes which model is chosen.'
-        allowed_providers:
-          anyOf:
           - items:
-              type: string
+              $ref: '#/components/schemas/AnthropicContentBlock'
             type: array
+          title: Content
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
           - type: 'null'
-          title: Allowed Providers
-          description: Restrict routing to these providers, e.g. ['openai', 'anthropic']. Only providers that serve the requested model are considered, so an entry that does not sell it is simply inert. If none of them do, the request fails rather than falling back to a provider you excluded. Case-insensitive. Applies to routed providers only. a concrete 'provider/model' you named in `fallbacks` is your own choice and is kept.
+          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+      additionalProperties: true
       type: object
-      title: ProviderRoutingPreferences
-      description: 'How to choose between SELLERS of one model — and, with ``@edenai``, how far to trade
-
-        quality for cost when the platform chooses the model.
-
-
-        The seller fields are only meaningful when `model` is a canonical name (`gpt-5.5`) rather than a concrete
-
-        `provider/model` — with a concrete id there is nothing to choose between. For choosing the
-
-        MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
-
-        ``quality_cost`` below is the one field here that speaks to it.'
+      required:
+      - role
+      - content
+      title: AnthropicMessage
     HTTPValidationError:
       properties:
         detail:
@@ -196,70 +292,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    AnthropicContentBlock:
-      properties:
-        type:
-          type: string
-          title: Type
-        text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Text
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        input:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Input
-        tool_use_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tool Use Id
-        content:
-          anyOf:
-          - type: string
-          - items: {}
-            type: array
-          - type: 'null'
-          title: Content
-        is_error:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Error
-        source:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Source
-        thinking:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thinking
-        signature:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Signature
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      title: AnthropicContentBlock
     AnthropicUsage:
       properties:
         input_tokens:
@@ -289,6 +321,17 @@ components:
       - output_tokens
       title: AnthropicUsage
       description: Token usage block returned by the Anthropic Messages API.
+    AnthropicCountTokensResponse:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          description: Number of input tokens the request would consume.
+      type: object
+      required:
+      - input_tokens
+      title: AnthropicCountTokensResponse
+      description: Response body for POST /v1/messages/count_tokens.
     ValidationError:
       properties:
         loc:
@@ -312,17 +355,23 @@ components:
       title: ValidationError
     AnthropicMessagesBody:
       properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
         routing:
           anyOf:
           - $ref: '#/components/schemas/ProviderRoutingPreferences'
           - type: 'null'
-          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider, except `zero_data_retention`, which holds every model in the request to it. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
         fallbacks:
           anyOf:
           - items:
               type: string
             type: array
-            maxItems: 3
+            maxItems: 7
           - type: 'null'
           title: Fallbacks
           description: 'List of fallback model IDs to try if the primary model fails. Models are tried in order. Example: [''anthropic/claude-3-opus'', ''openai/gpt-4o'']'
@@ -332,7 +381,7 @@ components:
             maxLength: 256
           - type: 'null'
           title: Session Id
-          description: Identifies a conversation, so its requests keep reaching the provider that holds its prompt cache. Any stable string you choose — a thread id, a ticket number, an agent run. Also accepted as the `x-session-id` header, for clients that cannot add body fields; the body field wins if both are sent. Without one, a conversation is recognised from its opening messages instead.
+          description: Identifies a conversation, so its requests keep reaching the provider that holds its prompt cache. Any stable string you choose — a thread id, a ticket number, an agent run. Also accepted as the `x-session-id` header, for clients that cannot add body fields, and read from the headers coding agents already send (`x-claude-code-session-id`, `x-session-affinity`, `session-id`, `session_id`, `x-client-request-id`); the body field wins if both are sent. Without one, a conversation is recognised from its opening messages instead.
         router_candidates:
           anyOf:
           - items:
@@ -343,6 +392,24 @@ components:
           - type: 'null'
           title: Router Candidates
           description: Models the '@edenai' router may choose BETWEEN — it picks the model, whereas `routing` picks the provider for a model you already named. Used only when model='@edenai'. Each entry is a bare model name (e.g. 'gpt-5.5' — the winner's provider is then picked like any provider-less request) or a 'provider/model' id (e.g. 'openai/gpt-5-nano' — the winner is served by that exact provider). Entries the router cannot rank are skipped and listed under `edenai_metadata.routing.auto.dropped`; entries naming a model already in the list collapse into its earliest spelling, which decides how the winner is returned. The request fails only when no entry is left. If not provided, the router chooses from a default pool of eligible catalog models. At most 64 entries of up to 128 characters each.
+        pre_hooks:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Pre Hooks
+          description: 'List of hooks to run before the LLM provider call. Each entry must have an ''action'' key and optional ''params''. Example: [{''action'': ''pdf_text_extract'', ''params'': {''method'': ''default''}}]'
+        post_hooks:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Post Hooks
+          description: 'List of hooks to run after the LLM provider call. Each entry must have an ''action'' key and optional ''params''. Example: [{''action'': ''json_heal'', ''params'': {''json_schema'': {...}}}]'
         model:
           type: string
           title: Model
@@ -438,74 +505,6 @@ components:
       - model
       - messages
       title: AnthropicMessagesBody
-    AnthropicCountTokensResponse:
-      properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-          description: Number of input tokens the request would consume.
-      type: object
-      required:
-      - input_tokens
-      title: AnthropicCountTokensResponse
-      description: Response body for POST /v1/messages/count_tokens.
-    AnthropicMessagesResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Unique identifier for the message.
-        type:
-          type: string
-          const: message
-          title: Type
-          description: Object type. Always 'message' for this endpoint.
-          default: message
-        role:
-          type: string
-          const: assistant
-          title: Role
-          description: Conversational role of the response.
-          default: assistant
-        model:
-          type: string
-          title: Model
-          description: Model that generated the message.
-        content:
-          items:
-            $ref: '#/components/schemas/AnthropicContentBlock'
-          type: array
-          title: Content
-          description: Ordered list of content blocks produced by the model.
-        stop_reason:
-          anyOf:
-          - type: string
-            enum:
-            - end_turn
-            - max_tokens
-            - stop_sequence
-            - tool_use
-          - type: 'null'
-          title: Stop Reason
-          description: Reason generation stopped, if known.
-        stop_sequence:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Stop Sequence
-          description: Custom stop sequence that triggered the stop, if any.
-        usage:
-          $ref: '#/components/schemas/AnthropicUsage'
-          description: Token usage for the request.
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - model
-      - content
-      - usage
-      title: AnthropicMessagesResponse
-      description: Response body for POST /v1/messages (non-streaming).
     CacheControl:
       properties:
         type:
@@ -537,6 +536,93 @@ components:
         caching is silently skipped. Silently ignored by providers that don''t
 
         support prompt caching.'
+    AnthropicContentBlock:
+      properties:
+        type:
+          type: string
+          title: Type
+        text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Text
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        input:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input
+        tool_use_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tool Use Id
+        content:
+          anyOf:
+          - type: string
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Content
+        is_error:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Error
+        source:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Source
+        thinking:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thinking
+        signature:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Signature
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: AnthropicContentBlock
+    MaxPrice:
+      properties:
+        input:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Input
+          description: Highest input rate accepted, in USD per million tokens.
+        output:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Output
+          description: Highest output rate accepted, in USD per million tokens.
+      additionalProperties: false
+      type: object
+      title: MaxPrice
+      description: 'A price ceiling in USD per MILLION tokens, one bar per direction, either one optional.
+
+
+        Unknown keys are refused: a typo on one side (``ouput``) must not silently remove that bar.'
   securitySchemes:
     AuthBearer:
       type: http

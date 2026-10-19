@@ -648,12 +648,66 @@ paths:
       description: Production
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    ocrocrResponseModel:
+      properties:
+        api4ai:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        clarifai:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        mistral:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrocrOcrDataClass'
+          default: null
+      title: ocrocrResponseModel
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     ocrocrOcrRequest:
       type: object
       properties:
@@ -712,6 +766,34 @@ components:
           description: 'Language code of the language the document is written in (ex: fr (French), en (English), es (Spanish))'
       required:
       - providers
+    ocrocrOcrDataClass:
+      properties:
+        text:
+          title: Text
+          type: string
+        bounding_boxes:
+          items:
+            $ref: '#/components/schemas/Bounding_box'
+          title: Bounding Boxes
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - text
+      - status
+      title: ocrocrOcrDataClass
+      type: object
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     Bounding_box:
       properties:
         text:
@@ -737,27 +819,6 @@ components:
       - height
       title: Bounding_box
       type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     BadRequest:
       type: object
       properties:
@@ -765,29 +826,6 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
-    ocrocrOcrDataClass:
-      properties:
-        text:
-          title: Text
-          type: string
-        bounding_boxes:
-          items:
-            $ref: '#/components/schemas/Bounding_box'
-          title: Bounding Boxes
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - text
-      - status
-      title: ocrocrOcrDataClass
-      type: object
     NestedError:
       type: object
       properties:
@@ -798,44 +836,6 @@ components:
       required:
       - message
       - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    ocrocrResponseModel:
-      properties:
-        api4ai:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        clarifai:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        mistral:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocrocrOcrDataClass'
-          default: null
-      title: ocrocrResponseModel
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -540,6 +540,12 @@ paths:
           description: ''
 components:
   schemas:
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     Error:
       type: object
       properties:
@@ -547,72 +553,73 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    BadRequest:
-      type: object
+    FaceFacialHair:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    FaceEmotions:
-      properties:
-        joy:
-          title: Joy
+        moustache:
+          title: Moustache
           type: integer
-        sorrow:
-          title: Sorrow
+        beard:
+          title: Beard
           type: integer
-        anger:
-          title: Anger
-          type: integer
-        surprise:
-          title: Surprise
-          type: integer
-        disgust:
-          title: Disgust
-          type: integer
-        fear:
-          title: Fear
-          type: integer
-        confusion:
-          title: Confusion
-          type: integer
-        calm:
-          title: Calm
-          type: integer
-        unknown:
-          title: Unknown
-          type: integer
-        neutral:
-          title: Neutral
-          type: integer
-        contempt:
-          title: Contempt
+        sideburns:
+          title: Sideburns
           type: integer
       required:
-      - joy
-      - sorrow
-      - anger
-      - surprise
-      - disgust
-      - fear
-      - confusion
-      - calm
-      - unknown
-      - neutral
-      - contempt
-      title: FaceEmotions
+      - moustache
+      - beard
+      - sideburns
+      title: FaceFacialHair
       type: object
-    NestedError:
-      type: object
+    FaceItem:
       properties:
-        type:
+        confidence:
+          title: Confidence
+          type: integer
+        landmarks:
+          $ref: '#/components/schemas/FaceLandmarks'
+        emotions:
+          $ref: '#/components/schemas/FaceEmotions'
+        poses:
+          $ref: '#/components/schemas/FacePoses'
+        age:
+          title: Age
+          type: integer
+        gender:
+          title: Gender
           type: string
-        message:
-          type: string
+        bounding_box:
+          $ref: '#/components/schemas/FaceBoundingBox'
+        hair:
+          $ref: '#/components/schemas/FaceHair'
+        facial_hair:
+          $ref: '#/components/schemas/FaceFacialHair'
+        quality:
+          $ref: '#/components/schemas/FaceQuality'
+        makeup:
+          $ref: '#/components/schemas/FaceMakeup'
+        accessories:
+          $ref: '#/components/schemas/FaceAccessories'
+        occlusions:
+          $ref: '#/components/schemas/FaceOcclusions'
+        features:
+          $ref: '#/components/schemas/FaceFeatures'
       required:
-      - message
-      - type
+      - confidence
+      - landmarks
+      - emotions
+      - poses
+      - age
+      - gender
+      - bounding_box
+      - hair
+      - facial_hair
+      - quality
+      - makeup
+      - accessories
+      - occlusions
+      - features
+      title: FaceItem
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -623,65 +630,6 @@ components:
       required:
       - message
       - type
-    imageface_detectionFaceDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/FaceItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imageface_detectionFaceDetectionDataClass
-      type: object
-    FaceOcclusions:
-      properties:
-        eye_occluded:
-          title: Eye Occluded
-          type: boolean
-        forehead_occluded:
-          title: Forehead Occluded
-          type: boolean
-        mouth_occluded:
-          title: Mouth Occluded
-          type: boolean
-      required:
-      - eye_occluded
-      - forehead_occluded
-      - mouth_occluded
-      title: FaceOcclusions
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    FaceHair:
-      properties:
-        hair_color:
-          items:
-            $ref: '#/components/schemas/FaceHairColor'
-          title: Hair Color
-          type: array
-        bald:
-          title: Bald
-          type: integer
-        invisible:
-          title: Invisible
-          type: boolean
-      required:
-      - bald
-      - invisible
-      title: FaceHair
-      type: object
     FaceLandmarks:
       properties:
         left_eye:
@@ -946,6 +894,102 @@ components:
           type: array
       title: FaceLandmarks
       type: object
+    FaceHair:
+      properties:
+        hair_color:
+          items:
+            $ref: '#/components/schemas/FaceHairColor'
+          title: Hair Color
+          type: array
+        bald:
+          title: Bald
+          type: integer
+        invisible:
+          title: Invisible
+          type: boolean
+      required:
+      - bald
+      - invisible
+      title: FaceHair
+      type: object
+    FaceAccessories:
+      properties:
+        sunglasses:
+          title: Sunglasses
+          type: integer
+        reading_glasses:
+          title: Reading Glasses
+          type: integer
+        swimming_goggles:
+          title: Swimming Goggles
+          type: integer
+        face_mask:
+          title: Face Mask
+          type: integer
+        eyeglasses:
+          title: Eyeglasses
+          type: integer
+        headwear:
+          title: Headwear
+          type: integer
+      required:
+      - sunglasses
+      - reading_glasses
+      - swimming_goggles
+      - face_mask
+      - eyeglasses
+      - headwear
+      title: FaceAccessories
+      type: object
+    FaceEmotions:
+      properties:
+        joy:
+          title: Joy
+          type: integer
+        sorrow:
+          title: Sorrow
+          type: integer
+        anger:
+          title: Anger
+          type: integer
+        surprise:
+          title: Surprise
+          type: integer
+        disgust:
+          title: Disgust
+          type: integer
+        fear:
+          title: Fear
+          type: integer
+        confusion:
+          title: Confusion
+          type: integer
+        calm:
+          title: Calm
+          type: integer
+        unknown:
+          title: Unknown
+          type: integer
+        neutral:
+          title: Neutral
+          type: integer
+        contempt:
+          title: Contempt
+          type: integer
+      required:
+      - joy
+      - sorrow
+      - anger
+      - surprise
+      - disgust
+      - fear
+      - confusion
+      - calm
+      - unknown
+      - neutral
+      - contempt
+      title: FaceEmotions
+      type: object
     imageface_detectionFaceDetectionRequest:
       type: object
       properties:
@@ -994,37 +1038,45 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    FaceQuality:
+    BadRequest:
+      type: object
       properties:
-        noise:
-          title: Noise
-          type: integer
-        exposure:
-          title: Exposure
-          type: integer
-        blur:
-          title: Blur
-          type: integer
-        brightness:
-          title: Brightness
-          type: integer
-        sharpness:
-          title: Sharpness
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    FaceHairColor:
+      properties:
+        color:
+          title: Color
+          type: string
+        confidence:
+          title: Confidence
           type: integer
       required:
-      - noise
-      - exposure
-      - blur
-      - brightness
-      - sharpness
-      title: FaceQuality
+      - color
+      - confidence
+      title: FaceHairColor
       type: object
-    NotFoundResponse:
+    FieldError:
       type: object
       properties:
-        details:
-          type: string
-          default: Not Found
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     FaceFeatures:
       properties:
         eyes_open:
@@ -1041,36 +1093,6 @@ components:
       - smile
       - mouth_open
       title: FaceFeatures
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    FaceBoundingBox:
-      properties:
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: FaceBoundingBox
       type: object
     imageface_detectionResponseModel:
       properties:
@@ -1091,22 +1113,48 @@ components:
           default: null
       title: imageface_detectionResponseModel
       type: object
-    FaceFacialHair:
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    FaceOcclusions:
       properties:
-        moustache:
-          title: Moustache
+        eye_occluded:
+          title: Eye Occluded
+          type: boolean
+        forehead_occluded:
+          title: Forehead Occluded
+          type: boolean
+        mouth_occluded:
+          title: Mouth Occluded
+          type: boolean
+      required:
+      - eye_occluded
+      - forehead_occluded
+      - mouth_occluded
+      title: FaceOcclusions
+      type: object
+    FaceBoundingBox:
+      properties:
+        x_min:
+          title: X Min
           type: integer
-        beard:
-          title: Beard
+        x_max:
+          title: X Max
           type: integer
-        sideburns:
-          title: Sideburns
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
           type: integer
       required:
-      - moustache
-      - beard
-      - sideburns
-      title: FaceFacialHair
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: FaceBoundingBox
       type: object
     FacePoses:
       properties:
@@ -1138,97 +1186,49 @@ components:
       - lip_make
       title: FaceMakeup
       type: object
-    FaceHairColor:
+    FaceQuality:
       properties:
-        color:
-          title: Color
-          type: string
-        confidence:
-          title: Confidence
+        noise:
+          title: Noise
+          type: integer
+        exposure:
+          title: Exposure
+          type: integer
+        blur:
+          title: Blur
+          type: integer
+        brightness:
+          title: Brightness
+          type: integer
+        sharpness:
+          title: Sharpness
           type: integer
       required:
-      - color
-      - confidence
-      title: FaceHairColor
+      - noise
+      - exposure
+      - blur
+      - brightness
+      - sharpness
+      title: FaceQuality
       type: object
-    FaceItem:
+    imageface_detectionFaceDetectionDataClass:
       properties:
-        confidence:
-          title: Confidence
-          type: integer
-        landmarks:
-          $ref: '#/components/schemas/FaceLandmarks'
-        emotions:
-          $ref: '#/components/schemas/FaceEmotions'
-        poses:
-          $ref: '#/components/schemas/FacePoses'
-        age:
-          title: Age
-          type: integer
-        gender:
-          title: Gender
-          type: string
-        bounding_box:
-          $ref: '#/components/schemas/FaceBoundingBox'
-        hair:
-          $ref: '#/components/schemas/FaceHair'
-        facial_hair:
-          $ref: '#/components/schemas/FaceFacialHair'
-        quality:
-          $ref: '#/components/schemas/FaceQuality'
-        makeup:
-          $ref: '#/components/schemas/FaceMakeup'
-        accessories:
-          $ref: '#/components/schemas/FaceAccessories'
-        occlusions:
-          $ref: '#/components/schemas/FaceOcclusions'
-        features:
-          $ref: '#/components/schemas/FaceFeatures'
+        items:
+          items:
+            $ref: '#/components/schemas/FaceItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
       required:
-      - confidence
-      - landmarks
-      - emotions
-      - poses
-      - age
-      - gender
-      - bounding_box
-      - hair
-      - facial_hair
-      - quality
-      - makeup
-      - accessories
-      - occlusions
-      - features
-      title: FaceItem
-      type: object
-    FaceAccessories:
-      properties:
-        sunglasses:
-          title: Sunglasses
-          type: integer
-        reading_glasses:
-          title: Reading Glasses
-          type: integer
-        swimming_goggles:
-          title: Swimming Goggles
-          type: integer
-        face_mask:
-          title: Face Mask
-          type: integer
-        eyeglasses:
-          title: Eyeglasses
-          type: integer
-        headwear:
-          title: Headwear
-          type: integer
-      required:
-      - sunglasses
-      - reading_glasses
-      - swimming_goggles
-      - face_mask
-      - eyeglasses
-      - headwear
-      title: FaceAccessories
+      - status
+      title: imageface_detectionFaceDetectionDataClass
       type: object
   securitySchemes:
     FeatureApiAuth:

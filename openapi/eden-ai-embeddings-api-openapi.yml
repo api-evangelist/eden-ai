@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Eden Ai Embeddings API
   version: '1.0'
-  description: 'Operations tagged Embeddings across 3 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-text-features-openapi.json, eden-ai-v3-openapi.json. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Embeddings across 3 of this provider''s published API definitions: eden-ai-image-features-openapi.json, eden-ai-openapi.json, eden-ai-text-features-openapi.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.edenai.run/v2
 - url: https://api.edenai.run
@@ -137,6 +137,86 @@ paths:
           description: ''
     servers:
     - url: https://api.edenai.run/v2
+  /v3/embeddings:
+    post:
+      tags:
+      - Embeddings
+      summary: Create Embeddings
+      description: OpenAI-compatible embeddings endpoint.
+      operationId: create_embeddings_v3_embeddings_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbeddingsBody'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingsResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - AuthBearer: []
+    servers:
+    - url: https://api.edenai.run
+      description: Production server
+  /v3/embeddings/models:
+    get:
+      tags:
+      - Embeddings
+      summary: List Embeddings Models
+      description: List available embeddings models.
+      operationId: list_embeddings_models_v3_embeddings_models_get
+      parameters:
+      - name: view
+        in: query
+        required: false
+        schema:
+          enum:
+          - endpoints
+          - models
+          type: string
+          description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
+          default: endpoints
+          title: View
+        description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
+      - name: zero_data_retention
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+          title: Zero Data Retention
+        description: 'true keeps only models whose provider keeps no prompts or outputs after the response (Zero Data Retention); false keeps only those known to keep them. Models not verified yet (`zero_data_retention: null`) match neither.'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ListModelsResponse'
+                - $ref: '#/components/schemas/ListModelsWithEndpointsResponse'
+                title: Response List Embeddings Models V3 Embeddings Models Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.edenai.run
+      description: Production server
   /text/embeddings/:
     post:
       operationId: text_embeddings_create
@@ -351,84 +431,17 @@ paths:
           description: ''
     servers:
     - url: https://api.edenai.run/v2
-  /v3/embeddings:
-    post:
-      tags:
-      - Embeddings
-      summary: Create Embeddings
-      description: OpenAI-compatible embeddings endpoint.
-      operationId: create_embeddings_v3_embeddings_post
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmbeddingsBody'
-        required: true
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmbeddingsResponse'
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-      security:
-      - AuthBearer: []
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
-  /v3/embeddings/models:
-    get:
-      tags:
-      - Embeddings
-      summary: List Embeddings Models
-      description: List available embeddings models.
-      operationId: list_embeddings_models_v3_embeddings_models_get
-      parameters:
-      - name: view
-        in: query
-        required: false
-        schema:
-          enum:
-          - endpoints
-          - models
-          type: string
-          description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
-          default: endpoints
-          title: View
-        description: How to group the listing. 'endpoints' (default) is one entry per provider/model id, unchanged. 'models' is one entry per routable model name with its provider endpoints nested underneath — send that name as `model` to let Eden AI choose the provider.
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                anyOf:
-                - $ref: '#/components/schemas/ListModelsResponse'
-                - $ref: '#/components/schemas/ListModelsWithEndpointsResponse'
-                title: Response List Embeddings Models V3 Embeddings Models Get
-        '422':
-          description: Validation Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.edenai.run
-      description: Production server
 components:
   schemas:
-    NotFoundResponse:
+    FieldError:
       type: object
       properties:
-        details:
-          type: string
-          default: Not Found
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     imageembeddingsEmbeddingsRequest:
       type: object
       properties:
@@ -489,6 +502,58 @@ components:
       required:
       - providers
       - representation
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageembeddingsResponseModel:
+      properties:
+        alephalpha:
+          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
+          default: null
+      title: imageembeddingsResponseModel
+      type: object
+    EmbeddingDataClass:
+      properties:
+        embedding:
+          items:
+            type: integer
+          title: Embedding
+          type: array
+      required:
+      - embedding
+      title: EmbeddingDataClass
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     imageembeddingsEmbeddingsDataClass:
       properties:
         items:
@@ -508,27 +573,6 @@ components:
       - status
       title: imageembeddingsEmbeddingsDataClass
       type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     BadRequest:
       type: object
       properties:
@@ -536,19 +580,6 @@ components:
           $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
-    imageembeddingsResponseModel:
-      properties:
-        alephalpha:
-          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageembeddingsEmbeddingsDataClass'
-          default: null
-      title: imageembeddingsResponseModel
-      type: object
     NestedError:
       type: object
       properties:
@@ -556,16 +587,6 @@ components:
           type: string
         message:
           type: string
-      required:
-      - message
-      - type
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
@@ -580,299 +601,68 @@ components:
         * `query` - query
 
         * `symetric` - symetric'
-    EmbeddingDataClass:
+    ModelWithEndpoints:
       properties:
-        embedding:
-          items:
-            type: integer
-          title: Embedding
-          type: array
-      required:
-      - embedding
-      title: EmbeddingDataClass
-      type: object
-    textembeddingsEmbeddingsRequest:
-      type: object
-      properties:
-        settings:
+        id:
           type: string
-          default: {}
-          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
-        providers:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
-        fallback_providers:
-          type: array
-          items:
-            type: string
-          default: []
-          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
-          maxItems: 5
-        response_as_dict:
-          type: boolean
-          default: true
-          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
-        attributes_as_list:
-          type: boolean
-          default: false
-          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
-        show_base_64:
-          type: boolean
-          default: true
-        show_original_response:
-          type: boolean
-          default: false
-          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
-        texts:
-          type: array
-          items:
-            type: string
-            minLength: 1
-          description: List of texts to transform into embeddings.
-        dimensions:
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-          description: ' parameter to control the size of the output embedding vecto'
-      required:
-      - providers
-      - texts
-    textembeddingsResponseModel:
-      properties:
-        ai21labs:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        jina:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        cohere:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        mistral:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        iointelligence:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
-          default: null
-      title: textembeddingsResponseModel
-      type: object
-    textembeddingsEmbeddingsDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/EmbeddingDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: textembeddingsEmbeddingsDataClass
-      type: object
-    Usage:
-      properties:
-        prompt_tokens:
+          title: Id
+          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
+        object:
+          type: string
+          const: model
+          title: Object
+          description: Object type
+          default: model
+        created:
           type: integer
-          title: Prompt Tokens
-        total_tokens:
-          type: integer
-          title: Total Tokens
-      additionalProperties: true
-      type: object
-      required:
-      - prompt_tokens
-      - total_tokens
-      title: Usage
-      description: The usage information for the request.
-    EmbeddingsResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
+          title: Created
+          description: Unix timestamp of the newest endpoint serving this model
+          default: 0
+        owned_by:
+          type: string
+          title: Owned By
+          description: Who authored the model, independent of who sells it
+          default: ''
+        mode:
           anyOf:
           - type: string
           - type: 'null'
-          title: Provider
-        data:
-          items:
-            $ref: '#/components/schemas/EmbeddingItem'
-          type: array
-          title: Data
-        model:
-          type: string
-          title: Model
-        object:
-          type: string
-          const: list
-          title: Object
-        usage:
-          $ref: '#/components/schemas/Usage'
-      additionalProperties: true
-      type: object
-      required:
-      - data
-      - model
-      - object
-      - usage
-      title: EmbeddingsResponse
-      description: 'OpenAI-compatible embeddings response + Eden `cost` and `provider` fields.
-
-
-        `EmbeddingsDataClass` (from edenai-apis) already widens
-
-        ``data[].embedding`` to ``list[float] | str`` so the base64 wire format
-
-        validates here too.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Capabilities:
-      properties:
-        input_modalities:
-          items:
-            type: string
-          type: array
-          title: Input Modalities
-        output_modalities:
-          items:
-            type: string
-          type: array
-          title: Output Modalities
-        supports_reasoning:
-          type: boolean
-          title: Supports Reasoning
-          default: false
-        supports_web_search:
-          type: boolean
-          title: Supports Web Search
-          default: false
-        supports_tool_choice:
-          type: boolean
-          title: Supports Tool Choice
-          default: false
-        supports_computer_use:
-          type: boolean
-          title: Supports Computer Use
-          default: false
-        supports_prompt_caching:
-          type: boolean
-          title: Supports Prompt Caching
-          default: false
-        supports_response_schema:
-          type: boolean
-          title: Supports Response Schema
-          default: false
-        supports_system_messages:
-          type: boolean
-          title: Supports System Messages
-          default: false
-        supports_function_calling:
-          type: boolean
-          title: Supports Function Calling
-          default: false
-        supports_native_streaming:
-          type: boolean
-          title: Supports Native Streaming
-          default: false
-        supports_assistant_prefill:
-          type: boolean
-          title: Supports Assistant Prefill
-          default: false
-        supports_embedding_image_input:
-          type: boolean
-          title: Supports Embedding Image Input
-          default: false
-        supports_parallel_function_calling:
-          type: boolean
-          title: Supports Parallel Function Calling
-          default: false
-      additionalProperties: true
-      type: object
-      title: Capabilities
-      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
-
-        new capabilities are introduced without a coordinated release.'
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
+          title: Mode
+          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
+        endpoints:
           items:
             $ref: '#/components/schemas/ModelObject'
           type: array
-          title: Data
-          description: List of models
+          title: Endpoints
+          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
+        endpoint_count:
+          type: integer
+          title: Endpoint Count
+          description: How many provider endpoints serve this model
+          readOnly: true
       type: object
       required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
+      - id
+      - endpoints
+      - endpoint_count
+      title: ModelWithEndpoints
+      description: 'One routable model name and the provider endpoints behind it.
+
+
+        Deliberately carries NO pricing, context window or capability of its own. Those vary between
+
+        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
+
+        and six distinct capability sets across ten sellers — so a value here would be wrong for most
+
+        of the group. Each endpoint keeps its own, unchanged.
+
+
+        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
+
+        field, which is what makes this view a pure regrouping: a caller reading
+
+        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
     ModelObject:
       properties:
         id:
@@ -940,6 +730,12 @@ components:
           type: array
           title: Regions
           description: Regions where this model is available
+        zero_data_retention:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Zero Data Retention
+          description: 'true when calls to this entry keep no prompts or outputs after the response (Zero Data Retention), under Eden AI''s terms with its provider: the model''s own terms when they differ, else the provider''s; a customer-hosted model is always true. false when they are kept, null when not verified yet.'
         alias_of:
           anyOf:
           - type: string
@@ -954,131 +750,131 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ListModelsWithEndpointsResponse:
+    Capabilities:
       properties:
+        input_modalities:
+          items:
+            type: string
+          type: array
+          title: Input Modalities
+        output_modalities:
+          items:
+            type: string
+          type: array
+          title: Output Modalities
+        supports_reasoning:
+          type: boolean
+          title: Supports Reasoning
+          default: false
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
+      additionalProperties: true
+      type: object
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
+
+        new capabilities are introduced without a coordinated release.'
+    EmbeddingsResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        data:
+          items:
+            $ref: '#/components/schemas/EmbeddingItem'
+          type: array
+          title: Data
+        model:
+          type: string
+          title: Model
         object:
           type: string
           const: list
           title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    EmbeddingItem:
-      properties:
-        embedding:
-          anyOf:
-          - items:
-              type: number
-            type: array
-          - type: string
-          title: Embedding
-        index:
-          type: integer
-          title: Index
-        object:
-          type: string
-          const: embedding
-          title: Object
+        usage:
+          $ref: '#/components/schemas/Usage'
       additionalProperties: true
       type: object
       required:
-      - embedding
-      - index
+      - data
+      - model
       - object
-      title: EmbeddingItem
-      description: 'OpenAI embedding item with the wire-format quirk made explicit.
+      - usage
+      title: EmbeddingsResponse
+      description: 'OpenAI-compatible embeddings response + Eden `cost` and `provider` fields.
 
 
-        The OpenAI SDK types ``embedding`` as ``list[float]`` only because the SDK
+        `EmbeddingsDataClass` (from edenai-apis) already widens
 
-        transparently decodes base64 before populating the model. The actual API
+        ``data[].embedding`` to ``list[float] | str`` so the base64 wire format
 
-        *wire* response returns a base64 string when ``encoding_format=''base64''``.
-
-        Eden is a passthrough for OpenAI-compatible callers who explicitly want the
-
-        smaller base64 payload, so we must allow both shapes.'
-    ModelWithEndpoints:
+        validates here too.'
+    HTTPValidationError:
       properties:
-        id:
-          type: string
-          title: Id
-          description: The routable model name, with no provider prefix (e.g. 'gpt-oss-120b'). Send this as `model` to let Eden AI choose which provider serves it.
-        object:
-          type: string
-          const: model
-          title: Object
-          description: Object type
-          default: model
-        created:
-          type: integer
-          title: Created
-          description: Unix timestamp of the newest endpoint serving this model
-          default: 0
-        owned_by:
-          type: string
-          title: Owned By
-          description: Who authored the model, independent of who sells it
-          default: ''
-        mode:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Mode
-          description: 'What the model does: ''chat'', ''embedding'', ''stt'', ''tts'' or ''image_generation''. Lets a caller tell an LLM from a voice.'
-        endpoints:
+        detail:
           items:
-            $ref: '#/components/schemas/ModelObject'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Endpoints
-          description: Every provider endpoint serving this model, each with its own pricing, context length, capabilities and regions.
-        endpoint_count:
-          type: integer
-          title: Endpoint Count
-          description: How many provider endpoints serve this model
-          readOnly: true
+          title: Detail
       type: object
-      required:
-      - id
-      - endpoints
-      - endpoint_count
-      title: ModelWithEndpoints
-      description: 'One routable model name and the provider endpoints behind it.
-
-
-        Deliberately carries NO pricing, context window or capability of its own. Those vary between
-
-        the sellers of one model — `gpt-oss-120b` spans a 9.5x input-price range, two context lengths
-
-        and six distinct capability sets across ten sellers — so a value here would be wrong for most
-
-        of the group. Each endpoint keeps its own, unchanged.
-
-
-        ``endpoints`` entries are the same :class:`ModelObject` the flat listing returns, field for
-
-        field, which is what makes this view a pure regrouping: a caller reading
-
-        ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+      title: HTTPValidationError
     EmbeddingsBody:
       properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
         input:
           anyOf:
           - type: string
@@ -1149,6 +945,232 @@ components:
         Unknown top-level fields are forwarded to the underlying provider
 
         (``extra="allow"`` via the base mixin, which also rejects connection keys).'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
+    Usage:
+      properties:
+        prompt_tokens:
+          type: integer
+          title: Prompt Tokens
+        total_tokens:
+          type: integer
+          title: Total Tokens
+      additionalProperties: true
+      type: object
+      required:
+      - prompt_tokens
+      - total_tokens
+      title: Usage
+      description: The usage information for the request.
+    EmbeddingItem:
+      properties:
+        embedding:
+          anyOf:
+          - items:
+              type: number
+            type: array
+          - type: string
+          title: Embedding
+        index:
+          type: integer
+          title: Index
+        object:
+          type: string
+          const: embedding
+          title: Object
+      additionalProperties: true
+      type: object
+      required:
+      - embedding
+      - index
+      - object
+      title: EmbeddingItem
+      description: 'OpenAI embedding item with the wire-format quirk made explicit.
+
+
+        The OpenAI SDK types ``embedding`` as ``list[float]`` only because the SDK
+
+        transparently decodes base64 before populating the model. The actual API
+
+        *wire* response returns a base64 string when ``encoding_format=''base64''``.
+
+        Eden is a passthrough for OpenAI-compatible callers who explicitly want the
+
+        smaller base64 payload, so we must allow both shapes.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    textembeddingsEmbeddingsDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/EmbeddingDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: textembeddingsEmbeddingsDataClass
+      type: object
+    textembeddingsResponseModel:
+      properties:
+        ai21labs:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        jina:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        cohere:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        mistral:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        iointelligence:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/textembeddingsEmbeddingsDataClass'
+          default: null
+      title: textembeddingsResponseModel
+      type: object
+    textembeddingsEmbeddingsRequest:
+      type: object
+      properties:
+        settings:
+          type: string
+          default: {}
+          description: "A dictionnary or a json object to specify specific models to use for some providers. <br>                     It can be in the following format: {\"google\" : \"google_model\", \"ibm\": \"ibm_model\"...}.\n                     "
+        providers:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'It can be one (ex: **''amazon''** or **''google''**) or multiple provider(s) (ex: **''amazon,microsoft,google''**)             that the data will be redirected to in order to get the processed results.<br>             Providers can also be invoked with specific models (ex: providers: **''amazon/model1, amazon/model2, google/model3''**)'
+        fallback_providers:
+          type: array
+          items:
+            type: string
+          default: []
+          description: "Providers in this list will be used as fallback if the call to provider in `providers` parameter fails.\n    To use this feature, you must input **only one** provider in the `providers` parameter. but you can put up to 5 fallbacks.\n\nThey will be tried in the same order they are input, and it will stop to the first provider who doesn't fail.\n\n\n*Doesn't work with async subfeatures.*\n    "
+          maxItems: 5
+        response_as_dict:
+          type: boolean
+          default: true
+          description: "Optional : When set to **true** (default), the response is an object of responses with providers names as keys : <br> \n                  ``` {\"google\" : { \"status\": \"success\", ... }, } ``` <br>\n                When set to **false** the response structure is a list of response objects : <br> \n                   ``` [{\"status\": \"success\", \"provider\": \"google\" ... }, ] ```. <br>\n                  "
+        attributes_as_list:
+          type: boolean
+          default: false
+          description: "Optional : When set to **false** (default) the structure of the extracted items is list of objects having different attributes : <br>\n     ```{'items': [{\"attribute_1\": \"x1\",\"attribute_2\": \"y2\"}, ... ]}``` <br>\n     When it is set to **true**, the response contains an object with each attribute as a list : <br>\n     ```{ \"attribute_1\": [\"x1\",\"x2\", ...], \"attribute_2\": [y1, y2, ...]}``` "
+        show_base_64:
+          type: boolean
+          default: true
+        show_original_response:
+          type: boolean
+          default: false
+          description: "Optional : Shows the original response of the provider.<br>\n        When set to **true**, a new attribute *original_response* will appear in the response object."
+        texts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: List of texts to transform into embeddings.
+        dimensions:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          description: ' parameter to control the size of the output embedding vecto'
+      required:
+      - providers
+      - texts
   securitySchemes:
     FeatureApiAuth:
       type: http
@@ -1159,5 +1181,5 @@ components:
       scheme: bearer
 x-refined-from:
 - eden-ai-image-features-openapi.json
+- eden-ai-openapi.json
 - eden-ai-text-features-openapi.json
-- eden-ai-v3-openapi.json

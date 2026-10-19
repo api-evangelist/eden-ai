@@ -303,12 +303,130 @@ paths:
           description: ''
 components:
   schemas:
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    imageobject_detectionObjectDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/ObjectItem'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: imageobject_detectionObjectDetectionDataClass
+      type: object
     NotFoundResponse:
       type: object
       properties:
         details:
           type: string
           default: Not Found
+    ObjectItem:
+      properties:
+        label:
+          title: Label
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - label
+      - confidence
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: ObjectItem
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    imageobject_detectionResponseModel:
+      properties:
+        clarifai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+      title: imageobject_detectionResponseModel
+      type: object
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     imageobject_detectionObjectDetectionRequest:
       type: object
       properties:
@@ -357,124 +475,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    ObjectItem:
-      properties:
-        label:
-          title: Label
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - label
-      - confidence
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: ObjectItem
-      type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    imageobject_detectionResponseModel:
-      properties:
-        clarifai:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-      title: imageobject_detectionResponseModel
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    imageobject_detectionObjectDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/ObjectItem'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: imageobject_detectionObjectDetectionDataClass
-      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

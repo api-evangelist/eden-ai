@@ -154,48 +154,6 @@ paths:
           description: ''
 components:
   schemas:
-    translationlanguage_detectionLanguageDetectionDataClass:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/InfosLanguageDetectionDataClass'
-          title: Items
-          type: array
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          title: Status
-      required:
-      - status
-      title: translationlanguage_detectionLanguageDetectionDataClass
-      type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    InfosLanguageDetectionDataClass:
-      properties:
-        language:
-          title: Language
-          type: string
-        display_name:
-          title: Display Name
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-      required:
-      - language
-      - display_name
-      - confidence
-      title: InfosLanguageDetectionDataClass
-      type: object
     FieldError:
       type: object
       properties:
@@ -205,6 +163,12 @@ components:
             type: string
       required:
       - <parameter_name>
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
     Error:
       type: object
       properties:
@@ -212,43 +176,6 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    translationlanguage_detectionResponseModel:
-      properties:
-        xai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        modernmt:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        oneai:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
-          default: null
-      title: translationlanguage_detectionResponseModel
-      type: object
     translationlanguage_detectionLanguageDetectionRequest:
       type: object
       properties:
@@ -291,16 +218,31 @@ components:
       required:
       - providers
       - text
-    NestedError:
-      type: object
+    translationlanguage_detectionResponseModel:
       properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+        xai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        modernmt:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        oneai:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/translationlanguage_detectionLanguageDetectionDataClass'
+          default: null
+      title: translationlanguage_detectionResponseModel
+      type: object
     NestedBadRequest:
       type: object
       properties:
@@ -311,6 +253,64 @@ components:
       required:
       - message
       - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    InfosLanguageDetectionDataClass:
+      properties:
+        language:
+          title: Language
+          type: string
+        display_name:
+          title: Display Name
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+      required:
+      - language
+      - display_name
+      - confidence
+      title: InfosLanguageDetectionDataClass
+      type: object
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    translationlanguage_detectionLanguageDetectionDataClass:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/InfosLanguageDetectionDataClass'
+          title: Items
+          type: array
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Status
+      required:
+      - status
+      title: translationlanguage_detectionLanguageDetectionDataClass
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http
