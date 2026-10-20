@@ -96,3 +96,29 @@ tools:
   - video_deepfake_detection
   - video_generation
 tool_count: 39
+tool_quality:
+  tool_count: 42
+  tokens_total: 11889
+  tokens_per_tool_median: 252
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 130
+  params_undescribed: 1
+  params_described_pct: 99.2
+  tools_with_undescribed_params: 1
+  tools_annotated: 0
+  annotated_pct: 0.0
+  state_changing_unhinted:
+  - upload_file
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 4
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/eden-ai-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.
