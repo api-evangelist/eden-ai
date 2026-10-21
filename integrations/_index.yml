@@ -174,3 +174,16 @@
     detected: '2026-10-20'
   status: not-a-workflow
   arazzo: null
+- slug: eden-ai-microsoft-power-automate-power-platform-connectors
+  label: Microsoft Power Automate (power-platform-connectors)
+  partner: microsoft-power-automate
+  partner_name: Microsoft Power Automate (power-platform-connectors)
+  category: AI;Website
+  type: marketplace
+  marketplace: power-platform-connectors
+  channel: partner-built
+  evidence: https://learn.microsoft.com/en-us/connectors/edenai/
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
