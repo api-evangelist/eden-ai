@@ -195,6 +195,32 @@ edges:
   category: AI;Website
   badges:
   - Power Platform certified connector
+- partner_name: Bubble (own)
+  partner: bubble
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://bubble.io/plugin/eden-ai---ai-content-detection-1695029061756x519982118060949500
+  mirror_of: bubble/integrations/bubble-integration-edges.yml
+  apps:
+  - Eden AI - AI Content Detection
+  - Eden AI
+  - Eden AI - AI Detection
+  - Eden AI - Automl Classification
+  - Eden AI - Background Removal
+  - Eden AI - Bank Check Parser
+  - Eden AI - Chat Generation
+  - Eden AI - Code Generation
+  - Eden AI - Custom Document Parser
+  - Eden AI - Custom Entity Extraction
+  listing_count: 1
+  detected: '2026-10-23'
+  detected_by: mirror-platform-listings.py
+  category: Api
 generated: '2026-10-13'
 method: searched
 checked:
@@ -216,6 +242,7 @@ checked:
 - https://skillsmp.com/sitemap.xml
 - https://www.skills.sh/sitemap.xml
 - microsoft-power-automate/integrations/microsoft-power-automate-integration-edges.yml
+- bubble/integrations/bubble-integration-edges.yml
 source:
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://zapier.com/api/v4/apps/

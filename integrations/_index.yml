@@ -187,3 +187,16 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: eden-ai-bubble-own
+  label: Bubble (own)
+  partner: bubble
+  partner_name: Bubble (own)
+  category: Api
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://bubble.io/plugin/eden-ai---ai-content-detection-1695029061756x519982118060949500
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
