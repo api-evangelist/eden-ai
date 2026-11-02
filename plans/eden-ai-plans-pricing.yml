@@ -1,0 +1,58 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://www.edenai.co/pricing
+sources:
+- https://www.edenai.co/pricing
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T141238
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: ad-valorem
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+published: true
+note: Self-serve tier charges provider prices at cost plus a 5.5% platform fee; Advanced tier is negotiated.
+plan_count: 2
+plans:
+- name: AI API Gateway
+  price_text: 5.5% platform fee
+  price: 5.5
+  period: per-use
+  unit: platform fee applied at checkout when purchasing credits
+  included_quota: Access to ~1,000 models from 80+ providers with one API; multiple API keys; cost and
+    performance monitoring; chat support (48h - working days); unlimited seats
+- name: Advanced AI Platform
+  price_text: Custom price
+  period: none
+  included_quota: All previous features + high rate limits and bulk discounts, private deployments, custom
+    latency/cost optimization, dedicated support & SLA
+rate_limit_statements:
+- No API call limit
+- High rate limits and bulk discounts
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units:
+  - credit
+  plans:
+  - name: AI API Gateway
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - credit
+    periods:
+    - other
+  - name: Advanced AI Platform
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
