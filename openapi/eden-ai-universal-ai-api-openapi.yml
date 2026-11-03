@@ -337,194 +337,6 @@ components:
       - created_at
       title: UniversalAIAsyncJobListItem
       description: Summary item for job list.
-    UniversalAIAsyncJobListResponse:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/UniversalAIAsyncJobListItem'
-          type: array
-          title: Items
-          description: List of items
-        total:
-          type: integer
-          title: Total
-          description: Total number of items
-        page:
-          type: integer
-          title: Page
-          description: Current page number
-        limit:
-          type: integer
-          title: Limit
-          description: Items per page
-        total_pages:
-          type: integer
-          title: Total Pages
-          description: Total number of pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - limit
-      - total_pages
-      title: UniversalAIAsyncJobListResponse
-      description: Response for listing async jobs.
-    UniversalAIAsyncResponse:
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          - processing
-          title: Status
-          description: 'Request status: success, fail, or processing (async only)'
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
-        feature:
-          type: string
-          title: Feature
-          description: Feature category (e.g., text, ocr, image)
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output_format:
-          type: string
-          enum:
-          - full
-          - compact
-          title: Output Format
-          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
-          default: full
-        output:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-        public_id:
-          type: string
-          title: Public Id
-          description: Job ID for polling status
-        model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Model
-          description: Model name if specified in the request
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-          description: Job creation timestamp
-      type: object
-      required:
-      - status
-      - cost
-      - provider
-      - feature
-      - subfeature
-      - public_id
-      - created_at
-      title: UniversalAIAsyncResponse
-      description: 'Async response from universal-ai/async endpoint.
-
-
-        Inherits base fields and adds job-specific fields for tracking async operations.
-
-        Used for both job creation (202 Accepted) and job detail (GET) responses.'
-    UniversalAIResponse:
-      properties:
-        status:
-          type: string
-          enum:
-          - success
-          - fail
-          title: Status
-          description: Whether the request succeeded or failed
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
-        feature:
-          type: string
-          title: Feature
-          description: Feature category (e.g., text, ocr, image)
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output_format:
-          type: string
-          enum:
-          - full
-          - compact
-          title: Output Format
-          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
-          default: full
-        output:
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-        edenai_metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Edenai Metadata
-          description: 'How the request was served: the attempts in order and which one answered. Only present when the request sends `x-edenai-metadata: enabled`'
-      type: object
-      required:
-      - status
-      - cost
-      - provider
-      - feature
-      - subfeature
-      - output
-      title: UniversalAIResponse
-      description: 'Sync response from universal-ai endpoint.
-
-
-        Inherits all fields from base, with status restricted to success/fail.'
     UniversalAIAsyncBody:
       properties:
         tags:
@@ -614,15 +426,6 @@ components:
 
 
         Extends UniversalAIBody with webhook parameters for async notifications.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -644,6 +447,203 @@ components:
       - msg
       - type
       title: ValidationError
+    UniversalAIAsyncResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          - processing
+          title: Status
+          description: 'Request status: success, fail, or processing (async only)'
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output_format:
+          type: string
+          enum:
+          - full
+          - compact
+          title: Output Format
+          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
+          default: full
+        output:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID for polling status
+        model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Model
+          description: Model name if specified in the request
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+          description: Job creation timestamp
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - public_id
+      - created_at
+      title: UniversalAIAsyncResponse
+      description: 'Async response from universal-ai/async endpoint.
+
+
+        Inherits base fields and adds job-specific fields for tracking async operations.
+
+        Used for both job creation (202 Accepted) and job detail (GET) responses.'
+    UniversalAIAsyncJobListResponse:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/UniversalAIAsyncJobListItem'
+          type: array
+          title: Items
+          description: List of items
+        total:
+          type: integer
+          title: Total
+          description: Total number of items
+        page:
+          type: integer
+          title: Page
+          description: Current page number
+        limit:
+          type: integer
+          title: Limit
+          description: Items per page
+        total_pages:
+          type: integer
+          title: Total Pages
+          description: Total number of pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - limit
+      - total_pages
+      title: UniversalAIAsyncJobListResponse
+      description: Response for listing async jobs.
+    UniversalAIResponse:
+      properties:
+        status:
+          type: string
+          enum:
+          - success
+          - fail
+          title: Status
+          description: Whether the request succeeded or failed
+        cost:
+          type: string
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
+        provider:
+          type: string
+          title: Provider
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output_format:
+          type: string
+          enum:
+          - full
+          - compact
+          title: Output Format
+          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
+          default: full
+        output:
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+        edenai_metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Edenai Metadata
+          description: 'How the request was served: the attempts in order and which one answered. Only present when the request sends `x-edenai-metadata: enabled`'
+      type: object
+      required:
+      - status
+      - cost
+      - provider
+      - feature
+      - subfeature
+      - output
+      title: UniversalAIResponse
+      description: 'Sync response from universal-ai endpoint.
+
+
+        Inherits all fields from base, with status restricted to success/fail.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     UniversalAIBody:
       properties:
         tags:

@@ -325,34 +325,132 @@ components:
       - mode
       title: SubfeatureInfo
       description: Info about a subfeature.
-    VoiceListResponse:
+    ValidationError:
       properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
+        loc:
           items:
-            $ref: '#/components/schemas/VoiceObject'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Data
-          description: Voices, sorted by provider then name.
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
       type: object
       required:
-      - data
-      title: VoiceListResponse
-      description: List of voices.
-    HTTPValidationError:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    FeaturesListResponse:
       properties:
-        detail:
+        features:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/FeatureInfo'
           type: array
-          title: Detail
+          title: Features
       type: object
-      title: HTTPValidationError
+      required:
+      - features
+      title: FeaturesListResponse
+      description: Response for listing all features.
+    VoiceObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Voice identifier. Send this value as `voice`.
+        object:
+          type: string
+          const: voice
+          title: Object
+          description: Object type
+          default: voice
+        name:
+          type: string
+          title: Name
+          description: Display name. Also accepted as `voice`, case-insensitively.
+        provider:
+          type: string
+          title: Provider
+          description: Provider that serves the voice.
+        models:
+          items:
+            type: string
+          type: array
+          title: Models
+          description: Model identifiers that accept this voice, in this endpoint's id format.
+        languages:
+          items:
+            type: string
+          type: array
+          title: Languages
+          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - unknown
+          title: Gender
+          description: Voice gender as published by the provider.
+        preview_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Preview Url
+          description: Provider-hosted audio sample, when available.
+        default:
+          type: boolean
+          title: Default
+          description: Used when a request omits `voice` for one of these models.
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - models
+      - languages
+      - gender
+      title: VoiceObject
+      description: One text-to-speech voice and the models that accept it.
+    SchemaFormat:
+      type: string
+      enum:
+      - simplified
+      - json_schema
+      title: SchemaFormat
+      description: Output format for schema information.
+    FeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        subfeatures:
+          items:
+            $ref: '#/components/schemas/SubfeatureInfo'
+          type: array
+          title: Subfeatures
+      type: object
+      required:
+      - name
+      - fullname
+      - subfeatures
+      title: FeatureInfo
+      description: Info about a feature and its subfeatures.
     SubfeatureDetailResponse:
       properties:
         feature:
@@ -426,132 +524,34 @@ components:
       - models
       title: SubfeatureDetailResponse
       description: Detailed response for a specific subfeature.
-    VoiceObject:
+    HTTPValidationError:
       properties:
-        id:
-          type: string
-          title: Id
-          description: Voice identifier. Send this value as `voice`.
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    VoiceListResponse:
+      properties:
         object:
           type: string
-          const: voice
+          const: list
           title: Object
           description: Object type
-          default: voice
-        name:
-          type: string
-          title: Name
-          description: Display name. Also accepted as `voice`, case-insensitively.
-        provider:
-          type: string
-          title: Provider
-          description: Provider that serves the voice.
-        models:
+          default: list
+        data:
           items:
-            type: string
+            $ref: '#/components/schemas/VoiceObject'
           type: array
-          title: Models
-          description: Model identifiers that accept this voice, in this endpoint's id format.
-        languages:
-          items:
-            type: string
-          type: array
-          title: Languages
-          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
-        gender:
-          type: string
-          enum:
-          - male
-          - female
-          - unknown
-          title: Gender
-          description: Voice gender as published by the provider.
-        preview_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Preview Url
-          description: Provider-hosted audio sample, when available.
-        default:
-          type: boolean
-          title: Default
-          description: Used when a request omits `voice` for one of these models.
-          default: false
+          title: Data
+          description: Voices, sorted by provider then name.
       type: object
       required:
-      - id
-      - name
-      - provider
-      - models
-      - languages
-      - gender
-      title: VoiceObject
-      description: One text-to-speech voice and the models that accept it.
-    SchemaFormat:
-      type: string
-      enum:
-      - simplified
-      - json_schema
-      title: SchemaFormat
-      description: Output format for schema information.
-    FeaturesListResponse:
-      properties:
-        features:
-          items:
-            $ref: '#/components/schemas/FeatureInfo'
-          type: array
-          title: Features
-      type: object
-      required:
-      - features
-      title: FeaturesListResponse
-      description: Response for listing all features.
-    FeatureInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        subfeatures:
-          items:
-            $ref: '#/components/schemas/SubfeatureInfo'
-          type: array
-          title: Subfeatures
-      type: object
-      required:
-      - name
-      - fullname
-      - subfeatures
-      title: FeatureInfo
-      description: Info about a feature and its subfeatures.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - data
+      title: VoiceListResponse
+      description: List of voices.
   securitySchemes:
     AuthBearer:
       type: http

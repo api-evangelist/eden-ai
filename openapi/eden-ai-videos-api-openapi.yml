@@ -297,31 +297,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    VideoInputReference:
-      additionalProperties: false
-      description: 'Reference image for image-to-video generation.
-
-
-        Set exactly one of ``file_id`` (an image uploaded to ``POST /v3/upload``)
-
-        or ``image_url`` (a public http(s) URL to a JPEG or PNG). Base64 data URLs
-
-        are not accepted: upload the image and pass its ``file_id`` instead.'
-      properties:
-        file_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Id of an image previously uploaded to /v3/upload.
-          title: File Id
-        image_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Public http(s) URL of a JPEG or PNG image.
-          title: Image Url
-      title: VideoInputReference
-      type: object
     VideoError:
       properties:
         code:
@@ -338,56 +313,6 @@ components:
       - message
       title: VideoError
       description: Why a video job failed.
-    VideoListResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/VideoObject'
-          type: array
-          title: Data
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: First Id
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Last Id
-        has_more:
-          type: boolean
-          title: Has More
-          default: false
-      type: object
-      required:
-      - data
-      title: VideoListResponse
-      description: A page of the caller's video jobs, newest first.
-    VideoDeletedResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-        object:
-          type: string
-          const: video.deleted
-          title: Object
-          default: video.deleted
-        deleted:
-          type: boolean
-          title: Deleted
-          default: true
-      type: object
-      required:
-      - id
-      title: VideoDeletedResponse
-      description: Confirmation that a video job was deleted.
     VideoModel:
       properties:
         id:
@@ -426,6 +351,25 @@ components:
       - pricing
       title: VideoModel
       description: A video model callable through ``POST /v3/videos``.
+    VideoDeletedResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+        object:
+          type: string
+          const: video.deleted
+          title: Object
+          default: video.deleted
+        deleted:
+          type: boolean
+          title: Deleted
+          default: true
+      type: object
+      required:
+      - id
+      title: VideoDeletedResponse
+      description: Confirmation that a video job was deleted.
     VideoModelsResponse:
       properties:
         object:
@@ -443,15 +387,37 @@ components:
       - data
       title: VideoModelsResponse
       description: Video models available in the caller's region.
-    HTTPValidationError:
+    VideoListResponse:
       properties:
-        detail:
+        object:
+          type: string
+          const: list
+          title: Object
+          default: list
+        data:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/VideoObject'
           type: array
-          title: Detail
+          title: Data
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: First Id
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Last Id
+        has_more:
+          type: boolean
+          title: Has More
+          default: false
       type: object
-      title: HTTPValidationError
+      required:
+      - data
+      title: VideoListResponse
+      description: A page of the caller's video jobs, newest first.
     ValidationError:
       properties:
         loc:
@@ -473,6 +439,31 @@ components:
       - msg
       - type
       title: ValidationError
+    VideoInputReference:
+      additionalProperties: false
+      description: 'Reference image for image-to-video generation.
+
+
+        Set exactly one of ``file_id`` (an image uploaded to ``POST /v3/upload``)
+
+        or ``image_url`` (a public http(s) URL to a JPEG or PNG). Base64 data URLs
+
+        are not accepted: upload the image and pass its ``file_id`` instead.'
+      properties:
+        file_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Id of an image previously uploaded to /v3/upload.
+          title: File Id
+        image_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Public http(s) URL of a JPEG or PNG image.
+          title: Image Url
+      title: VideoInputReference
+      type: object
     VideoObject:
       properties:
         id:
@@ -565,6 +556,15 @@ components:
         `provider` and `cost` are Eden extensions. Download the finished video from
 
         ``GET /v3/videos/{video_id}/content``.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     AuthBearer:
       type: http

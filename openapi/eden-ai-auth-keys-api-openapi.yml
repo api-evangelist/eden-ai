@@ -1,0 +1,72 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Auth Keys API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: auth-keys
+paths:
+  /manage/auth-keys/:
+    get:
+      operationId: manage_auth_keys_retrieve
+      description: List the org's management keys (issuer + worker), never their secrets. ``manage:mint``.
+      tags:
+      - auth-keys
+      responses:
+        '200':
+          description: No response body
+      summary: Manage auth keys retrieve
+      x-summary-source: derived
+    post:
+      operationId: manage_auth_keys_create
+      description: '``POST /v3/manage/auth-keys`` (manage:mint) -- an ISSUER key mints a new WORKER
+
+        (manage:read/manage:write) key for its own org; the secret is shown ONCE. This is the
+
+        programmatic middle of the service->auth->inference chain: an issuer key (born once from the
+
+        owner-authed dashboard) mints short-lived working keys with no human in the loop, which in turn
+
+        mint inference keys via ``POST /manage/keys``.
+
+
+        A minted key can NEVER carry ``manage:mint`` -- an issuer cannot mint another issuer
+
+        (no self-propagation); issuer keys are born only from the session-authed, owner-only dashboard
+
+        endpoint. Enforced twice: the serializer''s ``allowed_scopes`` restricts this endpoint to
+
+        read/write, and ``validate_scopes`` on the model rejects any mint/worker mix regardless.'
+      tags:
+      - auth-keys
+      responses:
+        '200':
+          description: No response body
+      summary: Manage auth keys create
+      x-summary-source: derived
+  /manage/auth-keys/{key_id}/:
+    delete:
+      operationId: manage_auth_keys_destroy
+      description: '``DELETE /v3/manage/auth-keys/{key_id}`` (``manage:mint``) -- an issuer revokes a WORKER key it
+
+        manages (terminal, idempotent). Refuses an ISSUER-key target: issuer keys are born and killed only
+
+        from the owner-authed dashboard, mirroring the no-self-propagation rule on mint. Org-scoped: a
+
+        key_id outside the issuer''s org is a 404.'
+      parameters:
+      - in: path
+        name: key_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - auth-keys
+      responses:
+        '204':
+          description: No response body
+      summary: Manage auth keys destroy
+      x-summary-source: derived

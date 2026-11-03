@@ -1,0 +1,25 @@
+openapi: 3.2.0
+info:
+  title: Organization Management Whoami API
+  version: '2.0'
+  description: Your project description
+servers:
+- url: https://api.edenai.run/v3
+tags:
+- name: Whoami
+paths:
+  /manage/whoami/:
+    get:
+      operationId: manage_whoami_retrieve
+      description: '``GET /v3/manage/whoami`` — the calling key''s own organization, scopes and
+
+        expiry. Requires only a valid management key (no scope), which is enough to prove
+
+        the auth path end to end. Never returns the secret, its hash, or last4.'
+      tags:
+      - Whoami
+      responses:
+        '200':
+          description: No response body
+      summary: Manage whoami retrieve
+      x-summary-source: derived

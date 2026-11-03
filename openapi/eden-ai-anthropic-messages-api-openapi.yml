@@ -66,69 +66,102 @@ paths:
       - AuthBearer: []
 components:
   schemas:
-    MaxPrice:
+    AnthropicCountTokensResponse:
       properties:
-        input:
-          anyOf:
-          - type: number
-            minimum: 0.0
-          - type: 'null'
-          title: Input
-          description: Highest input rate accepted, in USD per million tokens.
-        output:
-          anyOf:
-          - type: number
-            minimum: 0.0
-          - type: 'null'
-          title: Output
-          description: Highest output rate accepted, in USD per million tokens.
-      additionalProperties: false
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          description: Number of input tokens the request would consume.
       type: object
-      title: MaxPrice
-      description: 'A price ceiling in USD per MILLION tokens, one bar per direction, either one optional.
-
-
-        Unknown keys are refused: a typo on one side (``ouput``) must not silently remove that bar.'
-    AnthropicCountTokensBody:
+      required:
+      - input_tokens
+      title: AnthropicCountTokensResponse
+      description: Response body for POST /v1/messages/count_tokens.
+    ValidationError:
       properties:
-        model:
-          type: string
-          title: Model
-        messages:
+        loc:
           items:
-            $ref: '#/components/schemas/AnthropicMessage'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          title: Messages
-        system:
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AnthropicContentBlock:
+      properties:
+        type:
+          type: string
+          title: Type
+        text:
           anyOf:
           - type: string
-          - items:
-              additionalProperties: true
-              type: object
-            type: array
           - type: 'null'
-          title: System
-        tools:
+          title: Text
+        id:
           anyOf:
-          - items:
-              additionalProperties: true
-              type: object
-            type: array
+          - type: string
           - type: 'null'
-          title: Tools
-        tool_choice:
+          title: Id
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        input:
           anyOf:
           - additionalProperties: true
             type: object
           - type: 'null'
-          title: Tool Choice
+          title: Input
+        tool_use_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tool Use Id
+        content:
+          anyOf:
+          - type: string
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Content
+        is_error:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Error
+        source:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Source
+        thinking:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Thinking
+        signature:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Signature
       additionalProperties: true
       type: object
       required:
-      - model
-      - messages
-      title: AnthropicCountTokensBody
-      description: Body for /v1/messages/count_tokens — same fields as messages but max_tokens is optional.
+      - type
+      title: AnthropicContentBlock
     CacheControl:
       properties:
         type:
@@ -160,63 +193,6 @@ components:
         caching is silently skipped. Silently ignored by providers that don''t
 
         support prompt caching.'
-    AnthropicMessagesResponse:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Unique identifier for the message.
-        type:
-          type: string
-          const: message
-          title: Type
-          description: Object type. Always 'message' for this endpoint.
-          default: message
-        role:
-          type: string
-          const: assistant
-          title: Role
-          description: Conversational role of the response.
-          default: assistant
-        model:
-          type: string
-          title: Model
-          description: Model that generated the message.
-        content:
-          items:
-            $ref: '#/components/schemas/AnthropicContentBlock'
-          type: array
-          title: Content
-          description: Ordered list of content blocks produced by the model.
-        stop_reason:
-          anyOf:
-          - type: string
-            enum:
-            - end_turn
-            - max_tokens
-            - stop_sequence
-            - tool_use
-          - type: 'null'
-          title: Stop Reason
-          description: Reason generation stopped, if known.
-        stop_sequence:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Stop Sequence
-          description: Custom stop sequence that triggered the stop, if any.
-        usage:
-          $ref: '#/components/schemas/AnthropicUsage'
-          description: Token usage for the request.
-      additionalProperties: true
-      type: object
-      required:
-      - id
-      - model
-      - content
-      - usage
-      title: AnthropicMessagesResponse
-      description: Response body for POST /v1/messages (non-streaming).
     AnthropicMessagesBody:
       properties:
         tags:
@@ -369,70 +345,6 @@ components:
       - model
       - messages
       title: AnthropicMessagesBody
-    AnthropicContentBlock:
-      properties:
-        type:
-          type: string
-          title: Type
-        text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Text
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        input:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Input
-        tool_use_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Tool Use Id
-        content:
-          anyOf:
-          - type: string
-          - items: {}
-            type: array
-          - type: 'null'
-          title: Content
-        is_error:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Error
-        source:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Source
-        thinking:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Thinking
-        signature:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Signature
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      title: AnthropicContentBlock
     ProviderRoutingPreferences:
       properties:
         sort:
@@ -526,6 +438,105 @@ components:
         MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
 
         ``quality_cost`` below is the one field here that speaks to it.'
+    AnthropicMessage:
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          title: Role
+        content:
+          anyOf:
+          - type: string
+          - items:
+              $ref: '#/components/schemas/AnthropicContentBlock'
+            type: array
+          title: Content
+        cache_control:
+          anyOf:
+          - $ref: '#/components/schemas/CacheControl'
+          - type: 'null'
+          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+      additionalProperties: true
+      type: object
+      required:
+      - role
+      - content
+      title: AnthropicMessage
+    AnthropicCountTokensBody:
+      properties:
+        model:
+          type: string
+          title: Model
+        messages:
+          items:
+            $ref: '#/components/schemas/AnthropicMessage'
+          type: array
+          title: Messages
+        system:
+          anyOf:
+          - type: string
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: System
+        tools:
+          anyOf:
+          - items:
+              additionalProperties: true
+              type: object
+            type: array
+          - type: 'null'
+          title: Tools
+        tool_choice:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Tool Choice
+      additionalProperties: true
+      type: object
+      required:
+      - model
+      - messages
+      title: AnthropicCountTokensBody
+      description: Body for /v1/messages/count_tokens — same fields as messages but max_tokens is optional.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    MaxPrice:
+      properties:
+        input:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Input
+          description: Highest input rate accepted, in USD per million tokens.
+        output:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Output
+          description: Highest output rate accepted, in USD per million tokens.
+      additionalProperties: false
+      type: object
+      title: MaxPrice
+      description: 'A price ceiling in USD per MILLION tokens, one bar per direction, either one optional.
+
+
+        Unknown keys are refused: a typo on one side (``ouput``) must not silently remove that bar.'
     AnthropicUsage:
       properties:
         input_tokens:
@@ -555,74 +566,63 @@ components:
       - output_tokens
       title: AnthropicUsage
       description: Token usage block returned by the Anthropic Messages API.
-    AnthropicCountTokensResponse:
+    AnthropicMessagesResponse:
       properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-          description: Number of input tokens the request would consume.
-      type: object
-      required:
-      - input_tokens
-      title: AnthropicCountTokensResponse
-      description: Response body for POST /v1/messages/count_tokens.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        id:
           type: string
-          title: Message
+          title: Id
+          description: Unique identifier for the message.
         type:
           type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    AnthropicMessage:
-      properties:
+          const: message
+          title: Type
+          description: Object type. Always 'message' for this endpoint.
+          default: message
         role:
           type: string
-          enum:
-          - user
-          - assistant
-          - system
+          const: assistant
           title: Role
+          description: Conversational role of the response.
+          default: assistant
+        model:
+          type: string
+          title: Model
+          description: Model that generated the message.
         content:
+          items:
+            $ref: '#/components/schemas/AnthropicContentBlock'
+          type: array
+          title: Content
+          description: Ordered list of content blocks produced by the model.
+        stop_reason:
           anyOf:
           - type: string
-          - items:
-              $ref: '#/components/schemas/AnthropicContentBlock'
-            type: array
-          title: Content
-        cache_control:
-          anyOf:
-          - $ref: '#/components/schemas/CacheControl'
+            enum:
+            - end_turn
+            - max_tokens
+            - stop_sequence
+            - tool_use
           - type: 'null'
-          description: 'Optional prompt-cache marker. When set, this message becomes a cache boundary: prefix content is stored and reused on subsequent requests to reduce latency and cost. Silently ignored by providers that don''t support prompt caching.'
+          title: Stop Reason
+          description: Reason generation stopped, if known.
+        stop_sequence:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Stop Sequence
+          description: Custom stop sequence that triggered the stop, if any.
+        usage:
+          $ref: '#/components/schemas/AnthropicUsage'
+          description: Token usage for the request.
       additionalProperties: true
       type: object
       required:
-      - role
+      - id
+      - model
       - content
-      title: AnthropicMessage
+      - usage
+      title: AnthropicMessagesResponse
+      description: Response body for POST /v1/messages (non-streaming).
   securitySchemes:
     AuthBearer:
       type: http
