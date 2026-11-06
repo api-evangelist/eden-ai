@@ -84,6 +84,87 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    RefusalAnswer:
+      properties:
+        type:
+          type: string
+          const: refusal
+          title: Type
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      title: RefusalAnswer
+      description: 'The provider declined this one question without saying why; the other answers still
+
+        stand. OpenAI''s Decisions API returns these, TypeSafe''s format has no equivalent.'
+    DecisionUsage:
+      properties:
+        input_tokens:
+          type: integer
+          title: Input Tokens
+          default: 0
+        output_tokens:
+          type: integer
+          title: Output Tokens
+          default: 0
+      additionalProperties: true
+      type: object
+      title: DecisionUsage
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ChoiceQuestion:
+      properties:
+        instructions:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          - type: 'null'
+          title: Instructions
+        type:
+          type: string
+          const: choice
+          title: Type
+        criteria:
+          additionalProperties:
+            anyOf:
+            - type: string
+            - additionalProperties: true
+              type: object
+            - items: {}
+              type: array
+            - type: 'null'
+          type: object
+          title: Criteria
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - criteria
+      title: ChoiceQuestion
+      description: One-of-N selection; ``criteria`` maps each option label to its description.
     ModelWithEndpoints:
       properties:
         id:
@@ -146,35 +227,25 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    DecisionUsage:
+    ListModelsResponse:
       properties:
-        input_tokens:
-          type: integer
-          title: Input Tokens
-          default: 0
-        output_tokens:
-          type: integer
-          title: Output Tokens
-          default: 0
-      additionalProperties: true
-      type: object
-      title: DecisionUsage
-    RegionObject:
-      properties:
-        code:
+        object:
           type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
       type: object
       required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
+      - data
+      title: ListModelsResponse
+      description: List models response.
     NoulQuestion:
       properties:
         instructions:
@@ -211,6 +282,129 @@ components:
       description: 'Yes/no question, answered as a probability; ``criteria`` may describe the ``true``
 
         and ``false`` outcomes.'
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    DecisionsBody:
+      properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
+        state:
+          anyOf:
+          - type: string
+          - additionalProperties: true
+            type: object
+          - items: {}
+            type: array
+          title: State
+          description: 'The content to decide about: a plain string, or a JSON object / array of related context.'
+        questions:
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/NoulQuestion'
+            - $ref: '#/components/schemas/ChoiceQuestion'
+            - $ref: '#/components/schemas/ScoreQuestion'
+            discriminator:
+              propertyName: type
+              mapping:
+                choice: '#/components/schemas/ChoiceQuestion'
+                noul: '#/components/schemas/NoulQuestion'
+                score: '#/components/schemas/ScoreQuestion'
+          type: object
+          minProperties: 1
+          title: Questions
+          description: 'Typed questions keyed by name: `noul` (yes/no probability), `choice` (one of the `criteria` keys) or `score` (position on the ordered `criteria` rubric).'
+        model:
+          type: string
+          title: Model
+          description: Model identifier in 'provider/model' format, e.g. 'typesafe/jev-latest'.
+        metadata:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Metadata
+          description: Arbitrary metadata attached to the request.
+        extra_headers:
+          anyOf:
+          - additionalProperties:
+              type: string
+            type: object
+          - type: 'null'
+          title: Extra Headers
+          description: Additional HTTP headers forwarded to the provider API.
+        extra_body:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Extra Body
+          description: Additional body fields forwarded to the provider API.
+      additionalProperties: true
+      type: object
+      required:
+      - state
+      - questions
+      - model
+      title: DecisionsBody
+      description: 'TypeSafe''s ``POST /v1/systemone`` request body, plus minimal Eden extensions.
+
+
+        Unknown top-level fields are forwarded to the provider (``extra="allow"`` via the base
+
+        mixin, which also rejects connection keys).'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
     ScoreAnswer:
       properties:
         type:
@@ -247,6 +441,78 @@ components:
       - legend
       - probabilities
       title: ScoreAnswer
+    DecisionsResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id
+          description: TypeSafe request id (x-typesafe-request-id).
+        model:
+          type: string
+          title: Model
+        answers:
+          additionalProperties:
+            oneOf:
+            - $ref: '#/components/schemas/NoulAnswer'
+            - $ref: '#/components/schemas/ChoiceAnswer'
+            - $ref: '#/components/schemas/ScoreAnswer'
+            - $ref: '#/components/schemas/RefusalAnswer'
+            discriminator:
+              propertyName: type
+              mapping:
+                choice: '#/components/schemas/ChoiceAnswer'
+                noul: '#/components/schemas/NoulAnswer'
+                refusal: '#/components/schemas/RefusalAnswer'
+                score: '#/components/schemas/ScoreAnswer'
+          type: object
+          title: Answers
+        usage:
+          $ref: '#/components/schemas/DecisionUsage'
+      additionalProperties: true
+      type: object
+      required:
+      - model
+      - answers
+      - usage
+      title: DecisionsResponse
+      description: TypeSafe's response (typed answers, usage, request id) + Eden `cost` and `provider`.
+    ChoiceAnswer:
+      properties:
+        type:
+          type: string
+          const: choice
+          title: Type
+        choice:
+          type: string
+          title: Choice
+        confidence:
+          type: number
+          title: Confidence
+        probabilities:
+          additionalProperties:
+            type: number
+          type: object
+          title: Probabilities
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - choice
+      - confidence
+      - probabilities
+      title: ChoiceAnswer
     ModelObject:
       properties:
         id:
@@ -334,258 +600,6 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ChoiceAnswer:
-      properties:
-        type:
-          type: string
-          const: choice
-          title: Type
-        choice:
-          type: string
-          title: Choice
-        confidence:
-          type: number
-          title: Confidence
-        probabilities:
-          additionalProperties:
-            type: number
-          type: object
-          title: Probabilities
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      - choice
-      - confidence
-      - probabilities
-      title: ChoiceAnswer
-    DecisionsBody:
-      properties:
-        tags:
-          title: Tags
-          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
-          examples:
-          - client: acme
-            project: invoices
-        state:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          - items: {}
-            type: array
-          title: State
-          description: 'The content to decide about: a plain string, or a JSON object / array of related context.'
-        questions:
-          additionalProperties:
-            oneOf:
-            - $ref: '#/components/schemas/NoulQuestion'
-            - $ref: '#/components/schemas/ChoiceQuestion'
-            - $ref: '#/components/schemas/ScoreQuestion'
-            discriminator:
-              propertyName: type
-              mapping:
-                choice: '#/components/schemas/ChoiceQuestion'
-                noul: '#/components/schemas/NoulQuestion'
-                score: '#/components/schemas/ScoreQuestion'
-          type: object
-          minProperties: 1
-          title: Questions
-          description: 'Typed questions keyed by name: `noul` (yes/no probability), `choice` (one of the `criteria` keys) or `score` (position on the ordered `criteria` rubric).'
-        model:
-          type: string
-          title: Model
-          description: Model identifier in 'provider/model' format, e.g. 'typesafe/jev-latest'.
-        metadata:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Metadata
-          description: Arbitrary metadata attached to the request.
-        extra_headers:
-          anyOf:
-          - additionalProperties:
-              type: string
-            type: object
-          - type: 'null'
-          title: Extra Headers
-          description: Additional HTTP headers forwarded to the provider API.
-        extra_body:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Extra Body
-          description: Additional body fields forwarded to the provider API.
-      additionalProperties: true
-      type: object
-      required:
-      - state
-      - questions
-      - model
-      title: DecisionsBody
-      description: 'TypeSafe''s ``POST /v1/systemone`` request body, plus minimal Eden extensions.
-
-
-        Unknown top-level fields are forwarded to the provider (``extra="allow"`` via the base
-
-        mixin, which also rejects connection keys).'
-    ScoreQuestion:
-      properties:
-        instructions:
-          anyOf:
-          - type: string
-          - additionalProperties: true
-            type: object
-          - items: {}
-            type: array
-          - type: 'null'
-          title: Instructions
-        type:
-          type: string
-          const: score
-          title: Type
-        criteria:
-          items:
-            anyOf:
-            - type: string
-            - additionalProperties: true
-              type: object
-            - items: {}
-              type: array
-          type: array
-          title: Criteria
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      - criteria
-      title: ScoreQuestion
-      description: Ordered rubric; ``criteria[i]`` describes score level ``i``.
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    NoulAnswer:
-      properties:
-        type:
-          type: string
-          const: noul
-          title: Type
-        noul:
-          type: number
-          title: Noul
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      - noul
-      title: NoulAnswer
-    DecisionsResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id
-          description: TypeSafe request id (x-typesafe-request-id).
-        model:
-          type: string
-          title: Model
-        answers:
-          additionalProperties:
-            oneOf:
-            - $ref: '#/components/schemas/NoulAnswer'
-            - $ref: '#/components/schemas/ChoiceAnswer'
-            - $ref: '#/components/schemas/ScoreAnswer'
-            - $ref: '#/components/schemas/RefusalAnswer'
-            discriminator:
-              propertyName: type
-              mapping:
-                choice: '#/components/schemas/ChoiceAnswer'
-                noul: '#/components/schemas/NoulAnswer'
-                refusal: '#/components/schemas/RefusalAnswer'
-                score: '#/components/schemas/ScoreAnswer'
-          type: object
-          title: Answers
-        usage:
-          $ref: '#/components/schemas/DecisionUsage'
-      additionalProperties: true
-      type: object
-      required:
-      - model
-      - answers
-      - usage
-      title: DecisionsResponse
-      description: TypeSafe's response (typed answers, usage, request id) + Eden `cost` and `provider`.
-    RefusalAnswer:
-      properties:
-        type:
-          type: string
-          const: refusal
-          title: Type
-      additionalProperties: true
-      type: object
-      required:
-      - type
-      title: RefusalAnswer
-      description: 'The provider declined this one question without saying why; the other answers still
-
-        stand. OpenAI''s Decisions API returns these, TypeSafe''s format has no equivalent.'
     Capabilities:
       properties:
         input_modalities:
@@ -652,35 +666,7 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
-    ChoiceQuestion:
+    ScoreQuestion:
       properties:
         instructions:
           anyOf:
@@ -693,26 +679,40 @@ components:
           title: Instructions
         type:
           type: string
-          const: choice
+          const: score
           title: Type
         criteria:
-          additionalProperties:
+          items:
             anyOf:
             - type: string
             - additionalProperties: true
               type: object
             - items: {}
               type: array
-            - type: 'null'
-          type: object
+          type: array
           title: Criteria
       additionalProperties: true
       type: object
       required:
       - type
       - criteria
-      title: ChoiceQuestion
-      description: One-of-N selection; ``criteria`` maps each option label to its description.
+      title: ScoreQuestion
+      description: Ordered rubric; ``criteria[i]`` describes score level ``i``.
+    NoulAnswer:
+      properties:
+        type:
+          type: string
+          const: noul
+          title: Type
+        noul:
+          type: number
+          title: Noul
+      additionalProperties: true
+      type: object
+      required:
+      - type
+      - noul
+      title: NoulAnswer
   securitySchemes:
     AuthBearer:
       type: http

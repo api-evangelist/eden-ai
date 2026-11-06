@@ -172,6 +172,38 @@ paths:
           description: ''
 components:
   schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     ItemBankCheckParsingDataClass:
       properties:
         amount:
@@ -224,35 +256,6 @@ components:
       - micr
       title: ItemBankCheckParsingDataClass
       type: object
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    ocrbank_check_parsingResponseModel:
-      properties:
-        mindee:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        veryfi:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-        extracta:
-          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
-          default: null
-      title: ocrbank_check_parsingResponseModel
-      type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     MicrModel:
       properties:
         raw:
@@ -278,16 +281,12 @@ components:
       - check_number
       title: MicrModel
       type: object
-    NestedError:
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -297,6 +296,13 @@ components:
             type: string
       required:
       - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     ocrbank_check_parsingBankCheckParsingRequest:
       type: object
       properties:
@@ -375,28 +381,22 @@ components:
       - status
       title: ocrbank_check_parsingBankCheckParsingDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
+    ocrbank_check_parsingResponseModel:
       properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
+        mindee:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        veryfi:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+        extracta:
+          $ref: '#/components/schemas/ocrbank_check_parsingBankCheckParsingDataClass'
+          default: null
+      title: ocrbank_check_parsingResponseModel
       type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

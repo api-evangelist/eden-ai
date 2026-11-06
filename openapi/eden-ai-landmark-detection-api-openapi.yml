@@ -124,51 +124,33 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
-    LandmarkLatLng:
-      properties:
-        latitude:
-          title: Latitude
-          type: integer
-        longitude:
-          title: Longitude
-          type: integer
-      required:
-      - latitude
-      - longitude
-      title: LandmarkLatLng
-      type: object
-    NestedError:
+    NestedBadRequest:
       type: object
       properties:
         type:
           type: string
         message:
-          type: string
+          $ref: '#/components/schemas/FieldError'
       required:
       - message
       - type
-    FieldError:
-      type: object
+    imagelandmark_detectionResponseModel:
       properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
+        microsoft:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
+          default: null
+      title: imagelandmark_detectionResponseModel
+      type: object
     LandmarkVertice:
       properties:
         x:
@@ -201,28 +183,6 @@ components:
       - status
       title: imagelandmark_detectionLandmarkDetectionDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
     imageanonymizationimagelandmark_detectionimageexplicit_contentimagedeepfake_detectionImageRequest:
       type: object
       properties:
@@ -271,6 +231,51 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    LandmarkLocation:
+      properties:
+        lat_lng:
+          $ref: '#/components/schemas/LandmarkLatLng'
+      required:
+      - lat_lng
+      title: LandmarkLocation
+      type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     LandmarkItem:
       properties:
         description:
@@ -294,23 +299,18 @@ components:
       - confidence
       title: LandmarkItem
       type: object
-    imagelandmark_detectionResponseModel:
+    LandmarkLatLng:
       properties:
-        microsoft:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagelandmark_detectionLandmarkDetectionDataClass'
-          default: null
-      title: imagelandmark_detectionResponseModel
-      type: object
-    LandmarkLocation:
-      properties:
-        lat_lng:
-          $ref: '#/components/schemas/LandmarkLatLng'
+        latitude:
+          title: Latitude
+          type: integer
+        longitude:
+          title: Longitude
+          type: integer
       required:
-      - lat_lng
-      title: LandmarkLocation
+      - latitude
+      - longitude
+      title: LandmarkLatLng
       type: object
   securitySchemes:
     FeatureApiAuth:

@@ -290,12 +290,8 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    UniversalAIAsyncJobListItem:
+    UniversalAIAsyncResponse:
       properties:
-        public_id:
-          type: string
-          title: Public Id
-          description: Job ID
         status:
           type: string
           enum:
@@ -303,25 +299,61 @@ components:
           - fail
           - processing
           title: Status
-          description: Job status
-        feature:
+          description: 'Request status: success, fail, or processing (async only)'
+        cost:
           type: string
-          title: Feature
-          description: Feature name
-        subfeature:
-          type: string
-          title: Subfeature
-          description: Subfeature name
+          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
+          title: Cost
+          description: Cost in credits for this request
         provider:
           type: string
           title: Provider
-          description: Provider name
+          description: Provider name that processed the request
+        feature:
+          type: string
+          title: Feature
+          description: Feature category (e.g., text, ocr, image)
+        subfeature:
+          type: string
+          title: Subfeature
+          description: Specific subfeature (e.g., ai_detection, sentiment)
+        output_format:
+          type: string
+          enum:
+          - full
+          - compact
+          title: Output Format
+          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
+          default: full
+        output:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Output
+          description: Normalized output from the provider
+        error:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Error
+          description: Error details from the provider (only present when status is 'fail')
+        original_response:
+          anyOf:
+          - {}
+          - type: 'null'
+          title: Original Response
+          description: Raw response from the provider (if show_original_response=true)
+        public_id:
+          type: string
+          title: Public Id
+          description: Job ID for polling status
         model:
           anyOf:
           - type: string
           - type: 'null'
           title: Model
-          description: Model name
+          description: Model name if specified in the request
         created_at:
           type: string
           format: date-time
@@ -329,14 +361,111 @@ components:
           description: Job creation timestamp
       type: object
       required:
-      - public_id
       - status
+      - cost
+      - provider
       - feature
       - subfeature
-      - provider
+      - public_id
       - created_at
-      title: UniversalAIAsyncJobListItem
-      description: Summary item for job list.
+      title: UniversalAIAsyncResponse
+      description: 'Async response from universal-ai/async endpoint.
+
+
+        Inherits base fields and adds job-specific fields for tracking async operations.
+
+        Used for both job creation (202 Accepted) and job detail (GET) responses.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    UniversalAIBody:
+      properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
+        model:
+          type: string
+          title: Model
+          description: 'Model in format: feature/subfeature/provider[/model]'
+          examples:
+          - text/ai_detection/openai/gpt-4
+          - ocr/ocr/amazon
+          - image/generation/google/imagen-3
+        provider_params:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: Native parameters in the provider's own request format, forwarded to the provider alongside `input`. On some features each provider accepts only an allowlist of parameters, and any other returns 400.
+        input:
+          additionalProperties: true
+          type: object
+          title: Input
+          description: 'Feature-specific input fields, nested here rather than at the top level of the body. The fields accepted for the feature/subfeature named in `model` are its `input_schema`, served by GET /v3/info/{feature}/{subfeature}. Examples:
+
+            - text/ai_detection: {''text'': ''content to analyze''}
+
+            - ocr/ocr: {''file'': ''<file ID or URL>'', ''language'': ''en''}
+
+            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
+
+            - translation/document_translation: {''file'': ''<file ID or URL>'', ''target_language'': ''fr''}'
+          examples:
+          - text: Analyze this text for AI detection
+          - file: https://example.com/invoice.pdf
+            language: en
+          - resolution: 1024x1024
+            text: A lighthouse at dusk
+        fallbacks:
+          items:
+            type: string
+          type: array
+          maxItems: 3
+          title: Fallbacks
+          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
+        show_original_response:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Show Original Response
+          description: Include raw provider response in the output
+          default: false
+        output_format:
+          type: string
+          enum:
+          - full
+          - compact
+          title: Output Format
+          description: '`compact` trims `output` for LLM and agent callers: base64-encoded media is dropped wherever it appears (the `*_resource_url` download link next to it stays), and so is dense position data such as per-word OCR boxes, table cell boxes and face landmarks; one box per detected item stays. Fields the output schema marks required may therefore be absent. `original_response` is not trimmed. `full` returns the output unchanged. The response echoes the format. Applies to this response only: an async job keeps its full output, so pass `output_format=compact` again when fetching it.'
+          default: full
+      type: object
+      required:
+      - model
+      - input
+      title: UniversalAIBody
+      description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
     UniversalAIAsyncBody:
       properties:
         tags:
@@ -426,29 +555,12 @@ components:
 
 
         Extends UniversalAIBody with webhook parameters for async notifications.'
-    ValidationError:
+    UniversalAIAsyncJobListItem:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        public_id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UniversalAIAsyncResponse:
-      properties:
+          title: Public Id
+          description: Job ID
         status:
           type: string
           enum:
@@ -456,61 +568,25 @@ components:
           - fail
           - processing
           title: Status
-          description: 'Request status: success, fail, or processing (async only)'
-        cost:
-          type: string
-          pattern: ^(?!^[-+.]*$)[+-]?0*\d*\.?\d*$
-          title: Cost
-          description: Cost in credits for this request
-        provider:
-          type: string
-          title: Provider
-          description: Provider name that processed the request
+          description: Job status
         feature:
           type: string
           title: Feature
-          description: Feature category (e.g., text, ocr, image)
+          description: Feature name
         subfeature:
           type: string
           title: Subfeature
-          description: Specific subfeature (e.g., ai_detection, sentiment)
-        output_format:
+          description: Subfeature name
+        provider:
           type: string
-          enum:
-          - full
-          - compact
-          title: Output Format
-          description: Whether `output`, the normalized output, is whole (`full`) or trimmed for LLM callers (`compact`); echoes the request parameter. Unrelated to `original_response`, the raw provider payload behind `show_original_response`.
-          default: full
-        output:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Output
-          description: Normalized output from the provider
-        error:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Error
-          description: Error details from the provider (only present when status is 'fail')
-        original_response:
-          anyOf:
-          - {}
-          - type: 'null'
-          title: Original Response
-          description: Raw response from the provider (if show_original_response=true)
-        public_id:
-          type: string
-          title: Public Id
-          description: Job ID for polling status
+          title: Provider
+          description: Provider name
         model:
           anyOf:
           - type: string
           - type: 'null'
           title: Model
-          description: Model name if specified in the request
+          description: Model name
         created_at:
           type: string
           format: date-time
@@ -518,20 +594,23 @@ components:
           description: Job creation timestamp
       type: object
       required:
+      - public_id
       - status
-      - cost
-      - provider
       - feature
       - subfeature
-      - public_id
+      - provider
       - created_at
-      title: UniversalAIAsyncResponse
-      description: 'Async response from universal-ai/async endpoint.
-
-
-        Inherits base fields and adds job-specific fields for tracking async operations.
-
-        Used for both job creation (202 Accepted) and job detail (GET) responses.'
+      title: UniversalAIAsyncJobListItem
+      description: Summary item for job list.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     UniversalAIAsyncJobListResponse:
       properties:
         items:
@@ -635,85 +714,6 @@ components:
 
 
         Inherits all fields from base, with status restricted to success/fail.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    UniversalAIBody:
-      properties:
-        tags:
-          title: Tags
-          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
-          examples:
-          - client: acme
-            project: invoices
-        model:
-          type: string
-          title: Model
-          description: 'Model in format: feature/subfeature/provider[/model]'
-          examples:
-          - text/ai_detection/openai/gpt-4
-          - ocr/ocr/amazon
-          - image/generation/google/imagen-3
-        provider_params:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Provider Params
-          description: Native parameters in the provider's own request format, forwarded to the provider alongside `input`. On some features each provider accepts only an allowlist of parameters, and any other returns 400.
-        input:
-          additionalProperties: true
-          type: object
-          title: Input
-          description: 'Feature-specific input fields, nested here rather than at the top level of the body. The fields accepted for the feature/subfeature named in `model` are its `input_schema`, served by GET /v3/info/{feature}/{subfeature}. Examples:
-
-            - text/ai_detection: {''text'': ''content to analyze''}
-
-            - ocr/ocr: {''file'': ''<file ID or URL>'', ''language'': ''en''}
-
-            - image/generation: {''text'': ''prompt'', ''resolution'': ''1024x1024''}
-
-            - translation/document_translation: {''file'': ''<file ID or URL>'', ''target_language'': ''fr''}'
-          examples:
-          - text: Analyze this text for AI detection
-          - file: https://example.com/invoice.pdf
-            language: en
-          - resolution: 1024x1024
-            text: A lighthouse at dusk
-        fallbacks:
-          items:
-            type: string
-          type: array
-          maxItems: 3
-          title: Fallbacks
-          description: "Fallback providers to try if the primary provider fails, in order. Accepted formats:\n  - 'provider' or 'provider/model' (e.g. 'amazon', 'openai/gpt-4')\n  - full model id (e.g 'text/moderation/google', 'image/generation/minimax/image-01')"
-        show_original_response:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Show Original Response
-          description: Include raw provider response in the output
-          default: false
-        output_format:
-          type: string
-          enum:
-          - full
-          - compact
-          title: Output Format
-          description: '`compact` trims `output` for LLM and agent callers: base64-encoded media is dropped wherever it appears (the `*_resource_url` download link next to it stays), and so is dense position data such as per-word OCR boxes, table cell boxes and face landmarks; one box per detected item stays. Fields the output schema marks required may therefore be absent. `original_response` is not trimmed. `full` returns the output unchanged. The response echoes the format. Applies to this response only: an async job keeps its full output, so pass `output_format=compact` again when fetching it.'
-          default: full
-      type: object
-      required:
-      - model
-      - input
-      title: UniversalAIBody
-      description: "Universal AI request body.\n\nModel format: feature/subfeature/provider[/model]\n\nExamples:\n    - text/ai_detection/openai/gpt-4\n    - ocr/ocr/amazon\n    - image/generation/google/imagen-3\n\nThe `input` dict contains feature-specific parameters that are\nvalidated at runtime based on the parsed feature/subfeature."
   securitySchemes:
     AuthBearer:
       type: http

@@ -13130,20 +13130,52 @@ paths:
           description: ''
 components:
   schemas:
-    LaunchAsyncJobResponse:
+    BadRequest:
       type: object
       properties:
-        public_id:
-          type: string
-          format: uuid
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
-      - public_id
-    NotFoundResponse:
+      - error
+    NestedBadRequest:
       type: object
       properties:
-        details:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    videolabel_detection_asyncModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videolabel_detection_asyncLabelDetectionAsyncDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videolabel_detection_asyncLabelDetectionAsyncDataClass'
+          default: null
+      title: videolabel_detection_asyncModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
     VideoLabel:
       properties:
         name:
@@ -13172,27 +13204,42 @@ components:
       - confidence
       title: VideoLabel
       type: object
-    Error:
+    AsyncJobList:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
       required:
-      - error
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    videolabel_detection_asyncModel:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    VideoLabelTimeStamp:
       properties:
-        amazon:
-          $ref: '#/components/schemas/videolabel_detection_asyncLabelDetectionAsyncDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videolabel_detection_asyncLabelDetectionAsyncDataClass'
-          default: null
-      title: videolabel_detection_asyncModel
+        start:
+          title: Start
+          type: integer
+        end:
+          title: End
+          type: integer
+      required:
+      - start
+      - end
+      title: VideoLabelTimeStamp
       type: object
     AsyncVideoAnalysisRequest:
       type: object
@@ -13245,144 +13292,6 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
-    VideoLabelTimeStamp:
-      properties:
-        start:
-          title: Start
-          type: integer
-        end:
-          title: End
-          type: integer
-      required:
-      - start
-      - end
-      title: VideoLabelTimeStamp
-      type: object
-    VideoLabelBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: VideoLabelBoundingBox
-      type: object
-    asyncvideolabel_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videolabel_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideolabel_detection_asyncResponseModel
-      type: object
     videolabel_detection_asyncLabelDetectionAsyncDataClass:
       properties:
         labels:
@@ -13411,6 +13320,97 @@ components:
       - final_status
       title: videolabel_detection_asyncLabelDetectionAsyncDataClass
       type: object
+    VideoLabelBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: VideoLabelBoundingBox
+      type: object
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    asyncvideolabel_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videolabel_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideolabel_detection_asyncResponseModel
+      type: object
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

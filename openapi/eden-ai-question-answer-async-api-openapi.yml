@@ -240,6 +240,81 @@ paths:
           description: ''
 components:
   schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
+    AsyncJobList:
+      type: object
+      properties:
+        providers:
+          type: string
+        nb:
+          type: integer
+        nb_ok:
+          type: integer
+        public_id:
+          type: string
+          format: uuid
+        state:
+          $ref: '#/components/schemas/StateEnum'
+        created_at:
+          type: string
+          format: date-time
+      required:
+      - created_at
+      - nb
+      - nb_ok
+      - providers
+      - public_id
+      - state
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
     LaunchAsyncJobResponse:
       type: object
       properties:
@@ -248,32 +323,12 @@ components:
           format: uuid
       required:
       - public_id
-    NotFoundResponse:
-      type: object
+    videoquestion_answer_asyncModel:
       properties:
-        details:
-          type: string
-          default: Not Found
-    asyncvideoquestion_answer_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videoquestion_answer_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideoquestion_answer_asyncResponseModel
+        google:
+          $ref: '#/components/schemas/videoquestion_answer_asyncQuestionAnswerAsyncDataClass'
+          default: null
+      title: videoquestion_answer_asyncModel
       type: object
     Error:
       type: object
@@ -282,11 +337,37 @@ components:
           $ref: '#/components/schemas/NestedError'
       required:
       - error
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
+    videoquestion_answer_asyncQuestionAnswerAsyncDataClass:
+      properties:
+        answer:
+          title: Answer
+          type: string
+        finish_reason:
+          default: null
+          title: Finish Reason
+          type: string
+        original_response:
+          default: null
+          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
+          title: Original Response
+        id:
+          title: Id
+          type: string
+        final_status:
+          allOf:
+          - $ref: '#/components/schemas/FinalStatusEnum'
+          title: Final Status
+        error:
+          additionalProperties: true
+          default: null
+          title: Error
+          type: object
+      required:
+      - answer
+      - id
+      - final_status
+      title: videoquestion_answer_asyncQuestionAnswerAsyncDataClass
+      type: object
     QuestionAnswerAsyncRequest:
       type: object
       properties:
@@ -355,34 +436,27 @@ components:
       required:
       - providers
       - text
-    NestedError:
-      type: object
+    asyncvideoquestion_answer_asyncResponseModel:
       properties:
-        type:
+        results:
+          $ref: '#/components/schemas/videoquestion_answer_asyncModel'
+        error:
+          title: Error
           type: string
-        message:
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
           type: string
       required:
-      - message
-      - type
-    FieldError:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideoquestion_answer_asyncResponseModel
       type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
     StateEnum:
       enum:
       - finished
@@ -397,85 +471,11 @@ components:
         * `Timeout error` - Timeout error
 
         * `processing` - processing'
-    videoquestion_answer_asyncQuestionAnswerAsyncDataClass:
-      properties:
-        answer:
-          title: Answer
-          type: string
-        finish_reason:
-          default: null
-          title: Finish Reason
-          type: string
-        original_response:
-          default: null
-          description: original response sent by the provider, hidden by default, show it by passing the `show_original_response` field to `true` in your request
-          title: Original Response
-        id:
-          title: Id
-          type: string
-        final_status:
-          allOf:
-          - $ref: '#/components/schemas/FinalStatusEnum'
-          title: Final Status
-        error:
-          additionalProperties: true
-          default: null
-          title: Error
-          type: object
-      required:
-      - answer
-      - id
-      - final_status
-      title: videoquestion_answer_asyncQuestionAnswerAsyncDataClass
-      type: object
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    videoquestion_answer_asyncModel:
-      properties:
-        google:
-          $ref: '#/components/schemas/videoquestion_answer_asyncQuestionAnswerAsyncDataClass'
-          default: null
-      title: videoquestion_answer_asyncModel
-      type: object
-    AsyncJobList:
-      type: object
-      properties:
-        providers:
-          type: string
-        nb:
-          type: integer
-        nb_ok:
-          type: integer
-        public_id:
-          type: string
-          format: uuid
-        state:
-          $ref: '#/components/schemas/StateEnum'
-        created_at:
-          type: string
-          format: date-time
-      required:
-      - created_at
-      - nb
-      - nb_ok
-      - providers
-      - public_id
-      - state
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

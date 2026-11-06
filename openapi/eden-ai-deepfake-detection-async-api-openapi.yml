@@ -206,6 +206,83 @@ paths:
           description: ''
 components:
   schemas:
+    BadRequest:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    DetailPerFrame:
+      properties:
+        position:
+          title: Position
+          type: integer
+        score:
+          maximum: 1
+          minimum: 0
+          title: Score
+          type: integer
+        prediction:
+          allOf:
+          - $ref: '#/components/schemas/PredictionEnum'
+          title: Prediction
+      required:
+      - position
+      - score
+      - prediction
+      title: DetailPerFrame
+      type: object
+    asyncvideodeepfake_detection_asyncResponseModel:
+      properties:
+        results:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncModel'
+        error:
+          title: Error
+          type: string
+        public_id:
+          format: uuid
+          title: Public Id
+          type: string
+        status:
+          title: Status
+          type: string
+      required:
+      - results
+      - error
+      - public_id
+      - status
+      title: asyncvideodeepfake_detection_asyncResponseModel
+      type: object
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    ListAsyncJobResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/AsyncJobList'
+      required:
+      - jobs
     videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass:
       properties:
         average_score:
@@ -245,120 +322,6 @@ components:
       - final_status
       title: videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass
       type: object
-    LaunchAsyncJobResponse:
-      type: object
-      properties:
-        public_id:
-          type: string
-          format: uuid
-      required:
-      - public_id
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    FinalStatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    ListAsyncJobResponse:
-      type: object
-      properties:
-        jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/AsyncJobList'
-      required:
-      - jobs
-    videodeepfake_detection_asyncModel:
-      properties:
-        resemble:
-          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
-          default: null
-        sightengine:
-          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
-          default: null
-      title: videodeepfake_detection_asyncModel
-      type: object
-    asyncvideodeepfake_detection_asyncResponseModel:
-      properties:
-        results:
-          $ref: '#/components/schemas/videodeepfake_detection_asyncModel'
-        error:
-          title: Error
-          type: string
-        public_id:
-          format: uuid
-          title: Public Id
-          type: string
-        status:
-          title: Status
-          type: string
-      required:
-      - results
-      - error
-      - public_id
-      - status
-      title: asyncvideodeepfake_detection_asyncResponseModel
-      type: object
-    StateEnum:
-      enum:
-      - finished
-      - failed
-      - Timeout error
-      - processing
-      type: string
-      description: '* `finished` - finished
-
-        * `failed` - failed
-
-        * `Timeout error` - Timeout error
-
-        * `processing` - processing'
-    PredictionEnum:
-      enum:
-      - deepfake
-      - original
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
     AsyncJobList:
       type: object
       properties:
@@ -383,13 +346,12 @@ components:
       - providers
       - public_id
       - state
-    BadRequest:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
+        details:
+          type: string
+          default: Not Found
     AsyncVideoAnalysisRequest:
       type: object
       properties:
@@ -441,26 +403,64 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    DetailPerFrame:
-      properties:
-        position:
-          title: Position
-          type: integer
-        score:
-          maximum: 1
-          minimum: 0
-          title: Score
-          type: integer
-        prediction:
-          allOf:
-          - $ref: '#/components/schemas/PredictionEnum'
-          title: Prediction
-      required:
-      - position
-      - score
-      - prediction
-      title: DetailPerFrame
+    FieldError:
       type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    LaunchAsyncJobResponse:
+      type: object
+      properties:
+        public_id:
+          type: string
+          format: uuid
+      required:
+      - public_id
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
+    videodeepfake_detection_asyncModel:
+      properties:
+        resemble:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
+          default: null
+        sightengine:
+          $ref: '#/components/schemas/videodeepfake_detection_asyncDeepfakeDetectionAsyncDataClass'
+          default: null
+      title: videodeepfake_detection_asyncModel
+      type: object
+    PredictionEnum:
+      enum:
+      - deepfake
+      - original
+      type: string
+    StateEnum:
+      enum:
+      - finished
+      - failed
+      - Timeout error
+      - processing
+      type: string
+      description: '* `finished` - finished
+
+        * `failed` - failed
+
+        * `Timeout error` - Timeout error
+
+        * `processing` - processing'
+    FinalStatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
   securitySchemes:
     FeatureApiAuth:
       type: http

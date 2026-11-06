@@ -115,31 +115,36 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    FaceMatch:
-      properties:
-        confidence:
-          title: Confidence
-          type: integer
-        bounding_box:
-          $ref: '#/components/schemas/FaceCompareBoundingBox'
-      required:
-      - confidence
-      - bounding_box
-      title: FaceMatch
-      type: object
-    Error:
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    imageface_compareResponseModel:
+      properties:
+        facepp:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+        base64:
+          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
+          default: null
+      title: imageface_compareResponseModel
+      type: object
     NestedError:
       type: object
       properties:
@@ -150,15 +155,6 @@ components:
       required:
       - message
       - type
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
     imageface_compareFaceCompareDataClass:
       properties:
         items:
@@ -178,34 +174,54 @@ components:
       - status
       title: imageface_compareFaceCompareDataClass
       type: object
-    imageface_compareResponseModel:
-      properties:
-        facepp:
-          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
-          default: null
-        base64:
-          $ref: '#/components/schemas/imageface_compareFaceCompareDataClass'
-          default: null
-      title: imageface_compareResponseModel
-      type: object
     StatusEnum:
       enum:
       - sucess
       - fail
       type: string
-    NestedBadRequest:
+    FaceCompareBoundingBox:
+      properties:
+        top:
+          title: Top
+          type: integer
+        left:
+          title: Left
+          type: integer
+        height:
+          title: Height
+          type: integer
+        width:
+          title: Width
+          type: integer
+      required:
+      - top
+      - left
+      - height
+      - width
+      title: FaceCompareBoundingBox
+      type: object
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - message
-      - type
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     imageface_compareFaceCompareRequest:
       type: object
       properties:
@@ -265,33 +281,17 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    BadRequest:
-      type: object
+    FaceMatch:
       properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
+        confidence:
+          title: Confidence
+          type: integer
+        bounding_box:
+          $ref: '#/components/schemas/FaceCompareBoundingBox'
       required:
-      - error
-    FaceCompareBoundingBox:
-      properties:
-        top:
-          title: Top
-          type: integer
-        left:
-          title: Left
-          type: integer
-        height:
-          title: Height
-          type: integer
-        width:
-          title: Width
-          type: integer
-      required:
-      - top
-      - left
-      - height
-      - width
-      title: FaceCompareBoundingBox
+      - confidence
+      - bounding_box
+      title: FaceMatch
       type: object
   securitySchemes:
     FeatureApiAuth:

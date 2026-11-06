@@ -281,6 +281,45 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ItemsResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_ids:
+          items:
+            type: string
+          type: array
+          title: Item Ids
+          description: Provider-side item ids (face ids for image/face_recognition).
+      type: object
+      required:
+      - collection_id
+      - item_ids
+      title: ItemsResponse
+      description: Item ids stored in a collection (provider-side ids, passed through).
     ListCollectionsResponse:
       properties:
         items:
@@ -314,6 +353,34 @@ components:
       - total_pages
       title: ListCollectionsResponse
       description: Paginated list of the user's collections.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeleteItemResponse:
+      properties:
+        collection_id:
+          type: string
+          format: uuid
+          title: Collection Id
+        item_id:
+          type: string
+          title: Item Id
+        deleted:
+          type: boolean
+          title: Deleted
+      type: object
+      required:
+      - collection_id
+      - item_id
+      - deleted
+      title: DeleteItemResponse
+      description: Result of deleting an item from a collection.
     AddItemRequest:
       properties:
         file:
@@ -329,27 +396,21 @@ components:
       - file
       title: AddItemRequest
       description: Body for adding an item to a collection.
-    ValidationError:
+    DeleteCollectionResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        collection_id:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          format: uuid
+          title: Collection Id
+        deleted:
+          type: boolean
+          title: Deleted
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - collection_id
+      - deleted
+      title: DeleteCollectionResponse
+      description: Result of deleting a collection.
     CollectionResponse:
       properties:
         collection_id:
@@ -392,67 +453,6 @@ components:
       - model
       title: CreateCollectionRequest
       description: Body for creating a collection.
-    DeleteItemResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        item_id:
-          type: string
-          title: Item Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - item_id
-      - deleted
-      title: DeleteItemResponse
-      description: Result of deleting an item from a collection.
-    ItemsResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        item_ids:
-          items:
-            type: string
-          type: array
-          title: Item Ids
-          description: Provider-side item ids (face ids for image/face_recognition).
-      type: object
-      required:
-      - collection_id
-      - item_ids
-      title: ItemsResponse
-      description: Item ids stored in a collection (provider-side ids, passed through).
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DeleteCollectionResponse:
-      properties:
-        collection_id:
-          type: string
-          format: uuid
-          title: Collection Id
-        deleted:
-          type: boolean
-          title: Deleted
-      type: object
-      required:
-      - collection_id
-      - deleted
-      title: DeleteCollectionResponse
-      description: Result of deleting a collection.
   securitySchemes:
     AuthBearer:
       type: http

@@ -152,12 +152,23 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
+    BadRequest:
       type: object
       properties:
-        details:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     textplagia_detectionResponseModel:
       properties:
         originalityai:
@@ -168,13 +179,6 @@ components:
           default: null
       title: textplagia_detectionResponseModel
       type: object
-    Error:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
     NestedError:
       type: object
       properties:
@@ -185,36 +189,11 @@ components:
       required:
       - message
       - type
-    PlagiaDetectionCandidate:
-      properties:
-        url:
-          title: Url
-          type: string
-        plagia_score:
-          title: Plagia Score
-          type: integer
-        prediction:
-          title: Prediction
-          type: string
-        plagiarized_text:
-          title: Plagiarized Text
-          type: string
-      required:
-      - url
-      - plagia_score
-      - prediction
-      - plagiarized_text
-      title: PlagiaDetectionCandidate
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     PlagiaDetectionItem:
       properties:
         text:
@@ -252,6 +231,49 @@ components:
       - status
       title: textplagia_detectionPlagiaDetectionDataClass
       type: object
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    PlagiaDetectionCandidate:
+      properties:
+        url:
+          title: Url
+          type: string
+        plagia_score:
+          title: Plagia Score
+          type: integer
+        prediction:
+          title: Prediction
+          type: string
+        plagiarized_text:
+          title: Plagiarized Text
+          type: string
+      required:
+      - url
+      - plagia_score
+      - prediction
+      - plagiarized_text
+      title: PlagiaDetectionCandidate
+      type: object
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     textplagia_detectionPlagiaDetectionRequest:
       type: object
       properties:
@@ -300,28 +322,6 @@ components:
       required:
       - providers
       - text
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    BadRequest:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

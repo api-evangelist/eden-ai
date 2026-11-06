@@ -303,41 +303,23 @@ paths:
           description: ''
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
-    imageobject_detectionResponseModel:
-      properties:
-        clarifai:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        amazon:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        microsoft:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        api4ai:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        sentisight:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
-          default: null
-      title: imageobject_detectionResponseModel
+    NestedBadRequest:
       type: object
+      properties:
+        type:
+          type: string
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
     NestedError:
       type: object
       properties:
@@ -348,44 +330,11 @@ components:
       required:
       - message
       - type
-    ObjectItem:
-      properties:
-        label:
-          title: Label
-          type: string
-        confidence:
-          title: Confidence
-          type: integer
-        x_min:
-          title: X Min
-          type: integer
-        x_max:
-          title: X Max
-          type: integer
-        y_min:
-          title: Y Min
-          type: integer
-        y_max:
-          title: Y Max
-          type: integer
-      required:
-      - label
-      - confidence
-      - x_min
-      - x_max
-      - y_min
-      - y_max
-      title: ObjectItem
-      type: object
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     imageobject_detectionObjectDetectionRequest:
       type: object
       properties:
@@ -434,28 +383,79 @@ components:
           description: 'File **URL** to analyse to be used with with *content-type*: **application/json**.'
       required:
       - providers
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
+    NotFoundResponse:
       type: object
       properties:
-        type:
+        details:
           type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
       required:
-      - message
-      - type
-    BadRequest:
+      - <parameter_name>
+    ObjectItem:
+      properties:
+        label:
+          title: Label
+          type: string
+        confidence:
+          title: Confidence
+          type: integer
+        x_min:
+          title: X Min
+          type: integer
+        x_max:
+          title: X Max
+          type: integer
+        y_min:
+          title: Y Min
+          type: integer
+        y_max:
+          title: Y Max
+          type: integer
+      required:
+      - label
+      - confidence
+      - x_min
+      - x_max
+      - y_min
+      - y_max
+      title: ObjectItem
+      type: object
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
+    imageobject_detectionResponseModel:
+      properties:
+        clarifai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        amazon:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        microsoft:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        api4ai:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        sentisight:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imageobject_detectionObjectDetectionDataClass'
+          default: null
+      title: imageobject_detectionResponseModel
+      type: object
     imageobject_detectionObjectDetectionDataClass:
       properties:
         items:

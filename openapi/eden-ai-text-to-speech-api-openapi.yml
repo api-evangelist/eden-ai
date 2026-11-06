@@ -422,12 +422,41 @@ components:
           default: null
       title: audiotext_to_speechResponseModel
       type: object
-    NotFoundResponse:
+    BadRequest:
       type: object
       properties:
-        details:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    BlankEnum:
+      enum:
+      - ''
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
     audiotext_to_speechTextToSpeechDataClass:
       properties:
         audio:
@@ -454,23 +483,12 @@ components:
       - status
       title: audiotext_to_speechTextToSpeechDataClass
       type: object
-    Error:
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedError:
-      type: object
-      properties:
-        type:
+        details:
           type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -480,31 +498,21 @@ components:
             type: string
       required:
       - <parameter_name>
-    BlankEnum:
-      enum:
-      - ''
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
+    OptionEnum:
+      enum:
+      - FEMALE
+      - MALE
+      type: string
+      description: '* `FEMALE` - Female
+
+        * `MALE` - Male'
     audiotext_to_speechTextToSpeechRequest:
       type: object
       properties:
@@ -596,14 +604,6 @@ components:
       required:
       - providers
       - text
-    OptionEnum:
-      enum:
-      - FEMALE
-      - MALE
-      type: string
-      description: '* `FEMALE` - Female
-
-        * `MALE` - Male'
   securitySchemes:
     FeatureApiAuth:
       type: http

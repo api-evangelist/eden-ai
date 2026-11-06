@@ -61,6 +61,27 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ModelWithEndpoints:
       properties:
         id:
@@ -123,6 +144,60 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     RegionObject:
       properties:
         code:
@@ -226,53 +301,6 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
     Capabilities:
       properties:
         input_modalities:
@@ -339,34 +367,6 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
   securitySchemes:
     AuthBearer:
       type: http

@@ -309,43 +309,13 @@ paths:
     - url: https://api.edenai.run/v2
 components:
   schemas:
-    NotFoundResponse:
-      type: object
-      properties:
-        details:
-          type: string
-          default: Not Found
-    Error:
+    BadRequest:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedError'
+          $ref: '#/components/schemas/NestedBadRequest'
       required:
       - error
-    NestedError:
-      type: object
-      properties:
-        type:
-          type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
-    FieldError:
-      type: object
-      properties:
-        <parameter_name>:
-          type: array
-          items:
-            type: string
-      required:
-      - <parameter_name>
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
     NestedBadRequest:
       type: object
       properties:
@@ -356,26 +326,43 @@ components:
       required:
       - message
       - type
-    BadRequest:
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
+      type: object
+      properties:
+        details:
+          type: string
+          default: Not Found
+    FieldError:
+      type: object
+      properties:
+        <parameter_name>:
+          type: array
+          items:
+            type: string
+      required:
+      - <parameter_name>
+    Error:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/NestedBadRequest'
+          $ref: '#/components/schemas/NestedError'
       required:
       - error
-    imagequestion_answerResponseModel:
-      properties:
-        alephalpha:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        openai:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
-          default: null
-      title: imagequestion_answerResponseModel
-      type: object
     imagequestion_answerQuestionAnswerDataClass:
       properties:
         answers:
@@ -394,6 +381,19 @@ components:
       required:
       - status
       title: imagequestion_answerQuestionAnswerDataClass
+      type: object
+    imagequestion_answerResponseModel:
+      properties:
+        alephalpha:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        openai:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/imagequestion_answerQuestionAnswerDataClass'
+          default: null
+      title: imagequestion_answerResponseModel
       type: object
     imagequestion_answerQuestionAnswerRequest:
       type: object
@@ -482,16 +482,6 @@ components:
       - status
       title: videoquestion_answerQuestionAnswerDataClass
       type: object
-    videoquestion_answerResponseModel:
-      properties:
-        amazon:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
-          default: null
-        google:
-          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
-          default: null
-      title: videoquestion_answerResponseModel
-      type: object
     videoquestion_answerQuestionAnswerRequest:
       type: object
       properties:
@@ -557,6 +547,16 @@ components:
       required:
       - providers
       - text
+    videoquestion_answerResponseModel:
+      properties:
+        amazon:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+        google:
+          $ref: '#/components/schemas/videoquestion_answerQuestionAnswerDataClass'
+          default: null
+      title: videoquestion_answerResponseModel
+      type: object
   securitySchemes:
     FeatureApiAuth:
       type: http

@@ -84,6 +84,49 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ModerationImageUrl:
+      properties:
+        url:
+          type: string
+          title: Url
+      type: object
+      required:
+      - url
+      title: ModerationImageUrl
+    ModerationImageInput:
+      properties:
+        type:
+          type: string
+          const: image_url
+          title: Type
+        image_url:
+          $ref: '#/components/schemas/ModerationImageUrl'
+      type: object
+      required:
+      - type
+      - image_url
+      title: ModerationImageInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ModelWithEndpoints:
       properties:
         id:
@@ -146,57 +189,6 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
-    RegionObject:
-      properties:
-        code:
-          type: string
-          title: Code
-          description: Region code (e.g., 'us-east-1')
-        name:
-          type: string
-          title: Name
-          description: Region display name
-      type: object
-      required:
-      - code
-      - name
-      title: RegionObject
-      description: Region where a model is available.
-    ModerationBody:
-      properties:
-        tags:
-          title: Tags
-          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
-          examples:
-          - client: acme
-            project: invoices
-        input:
-          anyOf:
-          - type: string
-          - items:
-              type: string
-            type: array
-          - items:
-              oneOf:
-              - $ref: '#/components/schemas/ModerationTextInput'
-              - $ref: '#/components/schemas/ModerationImageInput'
-              discriminator:
-                propertyName: type
-                mapping:
-                  image_url: '#/components/schemas/ModerationImageInput'
-                  text: '#/components/schemas/ModerationTextInput'
-            type: array
-          title: Input
-          description: Text or multimodal content to classify.
-        model:
-          type: string
-          title: Model
-          description: Model identifier in 'provider/model' format, e.g. 'openai/omni-moderation-latest'.
-          default: openai/omni-moderation-latest
-      type: object
-      required:
-      - input
-      title: ModerationBody
     ModerationResponse:
       properties:
         cost:
@@ -227,6 +219,90 @@ components:
       - model
       - results
       title: ModerationResponse
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    ModerationTextInput:
+      properties:
+        type:
+          type: string
+          const: text
+          title: Type
+        text:
+          type: string
+          title: Text
+      type: object
+      required:
+      - type
+      - text
+      title: ModerationTextInput
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RegionObject:
+      properties:
+        code:
+          type: string
+          title: Code
+          description: Region code (e.g., 'us-east-1')
+        name:
+          type: string
+          title: Name
+          description: Region display name
+      type: object
+      required:
+      - code
+      - name
+      title: RegionObject
+      description: Region where a model is available.
     ModelObject:
       properties:
         id:
@@ -314,89 +390,41 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ValidationError:
+    ModerationBody:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
+        input:
+          anyOf:
+          - type: string
+          - items:
+              type: string
+            type: array
+          - items:
+              oneOf:
+              - $ref: '#/components/schemas/ModerationTextInput'
+              - $ref: '#/components/schemas/ModerationImageInput'
+              discriminator:
+                propertyName: type
+                mapping:
+                  image_url: '#/components/schemas/ModerationImageInput'
+                  text: '#/components/schemas/ModerationTextInput'
+            type: array
+          title: Input
+          description: Text or multimodal content to classify.
+        model:
           type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
+          title: Model
+          description: Model identifier in 'provider/model' format, e.g. 'openai/omni-moderation-latest'.
+          default: openai/omni-moderation-latest
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    ModerationImageInput:
-      properties:
-        type:
-          type: string
-          const: image_url
-          title: Type
-        image_url:
-          $ref: '#/components/schemas/ModerationImageUrl'
-      type: object
-      required:
-      - type
-      - image_url
-      title: ModerationImageInput
-    ModerationTextInput:
-      properties:
-        type:
-          type: string
-          const: text
-          title: Type
-        text:
-          type: string
-          title: Text
-      type: object
-      required:
-      - type
-      - text
-      title: ModerationTextInput
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    ModerationImageUrl:
-      properties:
-        url:
-          type: string
-          title: Url
-      type: object
-      required:
-      - url
-      title: ModerationImageUrl
+      - input
+      title: ModerationBody
     OpenAIModerationResult:
       properties:
         categories:
@@ -496,34 +524,6 @@ components:
       description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
         new capabilities are introduced without a coordinated release.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
   securitySchemes:
     AuthBearer:
       type: http

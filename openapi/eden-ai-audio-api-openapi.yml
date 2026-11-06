@@ -397,6 +397,27 @@ paths:
       description: Production
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     ModelWithEndpoints:
       properties:
         id:
@@ -459,6 +480,253 @@ components:
         field, which is what makes this view a pure regrouping: a caller reading
 
         ``data[].endpoints[]`` sees exactly what it reads from ``data[]`` today.'
+    MaxPrice:
+      properties:
+        input:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Input
+          description: Highest input rate accepted, in USD per million tokens.
+        output:
+          anyOf:
+          - type: number
+            minimum: 0.0
+          - type: 'null'
+          title: Output
+          description: Highest output rate accepted, in USD per million tokens.
+      additionalProperties: false
+      type: object
+      title: MaxPrice
+      description: 'A price ceiling in USD per MILLION tokens, one bar per direction, either one optional.
+
+
+        Unknown keys are refused: a typo on one side (``ouput``) must not silently remove that bar.'
+    VoiceListResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/VoiceObject'
+          type: array
+          title: Data
+          description: Voices, sorted by provider then name.
+      type: object
+      required:
+      - data
+      title: VoiceListResponse
+      description: List of voices.
+    SpeechBody:
+      properties:
+        tags:
+          title: Tags
+          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
+          examples:
+          - client: acme
+            project: invoices
+        routing:
+          anyOf:
+          - $ref: '#/components/schemas/ProviderRoutingPreferences'
+          - type: 'null'
+          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider, except `zero_data_retention`, which holds every model in the request to it. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
+        model:
+          type: string
+          title: Model
+          description: provider/model, e.g. 'openai/tts-1'
+        input:
+          type: string
+          title: Input
+          description: The text to synthesize into audio.
+        voice:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Voice
+          description: 'Voice to synthesize with: a voice `id` or `name` from `GET /v3/audio/voices?model=...`, matched case-insensitively (e.g. ''alloy''). Omit it to use the model''s default voice. A voice id the catalog does not know is sent to the provider unchanged.'
+        response_format:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Response Format
+          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
+        speed:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Speed
+          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
+        instructions:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Instructions
+          description: Optional guidance for voice and delivery style.
+      type: object
+      required:
+      - model
+      - input
+      title: SpeechBody
+      description: 'OpenAI-compatible text-to-speech request.
+
+
+        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
+
+        top-level fields are dropped.'
+    ListModelsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelObject'
+          type: array
+          title: Data
+          description: List of models
+      type: object
+      required:
+      - data
+      title: ListModelsResponse
+      description: List models response.
+    VoiceObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Voice identifier. Send this value as `voice`.
+        object:
+          type: string
+          const: voice
+          title: Object
+          description: Object type
+          default: voice
+        name:
+          type: string
+          title: Name
+          description: Display name. Also accepted as `voice`, case-insensitively.
+        provider:
+          type: string
+          title: Provider
+          description: Provider that serves the voice.
+        models:
+          items:
+            type: string
+          type: array
+          title: Models
+          description: Model identifiers that accept this voice, in this endpoint's id format.
+        languages:
+          items:
+            type: string
+          type: array
+          title: Languages
+          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - unknown
+          title: Gender
+          description: Voice gender as published by the provider.
+        preview_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Preview Url
+          description: Provider-hosted audio sample, when available.
+        default:
+          type: boolean
+          title: Default
+          description: Used when a request omits `voice` for one of these models.
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - models
+      - languages
+      - gender
+      title: VoiceObject
+      description: One text-to-speech voice and the models that accept it.
+    ListModelsWithEndpointsResponse:
+      properties:
+        object:
+          type: string
+          const: list
+          title: Object
+          description: Object type
+          default: list
+        data:
+          items:
+            $ref: '#/components/schemas/ModelWithEndpoints'
+          type: array
+          title: Data
+          description: List of routable models
+      type: object
+      required:
+      - data
+      title: ListModelsWithEndpointsResponse
+      description: '`?view=models` response: routable names, each with its provider endpoints.
+
+
+        Named for the public vocabulary rather than the internal one: Pydantic class names become
+
+        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
+
+        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TranscriptionResponse:
+      properties:
+        cost:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Cost
+        provider:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Provider
+        text:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Text
+        usage:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Usage
+      additionalProperties: true
+      type: object
+      title: TranscriptionResponse
+      description: 'OpenAI-compatible transcription response, plus Eden ``cost`` / ``provider``.
+
+
+        The provider''s full transcript payload passes through — ``text`` plus any
+
+        ``language``, ``duration``, ``words``, and ``segments`` the provider returns
+
+        — alongside the Eden-added ``cost`` and ``provider`` fields.'
     RegionObject:
       properties:
         code:
@@ -562,204 +830,72 @@ components:
       - model_name
       title: ModelObject
       description: Extended model object with full metadata.
-    ValidationError:
+    Capabilities:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    VoiceObject:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Voice identifier. Send this value as `voice`.
-        object:
-          type: string
-          const: voice
-          title: Object
-          description: Object type
-          default: voice
-        name:
-          type: string
-          title: Name
-          description: Display name. Also accepted as `voice`, case-insensitively.
-        provider:
-          type: string
-          title: Provider
-          description: Provider that serves the voice.
-        models:
+        input_modalities:
           items:
             type: string
           type: array
-          title: Models
-          description: Model identifiers that accept this voice, in this endpoint's id format.
-        languages:
+          title: Input Modalities
+        output_modalities:
           items:
             type: string
           type: array
-          title: Languages
-          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
-        gender:
-          type: string
-          enum:
-          - male
-          - female
-          - unknown
-          title: Gender
-          description: Voice gender as published by the provider.
-        preview_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Preview Url
-          description: Provider-hosted audio sample, when available.
-        default:
+          title: Output Modalities
+        supports_reasoning:
           type: boolean
-          title: Default
-          description: Used when a request omits `voice` for one of these models.
+          title: Supports Reasoning
           default: false
-      type: object
-      required:
-      - id
-      - name
-      - provider
-      - models
-      - languages
-      - gender
-      title: VoiceObject
-      description: One text-to-speech voice and the models that accept it.
-    TranscriptionResponse:
-      properties:
-        cost:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Cost
-        provider:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Provider
-        text:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Text
-        usage:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Usage
+        supports_web_search:
+          type: boolean
+          title: Supports Web Search
+          default: false
+        supports_tool_choice:
+          type: boolean
+          title: Supports Tool Choice
+          default: false
+        supports_computer_use:
+          type: boolean
+          title: Supports Computer Use
+          default: false
+        supports_prompt_caching:
+          type: boolean
+          title: Supports Prompt Caching
+          default: false
+        supports_response_schema:
+          type: boolean
+          title: Supports Response Schema
+          default: false
+        supports_system_messages:
+          type: boolean
+          title: Supports System Messages
+          default: false
+        supports_function_calling:
+          type: boolean
+          title: Supports Function Calling
+          default: false
+        supports_native_streaming:
+          type: boolean
+          title: Supports Native Streaming
+          default: false
+        supports_assistant_prefill:
+          type: boolean
+          title: Supports Assistant Prefill
+          default: false
+        supports_embedding_image_input:
+          type: boolean
+          title: Supports Embedding Image Input
+          default: false
+        supports_parallel_function_calling:
+          type: boolean
+          title: Supports Parallel Function Calling
+          default: false
       additionalProperties: true
       type: object
-      title: TranscriptionResponse
-      description: 'OpenAI-compatible transcription response, plus Eden ``cost`` / ``provider``.
+      title: Capabilities
+      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
 
-
-        The provider''s full transcript payload passes through — ``text`` plus any
-
-        ``language``, ``duration``, ``words``, and ``segments`` the provider returns
-
-        — alongside the Eden-added ``cost`` and ``provider`` fields.'
-    ListModelsWithEndpointsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelWithEndpoints'
-          type: array
-          title: Data
-          description: List of routable models
-      type: object
-      required:
-      - data
-      title: ListModelsWithEndpointsResponse
-      description: '`?view=models` response: routable names, each with its provider endpoints.
-
-
-        Named for the public vocabulary rather than the internal one: Pydantic class names become
-
-        OpenAPI schema titles and generated SDK classes, and a caller never needs the word
-
-        "canonical" -- to them these are simply models, and the rows behind them endpoints.'
-    SpeechBody:
-      properties:
-        tags:
-          title: Tags
-          description: Up to 10 key/value labels recorded with this call, for filtering and grouping usage. Merged with the `X-EdenAI-Tags` header.
-          examples:
-          - client: acme
-            project: invoices
-        routing:
-          anyOf:
-          - $ref: '#/components/schemas/ProviderRoutingPreferences'
-          - type: 'null'
-          description: 'How to pick between the providers that serve the requested model. Applies when `model` is a model name with no provider prefix (e.g. ''gpt-5.5''); ignored for a concrete ''provider/model'' id, which already names its provider, except `zero_data_retention`, which holds every model in the request to it. With model=''@edenai'' the platform chooses the model too: `quality_cost` steers that choice, and the provider fields apply whenever the chosen model is a provider-less name.'
-        model:
-          type: string
-          title: Model
-          description: provider/model, e.g. 'openai/tts-1'
-        input:
-          type: string
-          title: Input
-          description: The text to synthesize into audio.
-        voice:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Voice
-          description: 'Voice to synthesize with: a voice `id` or `name` from `GET /v3/audio/voices?model=...`, matched case-insensitively (e.g. ''alloy''). Omit it to use the model''s default voice. A voice id the catalog does not know is sent to the provider unchanged.'
-        response_format:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Response Format
-          description: 'Audio format: ''mp3'', ''opus'', ''aac'', ''flac'', ''wav'', or ''pcm''. Defaults to ''mp3''. Note: Gemini TTS models always return WAV and ignore this field.'
-        speed:
-          anyOf:
-          - type: number
-          - type: 'null'
-          title: Speed
-          description: Playback speed. OpenAI/Azure TTS accept 0.25-4.0; other providers may use a different range or ignore it.
-        instructions:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Instructions
-          description: Optional guidance for voice and delivery style.
-      type: object
-      required:
-      - model
-      - input
-      title: SpeechBody
-      description: 'OpenAI-compatible text-to-speech request.
-
-
-        Synthesizes ``input`` text into audio with the given ``voice``. Unknown
-
-        top-level fields are dropped.'
+        new capabilities are introduced without a coordinated release.'
     ProviderRoutingPreferences:
       properties:
         sort:
@@ -853,142 +989,6 @@ components:
         MODEL itself see ``router_candidates`` and ``model="@edenai"``, which is a different router;
 
         ``quality_cost`` below is the one field here that speaks to it.'
-    VoiceListResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/VoiceObject'
-          type: array
-          title: Data
-          description: Voices, sorted by provider then name.
-      type: object
-      required:
-      - data
-      title: VoiceListResponse
-      description: List of voices.
-    Capabilities:
-      properties:
-        input_modalities:
-          items:
-            type: string
-          type: array
-          title: Input Modalities
-        output_modalities:
-          items:
-            type: string
-          type: array
-          title: Output Modalities
-        supports_reasoning:
-          type: boolean
-          title: Supports Reasoning
-          default: false
-        supports_web_search:
-          type: boolean
-          title: Supports Web Search
-          default: false
-        supports_tool_choice:
-          type: boolean
-          title: Supports Tool Choice
-          default: false
-        supports_computer_use:
-          type: boolean
-          title: Supports Computer Use
-          default: false
-        supports_prompt_caching:
-          type: boolean
-          title: Supports Prompt Caching
-          default: false
-        supports_response_schema:
-          type: boolean
-          title: Supports Response Schema
-          default: false
-        supports_system_messages:
-          type: boolean
-          title: Supports System Messages
-          default: false
-        supports_function_calling:
-          type: boolean
-          title: Supports Function Calling
-          default: false
-        supports_native_streaming:
-          type: boolean
-          title: Supports Native Streaming
-          default: false
-        supports_assistant_prefill:
-          type: boolean
-          title: Supports Assistant Prefill
-          default: false
-        supports_embedding_image_input:
-          type: boolean
-          title: Supports Embedding Image Input
-          default: false
-        supports_parallel_function_calling:
-          type: boolean
-          title: Supports Parallel Function Calling
-          default: false
-      additionalProperties: true
-      type: object
-      title: Capabilities
-      description: 'Model capability flags. Unknown flags are preserved so consumers keep working when
-
-        new capabilities are introduced without a coordinated release.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    MaxPrice:
-      properties:
-        input:
-          anyOf:
-          - type: number
-            minimum: 0.0
-          - type: 'null'
-          title: Input
-          description: Highest input rate accepted, in USD per million tokens.
-        output:
-          anyOf:
-          - type: number
-            minimum: 0.0
-          - type: 'null'
-          title: Output
-          description: Highest output rate accepted, in USD per million tokens.
-      additionalProperties: false
-      type: object
-      title: MaxPrice
-      description: 'A price ceiling in USD per MILLION tokens, one bar per direction, either one optional.
-
-
-        Unknown keys are refused: a typo on one side (``ouput``) must not silently remove that bar.'
-    ListModelsResponse:
-      properties:
-        object:
-          type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
-          items:
-            $ref: '#/components/schemas/ModelObject'
-          type: array
-          title: Data
-          description: List of models
-      type: object
-      required:
-      - data
-      title: ListModelsResponse
-      description: List models response.
   securitySchemes:
     AuthBearer:
       type: http

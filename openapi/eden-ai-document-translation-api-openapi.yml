@@ -334,22 +334,33 @@ paths:
           description: ''
 components:
   schemas:
-    translationdocument_translationResponseModel:
-      properties:
-        google:
-          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
-          default: null
-        deepl:
-          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
-          default: null
-      title: translationdocument_translationResponseModel
-      type: object
-    NotFoundResponse:
+    BadRequest:
       type: object
       properties:
-        details:
+        error:
+          $ref: '#/components/schemas/NestedBadRequest'
+      required:
+      - error
+    NestedBadRequest:
+      type: object
+      properties:
+        type:
           type: string
-          default: Not Found
+        message:
+          $ref: '#/components/schemas/FieldError'
+      required:
+      - message
+      - type
+    NestedError:
+      type: object
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+      required:
+      - message
+      - type
     translationdocument_translationDocumentTranslationRequest:
       type: object
       properties:
@@ -413,23 +424,17 @@ components:
       required:
       - providers
       - target_language
-    Error:
+    StatusEnum:
+      enum:
+      - sucess
+      - fail
+      type: string
+    NotFoundResponse:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/NestedError'
-      required:
-      - error
-    NestedError:
-      type: object
-      properties:
-        type:
+        details:
           type: string
-        message:
-          type: string
-      required:
-      - message
-      - type
+          default: Not Found
     FieldError:
       type: object
       properties:
@@ -439,6 +444,13 @@ components:
             type: string
       required:
       - <parameter_name>
+    Error:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/NestedError'
+      required:
+      - error
     translationdocument_translationDocumentTranslationDataClass:
       properties:
         file:
@@ -461,28 +473,16 @@ components:
       - status
       title: translationdocument_translationDocumentTranslationDataClass
       type: object
-    StatusEnum:
-      enum:
-      - sucess
-      - fail
-      type: string
-    NestedBadRequest:
-      type: object
+    translationdocument_translationResponseModel:
       properties:
-        type:
-          type: string
-        message:
-          $ref: '#/components/schemas/FieldError'
-      required:
-      - message
-      - type
-    BadRequest:
+        google:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+        deepl:
+          $ref: '#/components/schemas/translationdocument_translationDocumentTranslationDataClass'
+          default: null
+      title: translationdocument_translationResponseModel
       type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/NestedBadRequest'
-      required:
-      - error
   securitySchemes:
     FeatureApiAuth:
       type: http

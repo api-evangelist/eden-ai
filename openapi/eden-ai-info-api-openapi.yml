@@ -248,83 +248,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    InfoInclude:
-      type: string
-      enum:
-      - schemas
-      title: InfoInclude
-      description: Extra data the feature listing can embed.
-    SubfeatureInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        mode:
-          type: string
-          enum:
-          - sync
-          - async
-          title: Mode
-        models:
-          items:
-            additionalProperties: true
-            type: object
-          type: array
-          title: Models
-          description: 'Models available for this subfeature: the `model` id to send, its `pricing` and `regions`, and `documentation_url`, the provider''s documentation for that model (the model''s own page when there is one, else the feature''s, else the provider''s; `null` when none is known). `requires_reference_images` is true for an edit-only model, which fails on a request without `reference_images`, and `requires_video` for a model that edits a source video, which fails without `video`.'
-        endpoints:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Endpoints
-          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
-        request_schema:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Request Schema
-          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
-        input_schema:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Input Schema
-          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
-        output_schema:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Output Schema
-          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
-        provider_params:
-          anyOf:
-          - additionalProperties:
-              items:
-                type: string
-              type: array
-            type: object
-          - type: 'null'
-          title: Provider Params
-          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
-      type: object
-      required:
-      - name
-      - fullname
-      - mode
-      title: SubfeatureInfo
-      description: Info about a subfeature.
     ValidationError:
       properties:
         loc:
@@ -346,111 +269,25 @@ components:
       - msg
       - type
       title: ValidationError
-    FeaturesListResponse:
+    VoiceListResponse:
       properties:
-        features:
-          items:
-            $ref: '#/components/schemas/FeatureInfo'
-          type: array
-          title: Features
-      type: object
-      required:
-      - features
-      title: FeaturesListResponse
-      description: Response for listing all features.
-    VoiceObject:
-      properties:
-        id:
-          type: string
-          title: Id
-          description: Voice identifier. Send this value as `voice`.
         object:
           type: string
-          const: voice
+          const: list
           title: Object
           description: Object type
-          default: voice
-        name:
-          type: string
-          title: Name
-          description: Display name. Also accepted as `voice`, case-insensitively.
-        provider:
-          type: string
-          title: Provider
-          description: Provider that serves the voice.
-        models:
+          default: list
+        data:
           items:
-            type: string
+            $ref: '#/components/schemas/VoiceObject'
           type: array
-          title: Models
-          description: Model identifiers that accept this voice, in this endpoint's id format.
-        languages:
-          items:
-            type: string
-          type: array
-          title: Languages
-          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
-        gender:
-          type: string
-          enum:
-          - male
-          - female
-          - unknown
-          title: Gender
-          description: Voice gender as published by the provider.
-        preview_url:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Preview Url
-          description: Provider-hosted audio sample, when available.
-        default:
-          type: boolean
-          title: Default
-          description: Used when a request omits `voice` for one of these models.
-          default: false
+          title: Data
+          description: Voices, sorted by provider then name.
       type: object
       required:
-      - id
-      - name
-      - provider
-      - models
-      - languages
-      - gender
-      title: VoiceObject
-      description: One text-to-speech voice and the models that accept it.
-    SchemaFormat:
-      type: string
-      enum:
-      - simplified
-      - json_schema
-      title: SchemaFormat
-      description: Output format for schema information.
-    FeatureInfo:
-      properties:
-        name:
-          type: string
-          title: Name
-        fullname:
-          type: string
-          title: Fullname
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        subfeatures:
-          items:
-            $ref: '#/components/schemas/SubfeatureInfo'
-          type: array
-          title: Subfeatures
-      type: object
-      required:
-      - name
-      - fullname
-      - subfeatures
-      title: FeatureInfo
-      description: Info about a feature and its subfeatures.
+      - data
+      title: VoiceListResponse
+      description: List of voices.
     SubfeatureDetailResponse:
       properties:
         feature:
@@ -524,6 +361,79 @@ components:
       - models
       title: SubfeatureDetailResponse
       description: Detailed response for a specific subfeature.
+    FeaturesListResponse:
+      properties:
+        features:
+          items:
+            $ref: '#/components/schemas/FeatureInfo'
+          type: array
+          title: Features
+      type: object
+      required:
+      - features
+      title: FeaturesListResponse
+      description: Response for listing all features.
+    VoiceObject:
+      properties:
+        id:
+          type: string
+          title: Id
+          description: Voice identifier. Send this value as `voice`.
+        object:
+          type: string
+          const: voice
+          title: Object
+          description: Object type
+          default: voice
+        name:
+          type: string
+          title: Name
+          description: Display name. Also accepted as `voice`, case-insensitively.
+        provider:
+          type: string
+          title: Provider
+          description: Provider that serves the voice.
+        models:
+          items:
+            type: string
+          type: array
+          title: Models
+          description: Model identifiers that accept this voice, in this endpoint's id format.
+        languages:
+          items:
+            type: string
+          type: array
+          title: Languages
+          description: BCP-47 locales the voice speaks. Empty when the voice is multilingual.
+        gender:
+          type: string
+          enum:
+          - male
+          - female
+          - unknown
+          title: Gender
+          description: Voice gender as published by the provider.
+        preview_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Preview Url
+          description: Provider-hosted audio sample, when available.
+        default:
+          type: boolean
+          title: Default
+          description: Used when a request omits `voice` for one of these models.
+          default: false
+      type: object
+      required:
+      - id
+      - name
+      - provider
+      - models
+      - languages
+      - gender
+      title: VoiceObject
+      description: One text-to-speech voice and the models that accept it.
     HTTPValidationError:
       properties:
         detail:
@@ -533,25 +443,115 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    VoiceListResponse:
+    InfoInclude:
+      type: string
+      enum:
+      - schemas
+      title: InfoInclude
+      description: Extra data the feature listing can embed.
+    SchemaFormat:
+      type: string
+      enum:
+      - simplified
+      - json_schema
+      title: SchemaFormat
+      description: Output format for schema information.
+    FeatureInfo:
       properties:
-        object:
+        name:
           type: string
-          const: list
-          title: Object
-          description: Object type
-          default: list
-        data:
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        subfeatures:
           items:
-            $ref: '#/components/schemas/VoiceObject'
+            $ref: '#/components/schemas/SubfeatureInfo'
           type: array
-          title: Data
-          description: Voices, sorted by provider then name.
+          title: Subfeatures
       type: object
       required:
-      - data
-      title: VoiceListResponse
-      description: List of voices.
+      - name
+      - fullname
+      - subfeatures
+      title: FeatureInfo
+      description: Info about a feature and its subfeatures.
+    SubfeatureInfo:
+      properties:
+        name:
+          type: string
+          title: Name
+        fullname:
+          type: string
+          title: Fullname
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        mode:
+          type: string
+          enum:
+          - sync
+          - async
+          title: Mode
+        models:
+          items:
+            additionalProperties: true
+            type: object
+          type: array
+          title: Models
+          description: 'Models available for this subfeature: the `model` id to send, its `pricing` and `regions`, and `documentation_url`, the provider''s documentation for that model (the model''s own page when there is one, else the feature''s, else the provider''s; `null` when none is known). `requires_reference_images` is true for an edit-only model, which fails on a request without `reference_images`, and `requires_video` for a model that edits a source video, which fails without `video`.'
+        endpoints:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Endpoints
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        request_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Request Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        input_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Input Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        output_schema:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Output Schema
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+        provider_params:
+          anyOf:
+          - additionalProperties:
+              items:
+                type: string
+              type: array
+            type: object
+          - type: 'null'
+          title: Provider Params
+          description: 'Only with `include=schemas`: as on GET /v3/info/{feature}/{subfeature}.'
+      type: object
+      required:
+      - name
+      - fullname
+      - mode
+      title: SubfeatureInfo
+      description: Info about a subfeature.
   securitySchemes:
     AuthBearer:
       type: http
